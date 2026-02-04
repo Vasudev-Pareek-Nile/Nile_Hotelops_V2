@@ -3851,8 +3851,8 @@ def EmployeeList(request):
     selected_division = request.GET.get("Divisions")
     employee_code = request.GET.get("employee_code")
     
-    # print("selected divisions:", selected_division)
-    # print("selected_org_id:", selected_org_id)
+    print("selected divisions:", selected_division)
+    print("selected_org_id:", selected_org_id)
 
     Status = request.GET.get("Status", '')
     Status_list = Status.split(",") if Status else []

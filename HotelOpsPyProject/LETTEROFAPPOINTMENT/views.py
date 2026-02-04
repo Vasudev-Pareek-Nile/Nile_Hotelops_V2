@@ -448,7 +448,7 @@ def emplist(request):
     AppointemetLetters = (
         LOALETTEROFAPPOINTMENTEmployeeDetail.objects
         .filter(IsDelete=False, OrganizationID=I)
-        .order_by('-CreatedDateTime', '-ModifyDateTime')
+        .order_by('-date_of_appointment')
     )
 
     context  = { 
@@ -643,7 +643,7 @@ def Generate_Appointment_Letter(request):
     
     # if not get_data.IsSaved and not get_data.FinalHTML:
     if not get_data.FinalHTML:
-        Generate_Appointment_Letter_Intitial(OrganizationID,OID,Loa_id,EmpID,head)
+        return Generate_Appointment_Letter_Intitial(OrganizationID,OID,Loa_id,EmpID,head)
     else:
         html_content = get_data.FinalHTML
 

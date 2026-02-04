@@ -43,11 +43,17 @@
         padding-right: 56px;
         justify-content: end;
     }
-    {% comment %} .select2-container--default .select2-selection--single .select2-selection__rendered {
-        font-size: 0px !important;
-    } {% endcomment %}
 </style>
-<div class="card">
+<div class="card" id="profile-card">
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
     <div class="card-header text-uppercase fw-bold">Hotel-Wise KRA Standards</div>
 
     <div class="card-body">
@@ -75,185 +81,211 @@
     </div>
 </div>
 
+
+{% comment %} Loaders {% endcomment %}
 <script>
-const KRA_API = "/KRA/api/hotel-kra/";
-
-function loadOrganizations() {
-    $.get("/KRA/api/organizations/", function(data) {
-        data.forEach(org => {
-            $('#organizationDropdown').append(`<option value="${org.OrganizationID}">${org.OrganizationName}</option>`);
-        });
-    });
-}
-function loadKRAStandards() {
-    const orgId = $('#organizationDropdown').val();
-    const SubmitButtonELement = document.getElementById('SubmitButton')
-    if (!orgId) return;
-
-    if (orgId) {
-        SubmitButtonELement.style.display='flex'
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
     }
 
-    $.get(KRA_API + orgId + "/", function(data) {
-        let tableHtml = `
-            <table class="table table-bordered" id="KraStandardTable">
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Definition</th>
-                        <th>Standard</th>
-                        <th>Compare With Value</th>
-                        <th>Applicable</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
 
-        // console.log("data is here", data)
-        data.forEach((kra, index) => {
+<script>
+    const KRA_API = "/KRA/api/hotel-kra/";
 
-           //  console.log("kra is here:: ", kra)
-            let compareWithHtml = '';
-            const valueType = kra.Select_Value_Type.toLowerCase();
-            const currentValue = kra.CompareWithValue || '';
-            const IsApp_Val = kra.IsApplicable || '';
+    function loadOrganizations() {
+        $.get("/KRA/api/organizations/", function(data) {
+            data.forEach(org => {
+                $('#organizationDropdown').append(`<option value="${org.OrganizationID}">${org.OrganizationName}</option>`);
+            });
+        });
+    }
+    function loadKRAStandards() {
+        const orgId = $('#organizationDropdown').val();
+        const SubmitButtonELement = document.getElementById('SubmitButton')
+        if (!orgId) return;
 
-            if (valueType === 'text') {
-                compareWithHtml = `
-                    <select class="form-control Compare-value" data-type="${valueType}">
-                        <option value="">Select</option>
-                        <option value="Pass" ${currentValue === 'Pass' ? 'selected' : ''}>Pass</option>
-                        <option value="Fail" ${currentValue === 'Fail' ? 'selected' : ''}>Fail</option>
-                        <option value="Received" ${currentValue === 'Received' ? 'selected' : ''}>Received</option>
-                        <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
-                    </select>
-                `;
-            } else {
-                compareWithHtml = `
-                    <input 
-                        type="text" 
-                        class="form-control Compare-value" 
-                        value="${currentValue}" 
-                        data-type="${valueType}"
-                        placeholder="${kra.Source === "CEO Report" ? '' : 'Enter Compare Value'}"
-                        ${kra.Source === "CEO Report --" ? 'readonly' : ''}
-                        title="${kra.Source === "CEO Report" ? 'This Value Comes From CEO Report' : 'Enter ' + kra.Select_Value_Type + ' type value only'}"
-                    >
-                `;
-            }
+        showLoader("profile-card");
 
-            IsApplicable = `
-                <select class="form-control IsApplicable-Value" name="IsApplicable">
-                    <option value="1" ${IsApp_Val == 1 ? 'selected' : ''}>Yes</option>
-                    <option value="0" ${IsApp_Val == 0 ? 'selected' : ''}>No</option>
-                </select>
+        if (orgId) {
+            SubmitButtonELement.style.display='flex'
+        }
+
+        $.get(KRA_API + orgId + "/", function(data) {
+            let tableHtml = `
+                <table class="table table-bordered" id="KraStandardTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Title</th>
+                            <th>Definition</th>
+                            <th>Standard</th>
+                            <th>Compare With Value</th>
+                            <th>Applicable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
             `;
 
-            tableHtml += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${kra.Title}</td>
-                    <td>${kra.Defination}</td>
-                    <td>
-                        <input type="hidden" class="kra-id" value="${kra.KRAID}">
+            // console.log("data is here", data)
+            data.forEach((kra, index) => {
+
+            //  console.log("kra is here:: ", kra)
+                let compareWithHtml = '';
+                const valueType = kra.Select_Value_Type.toLowerCase();
+                const currentValue = kra.CompareWithValue || '';
+                const IsApp_Val = kra.IsApplicable || '';
+
+                if (valueType === 'text') {
+                    if (kra.KRAID == '26'){                    
+                        compareWithHtml = `
+                            <select class="form-control Compare-value" data-type="${valueType}">
+                                <option value="">Select</option>
+                                <option value="Received" ${currentValue === 'Received' ? 'selected' : ''}>Received</option>
+                                <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
+                            </select>
+                        `;
+                    } else{                    
+                        compareWithHtml = `
+                            <select class="form-control Compare-value" data-type="${valueType}">
+                                <option value="">Select</option>
+                                <option value="active" ${currentValue === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="expired" ${currentValue === 'expired' ? 'selected' : ''}>Expired</option>
+                            </select>
+                        `;
+                    }
+                } else {
+                    compareWithHtml = `
                         <input 
                             type="text" 
-                            class="form-control standard-value" 
-                            id="standardvalue_${kra.KRAID}" 
-                            data-type="${kra.Select_Value_Type.toLowerCase()}"
-                            value="${kra.StandardValue}" 
-                            placeholder="${kra.Source === "CEO Report" ? '' : 'Enter Standard'}"
-                            ${kra.Source === "CEO Report --- " ? 'readonly' : ''}
+                            class="form-control Compare-value" 
+                            value="${currentValue}" 
+                            data-type="${valueType}"
+                            placeholder="${kra.Source === "CEO Report" ? '' : 'Enter Compare Value'}"
+                            ${kra.Source === "CEO Report --" ? 'readonly' : ''}
                             title="${kra.Source === "CEO Report" ? 'This Value Comes From CEO Report' : 'Enter ' + kra.Select_Value_Type + ' type value only'}"
                         >
-                    </td>
-                    <td>
-                       ${compareWithHtml}
-                    </td>
-                    <td>
-                       ${IsApplicable}
-                    </td>
-                </tr>
-            `;
-        });
-
-        tableHtml += `
-                </tbody>
-            </table>
-        `;
-
-        $("#kraContainer").html(tableHtml);
-
-        // 🛠️ Attach input filters after table is rendered
-        $("input.Compare-value").each(function () {
-            const valueType = $(this).data('type'); // Get the type from data-type
-
-            $(this).off('input').on('input', function () {
-                let inputVal = $(this).val();
-
-                if (valueType === 'number') {
-                    inputVal = inputVal.replace(/[^0-9]/g, '');
-                } 
-                else if (valueType === 'decimal') {
-                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-                } 
-                else if (valueType === 'percentage') {
-                    inputVal = inputVal.replace(/%/g, '');
-                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-                    if (inputVal !== '' && !inputVal.endsWith('%')) {
-                        inputVal += '%';
-                    }
-
-                    setTimeout(() => {
-                        const newPos = inputVal.length - 1;
-                        this.setSelectionRange(newPos, newPos);
-                    }, 0);
-                } 
-                else if (valueType === 'text') {
-                    inputVal = inputVal.replace(/[^a-zA-Z ]/g, '');
+                    `;
                 }
 
-                $(this).val(inputVal);
+                IsApplicable = `
+                    <select class="form-control IsApplicable-Value" name="IsApplicable">
+                        <option value="1" ${IsApp_Val == 1 ? 'selected' : ''}>Yes</option>
+                        <option value="0" ${IsApp_Val == 0 ? 'selected' : ''}>No</option>
+                    </select>
+                `;
+
+                tableHtml += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${kra.Title}</td>
+                        <td>${kra.Defination}</td>
+                        <td>
+                            <input type="hidden" class="kra-id" value="${kra.KRAID}">
+                            <input 
+                                type="text" 
+                                class="form-control standard-value" 
+                                id="standardvalue_${kra.KRAID}" 
+                                data-type="${kra.Select_Value_Type.toLowerCase()}"
+                                value="${kra.StandardValue}" 
+                                placeholder="${kra.Source === "CEO Report" ? '' : 'Enter Standard'}"
+                                ${kra.Source === "CEO Report --- " ? 'readonly' : ''}
+                                title="${kra.Source === "CEO Report" ? 'This Value Comes From CEO Report' : 'Enter ' + kra.Select_Value_Type + ' type value only'}"
+                            >
+                        </td>
+                        <td>
+                        ${compareWithHtml}
+                        </td>
+                        <td>
+                        ${IsApplicable}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `
+                    </tbody>
+                </table>
+            `;
+
+            $("#kraContainer").html(tableHtml);
+            hideLoader("profile-card");
+
+            // 🛠️ Attach input filters after table is rendered
+            $("input.Compare-value").each(function () {
+                const valueType = $(this).data('type'); // Get the type from data-type
+
+                $(this).off('input').on('input', function () {
+                    let inputVal = $(this).val();
+
+                    if (valueType === 'number') {
+                        inputVal = inputVal.replace(/[^0-9]/g, '');
+                    } 
+                    else if (valueType === 'decimal') {
+                        inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                    } 
+                    else if (valueType === 'percentage') {
+                        inputVal = inputVal.replace(/%/g, '');
+                        inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                        if (inputVal !== '' && !inputVal.endsWith('%')) {
+                            inputVal += '%';
+                        }
+
+                        setTimeout(() => {
+                            const newPos = inputVal.length - 1;
+                            this.setSelectionRange(newPos, newPos);
+                        }, 0);
+                    } 
+                    else if (valueType === 'text') {
+                        inputVal = inputVal.replace(/[^a-zA-Z ]/g, '');
+                    }
+
+                    $(this).val(inputVal);
+                });
+            });
+
+        })
+        .fail(function () {
+            hideLoader("profile-card");   // ✅ Also hide on error
+        });
+    }
+
+    function saveStandards() {
+        const orgId = $('#organizationDropdown').val();
+        if (!orgId) return alert("Please select a hotel");
+
+        let standards = [];
+        $(".kra-id").each(function(index) {
+            standards.push({
+                KRAID: $(this).val(),
+                // StandardValue: $(".standard-value").eq(index).val()
+                StandardValue: $(".standard-value").eq(index).val(),
+                CompareWithValue: $(".Compare-value").eq(index).val(),
+                IsApplicableValue: $(".IsApplicable-Value").eq(index).val()
             });
         });
 
-    });
-}
-
-function saveStandards() {
-    const orgId = $('#organizationDropdown').val();
-    if (!orgId) return alert("Please select a hotel");
-
-    let standards = [];
-    $(".kra-id").each(function(index) {
-        standards.push({
-            KRAID: $(this).val(),
-            // StandardValue: $(".standard-value").eq(index).val()
-            StandardValue: $(".standard-value").eq(index).val(),
-            CompareWithValue: $(".Compare-value").eq(index).val(),
-            IsApplicableValue: $(".IsApplicable-Value").eq(index).val()
+        $.ajax({
+            url: KRA_API,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ OrganizationID: orgId, standards: standards }),
+            success: function(res) {
+                alert("Saved successfully");
+            },
+            error: function() {
+                alert("Save failed");
+            }
         });
-    });
+    }
 
-    $.ajax({
-        url: KRA_API,
-        type: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ OrganizationID: orgId, standards: standards }),
-        success: function(res) {
-            alert("Saved successfully");
-        },
-        error: function() {
-            alert("Save failed");
-        }
+    $(document).ready(function() {
+        loadOrganizations();
+        $('.select2').select2();
     });
-}
-
-$(document).ready(function() {
-    loadOrganizations();
-    $('.select2').select2();
-});
 </script>
 
 {% endblock content %}

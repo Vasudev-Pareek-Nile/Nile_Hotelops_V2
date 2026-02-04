@@ -1,0 +1,494 @@
+{% extends 'AMC_Renewal/AMCHomeBase.html' %}
+{% block content %} 
+{% load custom_filters %}
+
+<style>
+    .light-color{
+        color: #6495ed;
+    }
+
+    .wizard .tab-content {
+    padding-top: 0px !important;
+    }
+
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #FC133D;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+</style>
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+
+<div class="row">					
+    <!-- Lightbox -->
+    <div class="col-lg-12 m-auto" >
+        <div class="card ">
+            <div class="card-body">
+                <div class="wizard">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" role="tabpanel" id="step1" aria-labelledby="step1-tab">
+                            <div class="mb-4">
+                                <h3 class="">Equipment Details</h3>
+                            </div>
+                            <div>
+                                <!-- First Row -->
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Description</label>
+                                            <p id="description" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Yearly Expense</label>
+                                            <p id="YearlyExpense" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Model</label>
+                                            <p id="model" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Make</label>
+                                            <p id="amc_Make" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Fifth Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC Type</label>
+                                            <p id="AMCType" class="light-color  for-select">{{AMCType}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC Amount</label>
+                                            <p id="AMCAmount" class="light-color  for-select">{{AMCAmount}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC Start-Date</label>
+                                            <p id="AMCStartDate" class="light-color  for-select">{{AMC_Start_Date}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC End-Date</label>
+                                            <p id="AMCEndDate" class="light-color  for-select">{{AMC_End_Date}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  <!-- Second Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Serial</label>
+                                            <p id="Serial" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Capacity</label>
+                                            <p id="Capacity" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Commissioning Date</label>
+                                            <p id="CommissioningDate" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="Unit Amount">Unit Amount</label>
+                                            <p id="UnitAmount" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  <!-- Third Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Department</label>
+                                            <p id="Department" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Location</label>
+                                            <p id="Location" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Schedule of servicing</label>
+                                            <p id="Scheduleofservicing" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="Unit Amount">Responsible Person</label>
+                                            <p id="ResponsiblePerson" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  <!-- fourth Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Warranty End Date</label>
+                                            <p id="WarrantyEndDate" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Warranty Status</label>
+                                            <p id="WarrantyStatus" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC Type</label>
+                                            <p id="AMCType" class="light-color  for-select">{{AMCType}}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">AMC Amount</label>
+                                            <p id="AMCAmount" class="light-color  for-select">{{AMCAmount}}</p>
+                                        </div>
+                                    </div> -->
+                                </div>
+
+                            </div>
+                            <div class="mt-4 mb-4">
+                                <h3 class="">Vendor Details</h3>
+                            </div>
+                            <div>
+                                <!-- First Row -->
+                                <div class="row ">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Name</label>
+                                            <p id="Name" class="light-color  for-select">{{ amc_entry.VendorName|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Email</label>
+                                            <p id="Email" class="light-color  for-select">{{ amc_entry.VendorEmailAddress|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Mobile Number</label>
+                                            <p id="MobileNumber" class="light-color  for-select">{{ amc_entry.VendorMobileNumber|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Second Mobile Number</label>
+                                            <p id="MobileNumber2" class="light-color  for-select">{{ amc_entry.VendorSecondMobileNumber|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row ">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Landline Number</label>
+                                            <p id="LandlineNumber" class="light-color  for-select">{{ amc_entry.VendorLandlineNumber|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">City</label>
+                                            <p id="City" class="light-color  for-select">{{ amc_entry.VendorCity|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">State</label>
+                                            <p id="State" class="light-color  for-select">{{ amc_entry.VendorState|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Pin Code</label>
+                                            <p id="PinCode" class="light-color  for-select">{{ amc_entry.VendorPincode|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row ">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Address</label>
+                                            <p id="Address" class="light-color  for-select">{{ amc_entry.VendorAddress|default:'' }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="POST" id="mainForm" class="mb-4">
+                {% csrf_token %}
+                <!-- <input type="hidden" name="status" id="status-input-main"> -->
+
+                <input type="hidden" name="status" id="status-input-main">
+                <input type="hidden" name="remarks" id="remarks-input">
+
+                <div class="d-flex justify-content-center align-center">
+                    
+                    <!-- <div class="col-md-3 d-flex justify-items-center align-items-center gap-3"> -->
+                    <div class="d-flex justify-items-center align-items-center gap-3">
+
+                        {% if request.session.Department_Name|lower == "finance" %}
+                            {% if FC_Status %}
+                                {% if GM_Status|lower  == "pending" %}
+                                    <button type="submit" class="btn btn-info" name="action" value="Approved" onclick="setStatusAndSubmit(event, 'Approved')">Approve</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Return')">Return</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Rejected')">Reject</button>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        
+                        {% if request.session.UserType|lower == "gm" %}
+                            {% if FC_Status|lower == "approved" %}
+                                {% if CEO_Status|lower  == "pending" %} 
+                                    <button type="submit" class="btn btn-info" name="action" value="Approved" onclick="setStatusAndSubmit(event, 'Approved')">Approve</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Return')">Return</button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Rejected')">Reject</button>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+
+                        {% if request.session.UserType|lower == "ceo" %}
+                            {% if FC_Status|lower  == "approved" and GM_Status|lower  == "approved" %}
+                                <button type="submit" class="btn btn-info" name="action" value="Approved" onclick="setStatusAndSubmit(event, 'Approved')">Approve</button>
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Return')">Return</button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#add_RejectRemark" onclick="setModalStatus('Rejected')">Reject</button>
+                            {% endif %}
+                        {% endif %}
+
+                        <a class="btn btn-success"  href="{% url "download_AMC_View_Data_pdf" EquipmentID %}">Generate PDF</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>   
+
+
+<!-- Reject/Return Modal -->
+<div id="add_RejectRemark" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add <span id="status-label"></span> Remark</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="remarkForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" id="status-input">
+                    <input type="hidden" name="remarks" id="remarks-input">
+                    
+                    <div class="input-block">
+                        <label class="col-form-label">Reason for <span id="status-label-2"></span> <span class="text-danger">*</span></label>
+                        <input id="remarks-text" class="form-control" type="text">
+                    </div>
+                    
+                    <div class="submit-section mt-3">
+                        <button type="submit" class="btn btn-primary submit-btn" onclick="submitForm(event)">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function setStatusAndSubmit(event, status) {
+        event.preventDefault(); // Stop the default form submission
+        document.getElementById("status-input-main").value = status; // Set status
+        document.querySelector("#mainForm").submit(); // Submit the form manually
+    }
+
+    function submitForm(event) {
+        event.preventDefault(); // Prevent default form submission
+    
+        let remarks = document.getElementById("remarks-text").value.trim();
+        if (remarks === "") {
+            alert("Remarks are required.");
+            return;
+        }
+    
+        // Update hidden inputs before submitting
+        document.getElementById("remarks-input").value = remarks;
+        document.getElementById("status-input").value = document.getElementById("status-input-main").value;
+    
+        // document.getElementById("remarkForm").submit(); // Now submit form
+        document.getElementById("mainForm").submit();
+    }
+    
+    function setModalStatus(action) {
+        document.getElementById("status-input-main").value = action;
+        document.getElementById("status-input").value = action;  // Ensure both are set
+        document.getElementById("status-label").innerText = action;
+        document.getElementById("status-label-2").innerText = action;
+    }
+</script>  
+
+{% comment %} <script>
+    function setStatus(status) {
+        // document.getElementById("status-input").value = status;
+        document.getElementById("status-input-main").value = status;
+    }
+
+    // Set status when opening modal
+    function setModalStatus(action) {
+        // document.getElementById("status-input").value = action; // Set status
+        document.getElementById("status-input-main").value = action;
+        document.getElementById("status-label").innerText = action; // Update modal label
+    }
+
+    // Handle form submission
+    function submitForm(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        let remarks = document.getElementById("remarks-text").value.trim();
+        if (remarks === "") {
+            alert("Remarks are required.");
+            return;
+        }
+
+        document.getElementById("remarks-input").value = remarks; // Set remarks field
+
+        document.getElementById("remarkForm").submit(); // Submit form
+    }
+
+</script> {% endcomment %}
+
+<script>
+    $(document).ready(function () {
+        let equipmentId = "{{ equipment_id }}";  // Get the ID from Django
+        let equipmentIdInteger = parseInt(equipmentId, 10)
+        // console.log(equipmentIdInteger)
+
+        if (equipmentIdInteger) {
+            fetchEquipmentProfile(equipmentIdInteger);
+        } else {
+            console.log("Equipment ID not found.");
+        }
+    });
+
+    function fetchEquipmentProfile(id) {
+        $.ajax({
+            url: `/AMC_Renewal/equipment-profile/${id}/`,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                if (data.length > 0) {
+                    let equipment = data[0];  // Assuming the API returns an array
+
+                    console.log("data is here::", data)
+                    
+                    $('#description').text(equipment.Descriptions);
+                    $("#model").text(equipment.ModelNumber);
+                    $("#amc_Make").text(equipment.Make);
+                    $("#Serial").text(equipment.SerailNumber);
+                    $("#Capacity").text(equipment.Capacity);
+                    $("#CommissioningDate").text(equipment.CommissioningDate);
+                    $("#UnitAmount").text(equipment.UnitAmount);
+                    $("#Department").text(equipment.Department);
+                    $("#Location").text(equipment.Area);
+                    $("#Scheduleofservicing").text(equipment.Scheduleofservicing);
+                    $("#ResponsiblePerson").text(equipment.ResponsiblePerson);
+                    $("#YearlyExpense").text(equipment.YearlyExpense);
+                    $("#WarrantyEndDate").text(equipment.WarrantyEndDate);
+                    $("#WarrantyStatus").text(equipment.Status);
+
+
+                    // $("#Name").text(equipment.VendorName);
+                    // $("#Email").text(equipment.VendorEmailAddress);
+                    // $("#MobileNumber").text(equipment.VendorMobileNumber);
+                    // $("#MobileNumber2").text(equipment.VendorSecondMobileNumber);
+                    // $("#LandlineNumber").text(equipment.VendorLandlineNumber);
+                    // $("#City").text(equipment.VendorCity);
+                    // $("#State").text(equipment.VendorState);
+                    // $("#PinCode").text(equipment.VendorPincode);
+                    // $("#PinAddress").text(equipment.VendorAddress);
+                }
+            },
+            error: function(error) {
+                console.log("Error fetching data", error);
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+        let clearButton = document.querySelector("a.btn-danger"); // Select the "Clear" button
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    
+        if (clearButton) {
+            clearButton.addEventListener("click", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on clear button click
+            });
+        }
+    });
+</script>
+
+
+
+{% endblock content %}

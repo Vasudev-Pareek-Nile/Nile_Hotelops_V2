@@ -297,17 +297,27 @@
 
             const wrapper = $("#ActualInputWrapper_" + id);
             const currentValue = $("#ActualFieldValue_" + id).val();
-
+            let dropdown = '';
             if (valueType === 'text') {
                 // Replace input with dropdown
-                const dropdown = `
-                    <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">
-                        <option value="">Select</option>
-                        <option value="Pass" ${currentValue === 'Pass' ? 'selected' : ''}>Pass</option>
-                        <option value="Fail" ${currentValue === 'Fail' ? 'selected' : ''}>Fail</option>
-                        <option value="Received" ${currentValue === 'Received' ? 'selected' : ''}>Received</option>
-                        <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
-                    </select>`;
+
+                if (id == '26'){                    
+                    dropdown = `
+                        <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">
+                            <option value="">Select</option>
+                            <option value="Received" ${currentValue === 'Received' ? 'selected' : ''}>Received</option>
+                            <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
+                        </select>
+                    `;
+                } else{                    
+                    dropdown = `
+                        <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">
+                            <option value="">Select</option>
+                            <option value="active" ${currentValue === 'active' ? 'selected' : ''}>Active</option>
+                            <option value="expired" ${currentValue === 'expired' ? 'selected' : ''}>Expired</option>
+                        </select>
+                    `;
+                }
                 wrapper.html(dropdown);
                 evaluateStatus(id);
             }

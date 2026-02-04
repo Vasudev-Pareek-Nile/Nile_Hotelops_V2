@@ -134,7 +134,7 @@
 <div class="card">
     <div class="card-header">
         <div class="mb-2">
-            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST</h3>
+            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST {{selected_division}}</h3>
         </div>
     </div>
 
@@ -301,6 +301,14 @@
     }
 
     async function loadDropdownData() {
+        const selectedDivision = {{ selected_division|default:"null"|safe }};
+
+        const deptUrl = selectedDivision
+            ? `/Show_Department_By_DivisionName_Api/${encodeURIComponent(selectedDivision)}/`
+            : `/Show_Department_By_DivisionName_Api/all/`;
+            
+        console.log("deptUrl is here:", deptUrl)
+            
         try {
             // Call APIs one-by-one
             const orgData    = await cachedFetch("orgData", "{% url 'OrganizationList_Api' Session_OrganizationID %}");
@@ -308,8 +316,9 @@
             const statusList = await cachedFetch("statusList", "{% url 'EmployeeStatusList_Api' %}");
             const levelData  = await cachedFetch("levelData", "{% url 'Lavel_Show_Data_Api' %}");
 
+            const deptData = await fetchJSON(deptUrl);
             // Department MUST be live (depends on division selection)
-            const deptData   = await fetchJSON("{% url 'Show_Department_By_DivisionName_Api' selected_division|default:'all' %}");
+            // const deptData   = await fetchJSON("{% url 'Show_Department_By_DivisionName_Api' selected_division|default:'all' %}");
             // Now initialize dropdowns
             initializeDropdowns(orgData, diviData, deptData, statusList, levelData);
 

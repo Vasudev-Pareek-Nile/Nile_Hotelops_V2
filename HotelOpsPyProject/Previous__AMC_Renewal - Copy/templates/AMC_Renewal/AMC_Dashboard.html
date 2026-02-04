@@ -1,0 +1,431 @@
+{% extends 'AMC_Renewal/AMCHomeBase ForSubmit.html' %}
+{% comment %} {% extends 'AMC_Renewal/AMCHomeBase.html' %} {% endcomment %}
+{% block contentsubmit %} 
+{% load custom_filters %}
+<style>
+    .light-color{
+        color: cornflowerblue;
+    }
+
+    .wizard .tab-content {
+    padding-top: 0px !important;
+    }
+
+
+    
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #FC133D;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+</style>
+
+
+
+
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="card-body mb-2">
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="feather-check-circle flex-shrink-0 me-2"></i>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if message.tags == 'error' %}
+        <div class="card-body mb-2">
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <i class="feather-check-circle flex-shrink-0 me-2"></i>
+                <div>
+                    {{ message }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<div class="row">					
+    <!-- Lightbox -->
+    <div class="col-lg-12 m-auto" >
+        <div class="card ">
+            <div class="card-body">
+                <div class="wizard">
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" role="tabpanel" id="step1" aria-labelledby="step1-tab">
+                            <div class="mb-4">
+                                <h3 class="">Equipment Details</h3>
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Description</label>
+                                            <!-- <input type="text" class="form-control" id="description"> -->
+                                            <p id="description" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Yearly Expense</label>
+                                            <p id="YearlyExpense" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Model</label>
+                                            <!-- <input type="text" class="form-control" id="model"> -->
+                                            <p id="model" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Make</label>
+                                            <!-- <input type="text" class="form-control" id="amc_mode"> -->
+                                            <p id="amc_Make" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                  <!-- Second Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Serial</label>
+                                            <!-- <input type="text" class="form-control" id="description"> -->
+                                            <p id="Serial" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Capacity</label>
+                                            <!-- <input type="text" class="form-control" id="machine_type"> -->
+                                            <p id="Capacity" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Commissioning Date</label>
+                                            <!-- <input type="text" class="form-control" id="model"> -->
+                                            <p id="CommissioningDate" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="Unit Amount">Unit Amount</label>
+                                            <!-- <input type="text" class="form-control" id="amc_mode"> -->
+                                            <p id="UnitAmount" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  <!-- Third Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Department</label>
+                                            <p id="Department" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Location</label>
+                                            <!-- <input type="text" class="form-control" id="machine_type"> -->
+                                            <p id="Location" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Schedule of servicing</label>
+                                            <!-- <input type="text" class="form-control" id="model"> -->
+                                            <p id="Scheduleofservicing" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="Unit Amount">Responsible Person</label>
+                                            <!-- <input type="text" class="form-control" id="amc_mode"> -->
+                                            <p id="ResponsiblePerson" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                  <!-- fourth Row -->
+                                <div class="row mt-2">
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Warranty End Date</label>
+                                            <!-- <input type="text" class="form-control" id="machine_type"> -->
+                                            <p id="WarrantyEndDate" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-block mb-3">
+                                            <label class="form-label">Warranty Status</label>
+                                            <!-- <input type="text" class="form-control" id="model"> -->
+                                            <p id="WarrantyStatus" class="light-color  for-select"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
+
+<!-- AMC data for submit -->
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">					
+        <div class="col-lg-12">
+            <div class="card ">
+                <div class="card-header">
+                    <h4>AMC Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="AMCType" class="form-label">AMC Type</label>
+                                <select id="AMCType" class="form-control" name="AMCMode" required>
+                                    <option value="">Select</option><option value="Comprehensive">Comprehensive</option><option value="Non Comprehensive">Non Comprehensive</option><option value="On Call">On Call</option><option value="By Hotel Team">By Hotel Team</option><option value="No AMC Required">No AMC Required</option>
+                                </select>
+                            </div>
+                        </div>
+                
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="AMCStartDate" class="form-label">AMC Start-Date</label>
+                                <input type="date" class="form-control" id="AMCStartDate" name="AMC_Start_Date"
+                                    value="{{ amc_entry.AMC_Start_Date|default:''|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="AMCEndDate" class="form-label">AMC End-Date</label>
+                                <input type="date" class="form-control" id="AMCEndDate" name="AMC_End_Date"
+                                    value="{{ amc_entry.AMC_End_Date|default:''|date:'Y-m-d' }}" required>
+                            </div>
+                        </div>
+                
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="AMCAmount" class="form-label">AMC Amount</label>
+                                <input type="number" class="form-control" id="AMCAmount" name="AMCAmount"
+                                    value="{{ amc_entry.AMC_Amount|default:'' }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card ">
+                <div class="card-header">
+                    <h4>Vendor Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="VendorName" name="VendorName" value="{{ amc_entry.VendorName|default:'' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorEmailAddress" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="VendorEmailAddress" value="{{ amc_entry.VendorEmailAddress|default:'' }}" name="VendorEmailAddress" required>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorMobileNumber" class="form-label">Mobile Number</label>
+                                <input type="text" class="form-control" id="VendorMobileNumber" value="{{ amc_entry.VendorMobileNumber|default:'' }}" name="VendorMobileNumber" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorSecondMobileNumber" class="form-label">Second Mobile Number</label>
+                                <input type="text" class="form-control" id="VendorSecondMobileNumber" name="VendorSecondMobileNumber" value="{{ amc_entry.VendorSecondMobileNumber|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorLandlineNumber" class="form-label">Landline Number</label>
+                                <input type="text" class="form-control" id="VendorLandlineNumber" name="VendorLandlineNumber" value="{{ amc_entry.VendorLandlineNumber|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="vendorCity" class="form-label">City</label>
+                                <input type="text" class="form-control" id="vendorCity" name="vendorCity" value="{{ amc_entry.VendorCity|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorState" class="form-label">State</label>
+                                <input type="text" class="form-control" id="VendorState" name="VendorState" value="{{ amc_entry.VendorState|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="VendorPinCode" class="form-label">Pin Code</label>
+                                <input type="text" class="form-control" id="VendorPinCode" name="VendorPinCode" value="{{ amc_entry.VendorPincode|default:'' }}" required>
+                            </div>
+                        </div>
+                
+                        
+                        <div class="col-lg-6">
+                            <div class="input-block">
+                                <label for="VendorAdress" class="form-label">Address</label>
+                                <textarea class="form-control" name="VendorAdress" id="VendorAdress" required>{{ amc_entry.VendorAddress|default:'' }}</textarea>
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+ 
+                        <div class="col-lg-3">
+                            <div class="input-block">
+                                <label for="UploadDocument" class="form-label">Attach Document</label>
+                                <input type="file" class="form-control" id="UploadDocument" name="UploadDocument">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex">
+                        <button type="submit" class="btn btn-primary" name="Submit_AMC_Value">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+</form>
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        let equipmentId = "{{ equipment_id }}";  // Get the ID from Django
+        let equipmentIdInteger = parseInt(equipmentId, 10)
+        if (equipmentIdInteger) {
+            fetchEquipmentProfile(equipmentIdInteger);
+        } else {
+            console.log("Equipment ID not found.");
+        }
+    });
+
+    function fetchEquipmentProfile(id) {
+        $.ajax({
+            url: `/AMC_Renewal/equipment-profile/${id}/`,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                if (data.length > 0) {
+                    let equipment = data[0];  
+
+                    $('#description').text(equipment.Descriptions);
+                    $("#model").text(equipment.ModelNumber);
+                    $("#amc_Make").text(equipment.Make);
+                    $("#Serial").text(equipment.SerailNumber);
+                    $("#Capacity").text(equipment.Capacity);
+                    $("#CommissioningDate").text(equipment.CommissioningDate);
+                    $("#UnitAmount").text(equipment.UnitAmount);
+                    $("#Department").text(equipment.Department);
+                    $("#Location").text(equipment.Area);
+                    $("#Scheduleofservicing").text(equipment.Scheduleofservicing);
+                    $("#ResponsiblePerson").text(equipment.ResponsiblePerson);
+                    $("#YearlyExpense").text(equipment.YearlyExpense);
+                    $("#WarrantyEndDate").text(equipment.WarrantyEndDate);
+                    $("#WarrantyStatus").text(equipment.Status);
+
+
+
+                    // Populate the dropdown if TypeOfMachine contains multiple values
+                    populateMachineTypeDropdown(equipment.TypeOfMachine);
+
+                    // Populate the dropdown if TypeOfMachine contains multiple values
+                    populateAMCStatusData(equipment.AStatus);
+                }
+            },
+            error: function(error) {
+                console.log("Error fetching data", error);
+            }
+        });
+    }
+
+    function populateMachineTypeDropdown(machineTypeData) {
+      
+        // Retrieve the stored AMC Type from Django
+        let selectedAMCType = "{{ amc_entry.AMCType|escapejs }}";  
+    $("#AMCType").val(selectedAMCType)
+        // Ensure it's an array or a comma-separated string
+        
+    }
+    
+
+    function populateAMCStatusData(AMCStatusData) {
+        let dropdown = $("#AMCStatus");
+        dropdown.empty(); // Clear previous options
+        dropdown.append('<option value="">Select AMC Status</option>');
+
+        // Check if it's an array or a comma-separated string
+        let AMCStatusTypes = Array.isArray(AMCStatusData) ? AMCStatusData : AMCStatusData.split(",");
+
+        AMCStatusTypes.forEach(function (type) {
+            dropdown.append(`<option value="${type.trim()}">${type.trim()}</option>`);
+        });
+    }
+</script>
+
+
+{% endblock contentsubmit %}

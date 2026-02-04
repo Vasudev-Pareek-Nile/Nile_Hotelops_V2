@@ -12,7 +12,21 @@
     #clear, #filter{
 		padding-block: 8px;
 	}
+  #employeeTable_previous a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
 
+  #employeeTable_next a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
 </style>
 
 <div class="card">
@@ -48,7 +62,7 @@
                 </form>  
             </div>
 
-            <table id="example" class="table table-bordered table-sm" >
+            <table id="employeeTable" class="table table-striped table-bordered datatable dataTable no-footer" >
                 <thead>
                     <tr class="active" style="background-color:#8e9ebc">
                         <th class="EmpCode">Emp Code</th>
@@ -117,11 +131,8 @@
 
 <script>
     $(document).ready(function() {
-        var table = $("#example").DataTable({
-            "searching": true,
-            "paging": false,
-            "order": [],
-        });
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
     });
 </script>
 
