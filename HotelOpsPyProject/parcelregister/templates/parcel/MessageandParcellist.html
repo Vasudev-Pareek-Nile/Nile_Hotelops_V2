@@ -1,0 +1,67 @@
+{% extends 'parcel/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="table-responsive">
+  <div >
+    <div  class="card-header">
+        Message And Parcel List
+    </div>
+    <div>
+      <br/>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>Type Of Article</th>
+            <th>Room No</th>
+            <th>Guest Name</th>
+            <th>Date Of Arrival</th>
+            <th>Received From</th>
+            <th>Contact No</th>
+            <th>Received By</th>
+            <th>Date Of Delivery</th>
+            <th>Given By</th>
+            <th>Handed Over To</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.Type_Of_Article}}</td>
+            <td>{{i.Room_No}}</td>
+            <td>{{i.Guest_Name}}</td>
+            <td>{{i.Date_Of_Arrival}}</td>
+            <td>{{i.Received_From}}</td>
+            <td>{{i.Contact_No}}</td>
+            <td>{{i.Received_By}}</td>
+            <td>{{i.Date_Of_Delivery}}</td>
+            <td>{{i.Given_By}}</td>
+            <td>{{i.Handed_Over_To}}</td>
+            <td>{{i.Remarks}}</td>
+            <td>
+              
+            <div class="btn btn-group">
+                  <a href="/parcelregister/MessageAndParcelEditList?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/parcelregister/MessageAndParcelDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/parcelregister/ParcelList_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+             </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  
+</div>
+
+{% endblock content %}

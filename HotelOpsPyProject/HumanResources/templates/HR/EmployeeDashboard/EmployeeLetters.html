@@ -1,0 +1,947 @@
+{% extends "HR/EmployeeDashboard/EditEmployee.html" %}
+ {% load static %} 
+{% block content %}
+<link href="{% static 'css/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+<style>
+    #ProfileImagePreview {
+        border-radius: 50%;
+        border: 2px solid #ddd;     
+        margin-top: 10px;
+        max-width: 150px; 
+        height: 150px;    
+        object-fit: cover; 
+    }
+
+    .card {
+        border-radius: 5px;
+        border: 1px solid #0000004f;
+    }
+    
+    .card-header{
+        margin-bottom: -20px !important;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .actionColumn{
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
+
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .card .card-body {
+        padding: 19px !important;
+    }
+</style>
+
+<!-- 
+<div class="card">
+    <div class="text-uppercase fw-bold p-4">
+        Employee Letters       
+    </div>
+    
+</div> -->
+
+
+     <!-- Letter of Appointment -->
+    
+    <div class="card">
+        <div class="card-header">
+            Letter of Appointment
+            {% if Appointemet == 'Show'  %}
+            <a href="{% url 'entryemploa' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+    
+                            <th class="Designation">Designation/Department</th>
+                            {% comment %} <th class="Department">Department</th> {% endcomment %}
+                            <th class="Date">Date of Appointment</th>
+                           
+                            <th class="Signed">Signed Document</th>
+    
+                            <th class="Action">Action</th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                           {% for AppointemetLetter in AppointemetLetters  %}
+                           <tr>
+                            <td>{{AppointemetLetter.emp_code}}</td>
+                            <td> {{AppointemetLetter.first_name}} {{AppointemetLetter.last_name}}   </td>
+                           
+                            <td>{{AppointemetLetter.designation}}<br>{{AppointemetLetter.department}}</td>
+                            {% comment %} <td>{{AppointemetLetter.department}}</td>   {% endcomment %}
+                            <td>{{AppointemetLetter.date_of_appointment|date:'d-m-Y'}}</td>  
+                           
+                            <td>
+                                
+                                {% if AppointemetLetter.file_name  %}
+                                
+                            <a class="btn btn-danger btn-sm text-white" href="{% url "repalce_fileloa" %}?EmpID={{EmpID}}&LOA_ID={{AppointemetLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                            <a class="btn btn-primary btn-sm" href="{% url "download_fileloa" %}?LOA_ID={{AppointemetLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                            
+                            {% else %}
+
+                            <a class="btn btn-primary btn-sm" href="{% url "upload_fileloa" %}?EmpID={{EmpID}}&LOA_ID={{AppointemetLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+
+                            {% endif %} 
+                            </td>
+
+                            </td>
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemploa' %}?EC={{EC}}&EmpID={{EmpID}}&LOA_ID={{AppointemetLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+
+                                    {% comment %} <a class="btn btn-primary btn-sm" href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" target="_blank">View</a> {% endcomment %}
+                                    <a href="#" onclick="showview(this)" data-href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    
+                                    <a class="btn btn-primary btn-sm" href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False"  target="_blank">Print</a>
+                                </span>
+                            </td>
+                           </tr>
+                           {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+    
+   
+    <!-- Letter of Promotion -->
+    
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of Promotion
+ 
+            <a href="{% url 'entryemppl' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <tr>
+                                <th class="EmpCode">Emp Code</th>
+                                <th class="Name">Name</th>
+                                <th class="Designation">Designation/Department</th>
+                                <th class="Date">Date of Promotion</th>
+                                <th class="Signed">Signed Document</th>
+                                <th class="Action">Action</th>
+                            </tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for PromotionLetter in PromotionLetters  %}
+                        <tr>
+                         <td>{{PromotionLetter.emp_code}}</td>
+                         <td> {{PromotionLetter.first_name}} {{PromotionLetter.last_name}}   </td>
+                         <td>{{PromotionLetter.designation}}<br>{{PromotionLetter.department}}</td>
+                         <td>{{PromotionLetter.date_of_promtion|date:'d-m-Y'}}</td>  
+                         <td>
+                            {% if PromotionLetter.file_name  %}
+                                <a class="btn btn-danger btn-sm" href="{% url "repalce_filepl" %}?EmpID={{EmpID}}&LOP_ID={{PromotionLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                                <a class="btn btn-primary btn-sm" href="{% url "download_filepl" %}?LOP_ID={{PromotionLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                            {% else %}
+                                <a class="btn btn-primary btn-sm" href="{% url "upload_filepl" %}?EmpID={{EmpID}}&LOP_ID={{PromotionLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+                            {% endif %} 
+                         </td>
+                         </td>
+                         <td>
+                            <span style="position: relative;" class="actionColumn">
+                                {% if  PromotionLetter.id == last_Promotion_id %}
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemppl' %}?EC={{EC}}&EmpID={{EmpID}}&LOP_ID={{PromotionLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                {% endif %}
+                                <a href="#" onclick="showview(this)" data-href="{% url "generate_Letter_of_promotion" %}?LOP_ID={{PromotionLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_promotion" %}?LOP_ID={{PromotionLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                            </span>
+                         </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </div>
+    
+
+    <!-- Letter of  Salary Increment -->
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of  Salary Increment
+                
+            <a href="{% url 'entryemplsi' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <tr>
+                                <th class="EmpCode">Emp Code</th>
+                                <th class="Name">Name</th>
+        
+                                <th class="Designation">Designation/Department</th>
+                                {% comment %} <th class="Department">Department</th> {% endcomment %}
+                                <th class="Date">Date of Increment</th>
+                               
+                                <th class="Signed">Signed Document</th>
+        
+                                <th class="Action">Action</th>
+                              </tr>
+    
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        {% for IncreamentLetter in IncreamentLetters  %}
+                        <tr>
+                         <td>{{IncreamentLetter.emp_code}}</td>
+                         <td> {{IncreamentLetter.first_name}} {{IncreamentLetter.last_name}}   </td>
+                        
+                         <td>{{IncreamentLetter.designation}}<br>{{IncreamentLetter.department}}</td>
+                         {% comment %} <td>{{IncreamentLetter.department}}</td>   {% endcomment %}
+                         <td>{{IncreamentLetter.date_of_salary_increament|date:'d-m-Y'}}</td>  
+                        
+                         <td>
+                            <span class="actionColumn">
+                                {% if IncreamentLetter.file_name  %}
+                                
+                                <a class="btn btn-danger btn-sm" href="{% url "repalce_filelsi" %}?EmpID={{EmpID}}&LOI_ID={{IncreamentLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                                <a class="btn btn-primary btn-sm" href="{% url "download_filelsi" %}?LOI_ID={{IncreamentLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                                
+                                {% else %}
+
+                                <a class="btn btn-primary btn-sm" href="{% url "upload_filelsi" %}?EmpID={{EmpID}}&LOI_ID={{IncreamentLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+
+                                {% endif %}  
+                            </span>
+                         </td>
+                         <td>
+                            <span class="actionColumn">
+                                {% if IncreamentLetter.id == last_Increamen_id %}
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemplsi' %}?EC={{EC}}&EmpID={{EmpID}}&LOI_ID={{IncreamentLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                
+                                {% endif %}
+                                {% comment %} <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_Salary_Increment" %}?LOI_ID={{IncreamentLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" target="_blank">View</a> {% endcomment %}
+                                <a href="#" onclick="showview(this)" data-href="{% url "generate_Letter_of_Salary_Increment" %}?LOI_ID={{IncreamentLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+
+                                <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_Salary_Increment" %}?LOI_ID={{IncreamentLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                            </span>
+                         </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+     
+
+
+     
+ <!-- Letter of Revealing  -->
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of Relieving 
+            {% if Revealingshow == 'Show'  %}
+            <a href="{% url 'entryemprl' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+                            <th class="Designation">Designation/Department</th>
+                            <th class="Date">Last Day of Working</th>
+                            <th class="Signed">Signed Document</th>
+                            <th class="Action">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for RevealingLetter in RevealingLetters  %}
+                           <tr>
+                            <td>{{RevealingLetter.emp_code}}</td>
+                            <td> {{RevealingLetter.first_name}} {{RevealingLetter.last_name}}   </td>
+                            <td>{{RevealingLetter.designation}}<br>{{RevealingLetter.department}}</td>
+                            {% comment %} <td>{{RevealingLetter.department}}</td>   {% endcomment %}
+                            <td>{{RevealingLetter.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                               <span class="actionColumn">
+                                    {% if RevealingLetter.file_name  %}
+                                        <a class="btn btn-danger btn-sm" href="{% url "repalce_filerl" %}?EmpID={{EmpID}}&R_ID={{RevealingLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "download_filerl" %}?R_ID={{RevealingLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm" href="{% url "upload_filerl" %}?EmpID={{EmpID}}&R_ID={{RevealingLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span> 
+                            </td>
+                            </td>
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemprl' %}?EC={{EC}}&EmpID={{EmpID}}&R_ID={{RevealingLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a href="#" onclick="showview(this)" data-href="{% url "generate_revealing_letter" %}?R_ID={{RevealingLetter.id}}&EmpID={{EmpID}}&EC={{EC}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "generate_revealing_letter" %}?R_ID={{RevealingLetter.id}}&EmpID={{EmpID}}&EC={{EC}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                           </tr>
+                           {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+     
+     
+ <!-- Letter of Advance Salary  -->
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of Salary Advance / Loan Application
+            {% comment %} {% if AdvanceSalaryShow == 'Show'  %} {% endcomment %}
+            <a href="{% url 'AdvanceSalaryLetter' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+            {% comment %} {% endif %} {% endcomment %}
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation/Department</th>
+                        {% comment %} <th class="Department">Department</th> {% endcomment %}
+                        <th class="Date">Date of Joining</th>
+                        {% comment %} <th class="Signed">Signed Document</th> {% endcomment %}
+                        <th class="Action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for AdvanceSalarydata in AdvanceSalary  %}
+                        <tr>
+                            <td>{{AdvanceSalarydata.emp_code}}</td>
+                            <td> {{AdvanceSalarydata.EmployeeName}}</td>
+                            <td>{{AdvanceSalarydata.Designation}}<br>{{AdvanceSalarydata.Department}}</td>
+                            <td>{{AdvanceSalarydata.DateofJoining|date:'d-m-Y'}}</td>
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url "AdvanceSalaryLetter" %}?R_ID={{AdvanceSalarydata.Application_Form_No}}&EmpID={{EmpID}}&EC={{EC}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a 
+                                        href="#" 
+                                        onclick="showview(this)" 
+                                        data-href="{% url "download_Advance_Salary_pdf" %}?R_ID={{AdvanceSalarydata.Application_Form_No}}&EmpID={{EmpID}}&EC={{EC}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}"
+                                        class="btn btn-primary btn-sm">
+                                        View
+                                    </a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "download_Advance_Salary_pdf" %}?R_ID={{AdvanceSalarydata.Application_Form_No}}&EmpID={{EmpID}}&EC={{EC}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+      
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of Work Experience 
+            {% if Experienceshow == 'Show'  %}
+            <a href="{% url 'entryemploe' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New Experience Letter</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+                            <th class="Designation">Designation/Department</th>
+                            {% comment %} <th class="Department">Department</th> {% endcomment %}
+                            <th class="Date">Last Day of Working</th>
+                            <th class="Signed">Signed Document</th>
+                            <th class="Action">Action</th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        {% for ExperienceLetter in ExperienceLetters  %}
+                           <tr>
+                            <td>{{ExperienceLetter.emp_code}}</td>
+                            <td> {{ExperienceLetter.first_name}} {{ExperienceLetter.last_name}}   </td>
+                            <td>{{ExperienceLetter.designation}}<br>{{ExperienceLetter.department}}</td>
+                            {% comment %} <td>{{ExperienceLetter.department}}</td>   {% endcomment %}
+                            <td>{{ExperienceLetter.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                <span style="position: relative; ">
+                                    {% if ExperienceLetter.file_name  %}
+                                    
+                                   <a class="btn btn-danger btn-sm" href="{% url "repalce_fileloe" %}?EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "download_fileloe" %}?LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                                  
+                                    {% else %}
+                                    <a class="btn btn-primary btn-sm" href="{% url "upload_fileloe" %}?EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            </td>
+                            <td>
+                                <span style="position: relative; ">
+                                  
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemploe' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    
+                                    {% comment %} <a class="btn btn-primary btn-sm" href="{% url "generate_letter_of_experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}"  target="_blank">View</a> {% endcomment %}
+                                    <a href="#" onclick="showview(this)" data-href="{% url "generate_letter_of_experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                
+                                    <a class="btn btn-primary btn-sm" href="{% url "generate_letter_of_experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                           </tr>
+                        {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+    
+    <!-- Letter of Trainee's Experience   -->
+    <div class="card card-primary mt-4">
+        <div class="card-header">
+            Letter of Trainee's Experience 
+            {% if Trainees_Experienceshow == 'Show'  %}
+                <a href="{% url 'Trainees_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+                <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr class="active" style="background-color:#8e9ebc">
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+                            <th class="Designation">Designation/Department</th>
+                            {% comment %} <th class="Department">Department</th> {% endcomment %}
+                            <th class="Date">Last Day of Working</th>
+                            <th class="Signed">Signed Document</th>
+                            <th class="Action">Action</th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        {% for ExperienceLetter in Trainees_ExperienceLetters  %}
+                           <tr>
+                            <td>{{ExperienceLetter.emp_code}}</td>
+                            <td> {{ExperienceLetter.first_name}} {{ExperienceLetter.last_name}}   </td>
+                            
+
+                            <td>{{ExperienceLetter.designation}}<br>{{ExperienceLetter.department}}</td>
+                            {% comment %} <td>{{ExperienceLetter.department}}</td>   {% endcomment %}
+                            
+                            <td>{{ExperienceLetter.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                
+                                <span class="actionColumn">
+                                    {% if ExperienceLetter.file_name  %}
+                                    
+                                   <a class="btn btn-danger text-white btn-sm" href="{% url "Trainees_Repalce_File" %}?EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Delete File</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Trainees_Download_File" %}?LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Download File</a>
+                                  
+                                    {% else %}
+                                    <a class="btn btn-primary btn-sm" href="{% url "Trainees_Upload_File" %}?EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            </td>
+                            <td>
+                                <span class="actionColumn">
+                                  
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Trainees_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{ExperienceLetter.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    
+                                    {% comment %} <a class="btn btn-primary btn-sm" href="{% url "generate_letter_of_experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}"  target="_blank">View</a> {% endcomment %}
+                                    <a href="#" onclick="showview(this)" data-href="{% url "Generate_Letter_of_Trainees_Experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                
+                                    <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Trainees_Experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                           </tr>
+                           {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+
+    {% comment %} New Policies with Editor {% endcomment %}
+    <div class="card card-primary mt-4">
+        <div class="card-header d-flex justify-content-between">
+            <span>Policy Data Privacy</span>
+            <div class="d-flex gap-2">
+                {% if Data_Privacy_Show == 'Show'  %}
+                    <a href="{% url 'Data_Privacy_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+                {% endif %}
+                {% comment %} <a href="{% url 'editor_list' %}" class="btn btn-sm btn-primary" style="float:right">Policy Editor list</a> {% endcomment %}
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation/Department</th>
+                        {% comment %} <th class="Department">Department</th> {% endcomment %}
+                        <th class="Date">Last Day of Working</th>
+                        <th class="Signed">Signed Document</th>
+                        <th class="Action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Policy in Data_Privacy  %}
+                        <tr>
+                            <td>{{Policy.emp_code}}</td>
+                            <td> {{Policy.first_name}} {{Policy.last_name}}   </td>
+                            <td>{{Policy.designation}}<br>{{Policy.department}}</td>
+                            {% comment %} <td>{{Policy.department}}</td>   {% endcomment %}
+                            
+                            <td>{{Policy.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                <span class="actionColumn">
+                                    {% if Policy.file_name %}
+                                        <a class="btn btn-danger text-white btn-sm" href="{% url "Data_Privacy_Repalce_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Delete File</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "Data_Privacy_Download_File" %}?LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Download File</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm" href="{% url "Data_Privacy_Upload_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Data_Privacy_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{Policy.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a href="#" onclick="showview(this)" data-href="{% url "Generate_Letter_of_Data_Privacy" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Data_Privacy" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% comment %} Debit Note {% endcomment %}
+    <div class="card card-primary mt-4">
+        <div class="card-header d-flex justify-content-between">
+            <span>Debit Note</span>
+            <div class="d-flex gap-2">
+                {% if Debit_Note_Show == 'Show'  %}
+                    <a href="{% url 'Debit_Note_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+                {% endif %}
+                {% comment %} <a href="{% url 'editor_list' %}" class="btn btn-sm btn-primary" style="float:right">Policy Editor list</a> {% endcomment %}
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation/Department</th>
+                        {% comment %} <th class="Department">Department</th> {% endcomment %}
+                        <th class="Date">Last Day of Working</th>
+                        <th class="Signed">Signed Document</th>
+                        <th class="Action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Policy in Debit_Note  %}
+                        <tr>
+                            <td>{{Policy.emp_code}}</td>
+                            <td> {{Policy.first_name}} {{Policy.last_name}}   </td>
+                            <td>{{Policy.designation}} <br>{{Policy.department}}</td>
+                            {% comment %} <td>{{Policy.department}}</td>   {% endcomment %}
+                            
+                            <td>{{Policy.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                <span class="actionColumn">
+                                    {% if Policy.file_name %}
+                                        <a class="btn btn-danger text-white btn-sm" href="{% url "Debit_Note_Repalce_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Delete File</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "Debit_Note_Download_File" %}?LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Download File</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm" href="{% url "Debit_Note_Upload_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Debit_Note_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{Policy.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a href="#" onclick="showview(this)" data-href="{% url "Generate_Letter_of_Debit_Note" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Debit_Note" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% comment %} Indemnity_Accommodation {% endcomment %}
+    <div class="card card-primary mt-4">
+        <div class="card-header d-flex justify-content-between">
+            <span>Indemnity Form - Company Accommodation</span>
+            <div class="d-flex gap-2">
+                {% if Indemnity_Accommodation_Show == 'Show'  %}
+                    <a href="{% url 'Indemnity_Accommodation_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+                {% endif %}
+                {% comment %} <a href="{% url 'editor_list' %}" class="btn btn-sm btn-primary" style="float:right">Policy Editor list</a> {% endcomment %}
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation / Department</th>
+                        {% comment %} <th class="Department">Department</th> {% endcomment %}
+                        <th class="Date">Last Day of Working</th>
+                        <th class="Signed">Signed Document</th>
+                        <th class="Action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Policy in Indemnity_Accommodation  %}
+                        <tr>
+                            <td>{{Policy.emp_code}}</td>
+                            <td> {{Policy.first_name}} {{Policy.last_name}}   </td>
+                            <td>{{Policy.designation}}<br>{{Policy.department}}</td>
+                            {% comment %} <td>{{Policy.department}}</td>   {% endcomment %}
+                            
+                            <td>{{Policy.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                <span class="actionColumn">
+                                    {% if Policy.file_name %}
+                                        <a class="btn btn-danger text-white btn-sm" href="{% url "Indemnity_Accommodation_Repalce_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Delete File</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "Indemnity_Accommodation_Download_File" %}?LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Download File</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm" href="{% url "Indemnity_Accommodation_Upload_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Indemnity_Accommodation_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{Policy.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a href="#" onclick="showview(this)" data-href="{% url "Generate_Letter_of_Indemnity_Accommodation" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Indemnity_Accommodation" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% comment %} Indemnity_Accommodation {% endcomment %}
+    <div class="card card-primary mt-4">
+        <div class="card-header d-flex justify-content-between">
+            <span>Policy - Prevention of Sexual Harassment</span>
+            <div class="d-flex gap-2">
+                {% if Policy_Posh_Show == 'Show'  %}
+                    <a href="{% url 'Policy_Posh_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-sm btn-primary" style="float:right">New</a>
+                {% endif %}
+                {% comment %} <a href="{% url 'editor_list' %}" class="btn btn-sm btn-primary" style="float:right">Policy Editor list</a> {% endcomment %}
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation/Department</th>
+                        {% comment %} <th class="Department">Department</th> {% endcomment %}
+                        <th class="Date">Last Day of Working</th>
+                        <th class="Signed">Signed Document</th>
+                        <th class="Action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Policy in Policy_Posh  %}
+                        <tr>
+                            <td>{{Policy.emp_code}}</td>
+                            <td> {{Policy.first_name}} {{Policy.last_name}}   </td>
+                            <td>{{Policy.designation}}<br>{{Policy.department}}</td>
+                            {% comment %} <td>{{Policy.department}}</td>   {% endcomment %}
+                            
+                            <td>{{Policy.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                <span class="actionColumn">
+                                    {% if Policy.file_name %}
+                                        <a class="btn btn-danger text-white btn-sm" href="{% url "Policy_Posh_Repalce_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Delete File</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "Policy_Posh_Download_File" %}?LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Download File</a>
+                                    {% else %}
+                                        <a class="btn btn-primary btn-sm" href="{% url "Policy_Posh_Upload_File" %}?EmpID={{EmpID}}&LOE_ID={{Policy.id}}&OID={{OrganizationID}}">Upload File</a>
+                                    {% endif %} 
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="actionColumn">
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Policy_Posh_Entry_Emp' %}?EC={{EC}}&EmpID={{EmpID}}&LOE_ID={{Policy.id}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" shref="">Edit</a>
+                                    <a href="#" onclick="showview(this)" data-href="{% url "Generate_Letter_of_Policy_Posh" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Policy_Posh" %}?LOE_ID={{Policy.id}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}&head=False" target="_blank">Print</a>
+                                </span> 
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    {% comment %} ---------- Html Ends Here --------------  {% endcomment %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButton = document.getElementById('editButton');
+        const saveButton = document.getElementById('saveButton');
+        const inputs = document.querySelectorAll('#AddressInfoForm input, #AddressInfoForm select, #AddressInfoForm textarea');
+        
+        function toggleInputs(disabled) {
+            inputs.forEach(input => {
+                if (disabled) {
+                    input.setAttribute('readonly', 'readonly');
+                    input.setAttribute('disabled', 'disabled');
+                } else {
+                    input.removeAttribute('readonly');
+                    input.removeAttribute('disabled');
+                }
+            });
+        }
+    
+        editButton.addEventListener('click', function() {
+            if (editButton.textContent.trim() === 'Edit') {
+                editButton.textContent = 'Cancel';
+                saveButton.style.display = 'inline-block';
+                toggleInputs(false);
+            } else {
+                editButton.textContent = 'Edit';
+                saveButton.style.display = 'none';
+                toggleInputs(true);
+            }
+        });
+    
+       
+        toggleInputs(true);
+    });
+    
+</script>
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('Success');
+        
+        if (success === 'True') {
+            showSuccess();
+            removeSuccessParam();
+        }
+        if (success === 'Deleted') {
+            showDelete();
+            removeSuccessParam();
+        }
+        if (success === 'Uploaded') {
+            showUploaded();
+            removeSuccessParam();
+        }
+
+        function removeSuccessParam() {
+            urlParams.delete('Success'); 
+            const newUrl = window.location.pathname + '?' + urlParams.toString();
+            window.history.replaceState(null, '', newUrl);
+        }
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get('Success');
+
+        if (isSuccess === 'True') {
+            var successModal = new bootstrap.Modal(document.getElementById('statusSuccessModal'));
+            successModal.show();
+       
+
+         // Remove only the Success parameter
+            urlParams.delete('Success');
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.history.replaceState({}, document.title, newUrl);
+        }
+    });
+</script> 
+
+{% comment %} {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+        let messageText = "{{ message|escapejs }}";
+        let messageLevel = "{{ message.tags }}";
+
+        if (messageLevel.includes("success")) {
+          document.getElementById("successMessageText").textContent = messageText;
+          var successModal = new bootstrap.Modal(document.getElementById("statusSuccessModal"));
+          successModal.show();
+        } else if (messageLevel.includes("error")) {
+          document.getElementById("errorMessageText").textContent = messageText;
+          var errorModal = new bootstrap.Modal(document.getElementById("statusErrorsModal"));
+          errorModal.show();
+        }
+      {% endfor %}
+    });
+  </script>
+{% endif %} {% endcomment %}
+
+
+
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" X2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						<p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:#3a4a93;">Congrats!</h4> 
+						<p class="mt-3" id="successMessageText">Application submitted successfully.</p>
+						<button type="button" class="btn btn-sm mt-3 btn-primary" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock content %}
+
+
+
+
+

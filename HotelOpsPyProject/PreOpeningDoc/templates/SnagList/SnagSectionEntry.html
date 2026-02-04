@@ -1,0 +1,65 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+
+
+    .productListM {
+        display: flex;
+        flex-wrap: wrap;
+    }
+        .productListM .demo.btn.disble {
+            opacity: 0.5;
+        }
+
+    .productListM .btn-group-lg > .btn, .productListM .btn-lg {
+        padding: .5rem 1rem;
+        font-size: 19px;
+        line-height: 1.4;
+        border-radius: .3rem;
+    }
+
+    .productListM .btnLnk {
+        /* line-height: 40px; */
+        /* background-color: #202357 !important; */
+        flex: 1 1 160px;
+        margin: 5px 10px 5px 0px;
+        justify-content: center;
+        display: flex;
+        min-width: 195px;
+        text-transform: capitalize;
+        /* background-color: #27426f !important; */
+        background-color: #547c740d !important;
+        border-color: #27426F !important;
+        color: #57595a;
+        display: flex;
+        vertical-align: middle;
+        align-content: center;
+        align-items: center;
+        max-width: 195px;
+        min-height: 50px;
+        padding: 20px;
+    }
+
+    </style>
+    <div class="row">
+
+        <div class="col-12">
+
+            <div class="productListM">
+                {% for x in mem%}
+                    <a href="/PreOpeningDoc/SnagListEntry/{{x.id}}" class="demo btn btn-primary btn-lg btnLnk" role="button"><span class="ti">{{x.title}}</span>  </a>
+               
+                {% endfor %}
+              </div>
+        </div>
+    </div>                                                   
+       
+        
+        <br><br>
+        
+        <br>
+        
+{% endblock content %}

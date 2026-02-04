@@ -1,0 +1,392 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+
+ {% load static %}
+ {% load custom_filters %}
+ {% load encryption_filters %}
+<style>
+
+     .disabled {
+        pointer-events: none; /* Prevent clicking */
+        opacity: 0.5; /* Make it look faded */
+    }
+
+    
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        {% comment %} border-top: 5px solid #3498db; {% endcomment %}
+        border-top: 5px solid #FC133D;
+        {% comment %} border-top: 5px solid #FF902F; {% endcomment %}
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    
+    .Reason{
+        min-width: 200px;
+        max-width: 200px;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+    }
+    .from, .to{
+        min-width: 100px;
+        max-width: 100px;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+    }
+    
+</style>
+<script>
+    $(document).ready(function() {
+        $('select').select2();
+    });
+</script>
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+
+            
+<!-- Page Header -->
+<div class="card">
+    <div class="card-header">
+        <span class="fw-bold text-uppercase">Leave</span>
+        <div class="col-auto float-end ms-auto">
+            <a href="/Leave_Management_System/Leave_Application/" class="btn add-btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i>Apply Leave</a>
+        </div>
+    </div>
+<!-- /Page Header -->
+    <div class="card-body">
+        <form method="GET" class="row g-2 mb-1">
+            <div class="col-md-2">
+                <label for="EmployeeCode" class="form-label">Employee Code</label>
+                <select class="form-control js-example-basic-single select2" name="EmployeeCode" id="EmployeeCodeDropdown">
+                    <option value="All" {% if request.GET.EmployeeCode == "All" %}selected{% endif %}>All</option>
+                    {% for emp in employees %}
+                    <option value="{{ emp.EmployeeCode }}" {% if request.GET.EmployeeCode == emp.EmployeeCode %}selected{% endif %}>
+                        {{ emp.EmployeeCode }} - {{ emp.EmpName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% comment %} <div class="col-md-2">
+                <label for="Departments" class="form-label">Departments</label>
+                <select name="Departments" class="form-control js-example-basic-single select2">
+                    <option value="">Select</option>
+                    {% for dt in Departments %}
+                        <option value="{{ dt.Department }}" {% if dt.Department == Department %}selected{% endif %}>
+                            {{ dt.Department }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div> {% endcomment %}
+            <div class="col-md-2">
+                <label for="start_date" class="form-label">Start Date</label>
+                <input type="date" name="start_date" id="start_date" class="form-control js-example-basic-single select2" value="{{ request.GET.start_date }}">
+            </div>
+            <div class="col-md-2">
+                <label for="end_date" class="form-label">End Date</label>
+                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request.GET.end_date }}">
+            </div>
+            <div class="col-md-1">
+                <label for="leave_type" class="form-label">Leave Type</label>
+                <select name="leave_type" id="leave_type" class="form-control js-example-basic-single select2">
+                    <option value="">All</option>
+                    {% for leave_type in leave_types %}
+                        <option value="{{ leave_type.id }}" {% if request.GET.leave_type == leave_type.id|stringformat:"s" %}selected{% endif %}>
+                            {{ leave_type.Type }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-control js-example-basic-single select2">
+                    <option value="">All</option>
+                    <option value="0" {% if request.GET.status == "0" %}selected{% endif %}>Pending</option>
+                    <option value="1" {% if request.GET.status == "1" %}selected{% endif %}>Approved</option>
+                    <option value="-1" {% if request.GET.status == "-1" %}selected{% endif %}>Rejected</option>
+                    <option value="2" {% if request.GET.status == "2" %}selected{% endif %}>Revoked</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex justify-items-start align-items-center gap-1" style="margin-top:2rem;">
+                <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                    Search 
+                </button>
+
+                <a href="{% url 'Leave_Status' %}" class="btn btn-danger ml-2" id="clear">
+                    Clear
+                </a>
+                <button type="button" class="btn btn-danger " onclick="downloadPDF()" id="filter">Download</button>
+            </div>
+        </form>  
+    </div>
+</div>
+{% comment %} <button type="button" class="btn btn-danger mt-3 mb-3" onclick="downloadPDF()">Download PDF</button> {% endcomment %}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+            <div class="col-md-12">
+                <div class="mb-1" style="text-align: right;">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="form-control"
+                        placeholder="Search ..."
+                        style="width: 200px; display: inline-block; height: 37px;"
+                        onkeyup="searchTable()"
+                    >
+              </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Employee Code</th>
+                                <th>Employee Name</th>
+                                <th class="text-center">Leave Type</th>
+                                <th class="text-center from">From</th>
+                                <th class="text-center to">To</th>
+                                <th class="Reason">Reason</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            {% for leave_application in status %}
+                                <tr>
+                                    <td>{{ leave_application.Emp_code }}</td>
+                                    <td>{{ leave_application.Emp_code|get_emp_name:leave_application.OrganizationID }}</td>
+                                    <td class="text-center">{{ leave_application.Leave_Type_Master.Type }}</td>
+                                    <td class="text-center">{{ leave_application.Start_Date |date:'d-m-Y' }}</td>
+                                    <td class="text-center">{{ leave_application.End_Date |date:'d-m-Y' }}</td>
+                                    <td>{{ leave_application.Reason }}</td>
+
+                                    <td class="text-center">
+                                        <div class="dropdown action-label">
+                                            <a class="btn btn-white btn-sm btn-rounded dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                                {% if leave_application.Status == 0 %}
+                                                    <i class="fa-regular fa-circle-dot text-warning"></i> Pending
+                                                {% elif leave_application.Status == 1 %}
+                                                    <i class="fa-regular fa-circle-dot text-success"></i> Approved
+                                                {% elif leave_application.Status == -1 %}
+                                                    <i class="fa-regular fa-circle-dot text-danger"></i> Rejected
+                                                {% elif leave_application.Status == 2 %}
+                                                    <i class="fa-regular fa-circle-dot text-secondary"></i> Revoked
+                                                {% else%}
+                                                    <i class="fa-regular fa-circle-dot text-warning"></i> Pending
+                                                {% endif %}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    
+                                    <td class="text-end">
+                                        
+                                        {% if leave_application.Status == 0 %}
+                                        <div class="dropdown dropdown-action">
+                                            <a href="#" class="action-icon dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="material-icons">more_vert</i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+
+                                            
+                                                
+                                                    
+                                                    <p>  <a class="dropdown-item {% if leave_application.Status != 0 %}disabled{% endif %}"  href="{% url 'Leave_Application'  %}?ID={{leave_application.id}}" class="btn btn-primary btn-sm">Edit</a></p>
+                                                    <p> <a class="dropdown-item {% if leave_application.Status != 0 %}disabled{% endif %}"  href="{% url 'Leave__Appication_Cancel' leave_application.id  %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to Cancel this?')">Cancel</a>   </p>
+                                                    
+                                                    <p style="color: red;"><a class="dropdown-item "> Pending</a></p>
+                                                    
+                                                
+                                            
+                                                
+                                            </div>
+                                        </div>
+                                        
+                                        {% elif leave_application.Status == -1 %}
+                                        <p style="color: red;" >Reason :- {{  leave_application.Remark }}</p>
+                                        {% endif %}
+                                    </td>
+                                    
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% comment %} </div> {% endcomment %}
+
+<!-- Add Leave Modal -->
+<div id="add_leave" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Leave</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label">Leave Type <span class="text-danger">*</span></label>
+                        <select class="select">
+                            <option value="">All</option>
+                            {% for leave_type in leave_types %}
+                                <option value="{{ leave_type.id }}" {% if request.GET.leave_type == leave_type.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ leave_type.Type }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label">From <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text">
+                        </div>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label">To <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text">
+                        </div>
+                    </div>
+                    <div class="input-block mb-3">
+                        <label class="col-form-label">Leave Reason <span class="text-danger">*</span></label>
+                        <textarea rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+        let clearButton = document.querySelector("a.btn-danger"); // Select the "Clear" button
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    
+        if (clearButton) {
+            clearButton.addEventListener("click", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on clear button click
+            });
+        }
+    });
+    
+    
+    function downloadPDF() {
+        let employeeCode = document.getElementById("EmployeeCodeDropdown").value;
+        let startDate = document.getElementById("start_date").value;
+        let endDate = document.getElementById("end_date").value;
+        let leaveType = document.getElementById("leave_type").value;
+        let status = document.getElementById("status").value;
+    
+        let url = "{% url 'download_leave_status_pdf' %}?" + 
+                    "EmployeeCode=" + encodeURIComponent(employeeCode) +
+                    "&start_date=" + encodeURIComponent(startDate) +
+                    "&end_date=" + encodeURIComponent(endDate) +
+                    "&leave_type=" + encodeURIComponent(leaveType) +
+                    "&status=" + encodeURIComponent(status);
+    
+        // ✅ Show loader properly
+        document.getElementById("loaderContainer").style.display = "flex";
+    
+        fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to generate PDF");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            let downloadUrl = window.URL.createObjectURL(blob);
+            let a = document.createElement("a");
+            a.href = downloadUrl;
+            a.download = "Employee_Leave_Report.pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(error => {
+            alert("Error generating PDF. Please try again.");
+        })
+        .finally(() => {
+            // ✅ Hide loader after PDF is downloaded
+            document.getElementById("loaderContainer").style.display = "none";
+        });
+    } 
+</script>
+
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+{% endblock content %}
+{% comment %} {% endblock NewHomeBase %} {% endcomment %}

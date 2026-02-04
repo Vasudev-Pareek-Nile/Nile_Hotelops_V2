@@ -1,0 +1,512 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+<!-- Display alert messages -->
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+  .tree ul {
+    list-style-type: none;
+    padding-left: 20px;
+  }
+  .tree li {
+    position: relative;
+    padding-left: 20px;
+    cursor: pointer;
+  }
+  .tree li::before, .tree li::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    background: #ccc;
+  }
+  .tree li::before {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+  }
+  .tree li::after {
+    top: 10px;
+    width: 10px;
+    height: 1px;
+  }
+  .tree li:last-child::before {
+    height: 10px;
+  }
+  .tree ul.collapsed {
+    display: none;
+  }
+  .tree li span {
+    user-select: none;
+  }
+  .tree i {
+    margin-right: 5px;
+  }
+  .actions {
+    margin-left: 10px;
+  }
+  .actions a {
+    margin-right: 5px;
+    text-decoration: none;
+    color: blue;
+  }
+  .actions a:hover {
+    text-decoration: underline;
+  }
+  .custom-card {
+    width: 98%;
+    margin: auto;
+  }
+  {% comment %} .modal-dialog {
+    width: 50%;
+    max-width: 50%;
+    min-width: 700px;
+  } {% endcomment %}
+  .ui-sortable .item {
+    border: 1px solid #e7e7e7;
+    padding: 5px;
+    margin: 3px;
+    cursor: all-scroll;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 3px; 
+    margin-bottom: 5px; 
+    border: 1px solid #ddd; 
+    border-radius: 4px; 
+   
+}
+
+
+.item-container {
+  display: flex;
+  width: 100%;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px 0;
+  background-color: #f8f9fa;
+}
+
+.item-value {
+  flex: 1;
+  padding: 5px;
+  font-weight: bold;
+}
+
+.remove-button {
+  background-color: red;
+  color: white;
+  border: none;
+
+  cursor: pointer;
+  margin-top: 5px;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+
+#AddDivision label{
+  margin-top:10px;
+  margin-bottom:5px;
+}
+.item-container{
+    border-radius: 5px;
+}
+
+
+</style>
+
+<style>
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+    
+             }
+             .card{
+              border-radius:10px;
+             }
+             h4{
+               margin-bottom:10px !important;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+        }
+
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 14px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+                    margin-right: 10px; 
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+
+         .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        }
+
+        th.sorting, th, th.sorting_asc {
+    background: #edf0fb  !important;
+}
+        .HeaderWithColor {
+            background-color: #edf0fb !important;
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        table thead th {
+            background: #edf0fb  !important;
+        }
+
+            table {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        table thead tr:first-child th:first-child {
+                border-top-left-radius: 4px;
+        }
+
+        table thead tr:first-child th:last-child {
+                border-top-right-radius: 4px;
+        }
+
+        table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 4px;
+        }
+
+            table tbody tr:last-child td:last-child {
+                    border-bottom-right-radius: 4px;
+            }
+
+  .card .card-header {
+      padding: 20px;
+      padding-bottom: 0px !important;
+      background: transparent;
+  }
+
+  .select2-container select2-container--default select2-container--focus select2-container--below{
+    padding: 8px !important;
+  }
+</style>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <h4 class="text-uppercase fw-bold">Module Mapping</h4>
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#AddDivision">Add New Module Mapping</button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+              <thead>
+                <tr >
+                  <th >Module Name</th>
+                  <th >Department</th>
+                  <th >Level</th>
+                  <th >Reporting</th>
+                  <th >Dotted Line</th>
+                  <th >Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for modul in moduls %}
+                <tr>
+                  <td>{{modul.module_name}}</td>
+                  <td>{{modul.Department}}</td>
+                  <td>{{modul.Level}}</td>
+                  <td>{{modul.reporting_to}}</td>
+                  <td>{{modul.Dotted_Line}}</td>
+                  <td>
+                    <a
+                      href=""
+                      class="fa fa-edit edit-division"
+                      data-id="{{ modul.id }}"
+                      style="color: blue"
+                      data-toggle="modal"
+                      data-target="#AddDivision"
+                    ></a>
+
+                    <a
+                      onclick="return confirm('Are you sure you want to delete? ')  "
+                      href="{% url 'ModuleMapping_delete'  %}?ID={{modul.id}}"
+                    >
+                      <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+                      <span style="color: red"></span>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="AddDivision" tabindex="-1" role="dialog" aria-labelledby="divisionModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fw-bold" id="divisionModalLabel" >New Module Mapping</h4>
+         <button type="button" class="btn-close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button> 
+      </div>
+      <div class="modal-body">
+        <form class="mb-0" method="POST" action="{% url 'ModuleMappingAdd' %}" id="moduleMappingForm">
+          <div class="row">
+             {% csrf_token %}
+             <input type="hidden" id="division_id" name="id">
+
+          
+            <!-- Reporting To Field -->
+            <div class=" col-md-6">
+              <label for="reporting_to" class="form-label">Module Name</label>
+              <input type="text" class="form-control" name="module_name" id="module_name" required />
+            </div>
+
+              <div class=" col-md-6">
+                <label for="reporting_to" class="form-label">Level</label>
+                <select  class="form-control select" name="reporting_to" id="reporting_to">
+                  {% for level in lavels %}
+                    <option value="{{ level.lavelname }}">{{ level.lavelname }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+          </div>
+
+          <div class="row ">
+              <!-- Department Select -->
+              <div class=" col-md-5">
+                <label for="department_select" class="form-label">Department</label><br>
+                <select class="from-control" multiple="multiple" id="department_select" name="Department" style="width: 340px; padding: 8px !important;">
+                  {% for department in Departmentsfilter %}
+                    <option value="{{ department.DepartmentName }}">{{ department.DepartmentName }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Level Select -->
+              <div class=" col-md-4">
+                <label for="newItem" class="form-label"> Reporting To Level</label>
+                <select id="newItem" class="form-control select" name="Level">
+                  {% for level in lavels %}
+                    <option value="{{ level.lavelname }}">{{ level.lavelname }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class=" col-md-3 mb-3">
+                <button type="button" class="btn btn-primary" id="addItem" style="margin-top: 38px;">Add Level</button>
+              </div>
+          </div>
+
+          <!-- Container for dynamically added levels -->
+          <span class="fw-bold">Please Select Your Reporting To Level</span>
+          <div class="container" id="sortableContainer">
+            
+          </div>
+          <input type="hidden" name="sorted_items" id="sorted_items">
+
+          <div class="row ">
+            <!-- Reporting To Field (if different from above) -->
+          
+
+            <!-- Weightage Field -->
+            <div class=" col-md-12">
+              <label for="weightage1">Weightage</label>
+              <input type="text" class="form-control" name="Weightage1" id="weightage1" required />
+            </div>
+          </div>
+
+          <div class="row ">
+            <!-- Dotted Line Select -->
+            <div class=" col-md-6">
+              <label for="dotted_line" class="form-label">Dotted Line</label>
+              <select id="dotted_line" class="form-control" name="Dotted_Line">
+                {% for Designationfilter in Designationfilters %}
+                  <option value="{{ Designationfilter.designations }}">{{ Designationfilter.designations }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Weightage Field -->
+            <div class=" col-md-6">
+              <div class="mb-3">
+                <label for="weightage2" class="form-label">Weightage</label>
+                <input type="text" class="form-control" name="Weightage2" id="weightage2" required />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="Submit" class="btn btn-primary " />
+            {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+          </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        
+        $('.select2_demo_2').select2({
+            width: '300px' 
+        });
+
+        
+        $('.select2_demo_2').on('select2:open', function() {
+            $('.select2-results__options').sortable({
+                containment: 'parent',
+                update: function() {
+                    
+                    var sortedValues = $('.select2-results__options').sortable('toArray', { attribute: 'data-select2-id' });
+                    $('.select2_demo_2').val(sortedValues).trigger('change.select2');
+                }
+            });
+        });
+    });
+</script>
+<script>
+  $(document).ready(function() {
+
+    function initializeSortable() {
+        $('#sortableContainer').sortable({
+            axis: 'y',
+            cursor: 'move',
+            containment: 'parent',
+            update: function(event, ui) {
+                updateSortedItems();
+            }
+        });
+    }
+
+    $('#addItem').on('click', function() {
+      var newItemValue = $('#newItem').val();
+      if (newItemValue) {
+          {% comment %} $('#sortableContainer').sortable(); {% endcomment %}
+          $('#sortableContainer').append(`
+              <div class="item-container">
+                  <span class="item-value">${newItemValue}</span>
+                  <button class="remove-button btn btn-danger">Remove</button>
+              </div>
+          `);
+          $('#newItem').val('');
+          updateSortedItems();
+      }
+  });
+  
+
+    function updateSortedItems() {
+        var sortedItems = [];
+        $('#sortableContainer .item').each(function() {
+            sortedItems.push($(this).text().replace('Remove', '').trim()); // Remove 'Remove' button text
+        });
+        $('#sorted_items').val(sortedItems.join(','));
+    }
+
+    $('#moduleMappingForm').submit(function() {
+        updateSortedItems();
+    });
+
+    $('#department_select').select2();
+
+    $('.edit-division').click(function(e) {
+        e.preventDefault();
+        var divisionId = $(this).data('id');
+
+        $.ajax({
+            url: '/Manning_Guide/Module_Edit/',
+            type: 'GET',
+            data: { id: divisionId },
+            dataType: 'json',
+            success: function(data) {
+                if ('error' in data) {
+                    console.error('Error fetching division data:', data.error);
+                    return;
+                }
+                $('#division_id').val(data.id);
+                var selectedDepartments = data.Department.split(', ');
+                $('#department_select').val(selectedDepartments).trigger('change');
+                
+                // Clear and populate sortableContainer with existing levels
+                $('#sortableContainer').empty();
+                var levels = data.Level.split(',');
+                levels.forEach(function(level) {
+                    $('#sortableContainer').append('<div class="item">' + level + '<button class="remove-button">Remove</button></div>');
+                });
+
+                initializeSortable();
+
+                $('#reporting_to').val(data.reporting_to);
+                $('#weightage1').val(data.Weightage1);
+                $('#dotted_line').val(data.Dotted_Line);
+                $('#weightage2').val(data.Weightage2);
+                $('#module_name').val(data.module_name);
+                $('#AddDivision').modal('show');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching division data:', status, error);
+            }
+        });
+    });
+
+    // Remove item functionality
+    $('#sortableContainer').on('click', '.remove-button', function() {
+        $(this).parent().remove();
+        updateSortedItems();
+    });
+
+    initializeSortable(); // Initialize sortable after DOM is ready
+});
+
+
+</script>
+
+
+{% endblock content %}

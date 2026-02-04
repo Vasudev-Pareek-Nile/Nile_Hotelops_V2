@@ -1,0 +1,99 @@
+{% extends 'FixedExpense/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+    #tableData tr td:not(:first-child){
+text-align: right;
+
+    }
+</style>
+          <div class="row">
+            <div class="col">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Hotel Yearly Report</h5>
+                       
+                    </div>
+                    <div class="ibox-content">
+                        <form>
+                        <div class="row">
+                            <div class="col">
+
+                                <select name="I" class="form-control">
+
+                                    {% for itm in mem %}
+                                    {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                    <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                    {% endfor %}
+                                   
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <select class="form-control" name="EntryYear">
+                                    {% for year in years reversed%}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-1">
+                                <button class="btn btn-primary" type="submit">Filter</button>
+                            </div>
+                        </div>
+                        </form>
+                     
+                        <br/>
+                        {% comment %} {{DataRes}} {% endcomment %}
+                        <div class="row">
+                            <div class="col table-responsive">
+                                    <table id="tableData" class="table table-bordered">
+                                            <thead>
+                                                <tr class="active">
+                                                    <th>
+                                                    Title
+                                                    </th>
+                                                    <th>January</th> 
+                                                    <th>February</th> 
+                                                    <th>March</th> 
+                                                    <th>April</th> <th>May</th> <th>June</th> <th>July</th> <th>August</th> <th>September</th><th>October</th> <th>November</th> <th>December</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for itm in DataRes %}
+                                                {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                                <tr>
+                                                    <td>
+                                                            {{itm.Title}}
+                                                            </td>
+                                                            <td>{{itm.January}}</td> 
+                                                            <td>{{itm.February}}</td> 
+                                                            <td>{{itm.March}}</td> 
+                                                            <td>{{itm.April}}</td> <td>{{itm.May}}</td> <td>{{itm.June}}</td> <td>{{itm.July}}</td> 
+                                                            <td>{{itm.August}}</td>
+                                                            <td>{{itm.September}}</td><td>{{itm.October}}</td> <td>{{itm.November}}</td>
+                                                            <td>{{itm.December}}</td>
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    
+          <script>  
+            $(function(){
+
+                if (getUrlParameter("I") !=false) {
+                    $("select[name='I']").val((getUrlParameter("I")))
+                }
+                if ( getUrlParameter("EntryYear") !=false) {
+                    $("select[name='EntryYear']").val((getUrlParameter("EntryYear")))
+                }
+            })
+          </script>
+    {% endblock content %}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reference Check Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      line-height: 1.5;
+      margin: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      width: 100%;
+      margin: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .header-logo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-logo img {
+      height: 60px;
+    }
+    .header-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      background-color: #f4f4f4;
+      font-weight: bold;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .success {
+      color: green;
+    }
+    .failure {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-logo">
+        <img src="{{ NileLOGO }}" alt="Nile Logo" />
+        <div class="header-title">Reference Check Form</div>
+        <img src="{{ OrganizationLogo }}" alt="Organization Logo" />
+      </div>
+      <hr color="mediumseagreen" />
+    </header>
+
+    <section>
+      <div class="section-title">Candidate Details</div>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td>{{ candidate_name }}</td>
+          <th>Department</th>
+          <td>{{ candidate_department }}</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-title">Reference Check Details</div>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td>{{ check.name }}</td>
+          <th>Dates of Employment</th>
+          <td>{{ check.employment_from_date|date:"d-m-Y" }} - {{ check.employment_to_date|date:"d-m-Y" }}</td>
+        </tr>
+        <tr>
+          <th>Contact Information</th>
+          <td>{{ check.contact_informations }}</td>
+          <th>Relationship</th>
+          <td>{{ check.relationship }}</td>
+        </tr>
+        <tr>
+          <th>Worked at this Company?</th>
+          <td>{% if check.this_company %} Yes {% else %} No {% endif %}</td>
+          <th>Would Rehire?</th>
+          <td>{% if check.rehire %} Yes {% else %} No {% endif %}</td>
+        </tr>
+        <tr>
+          <th>Job Performance</th>
+          <td>{{ check.job_performance }}</td>
+          <th>Interpersonal Skills</th>
+          <td>{{ check.interpersonal_skills }}</td>
+        </tr>
+        <tr>
+          <th>Attendance</th>
+          <td>{{ check.attendance_work }}</td>
+          <th>Reason for Leaving</th>
+          <td>{{ check.leave_company }}</td>
+        </tr>
+        <tr>
+          <th>Other Comments</th>
+          <td colspan="3">{{ check.anything_else }}</td>
+        </tr>
+      </table>
+    </section>
+
+    <section>
+      <div class="section-title">Reference 1 Details</div>
+      <table>
+        <tr>
+          <th>Name</th>
+          <td>{{ refobj.Ref1_name }}</td>
+          <th>Email</th>
+          <td>{{ refobj.Ref1_email }}</td>
+        </tr>
+        <tr>
+          <th>Mobile</th>
+          <td>{{ refobj.Ref1_mobile_number }}</td>
+          <th>Organization</th>
+          <td>{{ refobj.Ref1_Organization }}</td>
+        </tr>
+        <tr>
+          <th>Designation</th>
+          <td>{{ refobj.Ref1_Designation }}</td>
+          <th>Status</th>
+          <td>
+            {% if refobj.ref1_status == 1 %}
+              <span class="success">Done</span>
+            {% else %}
+              <span class="failure">Pending</span>
+            {% endif %}
+          </td>
+        </tr>
+      </table>
+    </section>
+  </div>
+</body>
+</html>

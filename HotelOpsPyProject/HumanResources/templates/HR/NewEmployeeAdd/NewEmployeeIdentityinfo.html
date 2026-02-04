@@ -1,0 +1,175 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<style>
+    .strike{
+      color: red;
+  }
+    label{
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadLink" class="btn btn-primary" href="#" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-header">
+    <h4 class="text-uppercase fw-bold">Identity Information</h4>
+</div>
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+        <div class="row m-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Aadhaar Number <span class="strike">*</span></label>
+                <input type="text" name="AadhaarNumber" id="" class="form-control"  value = "{{IdentityInfo.AadhaarNumber}}" required>
+                </div>
+            </div>           
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>PAN No</label>
+                    <input type="hidden" name="Pre_Identity_ID" value="{{IdentityInfo.id}}">
+                    <input type="text" name="PANNo" id="" class="form-control"  value = "{{IdentityInfo.PANNo}}">
+                </div>
+            </div>
+        
+           
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Driving Licence No</label>
+                <input type="text" name="DrivingLicenceNo" id="" class="form-control" value = "{{IdentityInfo.DrivingLicenceNo}}" >
+                </div>
+            </div>
+        </div>
+         <div class="row m-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Upload Aadhaar<span class="strike">*</span></label>
+                <input type="file" name="Aadhaarattachment" id="" class="form-control"  {% if  IdentityInfo %}{% else %} required{% endif %}>
+                {% if IdentityPreview == "IdentityInfo" and IdentityInfo.AadhaarFileName %}
+                Previous Document
+                <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInfoData_Aadhaar" 
+                class="btn btn-primary btn-sm ml-2"
+                onclick="showEduDetails(this)"
+                >
+               <span class="fa fa-eye"></span>
+                </a>
+                {% elif IdentityPreview == "identityobj"  and IdentityInfo.AadhaarFileName %}
+                Previous Document
+                <a  href="javascript:void(0)" data-href="{% url 'Humanview_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInformationDetails_Aadhaar" 
+                class="btn btn-primary btn-sm ml-2"
+                onclick="showEduDetails(this)"
+                >
+               <span class="fa fa-eye"></span>
+                </a>
+                {% else%}
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Upload PAN</label>
+                    {% comment %} {% if  IdentityInfo %}{% else %} required{% endif %} {% endcomment %}
+                    <input type="file" name="PANattachment" id="" class="form-control"   >
+                            {% if IdentityPreview == "IdentityInfo"  and IdentityInfo.DrivingFileName %}
+                            Previous Document
+                            <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInfoData_Pan" 
+                            class="btn btn-primary btn-sm ml-2"
+                            onclick="showEduDetails(this)"
+                            >
+                           <span class="fa fa-eye"></span>
+                            </a>
+                            {% elif IdentityPreview == "identityobj"  and IdentityInfo.DrivingFileName %}
+                            Previous Document
+                            <a  href="javascript:void(0)" data-href="{% url 'Humanview_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInformationDetails_Pan" 
+                            class="btn btn-primary btn-sm ml-2"
+                            onclick="showEduDetails(this)"
+                            >
+                           <span class="fa fa-eye"></span>
+                            </a>
+                            {% else%}
+                            {% endif %}
+                </div>
+            </div>
+        
+            
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Upload Driving Licence</label>
+                    {% comment %} {% if  IdentityInfo %}{% else %} required{% endif %} {% endcomment %}
+                <input type="file" name="DrivingLicenceattachment" id="" class="form-control"   >
+                {% if IdentityPreview == "IdentityInfo" and IdentityInfo.PanFileName  %}
+                Previous Document
+                <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInfoData_License" 
+                class="btn btn-primary btn-sm ml-2"
+                onclick="showEduDetails(this)"
+                >
+               <span class="fa fa-eye"></span>
+                </a>
+                {% elif IdentityPreview == "identityobj" and IdentityInfo.PanFileName  %}
+                Previous Document
+                <a  href="javascript:void(0)" data-href="{% url 'Humanview_file' %}?ID={{ IdentityInfo.id }}&model=EmployeeIdentityInformationDetails_License" 
+                class="btn btn-primary btn-sm ml-2"
+                onclick="showEduDetails(this)"
+                >
+               <span class="fa fa-eye"></span>
+                </a>
+                {% else%}
+                {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="CustomFooter d-flex gap-2">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EmpID={{ EmpID }}" class="btn btn-primary btn-sm">Previous</a>
+        <input type="submit" name="" class="btn btn-primary btn-sm" id="" value="Next">
+
+    </div>
+</form>
+
+
+
+<script>
+    var showEduDetails= function(obj)
+    {
+            var hurl = $(obj).attr('data-href');
+            $(".modalPr").modal('show')
+            $(".modalPr iframe").attr('src',hurl);
+
+    }
+   
+
+</script>
+
+
+
+{% endblock main %}
+
+
+
+

@@ -1,0 +1,283 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+    .text-primary-spinner{
+        color:#3a4a93 !important;
+    }
+    .text-primary {
+        color: #3a4a93 !important;
+    }
+</style>
+
+
+{% if messages %}
+    <div class="cotainer">
+        <div class="container text-center">
+            {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+            {% endif %} {% endfor %}
+        </div>
+    </div>
+{% endif %}
+<div class="card" id="profile-card">
+    <div class="card-header text-uppercase fw-bold">Employee Leave Balance and Apply</div>
+
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="mb-1" style="text-align: right;">
+            <input
+                type="text"
+                id="searchInput"
+                class="form-control"
+                placeholder="Search ..."
+                style="width: 177px; display: inline-block; height: 37px;"
+                onkeyup="searchTable()"
+            >
+        </div>
+        <table id="example" class="table table-striped">
+            <thead>
+                <tr>
+                    
+                    <th>Emp Code</th>
+                    <th>Emp Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Emp Status</th>
+
+                    <th>Apply Leave</th>
+                    <th>Leave Balance</th>
+                </tr>
+            </thead>
+            <tbody id="employeeTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="example-modal-xl" tabindex="-1"
+    aria-labelledby="exampleModalLgLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLgLabel">Leave Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body" id="profile-card-piece">
+                <div id="card-loader" class="card-loader-piece"
+                    style="
+                        display:none;
+                        position:absolute;
+                        top:0;
+                        left:0;
+                        width:100%;
+                        height:100%;
+                        background: rgba(0,0,0,0.2);
+                        z-index:10;
+                        display:flex;
+                        justify-content:center;
+                        align-items:center;
+                        flex-direction:column;
+                    ">
+                    <div class="spinner-border text-primary" role="status" style="width:3rem; height:3rem;"></div>
+                    <div style="margin-top:1rem; font-weight:bold; color:#3a4a93;">Loading...</div>
+                </div>
+                <div class="card-body">
+                    <div class="row" id="leaveDetailsContainer">
+                        <!-- Leave cards will be injected here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+
+<!-- loaders -->
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+<!-- loaders -->
+<script>
+    function showLoaderPopup(cardId) {
+        document.querySelector(`#${cardId} .card-loader-piece`).style.display = "flex";
+    }
+
+    function hideLoaderPopup(cardId) {
+        document.querySelector(`#${cardId} .card-loader-piece`).style.display = "none";
+    }
+</script>
+
+<script>
+    function searchTable() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("employeeTableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+
+            // Emp Name column (0 = Emp Code, 1 = Emp Name)
+            const empNameCell = rows[i].getElementsByTagName("td")[1];
+
+            if (empNameCell) {
+                const empName = empNameCell.textContent || empNameCell.innerText;
+
+                rows[i].style.display =
+                    empName.toLowerCase().includes(input) ? "" : "none";
+            }
+        }
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        showLoader("profile-card");
+        const OID = "{{OrganizationID}}";
+        const apiUrl = `/Employee_Payroll/api/payroll_employee_data/?OID=${OID}`;
+
+        $.ajax({
+            url: apiUrl,
+            type: "GET",
+            success: function (response) {
+                hideLoader("profile-card");
+
+                if (response.success && response.data.length > 0) {
+
+                    let rows = "";
+
+                    $.each(response.data, function (index, emp) {
+
+                        rows += `
+                            <tr>
+                                <td>${emp.EmployeeCode}</td>
+                                <td>${emp.EmpName}</td>
+                                <td>${emp.Department}</td>
+                                <td>${emp.Designation}</td>
+                                <td>${emp.EmpStatus}</td>
+                                <td>
+                                    <a href="{% url 'Leave_Application' %}?EmployeeCode=${emp.EmployeeCode}&Page=EmployeeApply"
+                                    class="btn btn-primary btn-sm">
+                                        Apply
+                                    </a>
+                                </td>
+                                <td>
+                                    <button 
+                                        type="button"
+                                        class="btn btn-sm btn-primary leave-details-btn"
+                                        data-empcode="${emp.EmployeeCode}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#example-modal-xl">
+                                        View Balance
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#employeeTableBody").html(rows);
+
+                } else {
+                    $("#employeeTableBody").html(
+                        `<tr><td colspan="6" class="text-center">No data found</td></tr>`
+                    );
+                }
+            },
+            error: function () {
+                alert("Failed to load employee data");
+            }
+        });
+
+    });
+</script>
+
+<script>
+$(document).on("click", ".leave-details-btn", function () {
+    showLoaderPopup("profile-card-piece");
+
+    const empCode = $(this).data("empcode");
+    const OID = "{{OrganizationID}}";
+    const UserID = "{{UserID}}";
+    const UserType = "{{UserType}}";
+
+    const apiUrl =
+        "/Leave_Management_System/api/employee_leave_balance_api/?" +
+        "OID=" + OID +
+        "&ID=" + empCode +
+        "&UserType=" + UserType;
+
+    //$("#leaveDetailsContainer").html(
+    //    `<div class="text-center">Loading...</div>`
+    //);
+
+    $.ajax({
+        url: apiUrl,
+        type: "GET",
+        success: function (response) {
+            hideLoaderPopup("profile-card-piece");
+
+            if (response.success && response.data.length > 0) {
+
+                let cards = "";
+
+                $.each(response.data, function (index, leave) {
+
+                    cards += `
+                        <div class="col-md-2 text-center mb-3">
+                            <div class="card radius-10 border-start border-0 border-3 border-info">
+                                <div class="card-body" style="padding: 19px;">
+                                    <h6 class="mb-0">${leave.Leave_Type}</h6>
+                                    <p class="my-1">${leave.Balance}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                $("#leaveDetailsContainer").html(cards);
+
+            } else {
+                $("#leaveDetailsContainer").html(
+                    `<div class="text-center">No leave data found</div>`
+                );
+            }
+        },
+        error: function () {
+            $("#leaveDetailsContainer").html(
+                `<div class="text-danger text-center">Failed to load leave data</div>`
+            );
+        }
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,240 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px"> Summary P&L Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'PL_Summaryviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>Rooms Revenue</th>
+            <th>{{mem.RoomsRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Food And Beverage Revenue</th>
+            <th>{{mem.FoodAndBeverageRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Other Operated Department Expenses</th>
+            <th>{{mem.OtherOperatedDepartmentRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Total Departmental Expenses</th>
+            <th>{{mem.Total_DepartmentalExpenses}}</th>      
+        </tr>
+        <tr>
+            <th>Total Departmental Income</th>
+            <th>{{mem.Total_DepartmentalIncome}}</th>      
+        </tr>
+        <tr>
+            <th>Administration and General</th>
+            <th>{{mem.AdministrationAndGeneral}}</th>      
+        </tr>
+        <tr>
+            <th>Information and Telecommunications Systems</th>
+            <th>{{mem.InformationAndTelecommunicationsSystem}}</th>      
+        </tr>
+        <tr>
+            <th>Sales and  Marketing</th>
+            <th>{{mem.SalesAndMarketing}}</th>      
+        </tr>
+        <tr>
+            <th>Property Operation and Maintenance</th>
+            <th>{{mem.PropertyOperartionAndMaintenance}}</th>      
+        </tr>
+        <tr>
+            <th>Utilities</th>
+            <th>{{mem.Utilities}}</th>      
+        </tr>
+        <tr>
+            <th>Total Undistributed Expenses</th>
+            <th>{{mem.TotalUndistributedExpenses}}</th>      
+        </tr>
+        <tr>
+            <th>Gross Operating Profit</th>
+            <th>{{mem.GrossOperatingProfit}}</th>      
+        </tr>
+        <tr>
+            <th>GOP %</th>
+            <th>{{mem.GOP}}</th>      
+        </tr>
+      
+      
+            
+    </table>
+</div>
+<br>
+<br>
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.PL_SummaryMaster.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+ 
+</table>
+ 
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotRoomRev = 0;
+        var a = $("input[name='RoomsRevenue']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var e = $("input[name='FoodAndBeverageRevenue']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;           
+
+        var g = $("input[name='OtherOperatedDepartmentRevenue']").val();
+        g = parseFloat(g);
+        g = isNaN(g)?0:g;
+
+        var h = $("input[name='RentalsAndOtherIncome']").val();
+        h = parseFloat(h);
+        h = isNaN(h)?0:h;
+        TotRoomRev = (a+e+g+h);
+        $("input[name='TotalRevenue']").val(TotRoomRev);
+
+ 
+      
+        var TotDePInc = 0;
+        var c = $("input[name='RoomExpenses']").val();
+        c = parseFloat(c);
+        c = isNaN(c)?0:c;
+
+        var d = $("input[name='FoodAndBeverageExpenses']").val();
+        d = parseFloat(d);
+        d = isNaN(d)?0:d;
+      
+        var m = $("input[name='OtherOperatedDepartmentExpenses']").val();
+        m = parseFloat(m);
+        m = isNaN(m)?0:
+        TotDePInc = (c+d+m);
+        $("input[name='Total_DepartmentalExpenses']").val(TotDePInc.toFixed(2));
+
+        $("input[name='Total_DepartmentalIncome']").val( (TotRoomRev-TotDePInc).toFixed(2));
+      
+
+        var TotUndisExp = 0;
+        var x = $("input[name='AdministrationAndGeneral']").val();
+        x = parseFloat(x);
+        x = isNaN(x)?0:x;
+        
+        var y = $("input[name='InformationAndTelecommunicationsSystem']").val();
+        y = parseFloat(y);
+        y = isNaN(y)?0:y;
+
+        var p = $("input[name='SalesAndMarketing']").val();
+        p = parseFloat(p);
+        p = isNaN(p)?0:p;
+
+        var q = $("input[name='PropertyOperartionAndMaintenance']").val();
+        q = parseFloat(q);
+        q = isNaN(q)?0:q;
+        
+        var z = $("input[name='Utilities']").val();
+        z = parseFloat(z);
+        z = isNaN(z)?0:z;
+        var TotUndisExp = (x+y+p+q+z);
+        $("input[name='TotalUndistributedExpenses']").val(TotUndisExp.toFixed(2));
+
+        $("input[name='GrossOperatingProfit']").val((TotDePInc-TotUndisExp).toFixed(2));
+
+        var gop = (TotUndisExp/TotRoomRev)*100
+        $("input[name='GOP']").val(gop.toFixed(2));
+
+      
+        
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+        $("input[name='Total_Other_Expenses']").val(TotalAmount.toFixed(2))
+        var Total_Other_Expenses = TotalAmount;
+
+        $("input[name='TotalExpenses']").val((PayrollAndRelatedExpenses+Total_Other_Expenses).toFixed(2))
+        var TotalExpenses = (PayrollAndRelatedExpenses+Total_Other_Expenses);
+
+        
+        $("input[name='DepartmentIncome']").val((TotRoomRev - TotalExpenses ).toFixed(2))
+
+      
+        
+        
+
+      
+    }
+</script>
+{% endblock content %}

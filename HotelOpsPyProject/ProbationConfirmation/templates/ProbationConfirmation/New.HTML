@@ -1,0 +1,375 @@
+{% extends 'ProbationConfirmation/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    .HeaderBold th{
+        font-weight: bold !important;
+    }
+    .TableHeading{
+        font-weight: bold !important;
+        font-size: 18px;
+    }
+    .ObjgoalsHeading{
+        font-weight: bold !important;
+        font-size: 18px;
+        text-transform: capitalize;
+    }
+    .EmpInfo div div label{
+        margin-bottom: 5px;
+    }
+</style>
+
+<div class="col-md-12">
+<form action="" method="post" id="salaryCorrectionForm">
+<div class="card">
+    <div class="card-header">
+        <strong>Probation Confirmation</strong>
+    </div>
+    <div class="card-body">
+        <div class="row EmpInfo">
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Employee Code</label>
+                    <input type="text" required class="form-control" name="EmpCode" id="employeeCode" value="{{Emp_obj.EmpCode }}" readonly>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Employee Name</label>
+                    <input type="text" class="form-control" name="EmpName" value="{{Emp_obj.EmpName }}" readonly> 
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Joining Date</label>
+                    <input type="date" class="form-control" name="JoiningDate" value="{% if  Emp_obj.JoiningDate %}{{ Emp_obj.JoiningDate |date:'Y-m-d'}}{% endif %}" readonly> 
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Designation</label>
+                    <input type="text" class="form-control" name="Position" value="{{ Emp_obj.Position }}" readonly> 
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Department</label>
+                    <input type="text" class="form-control" name="Department" value="{{Emp_obj.Department}}" readonly> 
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mt-3">
+                    <label for="">Confirmation Due Date</label>
+                    <input type="date"  class="form-control" name="ConfDate" value="{% if Emp_obj.ConfDate %}{{ Emp_obj.ConfDate | date:'Y-m-d'}}{% endif %}"> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped table-sm">
+            <tbody>
+                {% for Category in Categories %}
+                    {% with cat_counter=forloop.counter0 %}
+                        <tr>
+                            <td colspan="3">
+                                <table class="table table-striped table-sm mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="3" class="TableHeading">
+                                                {{Category.Category}}
+                                                <input name="Cat_ID_{{cat_counter }}" type="hidden" value="{{Category.id}}" type="text"/>
+                                            </th>
+                                        </tr>
+                                        <tr class="HeaderBold">
+                                            <th width="200">Points</th>
+                                            <th width="50">Yes/No</th>
+                                            <th width="200">Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in Category.items %}
+                                            <tr>
+                                                <td>
+                                                    {{item.Item}}
+                                                    <input type="hidden" name="cat_{{ cat_counter }}_Item_Id_{{ forloop.counter0 }}" value="{{item.id}}">
+                                                </td>
+                                                <td>
+                                                    <input type="radio" name="cat_{{ cat_counter }}_IsYes_{{ forloop.counter0 }}" value="Yes" {% if item.emp_detail.0.IsYes == True %}checked{% endif %}> Yes
+                                                    <input type="radio" name="cat_{{ cat_counter }}_IsYes_{{ forloop.counter0 }}" value="No" {% if item.emp_detail.0.IsYes == False %}checked{% elif  item.emp_detail.0.IsYes is None %}checked{% endif %}> No
+                                                </td>
+                                                <td>
+                                                    <textarea name="cat_{{ cat_counter }}_Remarks_{{ forloop.counter0 }}" class="form-control" id="" cols="30" rows="1">{{item.emp_detail.0.Remarks}}</textarea>
+                                                </td>
+                                            </tr>
+                                            {% if forloop.last %}
+                                                <input type="hidden" name="cat_{{ cat_counter }}_Total_Item" value="{{forloop.counter0}}">
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        {% if forloop.last %}
+                            <input type="hidden" name="Total_Category" value="{{ forloop.counter0 }}">
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+                
+     
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">
+                    <strong class="ObjgoalsHeading">
+                        Objectives and their goals
+                    </strong>
+                </div>
+            </div>
+        <!-- </div> -->
+        <div id="objectivesContainer">
+            <!-- Objectives will be populated here by JavaScript -->
+        </div>
+        <div class="text-right">
+            <button type="button" class="btn btn-primary btn-sm m-2 mr-3" id="addObjectiveBtn">Add Objective</button>
+        </div>
+
+
+        <div class="col-md-12">
+            <div class="form-group m-3">
+                <label for=""><b>Employee’s Strengths</b></label>
+                <textarea name="Strengths" id="" class="form-control" cols="30" rows="1">{{ Emp_obj.Strengths }}</textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group m-3">
+                <label for=""><b>Employee’s Areas for Improvement</b></label>
+                <textarea name="Improvement" id="" class="form-control" cols="30" rows="1">{{ Emp_obj.Improvement }}</textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group m-3">
+                <label for=""><b>Has the employee completed a minimum of 90% Training as per Corporate Training Guidelines?&nbsp;&nbsp;</b></label>
+                <input type="radio" name="Guide" value="Yes" {% if Emp_obj.Guidelines == True %}checked{% endif %}> &nbsp;&nbsp;Yes                
+                &nbsp;&nbsp;<input type="radio" name="Guide" value="No" {% if Emp_obj.Guidelines == False %}checked{% endif %}> &nbsp;&nbsp;No
+                <br>
+                <textarea name="Trainingattended" id="" class="form-control" cols="30" rows="1">{{ Emp_obj.Trainingattended }}</textarea>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="form-group m-3" style="display: flex; align-items: center;">
+                <label for=""><b>Employment is confirmed? &nbsp;&nbsp;</b></label>
+                <input type="radio" name="EmpCon" value="Yes" {% if Emp_obj.EmpConfirm == True %}checked{% endif %}> &nbsp;&nbsp; Yes                 
+                &nbsp;&nbsp;<input type="radio" name="EmpCon" value="No" {% if Emp_obj.EmpConfirm == False or Emp_obj.EmpConfirm is None or Emp_obj.Extended is None %}checked{% endif %}> &nbsp;&nbsp;No
+                &nbsp;&nbsp;<input type="radio" name="EmpCon" value="Extended" {% if Emp_obj.Extended %}checked{% endif %}> Extended
+                <div class="col-md-4" id="durationSelect" style="display: none;">
+                    <select name="Exten" class="form-control" id="">
+                        <option value="1 Month" {% if Emp_obj.Extended == "1 Month" %}selected{% endif %}>1 Month</option>
+                        <option value="2 Month" {% if Emp_obj.Extended == "2 Month" %}selected{% endif %}>2 Month</option>
+                        <option value="3 Month" {% if Emp_obj.Extended == "3 Month" %}selected{% endif %}>3 Month</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- </div> -->
+        
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary btn-sm">
+        </div>
+        <!-- </div> -->
+    </form>    
+</div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addObjectiveBtn = document.getElementById('addObjectiveBtn');
+        const objectivesContainer = document.getElementById('objectivesContainer');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        let objectiveCount = {{ objectives|length }};  // Start with the number of existing objectives
+    
+        function createObjectiveElement(objectiveId, objectiveName = '') {
+            return `
+                <div class="card m-2" id="objective-${objectiveId}">
+                    <div class="card-header">
+                        <div class="input-group mb-2">
+                            <textarea class="form-control objective-input" placeholder="Objective Name" name="objective-${objectiveId}" rows="1">${objectiveName}</textarea>
+                            <input type="button" class="btn btn-danger btn-sm removeObjectiveBtn ml-1" value="Remove">
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong class="ObjgoalsHeading">
+                                        Goals
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                        <ul style="list-style-type:none;" class="list-group mt-2" id="objective-${objectiveId}-goals"></ul>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-primary btn-sm addGoalBtn m-2">Add Goal</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    
+        function createGoalElement(goalId, goalName = '') {
+            return `
+                <li class="list-group-item d-flex align-items-center" id="${goalId}">
+                    <textarea class="form-control mr-2" placeholder="Add Goal" name="${goalId}" rows="1">${goalName}</textarea>
+                    <button type="button" class="btn btn-danger btn-sm removeGoalBtn">Remove</button>
+                </li>
+            `;
+        }
+    
+        function addObjective(objectiveId, objectiveName = '', goals = []) {
+            const objectiveHtml = createObjectiveElement(objectiveId, objectiveName);
+            const objectiveElement = document.createElement('div');
+            objectiveElement.innerHTML = objectiveHtml;
+            objectivesContainer.appendChild(objectiveElement);
+    
+            const objectiveCard = objectiveElement.querySelector('.card');
+    
+            const removeObjectiveBtn = objectiveCard.querySelector('.removeObjectiveBtn');
+            removeObjectiveBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to remove this objective?')) {
+                    if (objectiveId) {  // Check if objectiveId is present
+                        fetch(`/ProbationConfirmation/delete-objective/${objectiveId}/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                objectivesContainer.removeChild(objectiveElement);
+                            } else {
+                                alert('Failed to delete the objective.');
+                            }
+                        });
+                    } else {
+                        objectivesContainer.removeChild(objectiveElement);
+                    }
+                }
+            });
+    
+            const addGoalBtn = objectiveCard.querySelector('.addGoalBtn');
+            addGoalBtn.addEventListener('click', function() {
+                const goalId = `objective-${objectiveId}-goal-${objectiveCard.querySelectorAll('li').length + 1}`;
+                const goalHtml = createGoalElement(goalId);
+                const goalsList = objectiveCard.querySelector('.list-group');
+                const goalItem = document.createElement('li');
+                goalItem.innerHTML = goalHtml;
+                goalsList.appendChild(goalItem);
+    
+                const removeGoalBtn = goalItem.querySelector('.removeGoalBtn');
+                removeGoalBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to remove this goal?')) {
+                        const actualGoalId = goalItem.id.split('-').pop();
+                        if (actualGoalId) {  // Check if goalId is present
+                            fetch(`/ProbationConfirmation/delete-goal/${actualGoalId}/`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': csrfToken
+                                }
+                            }).then(response => {
+                                if (response.ok) {
+                                    goalsList.removeChild(goalItem);
+                                } else {
+                                    alert('Failed to delete the goal.');
+                                }
+                            });
+                        } else {
+                            goalsList.removeChild(goalItem);
+                        }
+                    }
+                });
+            });
+    
+            // Add existing goals
+            goals.forEach(goal => {
+                const goalId = `objective-${objectiveId}-goal-${goal.id}`;
+                const goalHtml = createGoalElement(goalId, goal.name);
+                const goalsList = objectiveCard.querySelector('.list-group');
+                const goalItem = document.createElement('li');
+                goalItem.innerHTML = goalHtml;
+                goalsList.appendChild(goalItem);
+    
+                const removeGoalBtn = goalItem.querySelector('.removeGoalBtn');
+                removeGoalBtn.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to remove this goal?')) {
+                        fetch(`/ProbationConfirmation/delete-goal/${goal.id}/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                goalsList.removeChild(goalItem);
+                            } else {
+                                alert('Failed to delete the goal.');
+                            }
+                        });
+                    }
+                });
+            });
+        }
+    
+        // Clear the container before populating it
+        objectivesContainer.innerHTML = '';
+    
+        // Populate existing objectives and goals
+        const existingObjectives = {{ objectives|safe }};
+        existingObjectives.forEach(obj => {
+            addObjective(obj.id, obj.name, obj.goals);
+        });
+    
+        addObjectiveBtn.addEventListener('click', function() {
+            const objectiveId = ++objectiveCount;
+            addObjective(objectiveId);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<script>
+    var employmentRadioButtons = document.querySelectorAll('input[name="EmpCon"]');
+    var extendedRadio = document.querySelector('input[value="Extended"]');
+    var durationSelect = document.getElementById('durationSelect');
+
+    function isEditingData() {
+        return true; 
+    }
+
+    function toggleDurationSelect() {
+        if (extendedRadio.checked && (isEditingData() || extendedRadio.checked)) {
+            durationSelect.style.display = 'block';
+        } else {
+            durationSelect.style.display = 'none';
+        }
+    }
+
+    employmentRadioButtons.forEach(function(radioButton) {
+        radioButton.addEventListener('change', toggleDurationSelect);
+    });
+
+    toggleDurationSelect();
+</script>
+
+{% endblock content %}

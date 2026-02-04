@@ -1,0 +1,101 @@
+
+
+<!-- New - Example Element Element -->
+<div class="nav-element-container d-flex gap-4">
+    <li class="list-unstyled"><a href="/Leave_Management_System/Employee_Dashboard/" class="nav-link text-white">Dashboard</a></li>
+
+    <!-- Nav - Element -->
+    <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            <span>Application</span>
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Application/">New Leave</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Status/">Leave Status</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Approval_list/">Approval List</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOffRequest/">Comp Off Claim</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOffClaim_Status/">Comp Off Status</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOfffApproval_list/">Comp Off Approval List</a>
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Status/">Leave</a> {% endcomment %}
+        </div>
+    </li>
+
+
+    <!-- Restriction starts from here - - - - - - - - - -  - - - -->
+    {% if  request.session.Department_Name|lower == "hr" %}
+
+        <!-- Leave - -  Nav - Element -->
+        <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Leave</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Hr_Dashboard/">HR Dashboard</a>
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/HolidayList/">Holiday List</a>
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Process/">Leave Process</a> {% endcomment %}
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/LeaveProcessDetails/">Leave Process Final</a> {% endcomment %}
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Employee_Leave_Apply/">Employee Leave Apply</a> {% endcomment %}
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Employee_Leave_Apply/">Apply Leave (On Behalf)</a> {% endcomment %}
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Employee_Leave_Balance/">Employee Leave Balance</a> {% endcomment %}
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Employee_Leave_Apply/">Manage Employee Leave (On Behalf)</a>
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Employee_Leave_Status/">Employee Leave Status</a>
+                {% comment %} <a class="dropdown-item dropdown-item-color" href="#">-----------------------------</a> {% endcomment %}
+                <a class="dropdown-item dropdown-item-color UpperSeperator" href="{% url "Monthly_Leave_Process" %}">Monthly Leave Allocation</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "Monthly_Leave_Process_Details" %}">Leave Allocation Finalization</a>
+            </div>
+        </li>
+
+
+        <!-- Master Report - -  Nav - Element -->
+        <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Report</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Master_Leave_Status/">Master Leave Reports</a>
+                <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Master_AR_Reports/">Master AR Reports</a>
+            </div>
+        </li>
+
+    {% endif %} 
+
+
+    <!-- Organization - - -  Nav - Element -->
+    {% comment %} {% if  request.session.OrganizationID == '3'  %} 
+        <li class="list-unstyled"><a href= "{% url 'OrgConfigList'%}" class="nav-link text-white">Organization</a></li>
+    {% endif %}  {% endcomment %}
+    
+    <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            <span>Attendance</span>
+        </a>
+        <div class="dropdown-menu">
+            {% if  request.session.Department_Name|lower == "hr" %}
+                <a class="dropdown-item dropdown-item-color" href="{% url "Week_Off" %}">Week Off</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "View_Attendance_Leave" %}">View Attendance</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "Excel_Attendance_Upload" %}">Upload Attendance</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "AttendaceMonthlyReport_Leave" %}">Monthly Attendance Report</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "AttendanceProcess" %}">Advance Attendance Posting</a>
+            {% endif %} 
+            <a class="dropdown-item dropdown-item-color" href="{% url "Daily_Attendace_Leave" %}">Daily Attendance Report</a>
+            <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/Payroll_List">Salary Slip</a>
+        </div>
+    </li>
+
+
+    <!-- Master - - -  Nav - Element -->
+    {% if request.session.UserID == "20210206173426" or request.session.UserID  == "20201212175519" or request.session.UserID == "20251209112591" %}
+        <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Master</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Leave_Type_List' %}">Leave Type Master</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'National_Holidays_List' %}">National Holidays</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Optional_Holidays_List' %}">Optional Holidays</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'State_Holidays_List' %}">State Holidays</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'OrgConfigList' %}">Organization Setup</a>
+            </div>
+        </li>
+    {% endif %}
+</div>

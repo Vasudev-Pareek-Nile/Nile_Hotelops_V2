@@ -1,0 +1,17 @@
+
+
+<!-- New - Example Element Element -->
+{% if request.session.UserID == '20201212178780'  %}
+    <li class="list-unstyled"><a href="{% url 'Objective_Master_List'%}" class="nav-link dropdown-main-color text-white">Master</a></li>
+{% endif %}
+
+
+{% if   request.session.Department_Name == 'HR' %}
+    <li class="list-unstyled"><a href="{% url "PADPList" %}" class="nav-link dropdown-main-color text-white">PADP</a></li>
+{% endif %}
+    
+    
+<li class="list-unstyled"><a href="{% url "PADPERDC" %}" class="nav-link dropdown-main-color text-white">Employee PADP</a></li>
+
+<li class="list-unstyled"><a href="{% url "PADPApprove" %}" class="nav-link dropdown-main-color text-white">Approve PADP</a></li>
+                

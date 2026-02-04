@@ -1,0 +1,58 @@
+{% extends "Inventory/homebase.html" %} {% block content %}
+
+<style>
+  label {
+    font-family: arial nova;
+    font-weight: bold;
+    margin-bottom:5px;
+  }
+
+  body {
+    font-family: arial nova;
+    /* font-size: 11px; */
+  }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="card">
+          <div class="card-header">
+            <strong>Master Category </strong>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-8">
+                <div class="form-group m-3">
+                  <label for="">Category Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="Category_Type"
+                    value="{{category.Category_Type}}"
+                    
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer">
+            
+              {% if category is none %}
+                <input type="submit" value="Submit" class="btn btn-primary" />
+              {% else %}
+                <input type="submit" value="Update" class="btn btn-primary" />
+              {% endif %}
+           
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}

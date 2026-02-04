@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Report</title>
+    <style>
+        @page {
+            margin: 10mm;
+        }
+        body {
+            font-family: "Arial Nova", sans-serif;
+            line-height: 1.4;
+        }
+        .report-header {
+            text-align: center;
+            font-weight: bold;
+        }
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            width: 100%;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            padding: 4px 8px;
+            text-align: left;
+        }
+        .bold-text {
+             font-weight: bold; 
+        }
+        .total-leave {
+            font-weight: bold;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .underline {
+            /* text-decoration: underline; */
+            margin-left: 50px;
+        } 
+        .spacer {
+            height: 10px;
+        }
+        .ReportDateContainer{
+            display:flex;
+            justify-content: space-between;
+        }
+        .light-color{
+            color:#1762ec;
+            font-weight: bolder;
+        }
+
+        .Pending{
+            color:#ffa500;
+        }
+        .RejectedReturn{
+            color:#ff0000;
+        }
+        .Approved{
+            color:#008000;
+        }
+
+        .LineColor{
+            border-top: 1px solid #0aa485;
+        }
+
+        .HUMANRESOURCESDEPARTMENT{
+            font-weight: bold;
+        }
+        .MarginTop{
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .ACCOUNTSDEPARTMENT{
+            margin-bottom: 50px;
+        }
+        
+        #Signature{
+            margin-top: 50px;
+        }
+
+        .form-table td {
+            line-height: 1.8;   /* Increases row height */
+        }
+
+        /* #FINALAPPROVAL{
+            text-align: center;
+            line-height: 1.8;
+        } */
+
+        #FINALAPPROVAL{
+            text-align: center;
+            line-height: 1.8;
+            margin-top: 50px;
+        }
+
+    </style>
+    
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+          <tr>
+              
+            <td style="text-align: center;width:650px">
+              <table style="border-radius: 10px; color: #222; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                  <tr>
+                   <td ><p style="text-align: center; font-size:18px; margin-bottom:-20px;">{{organization_logo}}</p>
+                        <p style="text-align: center; margin-top:-3px; font-size:10px">SALARY ADVANCE / LOAN APPLICATION FORM</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style="text-align: right;">
+              {% if organization_logos %}
+                <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+              {% else %}
+                <p>No logo available</p>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+</header>
+<br>
+
+<hr class="LineColor">
+<!-- 
+<div class="table-container">
+    <table>
+        <tbody>
+            <tr>
+                <h3>SALARY ADVANCE/ LOAN APPLICATION FORM</h3>
+               <td >Application Form No: </td>
+               <td >Name:  </td>
+               <td >Employee ID No:  </td>
+               <td >Designation & Department:  </td>
+               <td >Reasons for Request :  </td>
+               <td >Loan Amount Required :  </td>
+               <td >No. of Installments :  </td>
+               <td >Date of Joining :  </td>
+               <td >Bank A /C No:  </td>
+               <td >Date:  </td>
+            </tr>
+            <tr>
+                <h3>ACCOUNTS DEPARTMENT</h3>
+               <td>Previous Loan(S) Taken:</td>
+               <td>Reason for Previous Loan (S): </td>
+               <td>Any dues in repayment: </td>
+               <td>No of Installments: </td>
+            </tr>
+            <tr>
+                <h3>HUMAN RESOURCES DEPARTMENT</h3>
+               <td>Date of Joining:</td>
+               <td>Current Salary:</td>
+               <td>Recommendation:</td>
+            </tr>
+        </tbody>
+    </table>
+</div> -->
+  <div class="title">
+    <div class="MarginTop"><strong><u>SALARY ADVANCE / LOAN APPLICATION FORM</u></strong></div>
+  </div>
+{% for salarydata in AdvanceSalaryFormData %}
+  <table class="form-table">
+    <tr>
+      <td>Application Form No</td><td>: {{salarydata.Application_Form_No}}</td>
+      <td class="MarginTop"><strong><u>ACCOUNTS DEPARTMENT</u></strong></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Name</td><td>:{{ salarydata.EmployeeName }}</td>
+      <td class="MarginTop">Previous Loan(S) Taken</td><td>: {{ salarydata.Prev_Loan_Taken }}</td>
+    </tr>
+    <tr>
+      <td>Employee ID No.</td><td>: {{ salarydata.EmpID }}</td>
+      <td>Reason for Previous Loan (S)</td><td>: {{ salarydata.Reason_For_PreviousLoan }}</td>
+    </tr>
+    <tr>
+      <td>Designation</td><td>: {{ salarydata.Designation }}</td>
+      <td>Any dues in repayment</td><td>: {{ salarydata.Dues_Repayment }}</td>
+    </tr>
+    <tr>
+      <td>Department</td><td>: {{ salarydata.Department }}</td>
+      <td>No of Installments</td><td>: {{ salarydata.No_Of_Installments }}</td>
+    </tr>
+    <tr>
+      <td>Loan Amount Required</td><td>: {{ salarydata.LoanAmount }}</td>
+      <td>Accounts Manager</td><td>: </td>
+    </tr>
+    <tr>
+        <td>No. of Installments</td><td>:{{ salarydata.No_Of_Installments }}</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Date of Joining</td><td>:{{ salarydata.DateofJoining }}</td>
+        <td>
+            <h3 class="section-title HUMANRESOURCESDEPARTMENT MarginTop"><u>HUMAN RESOURCES DEPARTMENT</u></h3>
+        </td>
+    </tr>
+    <tr>
+        <td>Bank A /C No.</td><td>: {{ salarydata.BankACNo }}</td>
+        <td>Current Salary</td><td>: {{ salarydata.Current_Salary }}</td>
+    </tr>
+    <tr>
+        <td>Reasons for Request</td><td>: {{ salarydata.Reasons_For_Request }} </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Date</td><td>: {{ salarydata.DateofLoan }}</td>
+        <td>Recommendation</td><td>: {{ salarydata.Recommendation }}</td>
+    </tr>
+  </table> 
+  {% endfor %}
+
+
+<!-- This is table that inside   -->
+    <table id="Signature">
+        <tbody>
+            <tr>
+                <td>Signature of Employee:</td>
+               <td>Signature of H.O.D:</td>
+            </tr>
+        </tbody>
+    </table>
+
+<!-- This is table that inside   -->
+<!-- <hr class="LineColor"> -->
+
+<div class="table-container">
+    <table style="border: 1px solid #222; border-collapse: collapse; width: 100%;">
+        <h3 style="text-align:center; margin-top: 30px;"><u>DETAILS OF THE GUARANTOR'S</u></h3>
+        <tbody>
+            <caption></caption>
+            <tr>
+                <td style="border: 1px solid #222; padding: 8px;">Name of the Guarantor: </td>
+               <td style="border: 1px solid #222; padding: 8px;">Name of the Guarantor:</td>
+            </tr>
+            <tr>
+               <td style="border: 1px solid #222; padding: 8px;">Employee No:  </td>
+               <td style="border: 1px solid #222; padding: 8px;">Employee No:  </td>
+            </tr>
+            <tr>
+               <td style="border: 1px solid #222; padding: 8px;">Department:  </td>
+               <td style="border: 1px solid #222; padding: 8px;">Department:  </td>
+            </tr>
+            <tr>
+               <td style="border: 1px solid #222; padding: 8px;">
+                    <p>I hereby agree that, I stand as  
+                    the guarantor for the Salary  
+                    Advance/Loan amount if Mr/Ms                         
+                    Has abscond or termination from the 
+                    employment under any disciplinary action, I am 
+                    liable to pay the amount. 
+                    </p>
+                    <p>Guarantor's Signature: </p>
+                </td>
+               <td style="border: 1px solid #222; padding: 8px;">
+                    <p>I hereby agree that, I stand as  
+                    the guarantor for the Salary  
+                    Advance/Loan amount if Mr/Ms                         
+                    Has abscond or termination from the 
+                    employment under any disciplinary action, I am 
+                    liable to pay the amount. 
+                    </p>
+                    <p>Guarantor's Signature: </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- <tr><td ><br/></td></tr>  -->
+
+<table id="FINALAPPROVAL">
+    <tbody>
+        <tr>
+            <td></td>
+            <td><h3><u>HR Department</u></h3></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><strong>FINAL APPROVAL</strong></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>I approve/ disagree the above Recommendation of ...................</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>To be recoverd in ................... installment, effective .......... _____.</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr class="GeneralManager">
+            <td></td>
+            <td>General Manager</td>
+        </tr>
+        <tr>
+            <td></td>
+            {% comment %} <td>Hotel Name</td> {% endcomment %}
+            <td>{{organization_logo}}</td>
+        </tr>
+    </tbody>
+</table>
+
+<hr style="background-color: #0aa485;">
+<footer style="border-top: 1px solid #0aa485;">
+    <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+            {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                           <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,435 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+  </style>
+  
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">F&B Worksheet Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>    
+                     
+        </tr>
+    </table>
+    <br>
+<br/>
+<div class="card-body">
+    <form action="{%url 'FB_WorksheetView' mem.id %}" method = "post">
+        {% csrf_token %}                
+  
+      </div>                                                        
+    </form>
+</div>
+</div>
+
+  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Breakfast-Food Internal Covers</th>
+        <th>Breakfast-Food External Covers</th>
+        <th>Breakfast-Beverage Internal Covers</th>
+        <th>Breakfast-Beverage External Covers</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Breakfast-Food Average Check</th>
+        <th>Breakfast-Food Average Check</th>
+        <th>Breakfast-Beverage Average Check</th>
+        <th>Breakfast-Beverage Average Check</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Breakfast-Food Revenue</th>
+        <th>Breakfast-Food Revenue</th>
+        <th>Breakfast-Beverage Revenue</th>
+        <th>Breakfast-Beverage Revenue</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Launch-Food Internal Covers</th>
+        <th>Launch-Food External Covers</th>
+        <th>Launch-Beverage Internal Covers</th>
+        <th>Launch-Beverage External Covers</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Launch-Food Average Check</th>
+        <th>Launch-Food Average Check</th>
+        <th>Launch-Beverage Average Check</th>
+        <th>Launch-Beverage Average Check</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Launch-Food Revenue</th>
+        <th>Launch-Food Revenue</th>
+        <th>Launch-Beverage Revenue</th>
+        <th>Launch-Beverage Revenue</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Dinner Food Internal Covers</th>
+        <th>Dinner Food External Covers</th>
+        <th>Dinner Beverage Internal Covers</th>
+        <th>Dinner Beverage External Covers</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Dinner Food Average Check</th>
+        <th>Dinner Food Average Check</th>
+        <th>Dinner Beverage Average Check</th>
+        <th>Dinner Beverage Average Check</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Dinner Food Revenue</th>
+        <th>Dinner Food Revenue</th>
+        <th>Dinner Beverage Revenue</th>
+        <th>Dinner Beverage Revenue</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Super Food Internal Covers</th>
+        <th>Super Food External Covers</th>
+        <th>Super Beverage Internal Covers</th>
+        <th>Super Beverage External Covers</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Super Food Average Check</th>
+        <th>Super Food Average Check</th>
+        <th>Super Beverage Average Check</th>
+        <th>Super Beverage Average Check</th>        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Super Food Revenue</th>
+        <th>Super Food Revenue</th>
+        <th>Super Beverage Revenue</th>
+        <th>Super Beverage Revenue</th>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Others Food Internal Cover</th>
+        <th>Others Food External Cover</th>
+        <th>Others Beverage Internal Cover</th>
+        <th>Others Beverage External Cover</th>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Others Food Average Check</th>
+        <th>Others Food Average Check</th>
+        <th>Others Beverage Average Check</th>
+        <th>Others Beverage Average Check</th>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="30%"></th>
+        <th>Others Food Revenue</th>
+        <th>Others Food Revenue</th>
+        <th>Others Beverage Revenue</th>
+        <th>Others Beverage Revenue</th>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+        <td>{{x.Amount}}</td>   
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates Breakfast</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates Launch</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates Dinner</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates Supper</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates Others</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+<br>
+<br>  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Captures Rates All Meal Types</th>     
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td>{{x.Amount}}</td>   
+      
+    </tr>    
+    {% endfor %}  
+</table>
+
+</div>
+  {% endblock content %}

@@ -1,0 +1,128 @@
+{% extends 'letterloa/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+    }
+    #clear, #filter{
+		padding-block: 8px;
+	}
+
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Letter of Appointment</span></div>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+
+            <div class="col-md-12">
+                <form method="GET" class="row g-2">
+                    <div class="col-md-5">
+                        {% comment %} <label for="organizationSelect" class="form-label">Select Organizations</label> {% endcomment %}
+                        <select name="I" id="organizationSelect" class="form-control">
+                            <option value="">Select Organization Name</option>
+                            {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}">{{ itm.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="col-md-4 d-flex justify-items-start align-items-center gap-2" >
+                        <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+                    
+                        <a href="{% url 'emplistloa' %}" class="btn btn-danger" id="Clear">
+                            Clear
+                        </a>
+                    </div>
+                </form>  
+            </div>
+
+            <table id="example" class="table table-bordered table-sm" >
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+
+                        <th class="Designation">Designation</th>
+                        <th class="Department">Department</th>
+                        <th class="Date">Date of Appointment</th>
+                        
+                        <th class="Signed" style="width: 150px;">Signed Document</th>
+
+                        <th class="Action" style="width: 200px;">Action</th>
+                    </tr>
+
+                </thead>
+                <tbody>
+                        {% for AppointemetLetter in AppointemetLetters  %}
+                        <tr>
+                        <td>{{AppointemetLetter.emp_code}}</td>
+                        <td> {{AppointemetLetter.first_name}} {{AppointemetLetter.last_name}}   </td>
+                        
+                        <td>{{AppointemetLetter.designation}}</td>
+                        <td>{{AppointemetLetter.department}}</td>  
+                        <td>{{AppointemetLetter.date_of_appointment|date:'d-m-Y'}}</td>  
+                        
+                        <td>
+                            
+                            {% if AppointemetLetter.file_name  %}
+                            
+                        <a class="btn btn-danger btn-sm mb-2 text-white" href="{% url "repalce_fileloa" %}?EmpID={{AppointemetLetter.EmpID}}&LOA_ID={{AppointemetLetter.id}}&OID={{AppointemetLetter.OrganizationID}}&Page=emplistloa">Delete File</a>
+                        <br/>
+                        <a class="btn btn-primary btn-sm" href="{% url "download_fileloa" %}?LOA_ID={{AppointemetLetter.id}}&OID={{AppointemetLetter.OrganizationID}}&Page=emplistloa">Download File</a>
+                        
+                        {% else %}
+
+                        <a class="btn btn-primary btn-sm" href="{% url "upload_fileloa" %}?EmpID={{AppointemetLetter.EmpID}}&LOA_ID={{AppointemetLetter.id}}&OID={{AppointemetLetter.OrganizationID}}&Page=emplistloa">Upload File</a>
+
+                        {% endif %} 
+                        </td>
+
+                        </td>
+                        <td>
+                            <span style="position: relative; ">
+                                <a class="btn btn-primary btn-sm" href="{% url 'entryemploa' %}?EC={{AppointemetLetter.emp_code}}&EmpID={{AppointemetLetter.EmpID}}&LOA_ID={{AppointemetLetter.id}}&DepartmentName={{ AppointemetLetter.department }}&Page=emplistloa&OID={{AppointemetLetter.OrganizationID}}" >Edit</a>
+
+                                <a 
+                                    href="#" 
+                                    onclick="showview(this)" 
+                                    data-href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{AppointemetLetter.EmpID}}&OID={{AppointemetLetter.OrganizationID}}"
+                                    class="btn btn-primary btn-sm">
+                                    View
+                                </a>
+
+                                <a class="btn btn-primary btn-sm" href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{AppointemetLetter.EmpID}}&OID={{AppointemetLetter.OrganizationID}}" target="_blank">Print</a>
+
+                                {% comment %} <a class="btn btn-primary btn-sm" href="{% url "generate_appointment_letter" %}?LOA_ID={{AppointemetLetter.id}}&EmpID={{AppointemetLetter.EmpID}}&head=False&OID={{AppointemetLetter.OrganizationID}}" target="_blank">Print</a> {% endcomment %}
+                            </span>
+                        </td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+
+            </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var table = $("#example").DataTable({
+            "searching": true,
+            "paging": false,
+            "order": [],
+        });
+    });
+</script>
+
+{% endblock content %}

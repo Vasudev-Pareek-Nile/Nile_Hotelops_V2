@@ -1,0 +1,235 @@
+{% extends 'ITM/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    table td,th
+    {
+        font-size: 13px;
+    }
+</style>
+{% comment %} <div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+    </div>
+</div> {% endcomment %}
+<div class="modal" id="approveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #1ab394;color: white; border-radius: 0;">
+                <h5 class="modal-title">Approve or Reject Request</h5>
+                <button type="button" class="close" id="closeApprove">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label for="">Comment</label>
+                <textarea class="form-control remarks-textarea" placeholder="Enter remarks" id="approveRemarks" required></textarea>
+                <input type="hidden" id="approveAID" value="">
+                <input type="hidden" id="approveOrganizationID" value="{{ OrganizationID }}">
+                <input type="hidden" id="approveUserID" value="{{ UserID }}"> 
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeApproveFooter">Close</button>
+                <button type="button" class="btn btn-danger" id="rejectBtn">Reject</button>
+                <button type="button" class="btn btn-primary" id="approveBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    
+
+    <div class="col-md-12">
+        <div class="card-header mb-2">
+            <div class="row">
+                <div class="col-md-6">IT Manager Request  LIST</div>
+               
+            </div>
+        </div>
+        <table id="example" class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Employee Code</th>
+                    <th>Designation Grade</th>
+                    <th>Department</th>
+                    <th>HR</th>
+                    <th>HOD</th>
+
+                    <th>IT</th>
+
+                    <th>Sim</th>
+                    <th>Mobile</th>
+                    <th>Email</th>
+                    <th>System</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+              
+                    {% for item in ITS %}
+                    <tr>
+                        <td>{{ item.it.EmployeeName }}</td>
+                        <td>{{ item.it.EmployeeCode }}</td>
+                        <td>{{ item.it.DesignationGrade }}</td>
+                        <td>{{ item.it.Department }}</td>
+                        <td>
+                                {% if item.it.HrStatus == "1" %}Submitted By HR {% endif %}
+                                
+                        </td>
+                        <td>
+                            {% if item.it.HodStatus == "0" %}Pending From HOD{% endif %}
+                            {% if item.it.HodStatus == "1" %}Approved By HOD{% endif %}
+                            {% if item.it.HodStatus == "-1" %}Rejected By HOD{% endif %}
+
+ 
+                        </td>
+
+                        <td>
+                            {% if item.it.ItStatus == "0" %}Pending From IT{% endif %}
+                            {% if item.it.ItStatus == "1" %}Approved By IT{% endif %}
+                            {% if item.it.ItStatus == "-1" %}Rejected By IT{% endif %}
+
+ 
+                        </td>
+                        <td>{{ item.sim_issued }}</td>
+                        <td>{{ item.mobile_issued }}</td>
+                        <td>{{ item.email_issued }}</td>
+                        <td>{{ item.system_issued }}</td>
+                       <td>
+                        {% comment %} <a href="{% url 'DeleteIT'%}ID={{item.it.id}}" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash text-danger"></i></a> {% endcomment %}
+                       {% comment %} {% if item.it.HodStatus == "1"   %}
+                      
+                        <a href="{% url 'ITRequest' %}?ID={{item.it.id}}"><i class="fa fa-edit text-primary"></i></a>
+                     
+                          
+                      {% endif %} {% endcomment %}
+                      
+                      {% if item.it.HodStatus == "1"  and   item.it.Rights ==  "ITM"  %}
+                  
+                      <a href="{% url 'ITRequest' %}?ID={{item.it.id}}" class="btn btn-primary btn-sm">Edit</a>
+                     
+                     
+                      {% elif item.it.HrStatus == "1" and item.it.Rights == "REP"  %}
+                          <a href="javascript:void(0);" 
+                          class="btn btn-primary btn-sm btn-action" 
+                          data-id="{{ item.it.id }}" 
+                          data-remarks="{{ item.it.HodComment }}">Action</a>
+                      {% endif %}
+  
+                        
+                        </td>
+                    </tr>
+                    {% endfor %}
+             
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% comment %} <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" /> {% endcomment %}
+  
+{% comment %} <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> {% endcomment %}
+
+
+
+<script>
+    $('.btn-action').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action
+        var itemId = $(this).data('id'); // Get item ID from the button's data-id attribute
+        var currentRemarks = $(this).data('remarks'); // Get any existing remarks if available
+    
+        $('#approveAID').val(itemId);
+        $('#approveRemarks').val(currentRemarks); 
+    
+        $('#approveModal').modal('show');
+    });
+    
+    function submitApproval(HodStatus) {
+        var itemId = $('#approveAID').val();  // Get ID from hidden input
+        var remarks = $('#approveRemarks').val();  // Get remarks from textarea
+        var organizationID = $('#approveOrganizationID').val();  // Get OrganizationID from hidden input
+        var userID = $('#approveUserID').val();  // Get UserID from hidden input
+    
+        if (!remarks.trim()) {
+            alert("Remarks are required!");
+            return;
+        }
+    
+        $.ajax({
+            url: '/IT/ITHodApprovalApi/',  
+            type: 'POST',
+            data: JSON.stringify({
+                'ID': itemId,
+                'OrganizationID': organizationID,
+                'UserID': userID,
+                'HodStatus': HodStatus,  
+                'HodComment': remarks
+            }),
+            contentType: 'application/json',
+            headers: {
+                'hotel-api-token': '{{hotelapitoken}}'  
+            },
+            success: function(response) {
+    if (response.success) {
+        alert(response.success); 
+        $('#approveModal').modal('hide');  
+        location.reload();  
+    } else if (response.error) {
+        alert(response.error);  
+    } else {
+        alert("Unexpected response from the server.");
+    }
+},
+
+        });
+    }
+    
+    $('#approveBtn').on('click', function() {
+        submitApproval(1);  
+    });
+    
+    $('#rejectBtn').on('click', function() {
+        submitApproval(-1);  
+    });
+    
+    $('#closeApprove, #closeApproveFooter').on('click', function() {
+        $('#approveModal').modal('hide');
+    });
+    </script>
+    
+
+{% comment %} <script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        // var selectedOrganization = "{{ I }}";
+        // $("select[name='I']").val(selectedOrganization);  
+        
+       
+    });
+ 
+</script> {% endcomment %}
+    
+
+
+
+    
+
+  
+{% endblock content %}
+
+
+
+

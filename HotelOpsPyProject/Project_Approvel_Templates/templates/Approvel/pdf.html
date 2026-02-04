@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      font-size: 11px;
+      font-family: arial nova;
+
+      
+    }
+    
+        /* Define any custom CSS styles here */
+       
+    </style>
+  </style>
+  <body>
+    <div class="container">
+      <table style="border: none;">
+    <tr>
+        <td>
+            <table class="boder">
+                <tbody>
+                    <td>
+                        <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100">
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td>
+            <table  class="boder" style="border: none; border-radius: 0px; background-color:; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                    <td style="text-align: center;">
+                        <div style="font-size: larger;">NILE Hospitality</div>
+                        <div style="font-size: 9px;">CHIRAG COMPLEX, 47, Ganpati Vihar, Pulan, Pulla Bhuwana, Panerion Ki Madri, Udaipur, Rajasthan 313002</div>
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td ></td>
+    </tr>
+   
+</table>
+<br>
+<br>
+<table>
+     <td  style="text-align: center;"> <h2>PROJECT APPROVAL REQUEST</h2></td>
+     
+</table>
+    </br>
+     <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 30px">
+            <td colspan="1" style="border: 1px solid #dddddd; text-align: left; padding: 3px; "><strong><h3>Owner’s Agreement under Framework Agreement with PPHE
+Radisson RED Belgrade, Serbia</h3>
+</strong></td>
+        </tr>
+         
+        
+       
+    </tbody>
+</table>
+   <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>EXECUTIVE SUMMARY</strong></td>
+        </tr>
+        <tr style="height: 40px">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Hotel type :- <span>{{approvels.Hotel_type}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Strategy :- <span>{{approvels.Strategy}}</span></td>
+           
+        </tr>
+        <tr  style="height: 40px">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Development type :- <span>{{approvels.Development_type}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Location :- <span>{{approvels.Location}},{{approvels.Location_label}},{{approvels.Location_type}}</span></td>
+        </tr>
+        <tr style="height: 40px">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Status :- <span>{{approvels.Status}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Opening Date :- <span>{{approvels.Opening_Date}}</span></td>
+        </tr>
+
+        <tr  style="height: 40px">
+            
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Fee income :- <span>{{approvels.Fee_income}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">RHG Contribution :- <span>{{approvels.RHG_Contribution}}</span></td>
+        </tr>
+        <tr style="height: 90px">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">IRR if applicable :- <span>{{approvels.IRR_applicable}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>Facilities :</b> <span>Rooms :- {{approvels.Rooms}}</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>F&B outlets :- {{approvels.FB_outlets}}</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Meeting&CoWork:-</span> {{approvels.MeetingCoWork}}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Other (Gym & Spa) :- {{approvels.Other}}</span></td>
+        </tr>
+       
+    </tbody>
+</table>
+<br>
+ <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="1" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>OPPORTUNITY</strong></td>
+        </tr>
+         
+        
+       
+    </tbody>
+</table>
+ <ol style="padding-top: 10px;" type="A" class="childclass">
+                                {% for op in opportunity %}
+                                   
+                                        <li>{{ op.oppor }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+                            <br>
+ <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="8" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>PERFORMANCE & KPI’s (based on hotel’s projected stabilized year (Year 4, 2026) </strong></td>
+        </tr>
+         <tr style="background-color: #7F7F70;">
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 2px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 2px; width:7%;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; color: white; width:10%;">Projection</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 5px; color: white; width:10%;">5YP</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 2px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 2px; width:11%;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; color: white; width:10%;">Projection</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; color: white; width:10%;">5YP</td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">ADR (EUR)</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">FV<br>PV</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.adr_fv }}</br>{{ approvels.adr_pv }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Royalty Fee</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">MEUR p.a.<br>% of RRev</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.royalty_fee1 }}</br>{{ approvels.royalty_fee2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Occ. %</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.occ }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">ZMA Fee</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">MEUR p.a.<br>% of RRev</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.zma_fee1 }}</br>{{ approvels.zma_fee1 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">RevPAR (EUR)</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">FV<br>PV</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.rav_fv }}</br>{{ approvels.rev_pv }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Total Fee</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">MEUR p.a.<br>EUR/room<br>% of RRev</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.total_fee1 }}</br>{{ approvels.total_fee2 }}</br>{{ approvels.total_fee3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">RRev (MEUR)</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.rrev }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">NPV (@7.49%) </td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">MEUR</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.meur }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.yp2 }}</td>
+         </tr>
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Term (years)</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.term }}</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+         </tr>
+          <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Inflation rate</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.in_rate }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px;">{{ approvels.yp1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</td>
+         </tr>
+       
+    </tbody>
+    </table>
+    <br>
+     <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="1" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>MARKET PERFORMANCE (based on hotel’s projected stabilized year (Year 4, 2026) </strong></td>
+        </tr>
+         
+        
+       
+    </tbody>
+</table>
+<table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="1" style="border: 1px solid #dddddd; text-align: left; padding: 4px; width:15%; "><strong>&nbsp;</strong></td>
+            <td colspan="3" style="border: 1px solid #dddddd; text-align: center; padding: 4px; width:16%; "><strong>{{ approvels.year1 }}</strong></td>
+            <td colspan="3" style="border: 1px solid #dddddd; text-align: center; padding: 4px; width:16%; "><strong>{{ approvels.year2 }}</strong></td>
+            <td colspan="3" style="border: 1px solid #dddddd; text-align: center; padding: 4px;  width:16%; "><strong>{{ approvels.year3 }}</strong></td>
+            <td colspan="3" style="border: 1px solid #dddddd; text-align: center; padding: 4px; width:16%; "><strong>3Y AVERAGE</strong></td>
+        </tr>
+         
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left;  padding: 3px;">(EUR)</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">Occ</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">ADR</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">RevPAR</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">Occ</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">ADR</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">RevPAR</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">Occ</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">ADR</td>
+            <td style="border: 1px solid #dddddd; text-align: center;   padding: 3px; width:7%;">RevPAR</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">Occ</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px;  width:7%;">ADR</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">RevPAR</td>
+            
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left;  padding: 3px;">RC Old Mill Belgrade</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.occ1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.rc1 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.old_rev1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.occ2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.rc2 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.old_rev2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.occ3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.rc3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;   padding: 3px; width:7%;">{{ approvels.old_rev3 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalocc }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px;  width:7%;">{{ approvels.totalrc }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.total_rev }}</td>
+            
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left;  padding: 3px;">CompSet</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_occ1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_adr1 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_rev1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.com_occ2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_adr2 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.com_rev2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_occ3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.com_adr3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;   padding: 3px; width:7%;">{{ approvels.com_rev3 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalcom_occ }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px;  width:7%;">{{ approvels.totalcom_adr }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalcom_rev }}</td>
+            
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left;  padding: 3px;">Proposed Hotel</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_occ1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_adr1 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_rev1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.pro_occ2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_adr2 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.pro_rev2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_occ3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pro_adr3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;   padding: 3px; width:7%;">{{ approvels.pro_rev3 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.total_pro_occ }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px;  width:7%;">{{ approvels.totalpro_adr }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalpro_rev }}</td>
+            
+        </tr>
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left;  padding: 3px;">Penetration</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_occ1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_adr1 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_rev1 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.pen_occ2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_adr2 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center; padding: 3px; width:7%;">{{ approvels.pen_rev2 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_occ3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.pen_adr3 }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;   padding: 3px; width:7%;">{{ approvels.pen_rev3 }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalpen_occ }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px;  width:7%;">{{ approvels.totalpen_adr }}</td>
+             <td style="border: 1px solid #dddddd; text-align: center;  padding: 3px; width:7%;">{{ approvels.totalpen_rev }}</td>
+            
+        </tr>
+       
+       
+    </tbody>
+</table>
+<br>
+  <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>Contract Summary</strong></td>
+        </tr>
+        
+        
+        
+    </tbody>
+</table>
+<table>
+
+<tbody>
+      {% for d in deta %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px; width: 20%;">{{ d.Contract_summary.Name }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: ; padding: 4px; "> {{ d.Deta }}</td>
+        </tr>
+        {% endfor %}
+</tbody>
+
+</table>
+<br>
+ <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>Owner</strong></td>
+        </tr>
+        
+        
+       
+    </tbody>
+</table>
+<table>
+
+<tbody>
+      {% for ow in ow_deta %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px; width: 20%;">{{ ow.owners.Name1 }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: ; padding: 4px; "> {{ ow.Deta2 }}</td>
+        </tr>
+        {% endfor %}
+</tbody>
+
+</table>
+<br>
+<table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>Project</strong></td>
+        </tr>
+        
+        
+       
+    </tbody>
+</table>
+<table>
+
+<tbody>
+      {% for pro in pro_deta %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px; width: 20%;">{{ pro.Project.Project_Name1 }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: ; padding: 4px; "> {{ pro.Deta3 }}</td>
+        </tr>
+        {% endfor %}
+</tbody>
+
+</table>
+<br>
+<div style="page-break-before: always;">
+<table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 40px">
+            <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;"><strong>Signature</strong></td>
+        </tr>
+        
+        
+       
+    </tbody>
+</table>
+<br>
+<br>
+<br>
+<table >
+     <tr>
+    <td style="text-align: center;">____________</td>
+    <td style="text-align: center;">____________</td>
+    <td style="text-align: center;">____________</td>
+    <td style="text-align: center;">____________</td>
+  </tr>
+  <tr>
+    <td style="text-align: center;">F. J. Gonzalez</td>
+    <td style="text-align: center;">S. Amodeo</td>
+    <td style="text-align: center;">E. Younes</td>
+    <td style="text-align: center;">C. Basterrechea</td>
+  </tr>
+</table>
+<br>
+<p>Date:  ________________________</p>
+</div>
+    </div>
+  </body>
+</html>
+</div>

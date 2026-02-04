@@ -1,0 +1,232 @@
+{% load maningfilter %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manning Guide</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 3px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        color: #fff;
+        font-size: 10px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+    @page {
+      size: landscape;
+      margin: 1cm;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 120px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Manning Guide <br/>{{ selectedOrganizationName }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 120px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      <div class="main-container">
+        <table class="table table-striped custom-table">
+            <thead>
+              <tr>
+                <td colspan="7" style="text-align: center; background-color:  #dedede ;  font-weight: bold;">
+                    <strong>Level Wise Report</strong>
+                </td>
+              </tr>
+                <tr>
+                    <th>LEVEL</th>
+                    <th>DIVISION</th>
+                    <th>DEPARTMENT</th>
+                    <th>DESIGNATION</th>
+                    <th>HEAD COUNT</th>
+                    <th>AVG CTC MONTHLY</th>
+                    <th>TOTAL CTC MONTHLY</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% if emp_data %}
+                {% for division in divisions %}
+                  {% for dept_name, desig_data in emp_data.items %}
+                    {% if division.DivisionName == dept_name %}
+                      {% for desig_name, data in desig_data.items %}
+                        <tr>
+                          <td style="width: 90px; text-align: center; ">{{ data.Level }}</td>
+                          <td>{{ division.DivisionName }}</td>
+                          <td>{{ dept_name }}</td>
+                          <td>{{ desig_name }}</td>
+                          <td style="width: 140px; text-align: center; ">{{ data.num_employees }}</td>
+                          <td style="width: 140px; text-align: right; ">{{ data.avg_salary|formatingdata }}</td>
+                          <td style="width: 140px; text-align: right; ">{{ data.total_salary|formatingdata }}</td>
+                        </tr>
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="7">No data available</td></tr>
+              {% endif %}
+            </tbody>
+        </table>
+      </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

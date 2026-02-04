@@ -1,0 +1,87 @@
+{% extends 'scanty/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'ScantyBaggageUpdateData' %}" enctype="multipart/form-data">
+    {{ Scanty_Baggage_Register_Form }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Scanty Baggage List</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+              {% render_field ScantyBaggageForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Room_No</label>
+                {% render_field ScantyBaggageForm.Room_No class="form-control" placeholder="Room_No" value=Ed.Room_No %}
+              </div>
+              <div class="col-sm-3">
+                <label>Guest_Name</label>
+                {% render_field ScantyBaggageForm.Guest_Name class="form-control" placeholder="Guest_Name" value=Ed.Guest_Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Arrival_Date</label>
+                {% render_field ScantyBaggageForm.Arrival_Date class="form-control" placeholder="Arrival_Date" value=Ed.Arrival_Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Departure_Date</label>
+                {% render_field ScantyBaggageForm.Departure_Date class="form-control" placeholder="Departure_Date" value=Ed.Departure_Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Deposite</label>
+                {% render_field ScantyBaggageForm.Deposite class="form-control" placeholder="Deposite" value=Ed.Deposite %}
+              </div>
+              <div class="col-sm-3">
+                <label>Comment</label>
+                <textarea name="Comment" class="form-control" rows=4 maxlength=500 placeholder="Comment">{{Ed.Comment}}</textarea>
+              </div>
+              <div class="col-sm-3">
+                <label>Front_Desk_Associate</label>
+                {% render_field ScantyBaggageForm.Front_Desk_Associate class="form-control" placeholder="Front_Desk_Associate" value=Ed.Front_Desk_Associate %}
+              </div>
+              <div class="col-sm-3">
+                <label>Duty_Manager</label>
+                {% render_field ScantyBaggageForm.Duty_Manager class="form-control" placeholder="Duty_Manager" value=Ed.Duty_Manager %}
+              </div>
+
+             
+             
+            </div>
+          </div>
+
+          <br/>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Remarks</label>
+              {% comment %} {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite" %} {% endcomment %}
+              <textarea name="Remarks" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Remarks}}</textarea>
+            </div>
+          </div>
+         
+       
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+   
+  {% endblock content %}

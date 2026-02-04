@@ -1,0 +1,87 @@
+{% extends 'Policy_Data_Privacy/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+    .cke_notifications_area,
+    .cke_notification,
+    .cke_notification_warning {
+        display: none !important;
+    }
+    #cke_1_contents{
+        height: 600px;
+    }
+</style>
+
+<script src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+<div class="card">
+    <div class="card-header">
+        <span class="text-uppercase fw-bold">{% if mode == "create" %}Create New Policy{% else %}Edit Policy{% endif %}</span>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            {% comment %} <div>
+                <label class="fw-bold">Policy Name:</label><br>
+                <input type="text" name="name" class="form-control" value="Policy Data Privacy" style="width: 400px;" readonly>
+                <!-- <input type="text" name="name" class="form-control" value="{{ policy.name }}" style="width: 400px;"> -->
+            </div>  {% endcomment %}
+    
+
+            <div class="row">
+                <div class="col-sm-4">
+                    <label class="">Organization:</label>
+                    <select name="OID" class="form-control select2">
+                        {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationID }}" 
+                            {% if itm.OrganizationID|stringformat:"s" == policy.HotelID|stringformat:"s" %}selected{% endif %}>
+                            {{ itm.OrganizationName }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label class="">Policy Name:</label>
+                    <select name="PolicyID" class="form-control">
+                        {% for itm in Item_Master %}
+                        <option value="{{ itm.id }}" 
+                            {% if itm.id|stringformat:"s" == policy.Letter_Data_Item_Master_id|stringformat:"s" %}selected{% endif %}>
+                            {{ itm.ItemName }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="mt-3">
+                <label class="">Policy Content:</label><br>
+                <textarea name="PolicyContent" class="form-control" id="editor" rows="12">{{ policy.content|safe }}</textarea>
+            </div>
+
+            <div class="CustomFooter">
+                <button type="submit" class="btn btn-primary">
+                    {% if mode == "create" %}Create Policy{% else %}Update Policy{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <script>
+    CKEDITOR.replace('editor');
+</script> -->
+
+<script>
+    CKEDITOR.replace('editor', {
+        height: 400   // ← change to any height (px)
+    });
+</script>
+
+{% endblock content %}
+

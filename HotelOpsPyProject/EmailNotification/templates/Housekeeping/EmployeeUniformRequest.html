@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #000000; /* Ensuring all text is black */
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #dddddd;
+            padding-bottom: 20px;
+        }
+        .header img {
+            height: 80px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #000000; /* Ensuring header text is black */
+            flex: 1;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #000000; /* Ensuring content text is black */
+            line-height: 1.6;
+        }
+        .content p {
+            margin: 0 0 10px;
+        }
+        .details {
+            margin: 20px 0;
+        }
+        .details p {
+            margin: 5px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #dddddd;
+            font-size: 12px;
+            color: #000000; /* Ensuring footer text is black */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+           
+         
+            <table>
+                <thead>
+                    <tr>
+                        
+                        <td  style="font-size: 15px; font-weight: bold; " >
+                           {{ Heading }}
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="content">
+            <p>Hello Housekeeping Team,</p>
+            <p>We have a new employee who has joined our organization. Please find the details below and arrange the necessary uniform items:</p>
+            <div class="details">
+                <p>Employee Name: {{ EmployeeName }}</p>
+                <p>Department:{{ Department }}</p>
+                <p>Designation:{{ Designation }}</p>
+                <p>Joining Date: {{ JoiningDate }}</p>
+                 
+            </div>
+          
+            <p>Kindly ensure that the mentioned uniform items are provided to the employee promptly.</p>
+            <p>Thank you!</p>
+        </div>
+        <div class="footer">
+            <p>&copy; 2024 Your Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+# For Target Date
+
+
+def downloadEmails():
+    try:
+        folder_path = r"C:\Emails"
+        if os.path.exists(folder_path):
+            shutil.rmtree(folder_path)
+        
+        os.makedirs(folder_path, exist_ok=True)
+        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        target_date = datetime.today()
+        selected_account_name = ["careers@nilehospitality.com", "career.giftcityclub@radissonindividuals.com","career.upn@radissonindividuals.com","rajshree.ranawat@hyatt.com"]
+        #selected_account_name = [ "career.giftcityclub@radissonindividuals.com","career.upn@radissonindividuals.com","rajshree.ranawat@hyatt.com"]
+        for emailAccount in selected_account_name:
+            output_dir = r"C:\Emails"
+            data_found = False
+
+            outlook = win32com.client.Dispatch("Outlook.Application")
+            namespace = outlook.GetNamespace("MAPI")
+
+            try:
+                selected_account = namespace.Folders(emailAccount)
+            except Exception as e:
+                print(f"Error accessing folder '{emailAccount}': {e}")
+
+            for folder in selected_account.Folders:
+                # Skip non-mail folders
+                if folder.DefaultItemType != 0:  # 0 indicates mail items
+                    continue
+
+                print("Mailbox:", folder)
+              
+                filter_str = f"[ReceivedTime] >= '{target_date.strftime('%m/%d/%Y')}' AND [ReceivedTime] < '{(target_date + timedelta(days=1)).strftime('%m/%d/%Y')}'"
+                email_messages = folder.Items.Restrict(filter_str)
+                
+                for email_message in email_messages:
+                    try:
+                        received_date = email_message.ReceivedTime
+                        if received_date.date() == target_date.date():
+                            print("Processing email_message")
+                            print(email_message.EntryID)
+
+                            recipients_to = email_message.To
+                            Subject = email_message.Subject
+                            Sender = email_message.Sender
+                            ReceivedTime = email_message.ReceivedTime
+
+                            if recipients_to:
+                                for recipient in recipients_to.split(";"):
+                                    recipient_email_address = recipient.strip()
+                                    print("Recipient in 'To' field:", recipient_email_address)
+
+                            objEmailMessage = EmailMessage(MessageID=email_message.EntryID, To=recipients_to,
+                                                          Subject=Subject, Sender=Sender, ReceivedTime=ReceivedTime)
+                            objEmailMessage.save()
+                            data_found = True
+
+                            attachments = email_message.Attachments
+
+                            for attachment in attachments:
+                                original_filename = attachment.FileName
+                                new_output_path = os.path.join(output_dir, email_message.EntryID)
+                                sanitized_filename = re.sub(r'[\\/:"*?<>|]+', '', original_filename)
+                                new_output_path = os.path.join(new_output_path, sanitized_filename)
+                                os.makedirs(os.path.dirname(new_output_path), exist_ok=True)
+                                attachment.SaveAsFile(new_output_path)
+
+                    except Exception as e:
+                        print(f"Error processing email_message: {e}")
+
+            if not data_found:
+                print("No data found for today.")
+            else:
+                print("Emails Downloaded Successfully")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+    finally:
+        # Uninitialize COM using CoUninitialize
+        pythoncom.CoUninitialize()
+
+
+# For startDate and Date   
+
+
+def downloadEmails(start_date, end_date):
+    try:
+        folder_path = r"C:\Emails"
+        if os.path.exists(folder_path):
+            shutil.rmtree(folder_path)
+        
+        os.makedirs(folder_path, exist_ok=True)
+        pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+        
+        # Make start_date and end_date naive
+        start_date = start_date.replace(tzinfo=None)
+        end_date = end_date.replace(tzinfo=None)
+        
+        selected_account_name = ['darpan.anjanay@nilehospitality.com']
+        for emailAccount in selected_account_name:
+            output_dir = r"C:\Emails"
+            data_found = False
+            
+            outlook = win32com.client.Dispatch("Outlook.Application")
+            namespace = outlook.GetNamespace("MAPI")
+
+            try:
+                selected_account = namespace.Folders(emailAccount)
+            except com_error as e:
+                print(f"Error accessing folder '{emailAccount}': {e}")
+
+            for folder in selected_account.Folders:
+                print("Mailbox:", folder)
+                email_messages = folder.Items
+                keyboard.press_and_release('down')
+                for email_message in email_messages:
+                    try:
+                        keyboard.press_and_release('down')
+                        received_date = email_message.ReceivedTime
+                        received_date = received_date.replace(tzinfo=None)  # Make received_date naive
+                        if start_date <= received_date <= end_date:
+                            print("Processing email_message")
+                            print(email_message.EntryID)
+
+                            recipients_to = email_message.To
+                            Subject = email_message.Subject
+                            Sender = email_message.Sender
+                            ReceivedTime = email_message.ReceivedTime
+
+                            if recipients_to:
+                                for recipient in recipients_to.split(";"):
+                                    recipient_email_address = recipient.strip()
+                                    print("Recipient in 'To' field:", recipient_email_address)
+
+                            objEmailMessage = EmailMessage(MessageID=email_message.EntryID, To=recipients_to,
+                                                          Subject=Subject, Sender=Sender, ReceivedTime=ReceivedTime)
+                            objEmailMessage.save()
+                            data_found = True
+
+                            attachments = email_message.Attachments
+
+                            for attachment in attachments:
+                                original_filename = attachment.FileName
+                                new_output_path = os.path.join(output_dir, email_message.EntryID)
+                                sanitized_filename = re.sub(r'[\\/:"*?<>|]+', '', original_filename)
+                                new_output_path = os.path.join(new_output_path, sanitized_filename)
+                                os.makedirs(os.path.dirname(new_output_path), exist_ok=True)
+                                attachment.SaveAsFile(new_output_path)
+
+                    except Exception as e:
+                        print(f"Error processing email_message: {e}")
+                        # continue
+
+            if not data_found:
+                print("No data found for the specified date range.")
+            else:
+                print("Emails Downloaded Successfully")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+    finally:
+        # Uninitialize COM using CoUninitialize
+        pythoncom.CoUninitialize()
+
+
+

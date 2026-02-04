@@ -1,0 +1,194 @@
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+
+<div class="modal fade" id="departmentLevelConfigModal" tabindex="-1" role="dialog" aria-labelledby="departmentLevelConfigModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="departmentLevelConfigModalLabel">Add Department Level Config</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+           
+            <form method="POST" action="{% url 'DepartmentLevelConfigAddEdit' %}">
+                {% csrf_token %}
+                <input type="hidden" name="DID" id="modalDID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="departmentInput">Department</label>
+                        <select class="form-control" id="departmentInput" name="Department" required>
+                            <option value="ALL" selected>ALL</option>
+
+                            {% for dept in Departments %}
+                                <option value="{{ dept.DepartmentName }}">{{ dept.DepartmentName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="levelInput">Level</label>
+                        <select class="form-control" id="levelInput" name="Level[]" required multiple>
+                            
+                            {% for lvl in Levels %}
+                                <option value="{{ lvl.lavelname }}">{{ lvl.lavelname }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+                Department Level Configuration List
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#departmentLevelConfigModal">
+                    Add Department Level Config
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-8">
+        <form action="" method="get" class="form-inline">
+            <div class="form-group mr-2">
+                <label for="departmentSelect" class="sr-only">Select Department</label>
+                <select name="Department" id="departmentSelect" class="form-control">
+                    <option value="">All Department</option>
+                    <option value="All">All Department Configure</option>
+                    {% for dept in Departments %}
+                    <option value="{{ dept.DepartmentName }}">{{ dept.DepartmentName }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </form>
+    </div>
+</div>
+
+<br>
+<div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Department</th>
+                <th>Level</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for config in configs %}
+            <tr>
+                <td>{{ config.Department }}</td>
+                <td class="levels-cell">{{ config.Level }}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm edit-config-btn"
+                            data-toggle="modal" data-target="#departmentLevelConfigModal"
+                            data-did="{{ config.id }}" data-department="{{ config.Department }}" data-level="{{ config.Level }}">
+                        Edit
+                    </button>
+                    <a href="{% url 'DepartmentLevelConfigDelete' %}?DID={{ config.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+                    <a  href="{% url 'DepartmentLevelConfigDetailsAdd' %}?DID={{config.id}}" class="btn btn-info btn-sm" >Approval Flow</a>
+
+                </td>
+            </tr>
+           
+            
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+   $('#departmentLevelConfigModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); 
+    var did = button.data('did'); 
+    var modal = $(this);
+
+    if (did) {
+        $.ajax({
+            url: "{% url 'DepartmentLevelConfigAddEdit' %}",
+            data: { DID: did },
+            success: function (data) {
+                console.log("Received data:", data); 
+
+                modal.find('#modalDID').val(did);
+                modal.find('#departmentInput').val(''); 
+                modal.find('#levelInput').val(''); 
+
+                if (data.Department && data.Level) {
+                    modal.find('.modal-title').text('Edit Department Level Config');
+
+                    var departmentSelect = modal.find('#departmentInput');
+                    var departmentValue = data.Department.trim(); 
+                    departmentSelect.val(departmentValue).trigger('change'); 
+
+                    var levelSelect = modal.find('#levelInput');
+                    var levelValues;
+
+                    if (typeof data.Level === 'string') {
+                        
+                        levelValues = data.Level.replace(/^\['|'\]$/g, '').split("', '").map(function(level) {
+                            return level.trim();
+                        });
+                    } else if (Array.isArray(data.Level)) {
+                        
+                        levelValues = data.Level;
+                    } else {
+                        levelValues = [];
+                    }
+
+                   
+                    levelSelect.val(levelValues).trigger('change'); 
+                } else {
+                    modal.find('.modal-title').text('Add Department Level Config');
+                    modal.find('#modalDID').val(''); 
+                    modal.find('#departmentInput').val('ALL').trigger('change'); 
+                    modal.find('#levelInput').val('ALL').trigger('change'); 
+                }
+            },
+            error: function () {
+                console.log("Failed to fetch data for DID:", did);
+            }
+        });
+    } else {
+        modal.find('.modal-title').text('Add Department Level Config');
+        modal.find('#modalDID').val(''); 
+        modal.find('#departmentInput').val('ALL').trigger('change'); 
+        modal.find('#levelInput').val('ALL').trigger('change'); 
+    }
+});
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const levelCells = document.querySelectorAll('.levels-cell');
+
+        levelCells.forEach(cell => {
+          
+            let levelText = cell.textContent.trim();
+            
+           
+            let levelsArray = levelText.replace(/^\['|'\]$/g, '').split("', '");
+
+           
+            cell.textContent = levelsArray.join(', ');
+        });
+    });
+</script>
+
+
+{% endblock content %}

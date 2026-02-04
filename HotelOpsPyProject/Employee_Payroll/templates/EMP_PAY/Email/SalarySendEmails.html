@@ -1,0 +1,71 @@
+
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12">
+       <form action="" method="post" enctype="multipart/form-data">
+        <div class="card">
+            <div class="card-header">Send Emails</div>
+            <div class="card-main">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="col-md-3">
+                            <div class="form-group m-3">
+                                <label for="">Year</label>
+                                <select class="form-control" name="year" value ="{{mem.EntryYear}}">
+                                    {%for i in CYear%}
+                                    <option>{{i}}</option>
+                                    {%endfor%}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group m-3">
+                            <label for="">Month</label>
+                            <select class="form-control "   data-val="{{CMonth}}" name="month_no">
+                                <option value ="1">Jan</option>
+                                <option value ="2">Feb</option>
+                                <option value ="3">Mar</option>
+                                <option value ="4">Apr</option>
+                                <option value ="5">May</option>
+                                <option value ="6">Jun</option>
+                                <option value ="7">Jul</option>
+                                <option value ="8">Aug</option>
+                                <option value ="9">Sep</option>
+                                <option value ="10">Oct</option>
+                                <option value ="11">Nov</option>
+                                <option value ="12">Dec</option>
+                                
+                            </select>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                {% csrf_token %}
+                <input type="submit" value="Send Emails" class="btn btn-primary btn-sm" >
+            </div>
+           
+        </div>
+
+       </form>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+
+
+

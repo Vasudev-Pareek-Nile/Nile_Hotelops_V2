@@ -1,0 +1,242 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<style>
+    .CustomFooter input{
+		float: right;
+	}
+    table thead th {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+    }
+    table body td {
+        font-size: 13px;
+    }
+
+    .form-control{
+        border-radius:5px !important;
+    }
+
+    .btn-primary{
+        border-radius:5px !important;
+    }
+    .btn-secondary{
+        border-radius:5px !important;
+    }
+</style>
+
+<div class="">
+    <div class="col-md-12">
+        <form action="" method="post" id="UniformFORM">
+            <div class="card">
+                <div class="card-header text-uppercase fw-bold">Uniform Return Request</div>
+                <div class="card-main">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="employeeCode">Employee Code</label>
+                                <input type="text" required class="form-control" name="EmployeeCode" id="employeeCode" value="{{ UN.EmployeeCode }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="EmployeeName">Employee Name</label> 
+                                <input type="text" class="form-control" name="EmployeeName" id="EmployeeName" value="{{ UN.EmployeeName }}" readonly> 
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="Department">Department</label>
+                                <input type="text" class="form-control" name="Department" id="Department" value="{{ UN.Department }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="DesignationGrade">Designation Grade</label>
+                                <input type="text" class="form-control" name="DesignationGrade" id="DesignationGrade" value="{{ UN.DesignationGrade }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="ReportingtoDesigantion">Reporting To Designation</label>
+                                <input type="text" class="form-control" name="ReportingtoDesigantion" id="ReportingtoDesigantion" value="{{ UN.ReportingtoDesigantion }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th rowspan="2"   style="text-align: center;" width="210" >Uniform</th>
+                                <th colspan="3"  style="text-align: center;">Issued</th>
+                                <th colspan="3"  style="text-align: center;">Returned</th>
+                                <th colspan="3" style="text-align: center;">Variance</th>
+                                <th rowspan="2"  style="text-align: center;" >Price</th>
+                                <th rowspan="2"  style="text-align: center;" >Total Charged</th>
+                            </tr>
+                            <tr>
+                                <th width="50">New</th>
+                                <th width="50">Altered</th>
+                                <th width="50">Issued</th>
+                                 <!-- Return -->
+                                <th width="100">New</th>  
+                                <th width="100">Altered</th>
+                                <th width="100">Issued</th>
+                                <!-- Variance -->
+                                <th width="100">New</th>
+                                <th width="100">Alter</th>
+                                <th width="100">Issue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in uitem %}
+                            <tr>
+                                <td>
+                                    {{ u.ItemName }}
+                                <input name="ItemID_{{ forloop.counter0 }}" type="hidden" value="{{ u.id }}" /> 
+                                <!-- <input name="Price_{{ forloop.counter0 }}" type="hidden" value="{{ u.Price }}">  -->
+                                </td>
+                                <td>{{u.NewQuantity}}</td>
+                                <td>{{u.AlteredQuantity}}</td>
+                                <td>{{u.IssuedQuantity}}</td>
+                                <td>
+                                <select name="ReturnNew_{{ forloop.counter0 }}" class="form-control new-select">
+                                        <option value="0" {% if u.NewQuantity == 0 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnNewQuantity == 0 %}selected{% endif %}>0</option>
+                                        <option value="1" {% if u.NewQuantity == 1 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 1 %}selected{% endif %}>1</option>    
+                                        <option value="2" {% if u.NewQuantity == 2 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 2 %}selected{% endif %}>2</option>    
+                                        <option value="3" {% if u.NewQuantity == 3 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 3 %}selected{% endif %}>3</option>    
+                                        <option value="4" {% if u.NewQuantity == 4 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 4 %}selected{% endif %}>4</option>    
+                                        <option value="5" {% if u.NewQuantity == 5 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 5 %}selected{% endif %}>5</option>    
+                                        <option value="6" {% if u.NewQuantity == 6 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 6 %}selected{% endif %}>6</option>    
+                                        <option value="7" {% if u.NewQuantity == 7 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 7 %}selected{% endif %}>7</option>    
+                                        <option value="8" {% if u.NewQuantity == 8 and u.ReturnAlteredQuantity == Null %} selected {% endif %} {% if u.ReturnNewQuantity == 8 %}selected{% endif %}>8</option>    
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="ReturnAltered_{{ forloop.counter0 }}" class="form-control altered-select">
+                                        <option value="0" {% if u.AlteredQuantity == 0 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 0 %}selected{% endif %}>0</option>
+                                        <option value="1" {% if u.AlteredQuantity == 1 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 1 %}selected{% endif %}>1</option>    
+                                        <option value="2" {% if u.AlteredQuantity == 2 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 2 %}selected{% endif %}>2</option>    
+                                        <option value="3" {% if u.AlteredQuantity == 3 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 3 %}selected{% endif %}>3</option>    
+                                        <option value="4" {% if u.AlteredQuantity == 4 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 4 %}selected{% endif %}>4</option>    
+                                        <option value="5" {% if u.AlteredQuantity == 5 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 5 %}selected{% endif %}>5</option>    
+                                        <option value="6" {% if u.AlteredQuantity == 6 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 6 %}selected{% endif %}>6</option>    
+                                        <option value="7" {% if u.AlteredQuantity == 7 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 7 %}selected{% endif %}>7</option>    
+                                        <option value="8" {% if u.AlteredQuantity == 8 and u.ReturnAlteredQuantity == Null %}  selected {% endif %} {% if u.ReturnAlteredQuantity == 8 %}selected{% endif %}>8</option>    
+                                    </select> 
+                                </td>
+                                <td>
+                                    <input class="form-control" name="ReturnIssued_{{ forloop.counter0 }}" value="{{ u.ReturnIssuedQuantity }}" type="number" readonly> 
+                                </td>
+                                <td>
+                                    <input class="form-control" name="NewVariance_{{ forloop.counter0 }}" value="{{ u.NewVariance }}" type="number" readonly> 
+                                </td>
+                                <td>
+                                    <input class="form-control" name="AlterVariance_{{ forloop.counter0 }}" value="{{ u.AlterVariance }}" type="number" readonly> 
+                                </td>
+                                <td>
+                                    <input class="form-control" name="IssueVariance_{{ forloop.counter0 }}" value="{{ u.IssueVariance }}" type="number" readonly> 
+                                </td>
+                                <td>
+                                    <input name="Price_{{ forloop.counter0 }}" class="form-control" type="text" value="{{ u.Price }}">  
+                                </td>
+                                <td>
+                                    <input class="form-control total-charged" name="TotalCharged_{{ forloop.counter0 }}" type="text" >  
+                                </td>
+                            </tr>
+                        
+                            {% if forloop.last %}
+                                <input type="hidden" name="Total_item" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                            {% endfor %}
+                            <tr>
+                                <td colspan="11" style="text-align: center; font-weight: bold;">Total Charged Amount</td>
+                                <td><input type="text" name="ReturnAmount" class="form-control" id="totalChargedAmount"  {{ UN.ReturnAmount }} readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% if Hide_Value != 'True' %}
+                    <div class="CustomFooter m-3 mt-0">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                {% endif %}
+            </div>
+        </form>    
+    {% comment %} </div> {% endcomment %}
+</div>
+
+<script>
+    function updateIssuedQuantities(selectElement) {
+        const row = selectElement.closest('tr');
+        const id = selectElement.name.split('_')[1];
+
+        const newValue = parseInt(row.querySelector('td:nth-child(2)').innerText) || 0;
+        const ReturnnewValue = parseInt(row.querySelector(`select[name="ReturnNew_${id}"]`).value) || 0;
+
+        const alteredValue = parseInt(row.querySelector('td:nth-child(3)').innerText) || 0;
+        const ReturnalteredValue = parseInt(row.querySelector(`select[name="ReturnAltered_${id}"]`).value) || 0;
+
+        const issuedValue = parseInt(row.querySelector('td:nth-child(4)').innerText) || 0;
+        const ReturnissuedValue = ReturnnewValue + ReturnalteredValue;
+
+        row.querySelector(`input[name="ReturnIssued_${id}"]`).value = ReturnissuedValue;
+
+        const NewVariance = newValue - ReturnnewValue;
+        const AlterVariance = alteredValue - ReturnalteredValue;
+        const IssueVariance = issuedValue - ReturnissuedValue;
+
+        row.querySelector(`input[name="NewVariance_${id}"]`).value = NewVariance;
+        row.querySelector(`input[name="AlterVariance_${id}"]`).value = AlterVariance;
+        row.querySelector(`input[name="IssueVariance_${id}"]`).value = IssueVariance;
+
+        const Price = parseFloat(row.querySelector(`input[name="Price_${id}"]`).value);
+        const TotalCharged = (NewVariance * Price) + (AlterVariance * (Price / 2));
+        row.querySelector(`input[name="TotalCharged_${id}"]`).value = TotalCharged;
+
+        updateTotalChargedAmount();
+    }
+
+    function updateTotalChargedAmount() {
+        let total = 0;
+        document.querySelectorAll('.total-charged').forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        document.getElementById('totalChargedAmount').value = total.toFixed(2);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const selects = document.querySelectorAll('select[name^="ReturnNew"], select[name^="ReturnAltered"]');
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                updateIssuedQuantities(this);
+            });
+
+            updateIssuedQuantities(select);
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        let hide_value = "{{Hide_Value}}";   
+        console.log("the hide value is here::",hide_value)
+
+        if (hide_value === "True" || hide_value === "true" || hide_value === "1") {
+            $(".form-control").attr("readonly", true);
+        } else {
+            $(".form-control").removeAttr("readonly");
+        }
+    });
+</script>
+
+{% endblock content %}

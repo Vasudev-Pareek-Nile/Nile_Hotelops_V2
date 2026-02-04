@@ -1,0 +1,37 @@
+{% extends 'HotelHandover/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div >
+        <div class="card-header">Hotel HandOver  List</div>
+        <br>
+        <table id="title" class="table table-bordered">
+            <thead>
+                <th>Month</th>
+                <th>Year</th>
+                <th width="250"  id="mid">  Action </th>
+            </thead>
+            {% for x in mem%}
+            <tr>
+                <td>{{x.EntryMonth}}</td> 
+
+                <td>{{x.EntryYear}}</td>
+
+                <td>
+                    <a class="btn btn-primary" href="/PreOpeningDoc/HotelHandoverEdit/{{x.id}}">Edit</a>
+                    <a onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger" href="/PreOpeningDoc/delete_HotelHandover/{{x.id}}">Delete </a>
+                    <a class="btn btn-primary" href="/PreOpeningDoc/HotelHandoverView/{{x.id}}">View</a>
+                </td>
+                                          
+            </tr>
+            {% endfor %}
+           
+        </table>
+        <br><br>
+        
+        <br>
+        
+    
+    {% endblock content %}

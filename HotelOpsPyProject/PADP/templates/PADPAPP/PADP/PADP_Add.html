@@ -1,0 +1,1671 @@
+
+{% extends 'PADPAPP/homebase.html' %}
+
+{% block content %} 
+{% load apadpfilter %}
+
+<style>
+    .cstborder, .cstborder tr td, .cstborder tr th,
+    table, table tr td, table tr th {
+    border-color:#34444c63 !important
+    }
+    spans {
+    font-size: 11px;
+    }
+    #tblObject tr td span:last-child{
+    float: right;
+    }
+
+    #tblObject tr td input[type='checkbox']:last-child{
+    float: right;
+    margin-right: 10px;
+    }
+    #tblObject tr td input[type='checkbox']:first-child{
+    float: none;
+    margin-left: 10px;
+    }
+    .capital{
+    text-transform: uppercase
+    ;
+    }
+    tr.hide {
+    display: none;
+    }
+    .table-bordered > thead > tr > th, .table-bordered > thead > tr > td ,.capitalbga,.capitalobj,.capitalheader
+
+    {
+    text-transform: uppercase;
+    text-align: center;
+    background-color:#34444c;
+    color: white;
+    }
+
+    label{
+    color: black;
+    }
+    input[type='checkbox'][readonly] {
+    pointer-events: none;
+    opacity: 0.6;
+    border-color: #81b3a9;
+    }
+    input[type='radio'][disabled] {
+    pointer-events: none;
+    opacity: 0.6;
+    border-color: #81b3a9;
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+    appearance: none; 
+    -webkit-appearance: none; 
+    width: 20px;
+    height: 20px;
+    outline: none;
+    cursor: pointer;
+    border: 2px solid #34444c; 
+    background: white;
+    transition: all 0.3s ease;
+    }
+
+    input[type="radio"] {
+    border-radius: 50%;
+    }
+
+    input[type="checkbox"] {
+    border-radius: 4px;
+    }
+
+    input[type="radio"]:checked,
+    input[type="checkbox"]:checked {
+    background-color: #34444c; 
+    border-color: #34444c; 
+    }
+
+    input[type="radio"]:checked::after {
+    content: '\2713';
+    display: block;
+    width: 10px;
+    height: 10px;
+    background: #34444c;
+    border-radius: 50%;
+    position: relative;
+    top: -3%;
+    left: 32%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    transform: rotate(16deg);
+    }
+
+    input[type="checkbox"]:checked::after {
+    content: '✔';
+    display: block;
+    font-size: 14px;
+    color: white; 
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+
+    label {
+    font-size: 16px;
+    color: #333;
+    margin-right: 20px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    }
+
+    label input[type="radio"],
+    label input[type="checkbox"] {
+    margin-right: 10px;
+    }
+    .radio-group {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+    flex-wrap: nowrap; 
+    }
+
+    .scrollable-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Ensures column widths are fixed */
+    overflow-x: auto;
+
+    }
+
+    .scrollable-table th, .scrollable-table td {
+    padding: 8px;
+
+    }
+
+    .scrollable-table th:first-child, .scrollable-table td:first-child {
+
+    left: 0;
+
+    z-index: 1;
+    width: 250px; 
+    }
+
+    .scrollable-table th:nth-child(2), .scrollable-table td:nth-child(2) {
+    width: 250px; 
+    }
+
+    .scrollable-table th:nth-child(n+3), .scrollable-table td:nth-child(n+3) {
+    width: 100px; 
+    }
+
+    .scrollable-table th:last-child, .scrollable-table td:last-child {
+
+
+    z-index: 1;
+    }
+    input {
+    color: black !important;
+    }
+
+    .Bold {
+    font-weight: bold;
+    }
+
+
+
+    .Definition p{
+    word-break: break-word !important;
+    white-space: normal !important;
+    margin-top:10px !important;
+    }
+
+    .FlexAlign{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    }
+
+    .NotfundDetails{
+    color:red;
+    margin-top:10px;
+    }
+
+    .FullFormParent{
+    position: relative;
+    }
+
+    .FullForm {
+    line-height: 1.8;
+    border-bottom-left-radius: 5px;
+    padding: 14px;
+    color: white;
+    background-color: #34444c;
+    text-align: center;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    }
+
+
+    .ColorChange{
+    color: black !important;
+    }
+
+    .ImpField{
+    color: red;
+    }
+
+    #FromSalaryCorrection {
+    pointer-events: none;
+    background-color: #f8f9fa;
+    }
+    .RefreshSalaryButtonMsg{
+    font-size: 13px;
+    }
+</style>
+    
+       <form action="" method="post">
+        {%  csrf_token %}
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h4><strong>PADP</strong></h4>
+                {% comment %} <h4><strong>padp 2</strong></h4> {% endcomment %}
+                {% if   request.session.Department_Name == 'HR' %}
+                    {% if padp.id %}
+                        <a id="Refresh" href="{% url 'Refresh_Manger_Level' padp.id %}" class="btn mr-4 btn-primary" >
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </a> 
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="card-body">
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Employee Code:</label>                              <input type="text" class="form-control" id="EmployeeCode" value="{% if  padp.EmployeeCode %}{{padp.EmployeeCode}}{% endif %}" readonly name="padp_Emp_Code">
+                        </div>
+                    </div>
+              
+                   
+                   
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Appraisee Name:</label>
+                            <input type="text" class="form-control" value="{% if padp.Appraisee_Name %}{{padp.Appraisee_Name}}{% endif %}"  readonly name="Appraisee_Name">
+                        </div>
+                    </div>
+                    <div class="col-md-4"> <div class="form-group">
+                        <label for="">Aprraisee Position:</label>
+                        <input type="text" class="form-control" value="{% if padp.Aprraisee_position %}{{padp.Aprraisee_position}}{% endif %}" readonly name="Aprraisee_position">
+                    </div> </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group mt-3">
+                            <label for="">Appraisee Level:</label>
+                            <input type="text" value="{% if padp.Aprraise_Level %}{{padp.Aprraise_Level}}{% endif %}" class="form-control"  readonly name="Aprraise_Level">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mt-3">
+                            <label for="">Appraiser Name:</label>
+                            <input type="text" class="form-control" readonly
+                             value="{% if padp.Appraisor_Name %}{{padp.Appraisor_Name}}{% endif %}"  name="Appraisor_Name">
+                        </div>   
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group mt-3">
+                            <label for="">Appraiser Position:</label>
+                            <input type="text" class="form-control" readonly
+                              value="{% if padp.Appraisor_Title %}{{padp.Appraisor_Title}}{% endif %}" name="Appraisor_Title">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4"> 
+                        <div class="form-group mt-3">
+                            <label for="">Aprraisee Department:</label>
+                            <input type="text" class="form-control" value="{% if padp.Department %}{{padp.Department}}{% endif %}" readonly name="Aprraisee_Department">
+                        </div> 
+                    </div> 
+                    
+                    <div class="col-md-4">
+                        <div class="form-group mt-3">
+                            <label for="">Dotted Line:</label>
+                            <input type="text" class="form-control" readonly
+                              value="{% if padp.DottedLine %}{{padp.DottedLine}}{% endif %}" name="DottedLine">
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group mt-3">
+                            <label for="organization">Employee Organization</label>
+                            <select name="EmployeeOrganizationID" id="organization" {% if Departmentsession != 'hr' %}disabled{% endif %} class="form-control">
+                                {% for itm in orgs %}
+                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                    {{ itm.OrganizationName }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">  
+                        <div class="form-group mt-3">
+                            <label for="">Date of Joining:</label>
+                            <input type="date"  readonly  value="{% if padp.Date_Joined_Company %}{{ padp.Date_Joined_Company | date:'Y-m-d'}}{% endif %}" class="form-control" name="Date_Joined_Company">
+                        </div>   
+                    </div>
+                    <div class="col-md-2"> <div class="form-group mt-3">
+                        <label for="">From Review Date:</label>
+                        <input type="date"  {% if Departmentsession != 'hr' %}readonly{% endif %} value="{% if  padp.FromReviewDate %}{{padp.FromReviewDate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" class="form-control" class="form-control" name="FromReviewDate">
+                    </div></div>
+                    <div class="col-md-2">
+                        <div class="form-group m-3">
+                            <label for="">To Review Date :</label>
+                            <input type="date" {% if  Departmentsession != 'hr' %}readonly{% endif %}  value="{% if  padp.ToReviewDate %}{{padp.ToReviewDate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" class="form-control" name="ToReviewDate" >
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mt-3">
+                            <label for="HRMInput">HR Manager:</label>
+                            <select name="HRManager" id="HRMInput" class="form-control">
+                                {% for HRM in Get_HR_ManagerList %}
+                                    <option value="{{ HRM }}">{{ HRM }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-group mt-3">
+                            <label for="CurrentSalary">Current Salary:</label>
+                            <input type="text" class="form-control" value="{% if padp.Current_Salary %}{{padp.Current_Salary}}{% else %}{{NewCTC}}{% endif %}" name="CurrentSalary" id="CurrentSalary" >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            {% if padp_id %} 
+                <div class="card-body FullFormParent">
+                {% if  Hide == 'No' or HrAudit == "Yes"  or Departmentsession == "hr"%}
+                
+                        <div class="card-header col-md-12 text-center text-black capitalheader" style="border-radius: 5px;"><h4 class="bold">Leadership Competencies</h4></div>   
+                        <br>
+                        <div class="FullForm">
+                            <ul>
+                                <li><strong>App'ee:</strong> Appraisee</li>
+                                <li><strong>App'er:</strong> Appraiser</li>
+                            </ul>
+                        </div>
+                        {%  for obj in objs %}
+                            {% with obj_counter=forloop.counter0 %}
+                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                            <tbody>
+                                                <tr class="Bold">
+                                                    <td rowspan="3" style=" text-align: center;
+                                                    vertical-align: middle; width: 250px !important;"  class=""><strong>{{obj.Title }}</strong>
+                                                    <input name="obj_ID_{{obj_counter }}" type="hidden" value="{{obj.id}}" type="text"/>
+                                                </td>
+                                                    <td colspan="3" class="text-center"  >Relative Importance</td>
+                                                    <td  colspan="5" class="text-center">Demonstrates</td>
+                                                </tr>
+                                                <tr class="Bold">
+                                                    
+                                                    <td rowspan="2"  align="center">High</td>
+                                                    <td rowspan="2"  align="center">Medium</td>
+                                                    <td rowspan="2"  align="center">Low</td>
+                                                    <td  align="center">Does Not</td>
+                                                    <td  align="center">Rarely</td>
+                                                    <td  align="center">Sometimes</td>
+                                                    <td  align="center">Often</td>
+                                                    <td  align="center">Always</td>
+                                                    
+
+                                                </tr>
+                                                <tr class="Bold">
+                                                    <td><span style="margin-left:10px" >App'ee</span>   <span style="margin-right:20px"> App'er</span></td>
+                                                    <td><span style="margin-left:10px" >App'ee</span>   <span style="margin-right:20px"> App'er</span></td>
+                                                    <td><span style="margin-left:10px" >App'ee</span>   <span style="margin-right:20px"> App'er</span></td>
+                                                    <td><span style="margin-left:10px" >App'ee</span>   <span style="margin-right:20px"> App'er</span></td>
+                                                    <td><span style="margin-left:10px" >App'ee</span>   <span style="margin-right:20px"> App'er</span></td>
+                                                    
+                                                </tr>
+                                            
+                                            {% for att in obj.Attibutes  %}
+                                                        <tr>
+                                                            <td  class="capitalbga Bold">{{att.Title}}
+                                                                <input name="obj_{{ obj_counter }}_Att_ID_{{ forloop.counter0 }}" type="hidden" value="{{att.id}}" type="text"/>
+
+                                                            </td>
+                                                            <td align="center">
+                                                                
+                                                                <input type="radio" disabled {% if att.RL_H   %}checked{% endif %} class="A_Appor"  value="H"> 
+                                                            </td>
+                                                            <td align="center">
+                                                                
+                                                                <input type="radio" disabled {% if att.RL_M   %}checked{% endif %} class="A_Appor"  value="M"> 
+                                                            </td>
+                                                            <td align="center">
+                                                                
+                                                                <input type="radio"  disabled {% if att.RL_L   %}checked{% endif %} class="A_Appor"  value="L"> 
+                                                            </td>
+                                                            
+                                                            
+                                                            
+                                                                            
+                                                            <td>
+                                                            <span class="radio-group">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appee" {% if att.detailatt.0.Does_NOT_Appee   %}checked{% endif %} class="A_Appee_Att"  style="margin-right: 41px;" value="D">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appor" {% if att.detailatt.0.Does_NOT_Appor   %}checked{% endif %} class="A_Appor_Att"  style="margin-right: 41px;" value="D">
+                                                            
+                                                            </span>
+                                                            
+                                                            </td>
+                                                            <td>
+                                                                <span class="radio-group">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appee"  {% if att.detailatt.0.Rarely_Appee   %}checked{% endif %} class="A_Appee_Att"  style="margin-right: 41px;" value="R">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appor"  {% if att.detailatt.0.Rarely_Appor   %}checked{% endif %} class="A_Appor_Att"  style="margin-right: 41px;" value="R">
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="radio-group">
+                                                                    <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appee"  {% if att.detailatt.0.Sometiems_Appee   %}checked{% endif %} class="A_Appee_Att"  style="margin-right: 41px;" value="S">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appor"  {% if att.detailatt.0.Sometiems_Appor   %}checked{% endif %} class="A_Appor_Att"  style="margin-right: 41px;" value="S">
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="radio-group">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appee"  {% if att.detailatt.0.Often_Appee   %}checked{% endif %} class="A_Appee_Att"  style="margin-right: 41px;" value="O">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appor"  {% if att.detailatt.0.Often_Appor   %}checked{% endif %} class="A_Appor_Att"  style="margin-right: 41px;" value="O">
+                                                                </span>
+                                                            </td>
+                                                            <td>
+                                                                <span class="radio-group">
+                                                                    <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appee"  {% if att.detailatt.0.Always_Appee   %}checked{% endif %} class="A_Appee_Att"  style="margin-right: 41px;" value="A">
+                                                                <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_Appor"  {% if att.detailatt.0.Always_Appor   %}checked{% endif %} class="A_Appor_Att" style="margin-right: 41px;"  value="A">
+                                                                </span>
+                                                            </td>
+                                                            
+
+                                                        </tr>   
+                                                                            
+                                                        
+                                                    
+                                                        {% if forloop.last  %}
+                                                        <input type="hidden" name="obj_{{ obj_counter }}_Total_attribute" value="{{ forloop.counter0 }}" />
+                                                        {% endif %}
+                                            
+                                            {% endfor %} 
+                                        
+                                            </tbody>                        
+                                        </table>
+                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                            <tbody>
+                                                <tr><td colspan="9" class="Definition"><strong>Definition :- <br></strong> <p>{{obj.Definitions|bold_lines_before_hyphen }}</p></td></tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="card-header col-md-4 capital Bold " style="background-color: #34444c;color:white;"> APPRAISEE DETAILS</div>
+                                        <br>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <table class="table table-bordered display table-sm" id="tblObject">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="capitalbga Bold ColorChange" colspan="4">Effective</th>
+
+                                                        </tr>                           
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for Effective in obj.Effectives %}
+                                                            <tr>
+                                                            
+                                                                <td colspan="4" class="FlexAlign"> 
+                                                                    <input name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appee"  class="A_Appee"  value="1" {% if Effective.effdetail_Appee.0.Status == True %}checked{% endif %} type="checkbox"><span class="ml-2">{{Effective.Title}}</span>  
+                                                                    <input type="hidden" name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appee_ID" value="{{Effective.id}}">
+                                                                </td>
+                                                            </tr>
+                                                    
+                                                            {% if forloop.last %}
+                                                                <input type="hidden" name="obj_{{ obj_counter }}_Total_Effective_Appee" value="{{ forloop.counter0 }}" />
+                                                            {% endif %} 
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                            <table class="table table-bordered display table-sm" id="tblObject" >
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="5" class="capitalbga Bold ColorChange">Ineffective</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for Ineffective in obj.Ineffectives %}
+                                                        <tr>
+                                                            <td colspan="5" class="FlexAlign">
+                                                                <input name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appee" value="1" class="A_Appee" {% if Ineffective.inffdetailAppee.0.Status == True  %}checked{% endif %} type="checkbox"><span class="ml-2">{{Ineffective.Title}}</span>
+                                                            
+                                                                <input type="hidden" name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appee_ID" value="{{Ineffective.id}}" >
+                                                            </td>
+                                                        </tr>
+                                                        
+                                                        {% if forloop.last %}
+                                                            <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appee"  value="{{ forloop.counter0 }}"/>
+                                                        {% endif %} 
+                                                    {% endfor %} 
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            <br>
+                                            
+                                        </div> 
+
+                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="9">
+                                                        <label><strong class="capital mb-2">Appraisee Comments:</strong></label>
+                                                        <textarea class="form-control A_Appee" 
+                                                                name="Appraise_Comments_{{ obj_counter }}" 
+                                                                cols="30" 
+                                                                
+                                                                oninput="checkWordCount(this, 500)"
+                                                                placeholder="Enter your comments (max 500 words)">{{ obj.LD.0.Appraise_Comments }}</textarea>
+                                                        <p class="word-count" id="word-count-appraise-{{ obj_counter }}">Words: 0/500</p>
+                                                    </td>
+                                                    </tr>
+                                            </tbody>
+                                        </table>
+                                    
+                                        <div class="card-header col-md-4 capita Bold" style="background-color: #34444c;color:white;">
+                                            APPRAISER DETAILS</div>
+                                            <br>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <table class="table table-bordered display table-sm" id="tblObject">
+                                                    <thead>
+                                                    
+                                                        <tr><th class="capitalbga Bold ColorChange">Effective</th></tr>
+                                                                                
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for Effective in obj.Effectives %}
+                                                            <tr>
+                                                                <td class="FlexAlign">
+                                                                    <input  name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appor"  value="1" class="A_Appor" {% if Effective.effdetail_Appor.0.Status == True %}checked{% endif %} type="checkbox"><span class="ml-2">{{Effective.Title}}</span>
+                                                                    <input type="hidden" name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appor_ID" value="{{Effective.id}}">
+                                                                </td>
+                                                            </tr>
+                                                
+                                                            {% if forloop.last %}
+                                                                <input  type="hidden" name="obj_{{obj_counter}}_Total_Effective_Appor"  value="{{ forloop.counter0 }}" />
+                                                            {% endif %} 
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="col-md-6">
+                                            <table class="table table-bordered display table-sm" id="tblObject" >
+                                                <thead>
+                                                    <tr>
+                                                        <th class="capitalbga Bold ColorChange">Ineffective</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for Ineffective in obj.Ineffectives %}
+                                                        <tr>
+                                                            <td class="FlexAlign">
+                                                                <input name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appor"  value="1"  class="A_Appor" {% if Ineffective.inffdetailAppor.0.Status == True %}checked
+                                                                {% endif %} type="checkbox"><span class="ml-2">{{Ineffective.Title}}</span>
+                                                            
+                                                                <input type="hidden" name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appor_ID"  value="{{Ineffective.id}}" id="">
+                                                            </td>
+                                                        </tr>
+                                                
+                                                        {% if forloop.last %}
+                                                            <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appor"  value="{{ forloop.counter0 }}"/>
+                                                        {% endif %} 
+                                                    {% endfor %} 
+                                                </tbody>
+                                            </table>
+                                            </div>
+                                        
+                                            <br>
+                                                
+                                        </div> 
+                                        <table class="table table-bordered display table-sm" id="tblObject">
+
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="9">
+                                                        <label><strong class="capital mb-2">Appraiser Comments:</strong></label>
+                                                        <textarea class="form-control A_Appor" 
+                                                                name="Appraisor_Comments_{{ obj_counter }}" 
+                                                                cols="30" 
+                                                                
+                                                                oninput="checkWordCount(this, 500)"
+                                                                placeholder="Enter your comments (max 500 words)">{{ obj.LD.0.Appraisor_Comments }}</textarea>
+                                                        <p class="word-count" id="word-count-appraisor-{{ obj_counter }}">Words: 0/500</p>
+                                                    </td>
+                                                    </tr>
+                                            
+                                            </tbody>
+                                        </table>
+                                {% if forloop.last %}
+                                    <input  type="hidden" name="Total_objective" value="{{ forloop.counter0 }}"/>
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+
+                        <br>
+                        <div class="card-header text-black col-md-12 text-center capitalheader m-1 ">
+                            <h4 class="bold">KRA Yearly Report for Employee</h4> 
+                            {% if Nokra_message %}
+                                <p>{{ Nokra_message}}</p>
+                            {% else %}
+                                <p style="color: red;">KRA details not found</p>
+                            {% endif %}
+                        </div>   
+                        <br>
+                        <div class="row m-1 ">                                                                   
+                            <div class="row m-1" style="overflow-x: auto;">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            {% for column in columns %}
+                                                <th {% if not forloop.first %} style="width: 68px;" {% endif %}>{{ column|getMonthHeader }}</th>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in rowslist %}
+                                            <tr>
+                                                {% for column in columns %}
+                                                    <td 
+                                                        {% if forloop.last %} 
+                                                            style="font-weight: bold; 
+                                                            {% if row|get_item:column|safe == 'Not Met' %}
+                                                                color: red;
+                                                            {% endif %}" 
+                                                        {% elif row|get_item:column|safe == 'Not Met' %}
+                                                            style="color: red;"
+                                                        {% endif %}
+                                                    >
+                                                        {{ row|get_item:column|safe }}
+                                                    </td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>         
+                    
+                        <br>
+                        {% if Appraiser == "Yes"  or UserType == 'ceo' or HrAudit == "Yes" %}
+                        
+                        <div class="card-header text-black col-md-12 text-center capitalheader m-1 Bold" ><h4 class="bold">Specific Measurable Achievable Relevant Time Bound</h4></div>   
+                        <table class="table table-bordered display table-sm mt-2 m-1 " id="myTable_{{ obj_counter }}">
+                            <thead>
+                                <tr>
+                                    <th class="capital ColorChange">Objective Type</th>
+                                    <th class="capital ColorChange">Goal</th>
+                                    <th class="capital ColorChange">Steps</th>
+                                    <th class="capital ColorChange">Status</th>
+                                    <th class="capital ColorChange">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for spec in SPE_MEA_ACH_Detail %}
+                                <tr>
+                                    <!-- Objective Type Dropdown -->
+                                    <td>
+                                        <select name="objective_type[]" class="form-control Specific">
+                                            {% for ob in objs %}
+                                            <option value="{{ ob.id }}" {% if ob.id == spec.SPECIFIC_MEASURABLE_ACHIEVABLE.Objective_Master.id %}selected{% endif %}>
+                                                {{ ob.Title }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                        
+                                    <!-- SMART Goal -->
+                                    <td>
+                                        <input type="hidden" value="{{ spec.id }}" name="spec_ids[]">
+                                        <input type="hidden" value="0" name="spec_is_delete[]">
+                                        <textarea class="form-control Specific" name="smart_goal[]" cols="30"
+                                        
+                                        oninput="checkWordCountforgoals(this, 200)"
+                                        placeholder="Enter your comments (max 200 words)"
+                                        
+                                        
+                                        
+                                        >{{ spec.SMART_GOAL }}</textarea>
+
+
+                                        
+                                        <p class="word-count" id="word-count-smart-goal">Words: 0/200</p>
+                                    </td>
+                        
+                                    <!-- Action Steps -->
+                                    <td>
+                                        <textarea class="form-control Specific" name="action_steps[]" cols="30" 
+                                        oninput="checkWordCountforgoals(this, 200)"
+                                        placeholder="Enter your comments (max 200 words)"
+                                        
+                                        
+                                        >{{ spec.ACTION_STEPS }}</textarea>
+                                        <p class="word-count" id="word-count-action-steps">Words: 0/200</p>
+
+                                    </td>
+                        
+                                    <!-- Completion Status Dropdown -->
+                                    <td>
+                                        <select class="form-control Specific" name="status[]">
+                                            <option {% if spec.COMPLETION_DATE == "On Going" %}selected{% endif %} value="On Going">ONGOING</option>
+                                            <option {% if spec.COMPLETION_DATE == "Completed" %}selected{% endif %} value="Completed">Completed</option>
+                                        </select>
+                                    </td>
+                        
+                                    <!-- Delete Button -->
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm Specific" onclick="deleteRow(this)">
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        
+                        <!-- Add Row Button -->
+                        <button type="button" class="btn btn-primary btn-sm m-1 Specific" onclick="addRow('{{ obj_counter }}')">Add More</button>
+                    {% endif %}
+                    <div class="card-header col-md-12 text-center capitalheader m-1 text-black" ><h4 class="bold">SUMMARY AND ACKNOWLEDGEMENT</h4> </div>   
+                    <div class="row m-1 ">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td >
+                                        <label for="" style="margin-bottom:10px;"><strong>APPRAISEE SUMMARY</strong></label>
+                                        <p>Summary comments and other information about the Appraisee's ambitions, personal development plans, or other concerns.</p>
+                                        <textarea name="SUMMARY_APPRAISEE" id="SUMMARY_APPRAISEE" cols="30" 
+                                        oninput="checkWordCount(this, 500)"
+                                        placeholder="Enter your comments (max 500 words)"
+                                        
+                                        class="form-control summary-appraisee" readonly>{{sum_data.SUMMARY_APPRAISEE}}</textarea>
+                                    
+                                        <p class="word-count" id="word-count-APPRAISEE SUMMARY">Words: 0/500</p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <label for="" style="margin-bottom:10px;"><strong>APPRAISER SUMMARY</strong></label>
+                                        <p>Summary comments and other observations, including an overall assessment of the Appraisee's current performance.</p>
+                                        <textarea name="SUMMARY_APPRAISOR" id="SUMMARY_APPRAISOR" cols="30" class="form-control summary-appraisor" 
+                                        oninput="checkWordCount(this, 500)"
+                                        placeholder="Enter your comments (max 500 words)"
+                                        
+                                        readonly>{{sum_data.SUMMARY_APPRAISOR}}</textarea>
+                                        <p class="word-count" id="word-count-APPRAISER SUMMARY">Words: 0/500</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            
+                        </table>
+
+                        {% if Appraiser == "Yes"  or  SessionDottedLine == "Yes"  or UserType == 'ceo' or HrAudit == "Yes" %}
+                            <table class="table table-bordered" style="font-size: 9px;">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4">
+                                            {% comment %} <label for=""><strong>Supervisor/General Manager's Rating (Contribution 75% of Supervisor/General Manager).</strong></label> {% endcomment %}
+                                            <label for=""><strong>{{padp.Appraisor_Title}} Rating  (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
+                                            
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center" style="width: 250px;">
+                                            <input style="padding: 3px;" type="radio" name="spgm" id="GM_E" {% if sum_data.SP_GM_Rating_Excellent %}checked {% endif %} value="E" class="Gm_Rating_Radio"  > 
+                                            <label for="">EXCEEDS EXPECTATION</label>                       
+                                        </td>
+                                    
+                                        <td align="center" style="width: 250px;">
+                                            <input style="padding: 3px;" type="radio" name="spgm" id="GM_A" {% if sum_data.SP_GM_Rating_Average %}checked{% endif %} value="A" class="Gm_Rating_Radio" > 
+                                            <label for="">MEETS EXPECTATION</label>
+                                        </td>
+                                    
+                                        <td align="center" style="width: 250px;">
+                                            <input style="padding: 3px;" type="radio" name="spgm" id="GM_P" {% if sum_data.SP_GM_Rating_Poor %}checked {% endif %} value="P" class="Gm_Rating_Radio"> 
+                                            <label for="">
+                                                BELOW EXPECTATION</label>
+                                        </td>
+                                    
+                                        {% comment %} <td align="center" style="width: 250px;">
+                                            <input style="padding: 3px;" type="radio" name="spgm" id="GM_N" {% if sum_data.SP_GM_Rating_Needs_Improvement %}checked{% endif %} value="N" class="RD_Rating_Radio" readonly> 
+                                            <label for="">DEFICIENT</label>
+                                        </td> {% endcomment %}
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td colspan="5">
+                                            <label for=""><strong>{{padp.Appraisor_Title}} Comments   (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
+                                        
+                                        
+                                            <textarea name="SP_GM_Comment"   id="SP_GM_Comment" cols="30" class="form-control"
+                                            oninput="checkWordCount(this, 500)"
+                                            placeholder="Enter your comments (max 500 words)"
+                                            
+                                            >{{sum_data.SP_GM_Comment}}</textarea>
+                                            <p class="word-count" id="word-count-General Comments">Words: 0/500</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+                        {% endif %}    
+                        
+                        {% if SessionDottedLine == "Yes" and padp.DottedLine != padp.Appraisor_Title  or  HrAudit == "Yes"  %}
+                            <table class="table table-bordered" style="font-size: 9px;">
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4">
+                                            <label for=""><strong>{{padp.DottedLine}} Rating  (Contribution 25% ).</strong></label>
+                                        
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="center" style="width: 250px;">
+                                        
+                                            <input style="padding: 3px;" type="radio"   name="RDR"  id="rd" {% if sum_data.RD_Rating_Excellent %}checked{% endif %}   value="E"  class="RD_Rating_Radio"> 
+                                            <label for="">EXCEEDS EXPECTATION</label>                       
+                                        </td>
+                                        
+                                        <td align="center" style="width: 250px;">
+                                            <input style="padding: 3px;" type="radio"   name="RDR"  id="rd"{% if sum_data.RD_Rating_Average %}checked{% endif %} value="A"  class="RD_Rating_Radio"> 
+                                            <label for="">MEETS EXPECTATION</label>
+                                        </td>
+                                        <td align="center" style="width: 250px;">
+                                            <input  type="radio"   name="RDR"  id="rd" {% if sum_data.RD_Rating_Poor %}checked {% endif %}  value="P" class="RD_Rating_Radio" > 
+                                            
+                                            <label for="">
+                                                BELOW EXPECTATION</label>
+                                        </td>
+                                    
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5">
+                                            <label for=""><strong>{{padp.DottedLine}} Comments   (Contribution 25% ).</strong></label>
+                                        
+                                            <textarea name="RD_Comment"   id="RD_Comment" cols="30"
+                                            oninput="checkWordCount(this, 500)"
+                                            placeholder="Enter your comments (max 500 words)"
+                                            class="form-control " >{{sum_data.RD_Comment}}</textarea>
+                                            
+                                            <p class="word-count" id="word-count-Regional Comments">Words: 0/500</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>    
+                        {% endif %}
+                    </div>
+                    {% endif %}    
+                                                
+
+                    {% if UserType == "ceo" or HrAudit == "Yes"  or Departmentsession == "hr"  %}
+                        {% if SessionEmployeeCode != padp.EmployeeCode or ep_submitted == "Yes" %}
+                    
+                        <div id="Salary_grid">
+                            <div class="card-header text-center capitalheader m-1 text-black" style="font-size: 15px;">
+                                <h4 class="bold"> FINAL PERFORMANCE RATING</h4>
+                            </div>
+                            <br>
+                        
+                            <div class="row m-1">
+                                <table class="table table-bordered table-sm cstborder" >
+                                    <thead>
+                                        <tr>
+                                            <th class="ColorChange" style="width:125px;">EVALUATION KEY</th>
+                                            <th class="ColorChange" style="width: 141px;">BELOW EXPECTATION</th>
+                                            <th class="ColorChange" style="width: 152px;">MEETS EXPECTATION</th>
+                                            <th class="ColorChange" style="width: 152px;">EXCEEDS EXPECTATION</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="E_KEY" {% if Sal_data.BELOW_STANDARD %}checked{% endif %} value="B" onclick="handleEvaluationChange('B')" {% if Sal_data.BELOW_STANDARD %} checked {% endif %}>
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="E_KEY" {% if Sal_data.MEETS_EXPECTATION %}checked{% endif %} value="M" onclick="handleEvaluationChange('M')">
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="E_KEY" {% if Sal_data.OUTSTANDING %}checked{% endif %} value="O" onclick="handleEvaluationChange('O')">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <table class="table table-bordered table-sm cstborder">
+                                    <thead>
+                                        <tr>
+                                            <th class="ColorChange" style="width:125px;">SALARY INCREMENT</th>
+                                            <th class="ColorChange" style="width: 141px;">NO CORRECTION</th>
+                                            <th class="ColorChange" style="width: 76px;">3 %</th>
+                                            <th class="ColorChange" style="width: 76px;">5 %</th>
+                                            <th class="ColorChange" style="width: 76px;">8 %</th>
+                                            <th class="ColorChange" style="width: 76px;">10 %</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="S_KEY" {% if Sal_data.NO_CORRECTION %}checked{% endif %} value="N" id="no_correction" {% if Sal_data.BELOW_STANDARD %}checked{% endif %}>
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="S_KEY" {% if Sal_data.per_3 %}checked{% endif %} value="3" id="inc_3" >
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="S_KEY" {% if Sal_data.per_5 %}checked{% endif %} value="5" id="inc_5" >
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="S_KEY" {% if Sal_data.per_8 %}checked{% endif %} value="8" id="inc_8" >
+                                            </td>
+                                            <td align="center">
+                                                <input type="radio" class="form" name="S_KEY" {% if Sal_data.per_10 %}checked{% endif %} value="10" id="inc_10" >
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered table-sm cstborder">
+                                    <thead>
+                                        <tr>
+                                            <th class="ColorChange" style = "width:125px ;">SALARY INCREMENT {{UserOID}}</th>
+                                            <th class="ColorChange" style="width: 152px;">SALARY CORRECTION</th>
+                                            <th class="ColorChange" style="width: 152px;">PROMOTION</th>
+                                            <th class="ColorChange" style="width: 170px;">PROMOTION WITH INCREASE</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td align="center"><input type="radio" class="form" name="S_KEY" {% if Sal_data.SALARY_CORRECTION   %}checked{% endif %} value="S"></td>
+                                        <td align="center"><input type="radio" class="form" name="S_KEY" {% if Sal_data.PROMOTION   %}checked{% endif %} value="P" ></td>
+                                        <td align="center"><input type="radio" class="form" name="S_KEY" {% if Sal_data.PROMOTION_WITH_INCREASE   %}checked{% endif %} value="PWI"></td>
+                                    
+                                        </tr>
+                                    </tbody>
+                                </table> 
+                                <div class="col-md-12 ">  
+                                    <div class="row ">
+                                        <div class="d-flex flex-column align-items-end">
+                                            {% comment %} <a href="{% url 'Refresh_Salary_Data_Master' Padpid=padp_id %}" class="btn mr-4 btn-primary mb-2"><i class="fa-solid fa-arrows-rotate"></i> Refresh Salary</a> {% endcomment %}
+                                             <button type="button" id="refreshSalary" class="btn btn-primary">
+                                                <i class="fa-solid fa-arrows-rotate"></i> Refresh Salary
+                                            </button>
+
+                                            <p class="mb-0 RefreshSalaryButtonMsg">
+                                                *If Salary and Designation are missing, please click the <b>Refresh Salary</b> button
+                                            </p>
+                                        </div>
+
+                                        <div class="col-md-4 ml-0 section" id="SALARY_SECTION">
+                                            <table  class="table table-bordered  table-sm" id="tblObject">
+                                                <thead>
+                                                    <tr>
+                                                    <th colspan="2" style="width: 50%;"><input type="checkbox" id="salaryCorrectionCheckbox" name="Salary_Correction">&nbsp;Salary Correction</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="">From<span class="ImpField">*</span></label>
+                                                            <input  type="number" class="form-control" value="{% if Sal_data.FromSalary %}{{Sal_data.FromSalary}}{% else %}{{NewCTC}}{% endif %}" name="FromSalary" id="FromSalaryCorrection">
+                                                        </td>
+                                                        <td>
+                                                            <label for="">To<span class="ImpField">*</span></label>
+                                                            <input type="number" class="form-control" value="{{ Sal_data.ToSalary }}" name="ToSalary" id="ToSalaryCorrection">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            {% comment %} <a href="{% url 'Refresh_Salary_Data_Master' Padpid=padp_id EmpID=EmpID EmpCode=EmpCode %}" class="btn mr-4 btn-primary mb-2"><i class="fa-solid fa-arrows-rotate"></i> Refresh</a> {% endcomment %}
+                                        </div>
+                                        <div class="col-md-8 mr-0 section" id="PROMOTION_SECTION"> 
+                                            <table class="table table-bordered table-sm" id="tblObject">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2" style="width: 50%;"><input type="checkbox" id="promotionCheckbox" name="Promotion">&nbsp;Promotion</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <label for="">From</label>
+                                                            <select name="FromPosition" class="form-control" readonly id="FromPosition">
+                                                                
+                                                            {% for Designation in MergedDesignationsFrom %}
+                                                            <option value="{{ Designation.designations }}"   {% if Designation.designations == padp.Aprraisee_position%}selected{% endif %}>
+                                                                
+                                                                {{ Designation.designations }}  
+                                                                {% if Designation.OnRollDepartmentMaster %}
+                                                                    ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                                                                {% elif Designation.CorporateDepartmentMaster %}
+                                                                    ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                                                                {% endif %}
+                                                            </option>
+                                                            {% endfor %}
+                                                            </select>
+                                                        </td>
+
+                                                        <td>
+                                                            <label for="">To</label>
+                                                            <select name="ToPosition" class="form-control" id="">
+                                                                {% for Designation in MergedDesignationsTo %}
+                                                                    <option value="{{ Designation.designations }}"   {% if Sal_data.ToPosition == Designation.designations %}selected{% endif %}>
+                                                                        {{ Designation.designations }}  
+                                                                        
+                                                                        {% if Designation.OnRollDepartmentMaster %}
+                                                                        ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                                                                        {% elif Designation.CorporateDepartmentMaster %}
+                                                                            ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                                                                        {% endif %}
+                                                                    </option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-12 section" id="JustificationComments">
+                                            <label for=""><strong>Justification<span class="ImpField">*</span></strong></label>
+                                            <textarea name="JustificationComments" 
+                                            oninput="checkWordCountforgoals(this, 200)"
+                                            placeholder="Enter your comments (max 200 words)"
+                                                id="JustificationComment" cols="30" class="form-control" >{{Sal_data.JustificationComments}}</textarea>
+                                            <p class="word-count" id="word-count-Regional Comments">Words: 0/200</p>
+                                        
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <div class="card-header text-center capitalheader m-1 Bold text-black" style="font-size: 15px;">
+                        <h4 class="bold">  ACKNOWLEDGEMENT </h4>
+                    </div>
+                    
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">Appraisee:</label>
+                                <input type="text" class="form-control" value="{% if sum_data.Appraisee %}{{sum_data.Appraisee}}{% else %}{{padp.Appraisee_Name}}{% endif %}"  name="Appraisee_ACK" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">Appraiser:</label>
+                                <input type="text" class="form-control" value="{% if  sum_data.Appraisor %}{{sum_data.Appraisor}}{% else %}{{ padp.Appraisor_Name}}{% endif %}"  name="Appraisor_ACK" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">HR Manager:</label>
+                                <input type="text" class="form-control" value="{% if  sum_data.HR_Manager %}{{sum_data.HR_Manager}}{% else %}{{HR_ManagerName}}{% endif %}"  name="HR_Manager_ACK" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+             
+
+            <div class="card-footer text-right" style="position: fixed; bottom: 0;left: 0;min-width: 100%;background: #ffff;">
+                <button name="btn_value" value="0" class="btn btn-warning btn-sm">Save as Draft</button>
+                <button name="btn_value" value="1" class="btn btn-primary btn-sm">Final Submit</button>
+               
+                {% if  HrAudit == "Yes" and Departmentsession == 'hr' %}
+                <button type="submit" name="btn_value" value="2" class="btn btn-primary text-white">
+                    Apporve By HR
+                </button>
+                <button name="btn_value" type="submit" value="-1" class="btn btn-danger btn-sm">Return</button>
+                {% endif %}
+            </div>
+        </div>
+
+    </form>
+
+<br>
+
+<script>
+    
+
+function addRow(objCounter) {
+    // Get the table's tbody element
+    var table = document.getElementById("myTable_" + objCounter).getElementsByTagName("tbody")[0];
+    var newRow = table.insertRow(table.rows.length);
+
+    // Insert cells into the new row
+    var cell1 = newRow.insertCell(0); // Objective Type Dropdown
+    var cell2 = newRow.insertCell(1); // SMART Goal Textarea
+    var cell3 = newRow.insertCell(2); // Action Steps Textarea
+    var cell4 = newRow.insertCell(3); // Completion Status Dropdown
+    var cell5 = newRow.insertCell(4); // Delete Button
+
+    // 1. Create and append Objective Type dropdown
+    var selectObjectiveType = document.createElement("select");
+    selectObjectiveType.className = "form-control";
+    selectObjectiveType.name = `objective_type[]`;
+
+    // Add dropdown options dynamically (use Django template rendering)
+    var options = [
+        {% for ob in objs %}
+        {
+            value: "{{ ob.id }}",
+            text: "{{ ob.Title }}",
+            {% if ob.id == obj.id %}selected: true{% endif %}
+        },
+        {% endfor %}
+    ];
+
+    options.forEach(option => {
+        var opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.text;
+        if (option.selected) opt.selected = true; // Set selected option
+        selectObjectiveType.appendChild(opt);
+    });
+    cell1.appendChild(selectObjectiveType);
+
+    // 2. Create and append SMART Goal textarea with word count
+    var textareaSmartGoal = document.createElement("textarea");
+    textareaSmartGoal.className = "form-control";
+    textareaSmartGoal.name = `smart_goal[]`;
+    textareaSmartGoal.cols = "30";
+   
+    textareaSmartGoal.placeholder = "Enter SMART goal (max 500 words)";
+    textareaSmartGoal.setAttribute("oninput", "checkWordCountforgoals(this, 200)");
+    cell2.appendChild(textareaSmartGoal);
+
+    // Add hidden inputs for `spec_ids` and `spec_is_delete`
+    var hiddenSpecID = document.createElement("input");
+    hiddenSpecID.type = "hidden";
+    hiddenSpecID.name = "spec_ids[]";
+    hiddenSpecID.value = ""; // Default empty value
+    cell2.appendChild(hiddenSpecID);
+
+    var hiddenSpecIsDelete = document.createElement("input");
+    hiddenSpecIsDelete.type = "hidden";
+    hiddenSpecIsDelete.name = "spec_is_delete[]";
+    hiddenSpecIsDelete.value = "0";
+    cell2.appendChild(hiddenSpecIsDelete);
+
+    // Add word count tracker below SMART Goal textarea
+    var wordCountSmartGoal = document.createElement("p");
+    wordCountSmartGoal.className = "word-count";
+    wordCountSmartGoal.id = `word-count-smart-goal-${objCounter}`;
+    wordCountSmartGoal.textContent = "Words: 0/500";
+    cell2.appendChild(wordCountSmartGoal);
+
+    // 3. Create and append Action Steps textarea with word count
+    var textareaActionSteps = document.createElement("textarea");
+    textareaActionSteps.className = "form-control";
+    textareaActionSteps.name = `action_steps[]`;
+    textareaActionSteps.cols = "30";
+ 
+    textareaActionSteps.placeholder = "Enter action steps (max 500 words)";
+    textareaActionSteps.setAttribute("oninput", "checkWordCountforgoals(this, 200)");
+    cell3.appendChild(textareaActionSteps);
+
+    // Add word count tracker below Action Steps textarea
+    var wordCountActionSteps = document.createElement("p");
+    wordCountActionSteps.className = "word-count";
+    wordCountActionSteps.id = `word-count-action-steps-${objCounter}`;
+    wordCountActionSteps.textContent = "Words: 0/500";
+    cell3.appendChild(wordCountActionSteps);
+
+    // 4. Create and append Completion Status dropdown
+    var selectStatus = document.createElement("select");
+    selectStatus.className = "form-control";
+    selectStatus.name = `status[]`;
+
+    var statusOptions = [
+        { value: "On Going", text: "ONGOING" },
+        { value: "Completed", text: "Completed" }
+    ];
+
+    statusOptions.forEach(option => {
+        var opt = document.createElement("option");
+        opt.value = option.value;
+        opt.text = option.text;
+        selectStatus.appendChild(opt);
+    });
+    cell4.appendChild(selectStatus);
+
+    // 5. Create and append Delete button
+    var deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.className = "btn btn-danger btn-sm";
+    deleteBtn.textContent = "Delete";
+    deleteBtn.onclick = function () {
+        deleteRow(newRow); // Pass the entire row to delete function
+    };
+    cell5.appendChild(deleteBtn);
+}
+
+// Helper function to delete a row
+function deleteRow(row) {
+    var table = row.parentNode.parentNode.parentNode; // Get the table element
+    table.deleteRow(row.rowIndex); // Delete the row
+}
+
+
+function deleteRow(button) {
+    var row = button.parentNode.parentNode;
+
+    var smartGoalField = row.querySelector('textarea[name^="smart_goal"]');
+    if (smartGoalField) {
+        var objCounter = smartGoalField.getAttribute('name').split('_').pop();
+
+        var hiddenInput = row.querySelector('input[name="spec_is_delete[]"]');  // This should match the name attribute
+        if (hiddenInput) {
+            hiddenInput.value = "1";  // Mark the spec_is_delete as 1 when deleting
+            console.log("Marking as deleted: ", hiddenInput); // Log the deletion
+        }
+
+        row.style.display = "none";  // Hide the row for visual confirmation
+    }
+}
+
+
+
+
+  $(document).ready(function () {
+      var Level = "{{UserType}}";
+    
+      SessionDesignation = "{{SessionDesignation}}";
+      Reportingtodesigination =  "{{padp.ReportingtoDesigantion}}";
+      SessionDottedLine = "{{SessionDottedLine}}";
+      PadpDottedLine = "{{PadpDottedLine}}";
+      UserType = "{{UserType}}";
+      HrAudit = "{{HrAudit}}";
+      Departmentsession =  "{{Departmentsession}}" ; 
+      
+    var employeeCode = "{{ request.session.EmployeeCode }}";
+    
+    
+    const salaryGrid = document.getElementById("Salary_grid");
+    if (salaryGrid) {
+    // Check if the user is a CEO or if they are HR with a valid HrAudit flag
+    if (Level === "ceo" || (HrAudit === "Yes" &&  Departmentsession == 'hr' )) {
+        salaryGrid.style.display = "block";
+    } else {
+        salaryGrid.style.display = "none";
+    }
+}
+
+
+
+        var padpEmployeeCode = document.getElementById('EmployeeCode').value;
+           
+
+
+
+if (padpEmployeeCode === employeeCode) {
+    $(".A_Appor").prop('readonly', true);
+    $(".A_Appee").prop('readonly', false);
+   
+    $(".A_Appor_Att").prop('disabled', true);
+    $(".A_Appee_Att").prop('disabled', false);
+
+    $("textarea.Specific").prop('readonly', true);
+    $("select.Specific").prop('disabled', true);
+    $("button.Specific").prop('disabled', true);
+
+
+
+    
+    $("#SUMMARY_APPRAISEE").prop('readonly', false);
+} else if (SessionDesignation === Reportingtodesigination) {
+    $(".A_Appee").prop('readonly', true);
+    $(".A_Appor").prop('readonly', false);
+ 
+    $(".A_Appee_Att").prop('disabled', true);
+    $(".A_Appor_Att").prop('disabled', false);
+
+
+    $("textarea.Specific").prop('readonly', false);
+    $("select.Specific").prop('disabled', false);
+    $("button.Specific").prop('disabled', false);
+
+
+
+    
+    
+    $("#SUMMARY_APPRAISOR").prop('readonly', false);
+} else if (SessionDesignation === PadpDottedLine) {
+    $(".A_Appee").prop('readonly', true);
+    $(".A_Appor").prop('readonly', true);
+  
+    $(".A_Appee_Att").prop('disabled', true);
+    $(".A_Appor_Att").prop('disabled', true);
+    
+    $("#SUMMARY_APPRAISOR").prop('readonly', true);
+    $("#SUMMARY_APPRAISEE").prop('readonly', true);
+   
+    $(".Gm_Rating_Radio").prop('disabled', true);
+    $("#SP_GM_Comment").prop('readonly', true);
+    $("textarea.Specific").prop('readonly', true);
+    $("select.Specific").prop('disabled', true);
+    $("button.Specific").prop('disabled', true);
+
+   
+
+   
+
+} else if (UserType  === "ceo") {
+    $(".A_Appee").prop('readonly', true);
+    $(".A_Appor").prop('readonly', true);
+   
+    $(".A_Appee_Att").prop('disabled', true);
+    $(".A_Appor_Att").prop('disabled', true);
+    
+    $("#SUMMARY_APPRAISOR").prop('readonly', true);
+    $("#SUMMARY_APPRAISEE").prop('readonly', true);
+   
+    $(".Gm_Rating_Radio").prop('disabled', true);
+    $(".RD_Rating_Radio").prop('disabled', true);
+    $(".readonlyceo").prop('readonly', true);
+    
+
+    $("#SP_GM_Comment").prop('readonly', true);
+    $("#readonlyceo").prop('readonly', true);
+
+    $("#RD_Comment").prop('readonly', true);
+    $("textarea.Specific").prop('readonly', true);
+    $("select.Specific").prop('disabled', true);
+    $("button.Specific").prop('disabled', true);
+
+
+  
+} 
+else if (HrAudit  === "Yes") {
+    $(".A_Appee").prop('readonly', true);
+    $(".A_Appor").prop('readonly', true);
+   
+    $(".A_Appee_Att").prop('disabled', true);
+    $(".A_Appor_Att").prop('disabled', true);
+    
+    $("#SUMMARY_APPRAISOR").prop('readonly', true);
+    $("#SUMMARY_APPRAISEE").prop('readonly', true);
+   
+    $(".Gm_Rating_Radio").prop('disabled', true);
+    $(".RD_Rating_Radio").prop('disabled', true);
+    $(".readonlyceo").prop('readonly', true);
+    
+
+    $("#SP_GM_Comment").prop('readonly', true);
+    $("#readonlyceo").prop('readonly', true);
+
+    $("#RD_Comment").prop('readonly', true);
+    $("textarea.Specific").prop('readonly', true);
+    $("select.Specific").prop('disabled', true);
+    $("button.Specific").prop('disabled', true);
+
+
+  
+} 
+});
+
+ 
+
+
+
+
+</script>
+
+
+
+<script>
+           
+function Sa_PR_checkbox() {
+    $('.section').hide(); // Hide all sections initially
+    
+    // Get the initially selected radio button value
+    var initialSelectedValue = $('input[type="radio"][name="S_KEY"]:checked').val();
+    
+    // Show relevant sections based on the initial selected value
+    if (initialSelectedValue === "S") {
+        $('#SALARY_SECTION').show();
+       $('#JustificationComments').prop('required', true).show();
+        $('#salaryCorrectionCheckbox').prop('checked', true);
+        
+    } else if (initialSelectedValue === "P" || initialSelectedValue === "PWI") {
+        $('#PROMOTION_SECTION').show();
+       $('#JustificationComments').prop('required', true).show();
+        $('#promotionCheckbox').prop('checked', true);
+    }
+    if (initialSelectedValue === "PWI") {
+        // Make sure both sections are shown when 'PWI' is selected initially
+        $('#SALARY_SECTION').show();
+        $('#PROMOTION_SECTION').show();
+       $('#JustificationComments').prop('required', true).show();
+        $('#salaryCorrectionCheckbox').prop('checked', true);
+        $('#promotionCheckbox').prop('checked', true);
+    }
+
+    // Event handler for when a radio button is changed
+    $('input[type="radio"][name="S_KEY"]').change(function () {
+        var selectedValue = $(this).val();
+
+        $('.section').hide(); // Hide all sections on change
+        if (selectedValue === "S") {
+            $('#SALARY_SECTION').show();
+           $('#JustificationComments').prop('required', true).show();
+            $('#salaryCorrectionCheckbox').prop('checked', true);
+            $('#promotionCheckbox').prop('checked', false);
+        } 
+        else if (selectedValue === "P") {
+            $('#PROMOTION_SECTION').show();
+           $('#JustificationComments').prop('required', true).show();
+            $('#promotionCheckbox').prop('checked', true);
+            $('#salaryCorrectionCheckbox').prop('checked', false);
+        } 
+        else if (selectedValue === "PWI") {
+            $('#SALARY_SECTION').show();
+            $('#PROMOTION_SECTION').show();
+           $('#JustificationComments').prop('required', true).show();
+            $('#salaryCorrectionCheckbox').prop('checked', true);
+            $('#promotionCheckbox').prop('checked', true);
+        }
+    });
+}
+
+Sa_PR_checkbox(); // Call the function on page load
+
+
+                               
+function handleEvaluationChange(evaluation) {
+    // Enable all options initially
+    document.getElementById('no_correction').disabled = false;
+    document.getElementById('inc_3').disabled = false;
+    document.getElementById('inc_5').disabled = false;
+    document.getElementById('inc_8').disabled = false;
+    document.getElementById('inc_10').disabled = false;
+
+    // Logic for evaluation 'B'
+    if (evaluation === 'B') {
+        document.getElementById('no_correction').checked = true;
+        document.getElementById('inc_3').disabled = true;
+        document.getElementById('inc_5').disabled = true;
+        document.getElementById('inc_8').disabled = true;
+        document.getElementById('inc_10').disabled = true;
+
+    // Logic for evaluation 'M'
+    } else if (evaluation === 'M') {
+       
+
+        document.getElementById('no_correction').disabled = true;
+        document.getElementById('inc_3').disabled = false;
+        document.getElementById('inc_5').disabled = false;
+        document.getElementById('inc_8').disabled = true;
+        document.getElementById('inc_10').disabled = true;
+
+    // Logic for evaluation 'O'
+    } else if (evaluation === 'O') {
+       
+
+        document.getElementById('no_correction').disabled = true;
+        document.getElementById('inc_3').disabled = true;
+        document.getElementById('inc_5').disabled = true;
+        document.getElementById('inc_8').disabled = false;
+        document.getElementById('inc_10').disabled = false;
+    }
+}
+
+</script>
+
+
+  <script>
+    function checkWordCount(textarea, maxWords) {
+      const wordCountElement = textarea.nextElementSibling; // Get the word count paragraph
+      const words = textarea.value.split(/\s+/).filter(word => word.length > 0); // Split by whitespace and remove empty strings
+      const wordCount = words.length;
+  
+      // Update the word count display
+      wordCountElement.textContent = `Words: ${wordCount}/${maxWords}`;
+  
+      // Get all buttons with name="btn_value"
+      const buttons = document.querySelectorAll('button[name="btn_value"]');
+  
+      // Disable or enable buttons based on word count
+      if (wordCount > maxWords) {
+        textarea.style.borderColor = "red"; // Change border to red
+        wordCountElement.style.color = "red"; // Change text color to red
+  
+        buttons.forEach(button => {
+          button.disabled = true; // Disable all buttons with name="btn_value"
+        });
+      } else {
+        textarea.style.borderColor = ""; // Reset border color
+        wordCountElement.style.color = ""; // Reset text color
+  
+        buttons.forEach(button => {
+          button.disabled = false; // Enable all buttons with name="btn_value"
+        });
+      }
+    }
+    $(function(){
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('input', function() {
+          this.style.height = 'auto'; // Reset the height
+          this.style.height = `${this.scrollHeight}px`; // Adjust height to fit content
+        });
+    
+        // Initialize the height on page load
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      });
+    })
+  </script>
+
+
+
+
+<script>
+    function checkWordCountforgoals(textarea, maxWords) {
+      const wordCountElement = textarea.nextElementSibling; // Get the word count paragraph
+      const words = textarea.value.split(/\s+/).filter(word => word.length > 0); // Split by whitespace and remove empty strings
+      const wordCount = words.length;
+  
+      // Update the word count display
+      wordCountElement.textContent = `Words: ${wordCount}/${maxWords}`;
+  
+      // Get all buttons with name="btn_value"
+      const buttons = document.querySelectorAll('button[name="btn_value"]');
+  
+      // Disable or enable buttons based on word count
+      if (wordCount > maxWords) {
+        textarea.style.borderColor = "red"; // Change border to red
+        wordCountElement.style.color = "red"; // Change text color to red
+  
+        buttons.forEach(button => {
+          button.disabled = true; // Disable all buttons with name="btn_value"
+        });
+      } else {
+        textarea.style.borderColor = ""; // Reset border color
+        wordCountElement.style.color = ""; // Reset text color
+  
+        buttons.forEach(button => {
+          button.disabled = false; // Enable all buttons with name="btn_value"
+        });
+      }
+    }
+  </script>
+<script>
+    $(document).ready(function () {
+
+        function updateValidation() {
+            const selected = $('input[name="S_KEY"]:checked').val();
+
+            // Elements
+            const fromSalary = $("#FromSalaryCorrection")[0];
+            const toSalary = $("#ToSalaryCorrection")[0];
+            const justification = $("#JustificationComment")[0];
+
+            if (selected === "S" || selected === "PWI") {
+                // Apply validation
+                fromSalary.required = true;
+                fromSalary.setAttribute("min", 2);
+
+                toSalary.required = true;
+                toSalary.setAttribute("min", 2);
+
+                justification.required = true;
+                justification.setAttribute("minlength", 3);
+
+                // --- Custom validation messages ---
+                fromSalary.oninvalid = function () {
+                    this.setCustomValidity("This field is required. Please enter a valid salary.");
+                };
+                toSalary.oninvalid = function () {
+                    this.setCustomValidity("This field is required. Please enter a valid salary.");
+                };
+                justification.oninvalid = function () {
+                    if (!this.value) {
+                        this.setCustomValidity("This field is required. Please provide a justification.");
+                    } else if (this.value.length < 3) {
+                        this.setCustomValidity("Justification must be at least 3 characters.");
+                    } else {
+                        this.setCustomValidity("");
+                    }
+                };
+
+                // Clear message when user types
+                fromSalary.oninput = function () { this.setCustomValidity(""); };
+                toSalary.oninput = function () { this.setCustomValidity(""); };
+                justification.oninput = function () { this.setCustomValidity(""); };
+
+            } else {
+                // Remove validation
+                fromSalary.required = false;
+                fromSalary.removeAttribute("min");
+
+                toSalary.required = false;
+                toSalary.removeAttribute("min");
+
+                justification.required = false;
+                justification.removeAttribute("minlength");
+
+                // Remove validation messages
+                fromSalary.oninvalid = null;
+                toSalary.oninvalid = null;
+                justification.oninvalid = null;
+            }
+        }
+
+        // Run on page load
+        updateValidation();
+
+        // Run whenever a radio button changes
+        $('input[name="S_KEY"]').change(function () {
+            updateValidation();
+        });
+    });
+</script>
+
+<script>
+    document.getElementById("refreshSalary").addEventListener("click", function() {
+        fetch(`/PADP/Refresh_Salary_Data_Master/{{ padp_id }}/`, {
+            method: "GET",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Update fields dynamically
+                document.getElementById("FromSalaryCorrection").value = data.salary;
+                document.getElementById("FromPosition").value = data.designation;
+                alert("The Salary Fetched Successfully")
+            }
+        })
+        .catch(err => console.error("Error refreshing salary:", err));
+    });
+</script>
+
+{% endblock %}

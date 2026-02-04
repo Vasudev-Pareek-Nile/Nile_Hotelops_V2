@@ -1,0 +1,138 @@
+{% extends 'Media_Asset_Library/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+     .custom-image {
+        max-height: 400px;
+        min-height: 400px;
+    
+    object-fit:contain; 
+       
+    }
+    .padding_p{
+        padding: 10px;
+    }
+    .Video_fix{
+        max-height: 400px;
+        min-height: 400px;
+        object-fit:contain; 
+        
+    }
+   table th{
+    min-width:160px;
+   }
+   .custom-image {
+        pointer-events: none; 
+        user-select: none;
+    }
+</style>
+<div class="container">
+    <div class="card-header">View</div>
+    <br>
+    <button class="btn btn-primary btn-sm" onclick="history.back()">Go Back</button>
+    <br>
+    <br>
+
+    <div class="row d-flex justify-content-center align-items-top">
+        <div class="col-md-6">
+            <div class="card">
+             {% if media.Media_Type == 'Image' %}
+                        <img class = "custom-image" src="{{ media.Media.url }}" alt="{{ media.Title }}">
+                    {% elif media.Media_Type == 'Video' %}
+                        <video class="Video_fix" controls controlsList="nodownload">
+                            <source src="{{ media.Media.url }}" type="video/mp4">
+                          
+                        </video>
+                    {% endif %}
+            
+                </div>
+            
+    
+        </div>
+        <div class="col-md-6" >
+
+            
+                
+            <table class="table table-bordered" >
+                <tbody>
+                    <tr>
+                        <th>Title :</th>
+                        <td>{{media.Title}}</td>
+                    </tr>
+                    <tr>
+                        <th>category :</th>
+                        <td>{{media.category}}</td>
+                    </tr>
+                    <tr>
+                        <th>Descriptions :</th>
+                        <td>{{media.Descriptions}}</td>
+                    </tr>
+                    <tr>
+                        <th>Expiration Date :</th>
+                        <td>{{media.Expiration_Date | date:'d-m-Y'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Upload Date :</th>
+                        <td>{{media.Upload_Date | date:'d-m-Y'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Document Type :</th>
+                        <td>{{media.Media_Type}}</td>
+                    </tr>
+                    <tr>
+                        <th>Upload By :</th>
+                        <td>{{media.Upload_By}}</td>
+                    </tr>
+                    <tr>
+                        <th>For Hotel :</th>
+                        <td>{{memOrg.0.Organization_name}}</td>
+                    </tr>
+                    <tr>
+                        <th>Version :</th>
+                        <td>{{media.version}}</td>
+                    </tr>
+                    {% if media.Media_Type == "Image" %}
+                    <tr>
+                        <th>Download Resolution:</th>
+                        <td> 
+                            
+                               
+                                <a href="{% url 'download_media' id=media.id resolution='actual' %}" class="btn btn-primary btn-sm m-1 d-inline">Actual</a>
+                                <a href="{% url 'download_media' id=media.id resolution='high' %}" class="btn btn-primary btn-sm m-1 d-inline">High</a>
+                                <a href="{% url 'download_media' id=media.id resolution='medium' %}" class="btn btn-primary btn-sm m-1 d-inline">Medium</a>
+                                <a href="{% url 'download_media' id=media.id resolution='low' %}" class="btn btn-primary btn-sm m-1 d-inline">Low</a>
+                        
+                       </td>
+                    </tr>
+                    {%else %}
+                    <tr>
+                        <th>Download Resolution:</th>
+                        <td> 
+                                <a href="{% url 'download_media' id=media.id resolution='actual' %}" class="btn btn-primary btn-sm m-1 d-inline">Actual</a>
+                                
+                       </td>
+                    </tr>
+
+                    {% endif  %}
+                    <tr>
+                        <th>Action :</th>
+                        <td><a   class="btn btn-primary btn-sm" href="{% url "edit_media" id=media.id %}">Edit Media</a> 
+                            <a    onclick="return confirm('Are you sure you want to delete this?')" class="btn  btn-danger btn-sm" href="{% url "media_delete" id=media.id %}">Delete Media</a></td>
+                    </tr>
+                </tbody>    
+            </table>    
+              
+                 
+
+                 
+            
+        </div>
+        
+    </div>
+</div>
+
+  
+{% endblock content %}
+

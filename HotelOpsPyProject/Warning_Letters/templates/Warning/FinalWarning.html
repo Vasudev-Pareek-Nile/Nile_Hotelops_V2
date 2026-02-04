@@ -1,0 +1,238 @@
+{% extends 'Warning/homebase.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    
+    .submit-btn {
+        {% comment %} width: 100px; {% endcomment %}
+        {% comment %} background-color: #20c997; {% endcomment %}
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .submit-btn:hover {
+        background-color: #17a589;
+    }
+    .ibox-content {
+        border-style: none; 
+    }
+
+    label{
+        margin-bottom:5px;
+    }
+    
+</style>
+<body>
+    <div class="container" id="ibox1">
+        <div class="ibox-content">
+            <div class="sk-spinner sk-spinner-wave">
+                <div class="sk-rect1"></div>
+                <div class="sk-rect2"></div>
+                <div class="sk-rect3"></div>
+                <div class="sk-rect4"></div>
+                <div class="sk-rect5"></div>
+            </div>
+        <div class="card">
+            <div class="card-header text-left" style="color: #1ab394">
+                <h3>Final Warning</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label for="employeeNo" class="form-label">Employee No: <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="employeeNo" name="employee_no" value="{{ warning.employee_no }}" readonly>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ warning.name }}" readonly>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="department" class="form-label">Department:</label>
+                            <input type="text" class="form-control" id="department" name="department" value="{{ warning.department }}" readonly>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label for="designation" class="form-label">Designation:</label>
+                            <input type="text" class="form-control" id="designation" name="designation" value="{{ warning.designation }}" readonly>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group mt-3">
+                        <label>Warning:</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="firstWarning" name="warning_type" value="first" disabled>
+                            <label class="form-check-label" for="firstWarning">First</label>
+                        </div> 
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="warning_type" id="secondWarning" value="second" disabled>
+                            <label class="form-check-label" for="secondWarning">Second</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="warning_type" id="thirdWarning" value="third" disabled>
+                            <label class="form-check-label" for="thirdWarning">Third</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="warning_type" id="finalWarning" value="final" checked>
+                            <label class="form-check-label" for="finalWarning">Final</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3 mb-3">
+                        <label for="employeeProblem">Employee's problem:<span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="employee_problem" id="employeeProblem" rows="2" required>{{ warning.employee_problem }}</textarea>
+                    </div>
+
+                    <div class="form-group mt-3 mb-3">
+                        <label for="writtenWarning">Written Warning:<span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="written_warning" id="writtenWarning" rows="2" required>{{ warning.written_warning }}</textarea>
+                    </div>
+
+                    <div class="form-group mt-3 mb-3">
+                        <label for="improvementStandard">Standard of improvements expected:<span class="text-danger">*</span></label>
+                        <textarea class="form-control" name="improvement_standard" id="improvementStandard" rows="2" required>{{ warning.improvement_standard }}</textarea>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="improvementPeriodFrom">Period given for improvement (From):</label>
+                            <input type="date" class="form-control" name="improvement_period_from" id="improvementPeriodFrom" 
+                                   value="{{ warning.improvement_period_from|default:today|date:'Y-m-d' }}" 
+                                   min="{{ today|date:'Y-m-d' }}">
+                        </div>
+                        
+                        <div class="col-md-2">
+                            <label for="improvementPeriodTo">To:</label>
+                            <input type="date" class="form-control" name="improvement_period_to" id="improvementPeriodTo" 
+                                   value="{{ warning.improvement_period_to|default:today|date:'Y-m-d' }}" 
+                                   min="{{ today|date:'Y-m-d' }}">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="warningDate">Written warning communicated to Employee on (Date):</label>
+                            <input type="date" class="form-control" name="warning_date" id="warningDate" value="{{ warning.warning_date|default:today|date:'Y-m-d'  }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="warningTime">Time:</label>
+                            <input type="time" id="time" class="form-control" name="warning_time" id="warningTime" value="{{ warning.warning_time|default_if_none:''|time:'H:i' }}">
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="witness">Witness(es) if any:</label>
+                        <input type="text" class="form-control" name="witness" id="witness" value="{{ warning.witness }}">
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label><strong>Associate's remark:</strong></label>
+                        <p>Associate has a right to appeal against the written warning if she/he feels unjustified. Please tick:</p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="appeal" value="Yes" id="appealYes1" {% if warning.appeal == "Yes" %}checked{% endif %} onclick="checkAppeal('Yes')">
+                            <label class="form-check-label" for="appealYes1">Yes - My supervisor has explained to me that should I disagree with the Final warning, I may appeal.</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="appeal" id="appealNo1" value="No" {% if warning.appeal == "No" %}checked{% endif %} onclick="checkAppeal('No')">
+                            <label class="form-check-label" for="appealNo1">No - My supervisor has not explained to me that should I disagree with the Final warning, I may appeal.</label>
+                        </div>
+                         <script>
+                            function checkAppeal(value) {
+                                // Get both checkboxes
+                                var appealYes = document.getElementById('appealYes1');
+                                var appealNo = document.getElementById('appealNo1');
+                            
+                                // If 'Yes' is clicked, uncheck 'No'
+                                if (value === 'Yes') {
+                                    appealNo.checked = false;
+                                }
+                            
+                                // If 'No' is clicked, uncheck 'Yes'
+                                if (value === 'No') {
+                                    appealYes.checked = false;
+                                }
+                            }
+                            
+                         </script>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="agree_warning" id="agreeWarning" {% if warning.agree_warning %}checked{% endif %}>
+                            <label class="form-check-label" for="agreeWarning">I agree with the warning & understand that this is the final warning post which I will be terminated with immediate effect.</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox"  name="disagree_warning" id="disagreeWarning" {% if warning.disagree_warning %}checked{% endif %}>
+                            <label class="form-check-label" for="disagreeWarning">I do not agree with the Final warning and would like to appeal against it.</label>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3">
+                            <label for="supervisorSignatureDate">Supervisor's signature Date:</label>
+                            <input type="date" class="form-control" name="supervisorSignatureDate" id="supervisorSignatureDate" value="{{ warning.supervisor_signature_date|default:today|date:'Y-m-d'  }}">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="associateSignatureDate">Associate Signature Date:</label>
+                            <input type="date" class="form-control" name="associateSignatureDate" id="associateSignatureDate" value="{{ warning.associate_signature_date|default:today|date:'Y-m-d'  }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="reviewedBy">Reviewed By:<span class="text-danger">*</span></label>
+                            <select name="reviewed_by" class="form-control" id="reviewed_by" required>
+                                <option value="">Select</option>
+                                {% for names in EmployeeNames%}
+                                <option value="{{names.EmployeeName}}" {% if warning.reviewed_by == names.EmployeeName %}selected{% endif %}>{{names.EmployeeName}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="departmentSignatureDate">Department Manager's signature Date:</label>
+                            <input type="date" class="form-control" name="department_signature_date" id="departmentSignatureDate"  value="{{ warning.department_signature_date|default:today|date:'Y-m-d'  }}">
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class
+                        ="form-group col-md-4">
+                            <label for="hrManagerSignature">HR Manager's Name:<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="hr_manager_signature" id="hrManagerSignature" value="{{ warning.hr_manager_signature }}" required> 
+                        </div>
+                    </div>
+            </div>
+            <div class="card-footer text-right">
+                <button type="submit" id="toggleSpinners" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+</body>
+<script>
+    $(function(){
+        $('#toggleSpinners').on('click', function(e){
+            var form = document.querySelector('form');
+
+            if (form.checkValidity()) {
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            } else {
+                e.preventDefault(); 
+                form.reportValidity(); 
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var timeInput = document.getElementById('time');
+        
+        if (timeInput.value === '') {
+            var currentTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            timeInput.value = currentTime;
+        }
+    });
+</script>
+{% endblock %}

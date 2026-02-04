@@ -1,0 +1,520 @@
+{% extends "Inventory/homebase.html" %} 
+{% load IT_Inventory_Filters %}
+{% block content %}
+<style>
+  table th {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+  td {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  #example {
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  .text-danger {
+    color: red;
+  } 
+
+    .Common {
+        overflow-wrap: break-word !important;
+
+        white-space: normal !important;
+    }
+
+    .Configuration {
+        max-width: 700px !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+
+</style>
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .card-header{
+        margin-bottom:-25px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header  d-flex justify-content-between">
+        <p class="text-uppercase fw-bold fs-6">IT Inventory Hardware List</p>
+        <div>
+            <a href="{% url 'Inventory_Add' %}?HardwareInventory=True" class="btn btn-primary btn-sm"> Add Hardware Inventory </a>
+            <button onclick="exportTableToExcel()" class="btn btn-primary btn-sm">Export to Excel</button>
+            <a href="{% url "IT_Inventory_Data_PDF" %}?Inventory_Type=Hardware" type="button" class="btn btn-primary btn-sm" >Download PDF</a>
+            {% comment %} <button type="button" class="btn btn-primary btn-sm" onclick="generateFilteredPDF()">Download PDF</button> {% endcomment %}
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+        <div class="col-md-12">
+            <form method="GET" class="row">
+                <div class="col-md-3">
+                    <label for="organization" class="form-label">Organization</label>
+                    {% if SessionOrganizationID == 3 %}
+                        <!-- Show dropdown for Nile users -->
+                        <select name="OrganizationID" id="organization" class="form-control select2">
+                            <option value="All" {% if selectedOrganizationID == "All" %}selected{% endif %}>All</option>
+                            {% for itm in orgs %}
+                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selectedOrganizationID %}selected{% endif %}>
+                                    {{ itm.OrganizationName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <!-- Show only their own organization as readonly -->
+                        <input type="hidden" name="OrganizationID" value="{{ SessionOrganizationID }}">
+                        <input type="text" class="form-control" value="{{ orgs.0.OrganizationName }}">
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <label for="HardwareType"  class="form-label">Hardware Type</label>
+                    <select class="form-control" name="HardwareType" id="HardwareType">
+                        <option value="">All</option>
+                        {% for Category in Categorys %}
+                            <option value="{{ Category.Category_Type }}" {% if Category.Category_Type == HardwareType %} selected {% endif %}>{{ Category.Category_Type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="ComputerName"  class="form-label">Computer Name</label>
+                    <select class="form-control" name="ComputerName" id="ComputerName">
+                        <option value="">All</option>
+                        {% for ComputerName in ComputerNameList %}
+                            <option value="{{ ComputerName.computer_name }}" {% if ComputerName.computer_name == ComputerName %}selected{% endif %}>{{ ComputerName.computer_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="SerialNo"  class="form-label">Serial No</label>
+                    <select class="form-control" name="SerialNo" id="SerialNo">
+                        <option value="">All</option>
+                        {% for Serial in SerialNoList %}
+                            <option value="{{ Serial.SerialNo }}" {% if Serial.SerialNo == SerialNo %}selected{% endif %}>{{ Serial.SerialNo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label for="ModelNo"  class="form-label">Model No</label>
+                    <select class="form-control"name="ModelNo" id="ModelNo">
+                        <option value="">All</option>
+                        {% for Model_No in ModelNoList %}
+                            <option value="{{ Model_No.Model_No }}" {% if Model_No.Model_No == ModelNo %}selected{% endif %}>{{ Model_No.Model_No }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 mt-3">
+                    <div class="input-block mb-3">
+                        <label for="Make" class="form-label">Make</label>
+                        <select class="form-control" name="Make" id="Make">
+                            <option value="">All</option>
+                            {% for company in companys %}
+                                <option value="{{ company.Company_name }}" {% if company.Company_name == inventorys.Make %} selected {% endif %}>{{ company.Company_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                {% comment %} <div class="col-md-2">
+                    <label for="CommissioningDate"  class="form-label">Commissioning Date</label>
+                    <input type="date" class="form-control" name="CommissioningDate" id="CommissioningDate">
+                </div> {% endcomment %}
+
+                <div class="col-md-2 mt-3">
+                    <label class="form-label">Warranty Status</label>
+                    <select class="form-control" id="warrantyStatus" name="Warrantiy_Status">
+                        <option value="" >Select Status</option>
+                        <option value="N/A" {% if warrantyStatus == "N/A" %}selected{% endif %}>N/A</option>
+                        <option value="Under Warranty" {% if warrantyStatus == "Under Warranty" %}selected{% endif %}>Under Warranty</option>
+                        <option value="Expired" {% if warrantyStatus == "Expired" %}selected{% endif %}>Expired</option>
+                    </select>
+                </div>
+
+                {% comment %} <div class="col-md-2" style="margin-top:2rem;">
+                    <a href="{% url "Hardware_List" %}" type="button" id="RefreshBtn" class="btn btn-primary">Clear Filter</a>
+                </div> {% endcomment %}
+
+                <div class="col-md-3" style="margin-top:3rem;">
+                    <a href="{% url 'Inventory_list' %}" class="btn btn-primary ml-3" style="padding-inline:15px;">
+                        Clear
+                    </a>
+                </div>
+            </form>  
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered table-striped custom-table mb-0 datatable dataTable no-footer table-container" id="HardwareTableList">
+            <thead class="thead">
+                <tr class="">
+                    <th>#</th>
+                    <th>Hardware Type</th>
+                    <th>Computer Name</th>
+                    <th class="Common Configuration">Configuration</th>
+                    <th>IP</th>
+                    <th>Description</th>
+                    <th>SerialNo</th>
+                    <th>MAKE</th>
+                    <th>MODEL</th>
+                    <th>Commissioning DATE</th>
+                    <th>Warranty PERIOD</th>
+                    <th>WARRANTY STATUS</th>
+                    <th>AMC Type </th>
+                    <th>AMC STATUS </th>
+                    <th>AMC Period</th>
+                    <th>AMC Quantity </th>
+                    <th>Per Unit Price </th>
+                    <th>Yearly Expense</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for itInventorys in inventory_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> 
+                    <td>{{itInventorys.inventory.type}}</td> 
+                    <td>{{itInventorys.inventory.computer_name}}</td> 
+                    <td class="Common Configuration">{{itInventorys.inventory.Remarks}}</td> 
+                    <td >{{itInventorys.inventory.ip}}</td> 
+                    <td>{{itInventorys.inventory.Description}}</td> 
+                    <td>{{itInventorys.inventory.SerialNo}}</td> 
+                    <td>{{itInventorys.inventory.Make}}</td> 
+                    <td>{{itInventorys.inventory.Model_No}}</td> 
+                    <td>{{itInventorys.inventory.Commissioning_Date|format_ymd_to_dmy }}</td> 
+                    <td>{{itInventorys.inventory.Warrantiy_start|format_ymd_to_dmy }}<br>{{itInventorys.inventory.Warrantiy_end|format_ymd_to_dmy }}</td> 
+                    <td>
+                        <span class="{% if itInventorys.inventory.Warrantiy_Status == 'Expired' %}text-danger{% endif %}">
+                            {{itInventorys.inventory.Warrantiy_Status}}
+                        <span>
+
+                    </td> 
+                    <td>{{itInventorys.inventory.amctype}} </td> 
+                    <td>
+                        <span class="{% if itInventorys.inventory.AMC_Status == 'Expired' %}text-danger{% endif %}">
+                            {{itInventorys.inventory.AMC_Status}}
+                        <span>
+                    </td> 
+                    <td>
+                        {{itInventorys.inventory.amcstart|format_ymd_to_dmy }} <br>
+                        {{itInventorys.inventory.amcend|format_ymd_to_dmy }}
+                    </td> 
+                    <td>{{itInventorys.inventory.hardware_quantity}}</td> 
+                    <td>{{itInventorys.inventory.hardware_AMC_Yearly_Expense}}</td> 
+                    <td>{{itInventorys.inventory.hardware_unit_price}}</td> 
+                </tr>
+                {% endfor %} 
+            </tbody> 
+        </table>
+    </div>
+</div>
+
+
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+
+<script>
+    function generateFilteredPDF() {
+        // document.getElementById("loaderContainer").style.display = "flex";
+
+        const hardwareTypeInput = document.getElementById('HardwareType').value;;
+        const serialNoInput = document.getElementById('SerialNo').value;
+        const modelNoInput = document.getElementById('ModelNo').value;
+        const makeInput = document.getElementById('Make').value;
+        const warrantyStatusInput = document.getElementById('warrantyStatus').value;
+
+        const params = new URLSearchParams();
+
+        if (hardwareTypeInput) params.append('hardwareTypeInput', hardwareTypeInput);
+        if (serialNoInput) params.append('serialNoInput', serialNoInput);
+        if (modelNoInput) params.append('modelNoInput', modelNoInput);
+        if (makeInput) params.append('BookingForName', makeInput);
+        if (warrantyStatusInput) params.append('warrantyStatusInput', warrantyStatusInput);
+
+        const pdfUrl = `{% url 'Travel_Details_Data_PDF' %}?` + params.toString(); 
+        window.location.href = pdfUrl;
+    }
+</script>
+
+
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("success");
+        const isError = urlParams.get("error");
+        const message = urlParams.get("message");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+                }
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+        }
+
+        if (isError && ['true', '1', 'yes'].includes(isError.toLowerCase())) {
+            const errorModalElement = document.getElementById("statusErrorsModal");
+            const errorText = document.getElementById("errorMessageText");
+
+            if (errorModalElement) {
+                if (errorText && message) {
+                    errorText.textContent = decodeURIComponent(message);
+                }
+                const errorModal = new bootstrap.Modal(errorModalElement);
+                errorModal.show();
+            }
+        }
+
+        // Cleanup URL
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    });
+</script>
+
+
+{% comment %} <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const hardwareTypeInput = document.getElementById('HardwareType');
+        const serialNoInput = document.getElementById('SerialNo');
+        const modelNoInput = document.getElementById('ModelNo');
+        const makeInput = document.getElementById('Make');
+        const ComputerNameInput = document.getElementById('ComputerName');
+        const warrantyStatusInput = document.getElementById('warrantyStatus');
+
+        const tbody = document.getElementById('tableBody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        function filterTable() {
+            const hardwareTypeVal = hardwareTypeInput.value.toLowerCase();
+            const serialNoVal = serialNoInput.value.toLowerCase();
+            const modelNoVal = modelNoInput.value.toLowerCase();
+            const makeVal = makeInput.value.toLowerCase();
+            const ComputerNameVal = ComputerNameInput.value.toLowerCase();
+            const warrantyStatusVal = warrantyStatusInput.value.toLowerCase();
+
+            rows.forEach(row => {
+                const type = row.children[0]?.textContent.toLowerCase();           // Hardware Type
+                const serial = row.children[5]?.textContent.toLowerCase();         // Serial No (corrected index)
+                const make = row.children[3]?.textContent.toLowerCase();           // Make
+                const model = row.children[4]?.textContent.toLowerCase();          // Model No (corrected index)
+                const ComputerName = row.children[1]?.textContent.toLowerCase();   // Computer Name 
+                const warranty = row.children[10]?.textContent.toLowerCase();       // Warranty Status (corrected index)
+
+                const matches =
+                    (!hardwareTypeVal || type.includes(hardwareTypeVal)) &&
+                    (!serialNoVal || serial.includes(serialNoVal)) &&
+                    (!modelNoVal || model.includes(modelNoVal)) &&
+                    (!makeVal || make.includes(makeVal)) &&
+                    (!ComputerNameVal || ComputerName.includes(ComputerNameVal)) &&
+                    (!warrantyStatusVal || warranty === warrantyStatusVal);
+
+                row.style.display = matches ? "" : "none";
+            });
+        }
+
+        [
+            hardwareTypeInput,
+            serialNoInput,
+            modelNoInput,
+            makeInput,
+            warrantyStatusInput,
+            ComputerNameInput
+        ].forEach(input => {
+            input.addEventListener('input', filterTable);
+        });
+    });
+</script> {% endcomment %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filters = document.querySelectorAll('form select');
+        filters.forEach(function (filter) {
+            filter.addEventListener('change', function () {
+                this.form.submit();
+            });
+        });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    function exportTableToExcel() {
+        const table = document.getElementById("HardwareTableList");
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(table, { raw: true });
+
+        // Set column widths based on content length
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        const colWidths = [];
+
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            let maxWidth = 10;
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
+                const cell = ws[cell_ref];
+                if (cell && cell.v) {
+                    const len = cell.v.toString().length;
+                    if (len > maxWidth) maxWidth = len;
+                }
+            }
+            colWidths.push({ wch: maxWidth + 2 }); // Add padding
+        }
+
+        ws['!cols'] = colWidths;
+
+        XLSX.utils.book_append_sheet(wb, ws, "IT Inventory Hardware List");
+        XLSX.writeFile(wb, "IT_Inventory_Hardware_List.xlsx");
+    }
+</script>
+
+{% endblock content %}

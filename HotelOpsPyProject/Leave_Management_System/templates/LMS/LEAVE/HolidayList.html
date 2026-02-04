@@ -1,0 +1,116 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+    table th,td{
+        font-size: 11px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">Optional Holiday List</div>
+    <div class="card-body">
+        <div class="table-responsive mb-0">
+            <table id="example" class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for  Optional in Optionals  %}
+                    <tr>
+                        <td>{{Optional.Name }}</td>
+                        <td>{{Optional.Description }}</td>
+                        <td>{{ Optional.Date | date:'d-m-Y'  }}</td>
+                        <td>
+                            {% if Optional.Is_Active %}
+                                <i class="fa fa-check"  style="color: green;"></i>
+                            {% else %}
+                                <i class="fa fa-times text-danger"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">National Holiday List</div>
+    <div class="card-body">
+        <div class="table-responsive mb-0">
+            <table id="example" class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for  National in Nationals  %}
+                    <tr>
+                        <td>{{National.Name }}</td>
+                        <td>{{National.Description }}</td>
+                        <td>{{ National.Date | date:'d-m-Y'  }}</td>
+                        <td>
+                            {% if National.Is_Active %}
+                                <i class="fa fa-check"  style="color: green;"></i>
+                            {% else %}
+                                <i class="fa fa-times text-danger"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">State Holiday List</div>
+    <div class="card-body">
+        <div class="table-responsive mb-0">
+            <table id="example" class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Active</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for  State in State  %}
+                    <tr>
+                        <td>{{State.Name }}</td>
+                        <td>{{State.Description }}</td>
+                        <td>{{ State.Date | date:'d-m-Y'  }}</td>
+                        <td>
+                            {% if State.Is_Active %}
+                                <i class="fa fa-check"  style="color: green;"></i>
+                            {% else %}
+                                <i class="fa fa-times text-danger"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,575 @@
+{% extends "Approvel/homebase.html" %} {% block content %}
+
+
+
+
+
+<style>
+  label {
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+  }
+
+  body {
+    font-family: arial nova;
+     {% comment %} font-size: 11px;  {% endcomment %}
+  }
+   .td-wrapper {
+    margin-right: 65px; 
+  }
+</style>
+
+<div class="container">
+  <div class="col-md-10 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>PROJECT APPROVAL REQUEST</strong>
+        </div>
+        <br>
+       <div> <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Owner’s Agreement under Framework Agreement with PPHE
+Radisson RED Belgrade, Serbia
+       </p></div>
+<div class="card-header" style="color: #1ab394">
+          <strong>EXECUTIVE SUMMARY</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <table style="margin-top: 15px;">
+  <tr>
+    <td><div class="td-wrapper">Hotel type</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Hotel_type" value="{{Appro.Hotel_type}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Strategy</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Strategy" value="{{Appro.Strategy}}" id="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Development type</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Development_type" value="{{Appro.Development_type}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Location</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Location" value="{{Appro.Location}}" id="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Status</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Status" value="{{Appro.Status}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Location Label</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Location_label" value="{{Appro.Location_label}}" id="" placeholder="" /></div></td>
+  </tr>
+
+ <tr>
+    <td><div class="td-wrapper">Opening Date</div></td>
+    <td><div class="td-wrapper"><input type="date" class="form-control" name="Opening_Date"  value="{% now "Y-m-d" %}" id="" placeholder="" /></td>
+   <td><div class="td-wrapper">Location Type</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Location_type" value="{{Appro.Location_type}}" id="" placeholder="" /></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">RHG Contribution</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="RHG_Contribution" value="{{Appro.RHG_Contribution}}" id="" placeholder="" /></td>
+   <td><div class="td-wrapper">Fee income</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Fee_income" value="{{Appro.Fee_income}}" id="" placeholder="" /></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">IRR if applicable</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="IRR_applicable" value="{{Appro.IRR_applicable}}" id="" placeholder="" /></td>
+ </tr>
+  <tr>
+    <td><div class="td-wrapper"><h4>Facilities</h4></div></td>
+   
+ </tr>
+  <tr>
+    <td><div class="td-wrapper">Rooms</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Rooms" value="{{Appro.Rooms}}" id="" placeholder="" /></td>
+     <td><div class="td-wrapper">F&B outlets</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="FB_outlets" value="{{Appro.FB_outlets}}" id="" placeholder="" /></td>
+    </tr>
+ 
+  <tr>
+    <td><div class="td-wrapper">Meeting & CoWork</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="MeetingCoWork" value="{{Appro.MeetingCoWork}}" id="" placeholder="" /></td>
+      <td><div class="td-wrapper">Other (Gym & Spa)</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Other" value="{{Appro.Other}}" id="" placeholder="" /></td>
+    </tr>
+ 
+  </table>
+ 
+          </div>
+        </div>
+        
+        <div class="card-header" style="color: #1ab394">
+          <strong>OPPORTUNITY</strong>
+        </div>
+         <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for op in Oppo %}
+                                   
+                                        <li>{{ op.oppor }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+        <br>
+        <table>
+          
+           
+        </table>
+        <br>
+       
+       <div class="card-header" style="color: #1ab394">
+          <strong>PERFORMANCE & KPI’s (based on hotel’s projected stabilized year (Year 4, 2026)</strong>
+        </div>
+        
+    <table style="border: 1px solid #ccc; border-collapse: collapse; width: 100%; height: 200%;">
+    <tr class="table-success">
+        <th style="border: 1px solid #ccc; width:18%;"></th>
+        <th style="border: 1px solid #ccc; width:10%;"></th>
+        <th style="border: 1px solid #ccc; width:10%; text-align: center;">Projection</th>
+        <th style="border: 1px solid #ccc; width:8%; text-align: center;">5YP</th>
+        <th style="border: 1px solid #ccc; width:18%; text-align: center;"></th>
+        <th style="border: 1px solid #ccc; width:10%; text-align: center;">Remarks</th>
+        <th style="border: 1px solid #ccc; width:10%; text-align: center;">Projection</th>
+        <th style="border: 1px solid #ccc; width:10%; text-align: center;">5YP</th>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">ADR (EUR)</td>
+        <td style="border: 1px solid #ccc;">FV<br>PV</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="adr_fv" value="{{Appro.adr_fv}}" style="width: 90px;"><br><input type="text" name="adr_pv" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;">Royalty Fee</td>
+        <td style="border: 1px solid #ccc;">MEUR p.a.<br>% of RRev</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="royalty_fee1" value="{{Appro.royalty_fee1}}" style="width: 90px;"><br><input type="text" name="royalty_fee2" value="{{Appro.royalty_fee2}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">Occ. %</td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="occ"  value="{{Appro.occ}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;">ZMA Fee</td>
+        <td style="border: 1px solid #ccc;">MEUR p.a.<br>% of RRev</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="zma_fee1"  value="{{Appro.zma_fee1}}" style="width: 90px;"><br><input type="text" name="zma_fee2" value="{{Appro.zma_fee2}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">RevPAR (EUR)</td>
+        <td style="border: 1px solid #ccc;">FV<br>PV</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="rav_fv" value="{{Appro.rav_fv}}" style="width: 90px;"><br><input type="text" name="rev_pv" value="{{Appro.rev_pv}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">RRev (MEUR)</td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="rrev" value="{{Appro.rrev}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;">Total Fee</td>
+        <td style="border: 1px solid #ccc;">MEUR p.a.<br>EUR/room<br>% of RRev</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="total_fee1"  value="{{Appro.total_fee1}}" style="width: 90px;"><br><input type="text" name="total_fee2" value="{{Appro.total_fee2}}" style="width: 90px;"><br><input type="text" name="total_fee3" value="{{Appro.total_fee3}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">Term (years)</td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="term" value="{{Appro.term}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"></td>
+    </tr>
+    <tr style="border: 1px solid #ccc;">
+        <td style="border: 1px solid #ccc;">Inflation rate</td>
+        <td style="border: 1px solid #ccc;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="in_rate" value="{{Appro.in_rate}}"  style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="yp1"  value="{{Appro.yp1}}" placeholder="0.0%" style="width: 80px;"></td>
+        <td style="border: 1px solid #ccc;">NPV (@7.49%)</td>
+        <td style="border: 1px solid #ccc;">MEUR</td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="meur" value="{{Appro.meur}}" style="width: 90px;"></td>
+        <td style="border: 1px solid #ccc;"><input type="text" name="yp2" value="{{Appro.yp2}}" placeholder=">0" style="width: 90px;"></td>
+    </tr>
+</table>
+<br>
+<div class="card-header" style="color: #1ab394">
+          <strong>MARKET PERFORMANCE (based on hotel’s projected stabilized year (Year 4, 2026) </strong>
+        </div>
+   <table border="1">
+                <tr>
+                    <th colspan="1" style="border: 1px solid #ccc; text-align: center;  width:15%;"></th>
+                   <th colspan="3" style="border: 1px solid #ccc; text-align: center; width:15%;">
+    <select id="year1" name="year1">
+       
+    </select>
+</th>
+<th colspan="3" style="border: 1px solid #ccc; text-align: center; width:15%;">
+    <select id="year2" name="year2">
+        
+    </select>
+</th>
+<th colspan="3" style="border: 1px solid #ccc; text-align: center; width:15%;">
+    <select id="year3" name="year3">
+       
+    </select>
+</th>
+                    <th colspan="3" style="border: 1px solid #ccc; text-align: center; width:15%;">3Y AVERAGE</th>
+                   
+
+                </tr>
+               <tr>
+    <td style="border: 1px solid #ccc;">(EUR)</td>
+    <td style="border: 1px solid #ccc; width:6%;">Occ</td>
+    <td style="border: 1px solid #ccc; width:6%;">ADR</td>
+    <td style="border: 1px solid #ccc; width:6%;">RevPAR</td>
+    <td style="border: 1px solid #ccc; width:6%;">Occ</td>
+    <td style="border: 1px solid #ccc; width:6%;">ADR</td>
+    <td style="border: 1px solid #ccc; width:6%;">RevPAR</td>
+    <td style="border: 1px solid #ccc; width:6%;">Occ</td>
+    <td style="border: 1px solid #ccc; width:6%;">ADR</td>
+    <td style="border: 1px solid #ccc; width:6%;">RevPAR</td>
+    <td style="border: 1px solid #ccc; width:6%;">Occ</td>
+    <td style="border: 1px solid #ccc; width:6%;">ADR</td>
+    <td style="border: 1px solid #ccc; width:6%;">RevPAR</td>
+</tr>
+               <tr>
+    <td style="border: 1px solid #ccc;">RC Old Mill Belgrade</td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="occ1" value="{{Appro.occ1}}"  style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="rc1" value="{{Appro.rc1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="old_rev1" value="{{Appro.old_rev1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="occ2" value="{{Appro.occ2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="rc2" value="{{Appro.rc2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="old_rev2" value="{{Appro.old_rev2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="occ3" value="{{Appro.occ3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="rc3" value="{{Appro.rc3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="old_rev3" value="{{Appro.old_rev3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalocc" value="{{Appro.totalocc}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalrc" value="{{Appro.totalrc}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="total_rev" value="{{Appro.total_rev}}" style="width: 50px;"></td>
+</tr>
+                <tr>
+    <td style="border: 1px solid #ccc;">CompSet</td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_occ1" value="{{Appro.com_occ1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_adr1" value="{{Appro.com_adr1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_rev1" value="{{Appro.com_rev1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_occ2" value="{{Appro.com_occ2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_adr2" value="{{Appro.com_adr2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_rev2" value="{{Appro.com_rev2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_occ3" value="{{Appro.com_occ3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_adr3" value="{{Appro.com_adr3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="com_rev3" value="{{Appro.com_rev3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalcom_occ" value="{{Appro.totalcom_occ}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalcom_adr" value="{{Appro.totalcom_adr}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalcom_rev" value="{{Appro.totalcom_rev}}" style="width: 50px;"></td>
+</tr>
+              <tr>
+    <td style="border: 1px solid #ccc;">Proposed Hotel</td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_occ1" value="{{Appro.pro_occ1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_adr1" value="{{Appro.pro_adr1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_rev1" value="{{Appro.pro_rev1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_occ2" value="{{Appro.pro_occ2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_adr2" value="{{Appro.pro_adr2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_rev2" value="{{Appro.pro_rev2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_occ3" value="{{Appro.pro_occ3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_adr3" value="{{Appro.pro_adr3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pro_rev3" value="{{Appro.pro_rev3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="total_pro_occ" value="{{Appro.total_pro_occ}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalpro_adr" value="{{Appro.totalpro_adr}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalpro_rev" value="{{Appro.totalpro_rev}}" style="width: 50px;"></td>
+</tr>
+<tr>
+    <td style="border: 1px solid #ccc;">Penetration </td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_occ1" value="{{Appro.pen_occ1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_adr1" value="{{Appro.pen_adr1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_rev1" value="{{Appro.pen_rev1}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_occ2" value="{{Appro.pen_occ2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_adr2" value="{{Appro.pen_adr2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_rev2" value="{{Appro.pen_rev2}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_occ3" value="{{Appro.pen_occ3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_adr3" value="{{Appro.pen_adr3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="pen_rev3" value="{{Appro.pen_rev3}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalpen_occ" value="{{Appro.totalpen_occ}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalpen_adr" value="{{Appro.totalpen_adr}}" style="width: 50px;"></td>
+    <td style="border: 1px solid #ccc; width:6%;"><input type="text"  name="totalpen_rev" value="{{Appro.totalpen_rev}}" style="width: 50px;"></td>
+</tr>
+            </table>
+            <br>
+            <div class="card-header" style="color: #1ab394">
+          <strong>Contract summary</strong>
+        </div>
+        <table style="border-collapse: collapse; width: 100%;">
+
+    <tr>
+         <tbody>
+        {% for Con in Contract %}
+       
+         
+          <tr>
+        <td style="border: 1px solid #ccc; padding: 8px; text-align: ; width: 12%;"><b>{{Con.Name}}</b>
+          <input type="hidden" name="Contract_ID_{{ forloop.counter0 }}" value="{{ Con.id }}" /></td>
+<td style="border: 1px solid #ccc; padding: 8px; text-align: center; width: 50%;"><textarea type="text" style="width:100%;" class="form-control" name="Deta_{{ forloop.counter0 }}" cols="30" rows="2"></textarea></td>
+         
+         
+
+        
+        </tr>
+        {% if forloop.last %}
+                <input type="hidden" name="ContractTotal" value="{{ forloop.counter0 }}" />
+                {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+<br>
+<div class="card-header" style="color: #1ab394">
+          <strong>Owner</strong>
+        </div>
+
+ <table style="border-collapse: collapse; width: 100%;">
+
+    <tr>
+         <tbody>
+        {% for ow in ownes %}
+       
+         
+          <tr>
+        <td style="border: 1px solid #ccc; padding: 8px; text-align: ; width: 12%;"><b>{{ow.Name1}}</b>
+         <input type="hidden" name="ownes_ID_{{ forloop.counter0 }}" value="{{ ow.id }}" /></td>
+<td style="border: 1px solid #ccc; padding: 8px; text-align: center; width: 50%;"><textarea type="text" style="width:100%;" class="form-control" name="Deta2_{{ forloop.counter0 }}" cols="30" rows="2"></textarea></td>
+         
+         
+
+        
+        </tr>
+         {% if forloop.last %}
+                <input type="hidden" name="OwnerTotal" value="{{ forloop.counter0 }}" />
+                {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+<br>
+<div class="card-header" style="color: #1ab394">
+          <strong>Project</strong>
+        </div>
+ <table style="border-collapse: collapse; width: 100%;">
+
+    <tr>
+         <tbody>
+        {% for p in project %}
+       
+         
+          <tr>
+        <td style="border: 1px solid #ccc; padding: 8px; text-align: ; width: 12%;"><b>{{p.Project_Name1}}</b>
+         <input type="hidden" name="project_ID_{{ forloop.counter0 }}" value="{{ p.id }}" /></td>
+<td style="border: 1px solid #ccc; padding: 8px; text-align: center; width: 50%;"><textarea type="text" style="width:100%;" class="form-control"  name="Deta3_{{ forloop.counter0 }}" cols="30" rows="2"></textarea></td>
+         
+         
+
+        
+        </tr>
+         {% if forloop.last %}
+                <input type="hidden" name="ProjectTotal" value="{{ forloop.counter0 }}" />
+                {% endif %}
+        {% endfor %}
+    </tr>
+</table>
+
+        <div class="card-footer text-right">
+          {% if Appro is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+function calculateTotal() {
+    var occ1Value = parseFloat(document.getElementsByName('occ1')[0].value) || 0;
+    var occ2Value = parseFloat(document.getElementsByName('occ2')[0].value) || 0;
+    var occ3Value = parseFloat(document.getElementsByName('occ3')[0].value) || 0;
+    
+    var totalOcc = (occ1Value + occ2Value + occ3Value) / 3;
+
+    document.getElementsByName('totalocc')[0].value = totalOcc.toFixed(2);
+}
+
+
+function calculateRC() {
+    var rc1Value = parseFloat(document.getElementsByName('rc1')[0].value) || 0;
+    var rc2Value = parseFloat(document.getElementsByName('rc2')[0].value) || 0;
+    var rc3Value = parseFloat(document.getElementsByName('rc3')[0].value) || 0;
+    
+    var totalRC = (rc1Value + rc2Value + rc3Value) / 3;
+
+    document.getElementsByName('totalrc')[0].value = totalRC.toFixed(2);
+}
+
+
+function calculateTotalRev() {
+    var oldRev1Value = parseFloat(document.getElementsByName('old_rev1')[0].value) || 0;
+    var oldRev2Value = parseFloat(document.getElementsByName('old_rev2')[0].value) || 0;
+    var oldRev3Value = parseFloat(document.getElementsByName('old_rev3')[0].value) || 0;
+    
+    var totalRev = (oldRev1Value + oldRev2Value + oldRev3Value) / 3;
+
+    document.getElementsByName('total_rev')[0].value = totalRev.toFixed(2);
+}
+
+
+function calculateTotalCompSet() {
+    var comOcc1Value = parseFloat(document.getElementsByName('com_occ1')[0].value) || 0;
+    var comOcc2Value = parseFloat(document.getElementsByName('com_occ2')[0].value) || 0;
+    var comOcc3Value = parseFloat(document.getElementsByName('com_occ3')[0].value) || 0;
+    var totalComOcc = (comOcc1Value + comOcc2Value + comOcc3Value) / 3;
+
+    var comAdr1Value = parseFloat(document.getElementsByName('com_adr1')[0].value) || 0;
+    var comAdr2Value = parseFloat(document.getElementsByName('com_adr2')[0].value) || 0;
+    var comAdr3Value = parseFloat(document.getElementsByName('com_adr3')[0].value) || 0;
+    var totalComAdr = (comAdr1Value + comAdr2Value + comAdr3Value) / 3;
+
+    var comRev1Value = parseFloat(document.getElementsByName('com_rev1')[0].value) || 0;
+    var comRev2Value = parseFloat(document.getElementsByName('com_rev2')[0].value) || 0;
+    var comRev3Value = parseFloat(document.getElementsByName('com_rev3')[0].value) || 0;
+    var totalComRev = (comRev1Value + comRev2Value + comRev3Value) / 3;
+
+    document.getElementsByName('totalcom_occ')[0].value = totalComOcc.toFixed(2);
+    document.getElementsByName('totalcom_adr')[0].value = totalComAdr.toFixed(2);
+    document.getElementsByName('totalcom_rev')[0].value = totalComRev.toFixed(2);
+}
+function calculateTotalProposedHotel() {
+    var proOcc1Value = parseFloat(document.getElementsByName('pro_occ1')[0].value) || 0;
+    var proOcc2Value = parseFloat(document.getElementsByName('pro_occ2')[0].value) || 0;
+    var proOcc3Value = parseFloat(document.getElementsByName('pro_occ3')[0].value) || 0;
+    var totalProOcc = (proOcc1Value + proOcc2Value + proOcc3Value) / 3;
+
+    var proAdr1Value = parseFloat(document.getElementsByName('pro_adr1')[0].value) || 0;
+    var proAdr2Value = parseFloat(document.getElementsByName('pro_adr2')[0].value) || 0;
+    var proAdr3Value = parseFloat(document.getElementsByName('pro_adr3')[0].value) || 0;
+    var totalProAdr = (proAdr1Value + proAdr2Value + proAdr3Value) / 3;
+
+    var proRev1Value = parseFloat(document.getElementsByName('pro_rev1')[0].value) || 0;
+    var proRev2Value = parseFloat(document.getElementsByName('pro_rev2')[0].value) || 0;
+    var proRev3Value = parseFloat(document.getElementsByName('pro_rev3')[0].value) || 0;
+    var totalProRev = (proRev1Value + proRev2Value + proRev3Value) / 3;
+
+    document.getElementsByName('total_pro_occ')[0].value = totalProOcc.toFixed(2);
+    document.getElementsByName('totalpro_adr')[0].value = totalProAdr.toFixed(2);
+    document.getElementsByName('totalpro_rev')[0].value = totalProRev.toFixed(2);
+}
+
+function calculateTotalPenetration() {
+    var penOcc1Value = parseFloat(document.getElementsByName('pen_occ1')[0].value) || 0;
+    var penOcc2Value = parseFloat(document.getElementsByName('pen_occ2')[0].value) || 0;
+    var penOcc3Value = parseFloat(document.getElementsByName('pen_occ3')[0].value) || 0;
+    var totalPenOcc = (penOcc1Value + penOcc2Value + penOcc3Value) / 3;
+
+    var penAdr1Value = parseFloat(document.getElementsByName('pen_adr1')[0].value) || 0;
+    var penAdr2Value = parseFloat(document.getElementsByName('pen_adr2')[0].value) || 0;
+    var penAdr3Value = parseFloat(document.getElementsByName('pen_adr3')[0].value) || 0;
+    var totalPenAdr = (penAdr1Value + penAdr2Value + penAdr3Value) / 3;
+
+    var penRev1Value = parseFloat(document.getElementsByName('pen_rev1')[0].value) || 0;
+    var penRev2Value = parseFloat(document.getElementsByName('pen_rev2')[0].value) || 0;
+    var penRev3Value = parseFloat(document.getElementsByName('pen_rev3')[0].value) || 0;
+    var totalPenRev = (penRev1Value + penRev2Value + penRev3Value) / 3;
+
+    document.getElementsByName('totalpen_occ')[0].value = totalPenOcc.toFixed(2);
+    document.getElementsByName('totalpen_adr')[0].value = totalPenAdr.toFixed(2);
+    document.getElementsByName('totalpen_rev')[0].value = totalPenRev.toFixed(2);
+}
+  function populateOptions(selectId, startYear, endYear, selectedYear) {
+        var selectElement = document.getElementById(selectId);
+        for (var i = startYear; i <= endYear; i++) {
+            var option = document.createElement("option");
+            option.text = i;
+            option.value = i;
+           
+            if (selectedYear && i.toString() === selectedYear) {
+                option.selected = true;
+            }
+            selectElement.add(option);
+        }
+    }
+
+    
+    function initializeOptions() {
+        var currentYear = new Date().getFullYear();
+        
+        var selectedYear1 = "2022"; 
+        var selectedYear2 = "2024"; 
+        var selectedYear3 = "2025"; 
+       
+        populateOptions("year1", currentYear - 1, currentYear + 4, selectedYear1);
+      
+        populateOptions("year2", currentYear -1, currentYear + 5, selectedYear2);
+       
+        populateOptions("year3", currentYear, currentYear + 5, selectedYear3);
+    }
+
+    
+    window.onload = function() {
+        initializeOptions();
+    };
+document.getElementsByName('occ1')[0].addEventListener('input', calculateTotal);
+document.getElementsByName('occ2')[0].addEventListener('input', calculateTotal);
+document.getElementsByName('occ3')[0].addEventListener('input', calculateTotal);
+document.getElementsByName('rc1')[0].addEventListener('input', calculateRC);
+document.getElementsByName('rc2')[0].addEventListener('input', calculateRC);
+document.getElementsByName('rc3')[0].addEventListener('input', calculateRC);
+document.getElementsByName('old_rev1')[0].addEventListener('input', calculateTotalRev);
+document.getElementsByName('old_rev2')[0].addEventListener('input', calculateTotalRev);
+document.getElementsByName('old_rev3')[0].addEventListener('input', calculateTotalRev);
+
+document.getElementsByName('com_occ1')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_occ2')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_occ3')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_adr1')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_adr2')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_adr3')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_rev1')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_rev2')[0].addEventListener('input', calculateTotalCompSet);
+document.getElementsByName('com_rev3')[0].addEventListener('input', calculateTotalCompSet);
+
+
+document.getElementsByName('pro_occ1')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_occ2')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_occ3')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_adr1')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_adr2')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_adr3')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_rev1')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_rev2')[0].addEventListener('input', calculateTotalProposedHotel);
+document.getElementsByName('pro_rev3')[0].addEventListener('input', calculateTotalProposedHotel);
+
+document.getElementsByName('pen_occ1')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_occ2')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_occ3')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_adr1')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_adr2')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_adr3')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_rev1')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_rev2')[0].addEventListener('input', calculateTotalPenetration);
+document.getElementsByName('pen_rev3')[0].addEventListener('input', calculateTotalPenetration);
+
+
+
+calculateTotal();
+calculateRC();
+calculateTotalRev();
+calculateTotalCompSet();
+calculateTotalProposedHotel();
+calculateTotalPenetration();
+</script>
+
+
+
+
+{% endblock content %}

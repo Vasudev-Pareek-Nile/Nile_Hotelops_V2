@@ -1,0 +1,47 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+      KRA Title
+        <a href="{% url 'KraAdd' %}" class="btn btn-sm btn-primary" style="float:right">New</a>
+       
+    </div>
+</div>
+<table class="table table-bordered mt-2">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Defination</th>
+            <th>Type</th>
+            <th>Source</th>
+            <th>Comparison Type</th>
+            <th width="100">Sort Order</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for Kr in Kraobjs %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{Kr.Title}}</td>
+            <td>{{Kr.Defination}}</td>
+            <td>{{Kr.Type}}</td>
+            <td>{{Kr.Source}}</td>
+            <td>{{Kr.ComparisonType}}</td>
+             <td>
+                        <input type="number" value="{{Kr.SortOrder}}" class="form-control form-control-sm" onchange="changeSort(Kr.value)">
+                    </td>
+            <td>
+                <a href="{% url 'KraAdd' %}?KID={{Kr.id}}" class="btn btn-primary btn-sm">Edit</a>
+            </td>
+
+
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock content %}

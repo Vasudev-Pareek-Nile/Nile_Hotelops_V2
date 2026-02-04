@@ -1,0 +1,213 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+  </style>
+  
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Room Worksheet Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>    
+                     
+        </tr>
+    </table>
+    <br>
+<br/>
+<div class="card-body">
+    <form action="{%url 'RoomWorksheet_View' mem.id %}" method = "post">
+        {% csrf_token %}                
+  
+      </div>                                                        
+    </form>
+</div>
+</div>
+
+  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem2%}
+    <tr>                
+        <td>{{x.RoomWorksheet_CategoryMaster.CategoryTitle}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+
+   
+</table>
+</div>
+<script>
+
+    $(function(){
+        var STitle="";
+        $("tr[data-SectionTitle]").each(function(index,item){
+
+            if(STitle=="" || STitle !=$(this).attr('data-SectionTitle')){
+                    $(this).before('<tr><th colspan="2">&nbsp;</th></tr><tr class="trBold"><th colspan="2">'+$(this).attr('data-SectionTitle')+'</th></tr>')
+
+                    if(STitle!=""){
+                        $("tr[data-SectionTitle='"+$(this).attr('data-SectionTitle')+"']").eq($("tr[data-SectionTitle='"+$(this).attr('data-SectionTitle')+"']").length-1).after('<tr data-trt="stotal"  data-SectionTitle="'+$(this).attr('data-SectionTitle')+'" class="trBold"><th>Total</td><td><input type="number" class="form-control" name="SectionTotal" /></td></tr>')
+
+                    }
+            }
+            
+            STitle=$(this).attr('data-SectionTitle');
+        })
+
+var TotalCi=0;
+        var CTitle="";
+        $("tr[data-CategoryTitle]").each(function(index,item){
+
+            if(CTitle=="" || CTitle !=$(this).attr('data-CategoryTitle')){
+                if($(this).attr('data-CategoryTitle')!=''){
+                    $(this).before('<tr><tr class="" data-ct="total" data-sectiontitle="'+$(this).attr('data-SectionTitle')+'"  data-CategoryTitle="'+$(this).attr('data-CategoryTitle')+'"><th>'+$(this).attr('data-CategoryTitle')+'</th> <th><input class="form-control" name="CategoryAmout_'+TotalCi+'" type="number" step="0.01" /> <input class="form-control" name="CategoryID_'+TotalCi+'" type="hidden" value="'+$(this).attr('data-CategoryID')+'" /></th></tr>')
+                    TotalCi=TotalCi+1;
+                }
+
+            }
+            CTitle=$(this).attr('data-CategoryTitle');
+        })
+        $("#TotalCategoryItem").val(TotalCi)
+       
+        DoCal();
+        
+        $("input[name*='Amount_']").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+            var a = $("tr[data-sectiontitle='Room Nights'][data-title='No. of Days'] input[name*='Amount_']").val().replace(',','');
+            var b = $("tr[data-sectiontitle='Room Nights'][data-title='Number of Rooms (Keys)']  input[name*='Amount_']").val().replace(',','');
+
+            var c = a * b;
+            $("tr[data-sectiontitle='Room Nights'][data-title='Total Rooms Available'] input[name*='Amount_']").val(c);
+
+
+            var ItemLoop=["Number of Guests","Rooms Occupied","Rooms Revenue"]
+            var AllItemLoop=["Guest Density",
+            "Number of Guests",
+            "Rooms Occupied",
+            "Average Rate (ADR)",
+            "Rooms Revenue",
+            "Market Mix (Revenue)"]
+            var CategoryLoop=["COMPLIMENTARY","FIT","GROUP","NEGOTIATED","ONLINE","PACKAGES"]
+            $(ItemLoop).each(function(index,item){
+                $(CategoryLoop).each(function(Cindex,Citem){
+                    
+                        var Total=0;
+                            $("tr[data-sectiontitle='"+item+"'][data-categorytitle='"+Citem+"']").each(function(){
+                                var a = $(this).find("input[type='number'][name*='Amount_']").val();
+                                a =parseFloat(a);
+                                a= isNaN(a)?0:a;
+                                Total=Total+a;
+                            })
+                            $("tr[data-ct='total'][data-categorytitle='"+Citem+"'][data-sectiontitle='"+item+"']").find("input[name*='CategoryAmout_']").val(Total.toFixed(2))
+    
+                })
+    
+            })
+
+            $(CategoryLoop).each(function(Cindex,Citem){
+                    
+                var Total=0,ADR=0;
+            
+                var a = $("tr[data-sectiontitle='Rooms Occupied'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val();
+                a =parseFloat(a);
+                a= isNaN(a)?0:a;
+
+                var b = $("tr[data-sectiontitle='Number of Guests'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val();
+                b =parseFloat(b);
+                b= isNaN(b)?0:b;
+                
+
+                var a_b = $("tr[data-sectiontitle='Rooms Revenue'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val();
+                a_b =parseFloat(a_b);
+                a_b= isNaN(a_b)?0:a_b;
+
+                if(a>0){
+                    Total = b/a;
+                    ADR = a_b/a;
+                }
+                $("tr[data-sectiontitle='Guest Density'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val(Total.toFixed(2));
+                $("tr[data-sectiontitle='Average Rate (ADR)'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val(ADR.toFixed(2));
+                        
+        })
+
+        $(AllItemLoop).each(function(index,item){
+            var Total=0;
+            $(CategoryLoop).each(function(Cindex,Citem){
+                var a = $("tr[data-ct='total'][data-sectiontitle='"+item+"'][data-categorytitle='"+Citem+"']").find("input[type='number'][name*='CategoryAmout_']").val();
+                a =parseFloat(a);
+                a= isNaN(a)?0:a;
+                Total=Total+a;
+            })
+            $("tr[data-trt='stotal'][data-sectiontitle='"+item+"']").find("input").val(Total.toFixed(2))
+
+        })
+
+
+        var TotalRoomRevenue = $("tr[data-sectiontitle='Rooms Revenue'][data-trt='stotal'] input").val();
+        TotalRoomRevenue =parseFloat(TotalRoomRevenue);
+        TotalRoomRevenue= isNaN(TotalRoomRevenue)?0:TotalRoomRevenue;
+        $(CategoryLoop).each(function(Cindex,Citem){
+                    
+            var Total=0;
+        
+           debugger;
+
+            var b = $("tr[data-sectiontitle='Rooms Revenue'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val();
+            b =parseFloat(b);
+            b= isNaN(b)?0:b;
+            
+
+
+            if(TotalRoomRevenue>0){
+                Total = (b/TotalRoomRevenue)*100;
+            
+            }
+            $("tr[data-sectiontitle='Market Mix (Revenue)'][data-ct='total'][data-categorytitle='"+Citem+"'] input[type='number'][name*='CategoryAmout_']").val(Total.toFixed(2));
+            
+                    
+    })
+            
+    }
+</script>
+
+  {% endblock content %}

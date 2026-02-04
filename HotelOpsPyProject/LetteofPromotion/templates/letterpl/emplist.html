@@ -1,0 +1,132 @@
+{% extends 'letterpl/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+    }
+	#clear, #filter{
+		padding-block: 8px;
+	}
+</style>
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Letter of Promotion</span></div>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+            <div class="col-md-12">
+                <form method="GET" class="row g-4">
+                    <div class="col-md-5">
+                        <select name="I" id="organizationSelect" class="form-control ">
+                            <option value="Select" {% if SelHotelName == 'Select' %}selected{% endif %}>Select</option>
+                            {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}">{{ itm.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="col-md-4 d-flex justify-items-start align-items-center gap-2" >
+                        <button type="submit" class="btn btn-primary" id="filter">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+                    
+                        <a href="{% url 'emplistpl' %}" class="btn btn-danger" id="clear">
+                            Clear
+                        </a>
+                    </div>
+                </form>  
+            </div>
+
+
+            <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <th class="EmpCode">Emp Code</th>
+                        <th class="Name">Name</th>
+                        <th class="Designation">Designation</th>
+                        <th class="Department">Department</th>
+                        <th class="Date">Date of Promotion</th>
+                        <th class="Signed" style="width:  204px;">Signed Document</th>
+                        <th class="Action" style="width:  181px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for PromotionLetter in PromotionLetters %}
+                    <tr>
+                        <td>{{ PromotionLetter.emp_code }}</td>
+                        <td>{{ PromotionLetter.first_name }} {{ PromotionLetter.last_name }}</td>
+                        <td>{{ PromotionLetter.designation }}</td>
+                        <td>{{ PromotionLetter.department }}</td>
+                        <td>{{PromotionLetter.date_of_promtion|date:'d-m-Y'}}</td>  
+                        
+                        <td>
+                            {% if PromotionLetter.file_name %}
+                                <a class="btn btn-danger btn-sm mb-2 text-white" href="{% url 'repalce_filepl' %}?EmpID={{ PromotionLetter.EmpID }}&LOP_ID={{ PromotionLetter.id }}&Page=emplistpl&OID={{PromotionLetter.OrganizationID}}">Delete File</a>
+                                <br/>
+                                <a class="btn btn-primary btn-sm" href="{% url 'download_filepl' %}?LOP_ID={{ PromotionLetter.id }}">Download File</a>
+                            {% else %}
+                                <a class="btn btn-primary btn-sm" href="{% url 'upload_filepl' %}?EmpID={{ PromotionLetter.EmpID }}&LOP_ID={{ PromotionLetter.id }}&Page=emplistpl&OID={{PromotionLetter.OrganizationID}}">Upload File</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span style="position: relative;">
+                                {% if PromotionLetter.id == PromotionLetter.last_Promotion_id %}
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemppl' %}?EC={{ PromotionLetter.emp_code }}&EmpID={{ PromotionLetter.EmpID }}&LOP_ID={{ PromotionLetter.id }}&DepartmentName={{PromotionLetter.department}}&Page=emplistpl&OID={{PromotionLetter.OrganizationID}}">Edit</a>
+                                {% endif %}
+                                <a class="btn btn-primary btn-sm" href="{% url 'generate_Letter_of_promotion' %}?LOP_ID={{ PromotionLetter.id }}&EmpID={{ PromotionLetter.EmpID }}&OID={{PromotionLetter.OrganizationID}}" target="_blank">View</a>
+                                   
+                                <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_promotion" %}?LOP_ID={{PromotionLetter.id}}&EmpID={{PromotionLetter.EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{PromotionLetter.OrganizationID}}&head=False" target="_blank">Print</a>
+                                   
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+
+  
+
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
+       
+       
+    });
+    
+    
+</script>
+    
+
+{% endblock content %}
+

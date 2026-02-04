@@ -1,0 +1,388 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+<style>
+  .table-wrapper {
+    position: relative;
+  }
+
+  .table thead th {
+    position: sticky;
+    top: 0;
+    background: white; /* or match your table header background */
+    z-index: 2;
+  }
+
+  .table thead tr.filters th {
+    top: 32px; /* height of the first header row */
+    z-index: 1;
+  }
+
+  .table th {
+    padding: 0.4rem 0.6rem !important;
+  }
+
+  .table{
+    font-size: 12px !important;
+  }
+</style>
+<style>
+  #profile-card {
+      overflow: hidden;
+      position: relative;
+  }
+
+  body{
+    overflow-y: hidden;
+  }
+</style>
+
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <form action="" method="post" class="form-inline">
+            {% csrf_token %}
+            <div class="card" id="profile-card">
+              <div id="card-loader" class="card-loader" 
+                  style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+                      position: fixed; top:0; left:0; width:100vw; height:100vh; 
+                      background: rgba(34,34,34,0.4); z-index:9999;">
+                  <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+                  <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+                      Loading...
+                  </div>
+              </div>
+
+                <div class="card-body">
+                    <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+                      <table id="example" class="table table-striped custom-table mb-0 no-footer">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="check" class="checkBox selectAll"> Select All</th>
+                                <th>Emp Code</th>
+                                <th>Emp Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Emp Status</th>
+                                <th>Date of Joining</th>
+                            </tr>
+                            <tr class="filters">
+                              <th></th>
+                              <th><select class="column-filter form-control form-control-sm" data-column="1"><option value="">All</option></select></th>
+                              <th><select class="column-filter form-control form-control-sm" data-column="2"><option value="">All</option></select></th>
+                              <th><select class="column-filter form-control form-control-sm" data-column="3"><option value="">All</option></select></th>
+                              <th><select class="column-filter form-control form-control-sm" data-column="4"><option value="">All</option></select></th>
+                              <th><select class="column-filter form-control form-control-sm" data-column="5"><option value="">All</option></select></th>
+                              <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="employeeTableBody"></tbody>
+                      </table>
+                    </div>
+                </div>
+            </div>
+                    <div class="d-flex gap-2 CustomFooter">
+                        <div>
+                            <select id="leaveTypeSelect" name="type" required class="form-control mr-2">
+                                <option value="">Select Leave Type</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <input type="text" id="creditInput" required class="form-control mr-2"
+                                  name="credit" placeholder="Credit" readonly>
+
+                            <input type="hidden" id="OIDInput" name="OID" value="{{OrganizationID}}">
+                            <input type="hidden" id="UserIDInput" name="UserID" value="{{UserID}}">
+                        </div>
+
+                        <div>
+                            {% comment %} <input type="submit" value="Assigned" class="btn btn-primary"> {% endcomment %}
+                            <button type="button" id="assignLeaveBtn" class="btn btn-primary">
+                                Assign
+                            </button>
+                        </div>
+                    </div>
+                </div>
+          </form>
+        </div>
+    </div>
+</div>
+
+<!-- loaders -->
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+<script>
+  $(document).ready(function () {
+    // Enable/disable credit input based on checkbox
+    $('.leaveCheckBox').on('change', function () {
+      const creditInput = $(this).closest('tr').find('input[type="text"]');
+      creditInput.prop('disabled', !this.checked);
+    });
+
+    // Handle select all
+    $('.selectAllLeaves').on('change', function () {
+      const isChecked = $(this).is(':checked');
+      $('.leaveCheckBox').prop('checked', isChecked).trigger('change');
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Populate dropdowns with unique values
+    $('.column-filter').each(function () {
+      let colIndex = $(this).data('column');
+      let values = new Set();
+
+      $('#example tbody tr').each(function () {
+        let cellText = $(this).find('td').eq(colIndex).text().trim();
+        if (cellText) {
+          values.add(cellText);
+        }
+      });
+
+      values = Array.from(values).sort();
+      for (let val of values) {
+        $(this).append(`<option value="${val}">${val}</option>`);
+      }
+    });
+
+    // Filter rows when dropdown changes
+    $('.column-filter').on('change', function () {
+      let filters = {};
+      $('.column-filter').each(function () {
+        let col = $(this).data('column');
+        let val = $(this).val();
+        if (val) {
+          filters[col] = val;
+        }
+      });
+
+      $('#example tbody tr').each(function () {
+        let show = true;
+        for (let col in filters) {
+          let cellText = $(this).find('td').eq(col).text().trim();
+          if (cellText !== filters[col]) {
+            show = false;
+            break;
+          }
+        }
+        $(this).toggle(show);
+      });
+    });
+  });
+</script>
+
+<script>
+  $(document).ready(function () {
+      $(".selectAll").on("change", function () {
+          // Only select checkboxes in visible rows
+          $("#example tbody tr:visible .checkBox").prop("checked", $(this).prop("checked"));
+      });
+  });
+
+  $(document).on("change", ".checkBox", function () {
+      let allVisible = $("#example tbody tr:visible .checkBox").length;
+      let checkedVisible = $("#example tbody tr:visible .checkBox:checked").length;
+
+      $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+  });
+</script>
+
+<script>
+  function populateColumnFilters() {
+      $('.column-filter').each(function () {
+          let colIndex = $(this).data('column');
+          let values = new Set();
+
+          $('#example tbody tr').each(function () {
+              let text = $(this).find('td').eq(colIndex).text().trim();
+              if (text) values.add(text);
+          });
+
+          // Reset dropdown
+          $(this).html('<option value="">All</option>');
+
+          // Append unique values
+          [...values].sort().forEach(val => {
+              $(this).append(`<option value="${val}">${val}</option>`);
+          });
+      });
+  }
+</script>
+
+<script>
+    $(document).ready(function () {
+        showLoader("profile-card");
+
+
+        $.ajax({
+            url: "/Leave_Management_System/api/employee-data/?OID={{OrganizationID}}",
+            type: "GET",
+            success: function (response) {
+
+                let tbody = $("#employeeTableBody");
+                tbody.empty();
+
+                if (response.success && response.data.length > 0) {
+
+                    $.each(response.data, function (index, emp) {
+
+                        let row = `
+                            <tr>
+                                <td>
+                                    <input type="checkbox"
+                                          name="all_emp_codes[]"
+                                          class="checkBox"
+                                          value="${emp.EmployeeCode || ''}">
+                                </td>
+                                <td>${emp.EmployeeCode ?? ''}</td>
+                                <td>${emp.EmpName ?? ''}</td>
+                                <td>${emp.Department ?? ''}</td>
+                                <td>${emp.Designation ?? ''}</td>
+                                <td>${emp.EmpStatus ?? ''}</td>
+                                <td>${emp.DateofJoining ?? ''}</td>
+                            </tr>
+                        `;
+
+                        tbody.append(row);
+                    });
+
+
+                  // ✅ Populate filters AFTER rows are added
+                  populateColumnFilters();
+
+                } else {
+                    tbody.append(`
+                        <tr>
+                            <td colspan="7" class="text-center">No data found</td>
+                        </tr>
+                    `);
+                }
+                hideLoader("profile-card");
+            },
+            error: function (xhr) {
+                console.error(xhr);
+                alert("Failed to load employee data");
+                hideLoader("profile-card");
+            }
+        });
+
+    });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+      const leaveSelect = document.getElementById("leaveTypeSelect");
+      const creditInput = document.getElementById("creditInput");
+
+      let leaveDataMap = {}; // store ML by type_id
+
+      fetch("/Leave_Management_System/api/Leave_Config_Details_Api/")
+          .then(response => response.json())
+          .then(result => {
+              if (result.status) {
+                  result.data.forEach(leave => {
+
+                      // Populate dropdown
+                      const option = document.createElement("option");
+                      option.value = leave.type_id;
+                      option.textContent = leave.type;
+                      leaveSelect.appendChild(option);
+
+                      // Store ML for later use
+                      leaveDataMap[leave.type_id] = leave.ML;
+                  });
+              }
+          })
+          .catch(error => {
+              console.error("Error loading leave types:", error);
+          });
+
+      // On change → set ML value
+      leaveSelect.addEventListener("change", function () {
+          const selectedTypeId = this.value;
+
+          if (selectedTypeId && leaveDataMap[selectedTypeId]) {
+              creditInput.value = leaveDataMap[selectedTypeId];
+          } else {
+              creditInput.value = "";
+          }
+      });
+
+  });
+</script>
+
+<script>
+  $(document).on("click", "#assignLeaveBtn", function () {
+
+      let OID = $("#OIDInput").val();
+      let UserID = $("#UserIDInput").val();
+      let leaveType = $("#leaveTypeSelect").val();
+      let credit = $("#creditInput").val();
+
+      let empCodes = [];
+      $(".checkBox:checked").each(function () {
+          empCodes.push($(this).val());
+      });
+
+      if (!leaveType) {
+          alert("Please select leave type");
+          return;
+      }
+
+      if (empCodes.length === 0) {
+          alert("Please select at least one employee");
+          return;
+      }
+
+      showLoader("profile-card");
+
+      $.ajax({
+          url: "{% url 'Leave_Monthly_Carry_Forward_View_Api' %}",
+          type: "POST",
+          data: {
+              type: leaveType,
+              credit: credit,
+              OID: OID,
+              UserID: UserID,
+              "all_emp_codes[]": empCodes,
+              csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+          },
+          success: function (response) {
+
+              hideLoader("profile-card");
+
+              if (response.success) {
+                  alert(response.message);
+                  window.location.href = "/Leave_Management_System/LeaveProcessDetails/";
+              } else {
+                  alert(response.message);
+              }
+          },
+          error: function (xhr) {
+              hideLoader("profile-card");
+              alert(xhr.responseJSON?.message || "Something went wrong");
+          }
+      });
+  });
+</script>
+
+{% endblock %}

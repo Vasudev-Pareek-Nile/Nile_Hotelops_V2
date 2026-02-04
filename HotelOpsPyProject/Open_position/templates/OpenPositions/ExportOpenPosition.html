@@ -1,0 +1,304 @@
+{% extends "OpenPositions/homebase.html" %} 
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
+<style>
+  .dt-buttons .btn {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:focus, .dt-buttons .btn:active {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  }
+
+  table th {
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  td {
+    font-size: 12px;
+  }
+
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+
+  .dataTables_wrapper .dataTables_filter {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .dataTables_wrapper .dt-buttons {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .job-title {
+    text-align: left; /* Align the text to the left */
+  }
+  .dropdown-toggle::after {
+    display: none; /* Hide the dropdown arrow */
+  }
+  .editor-container {
+    margin-bottom: 20px;
+}
+.ck-editor__editable {
+    min-height: 150px; 
+}
+.card .card-header {
+    padding: 20px;
+    padding-bottom: 0px !important;
+}
+</style>
+
+<link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<body>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header text-uppercase fw-bold">
+          <strong>Open Position</strong>
+    </div>
+   
+    <div class="card-body">
+      <form method="GET" action="{% url 'ExportOpenPosition' %}">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+              <select id="hotel-name" name="Locations" class="form-control">
+                <option value="">Select a location</option>
+                {% for itm in memOrg %}
+                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selected_location %}selected{% endif %}>
+                  {{ itm.OrganizationName }}
+                </option>
+                {% endfor %}
+            </select>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <select id="status-select" name="Status" class="form-control">
+                <option value="">Status</option>
+                <option value="open" {% if selected_status == 'open' %}selected{% endif %}>Open</option>
+                <option value="close" {% if selected_status == 'close' %}selected{% endif %}>Close</option>
+            </select>
+            
+            </div>
+        </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <select class="select2_demo_2" multiple="multiple" id="level_select" name="Level" style="width: 200px;" data-placeholder="Select Level">
+                    {% for Lavelsdata in Lavelsdatas %}
+                        <option value="{{ Lavelsdata.lavelname }}" 
+                                {% if Lavelsdata.lavelname in selected_levels %}selected{% endif %}>
+                            {{ Lavelsdata.lavelname }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+          <div class="col-md-1">
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">
+                <i class="fa fa-filter"></i> Filter
+              </button>
+            </div>
+          </div>
+        </form>
+          
+        </div>
+                
+       <br>
+      
+      
+
+     
+      
+      
+       <table id="example" class="table table-bordered">
+        <thead class="thead">
+            <tr class="table-success">
+                <th style="text-align: center; color: black; background-color: #958a79;">
+                    <input type="checkbox" id="select-all" />
+                </th>
+                <th style="text-align: center; color: black; background-color: #958a79;">Sr#</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Hotel</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Position</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Salary</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Opened On</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Opened Since</th>
+                <th class="center-align" style="text-align: center; background-color: #958a79;">Number</th>
+            </tr>
+        </thead>
+        <tbody>
+          {% for position in postionsexport %}
+          {% if position.days_ago.1 == 'red' %}
+              <tr data-id="{{ position.id }}" style="background-color: #ffcccc; color: #ff0000;">
+          {% elif not position.Status %}
+              <tr data-id="{{ position.id }}" style="background-color: #ffcccc;">
+          {% else %}
+              <tr data-id="{{ position.id }}">
+          {% endif %}
+              <td style="width: 60px; text-align: center">
+                  <input type="checkbox" name="id_[]" />
+              </td>
+              <td style="width: 60px; text-align: center">{{ forloop.counter }}</td>
+              <td style="width: 100px;">{{ position.get_organization_name|upper }}</td>
+              <td style="width: 160px;">{{ position.Position }}</td>
+              <td style="width: 100px;">{{ position.Salary }}</td>
+              <td style="width: 100px; text-align: center">{{ position.Opened_On|date:"d M. Y" }}</td>
+              <td style="width: 130px; text-align: center">{{ position.days_ago.0 }} Days(s)</td>
+              <td style="width: 60px; text-align: center">{{ position.Number }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+      
+    </table>
+        
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="editor1" class="fw-bold">Remark</label>
+            <textarea name="Remark" id="editor1" class="form-control">{{ remark_instance.Remark|default_if_none:'' }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+    
+  
+      </div>
+      <div class="card-footer text-right">
+        <a id="export-btn" class="btn btn-primary" href="#">
+          Export
+      </a>
+      
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('select-all').addEventListener('click', function() {
+          var checkboxes = document.querySelectorAll('input[name="id_[]"]');
+          for (var checkbox of checkboxes) {
+              checkbox.checked = this.checked;
+          }
+      });
+
+      var checkboxes = document.querySelectorAll('input[name="id_[]"]');
+      for (var checkbox of checkboxes) {
+          checkbox.addEventListener('click', function() {
+              if (!this.checked) {
+                  document.getElementById('select-all').checked = false;
+              } else {
+                  var allChecked = true;
+                  for (var cb of checkboxes) {
+                      if (!cb.checked) {
+                          allChecked = false;
+                          break;
+                      }
+                  }
+                  document.getElementById('select-all').checked = allChecked;
+              }
+          });
+      }
+
+      document.getElementById('export-btn').addEventListener('click', function() {
+          var selectedIds = Array.from(document.querySelectorAll('input[name="id_[]"]:checked'))
+                                  .map(cb => cb.closest('tr').dataset.id);
+          if (selectedIds.length > 0) {
+              window.location.href = `{% url 'PositionsPdf' %}?ids=${selectedIds.join(',')}`;
+          } else {
+              alert('Please select at least one position to export.');
+          }
+      });
+  });
+</script>
+
+
+  <script>
+    $(document).ready(function() {
+      $('.select2_demo_2').select2({
+        
+        allowClear: true
+      });
+    });
+  </script>
+
+  <script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+        }
+    }
+  </script>
+  <script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Font,
+        Heading,
+        List
+    } from 'ckeditor5';
+  
+    ClassicEditor
+        .create(document.querySelector('#editor1'), {
+            plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+                'numberedList', 'bulletedList'
+            ],
+            height: '150px'
+        })
+        .then(editor => {
+            window.editor1 = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+  </script>
+
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div class="container">
+        <h1>Expenses</h1>
+        <table id="title" border="1">
+            <thead>
+                <th>Id</th>
+                <th>Title</th>
+                <th colspan="2" id="mid">Action</th>
+            </thead>
+            {% for x in rem %}
+            <tr>
+                <td>{{x.id}}</td>
+                <td>{{x.title}}</td> 
+                <td>
+                    <a href="/update_expenses/{{x.id}}"><button id ="up">update</button></a>
+                </td> 
+                <td>
+                    <a href="/delete_expenses/{{x.id}}"><button id="del">delete </button></a>
+                </td>                                       
+            </tr>
+            {% endfor %}
+           
+        </table>
+        <br><br>
+        <a href= "{% url 'add_expenses'%}"><button id="new3">Add Title</button></a>
+        
+    </div>
+    {% endblock content %}

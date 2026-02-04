@@ -1,0 +1,321 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Outlet1 Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'Outlet_1viewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>FOOD REVENUE</th>
+            <th>{{mem.FoodRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>MEAL PLAN</th>
+            <th>{{mem.MealPlan}}</th>      
+        </tr>
+        <tr>
+            <th>Food Revenue</th>
+            <th>{{mem.TotalFoodRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>BEVERAGE REVENUE {SOFT}</th>
+            <th>{{mem.BeverageRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Revenue </th>
+            <th>{{mem.TotalBEVERAGEREVENUE}}</th>      
+        </tr>
+        <tr>
+            <th>Audio Visual Equipment Cost of Sales</th>
+            <th>{{mem.AudioVisualRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>F&B Others Cost of Sales</th>
+            <th>{{mem.FB_Revenue}}</th>      
+        </tr>
+        <tr>
+            <th>Total Other Income</th>
+            <th>{{mem.TotalOtherIncome}}</th>      
+        </tr>
+        <tr>
+            <th>Total Other Income</th>
+            <th>{{mem.TotalOtherIncome}}</th>      
+        </tr>
+        <tr>
+            <th>F&B Revenue</th>
+            <th>{{mem.FB_Revenue}}</th>      
+        </tr>
+        <tr>
+            <th>Food Cost of Sales</th>
+            <th>{{mem.FoodCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Cost of Sales </th>
+            <th>{{mem.BeverageCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Cost of Sales </th>
+            <th>{{mem.BeverageCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost of F&B Sales</th>  
+            <th>{{mem.TotalCostOfFBSales}}</th>
+        </tr>
+        <tr>
+            <th>Audio Visual Equipment Cost of Sales</th>  
+            <th>{{mem.AudioVisualEquipmentCostOfSale}}</th>
+        </tr>
+        <tr>
+            <th>F&B Others Cost of Sales</th>  
+            <th>{{mem.FB_OtherCostOfSales}}</th>
+        </tr>
+        <tr>
+            <th>Total Cost of Other Rev</th>  
+            <th>{{mem.TotalCostOf_OtherRev}}</th>
+        </tr>
+        <tr>
+            <th>Total Cost of Sales</th>  
+            <th>{{mem.TotalCostOfSales}}</th>
+        </tr>
+        <tr>
+            <th>Gross Profit (Loss)</th>  
+            <th>{{mem.GrossProfit}}</th>
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+
+            
+    </table>
+</div>
+<br>
+<br>
+<br>
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.Outlet_1Master.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Other Expenses
+            </th>
+            <th>
+                {{mem.Total_Other_Expenses}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+                Department Income (Loss)
+            </th>
+            <th>
+                {{mem.DepartmentIncome}}
+            </th>
+        </tr>
+    </tfoot>
+
+
+</table>
+
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var a = $("input[name='FoodRevenue']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var o = $("input[name='MealPlan']").val();
+        o = parseFloat(o);
+        o = isNaN(o)?0:o;
+
+        $("input[name='TotalFoodRevenue']").val((a+o).toFixed(2));
+        var TotFoodRev = a+o;
+
+        var e = $("input[name='BeverageRevenue']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+        $("input[name='TotalBEVERAGEREVENUE']").val(e.toFixed(2));
+        var TotBevRev = e;        
+
+        var g = $("input[name='RoomHireRevenue']").val();
+        g = parseFloat(g);
+        g = isNaN(g)?0:g;
+
+        var h = $("input[name='AudioVisualRevenue']").val();
+        h = parseFloat(h);
+        h = isNaN(h)?0:h;
+
+        var i = $("input[name='ServiceChargeRevenue']").val();
+        i = parseFloat(i);
+        i = isNaN(i)?0:i;
+
+        var j = $("input[name='FB_Revenue_Others']").val();
+        j = parseFloat(j);
+        j = isNaN(j)?0:j;
+        $("input[name='TotalOtherIncome']").val((g+h+i+j).toFixed(2));
+        var TotalOtherIncome = (g+h+i+j);
+
+        $("input[name='FB_Revenue']").val(( TotalOtherIncome +  TotFoodRev +  TotBevRev).toFixed(2));
+
+        TotFBSales = 0;
+        var p = $("input[name='FoodCostOfSales']").val();
+        p = parseFloat(p);
+        p = isNaN(p)?0:p;
+         
+        var q = $("input[name='BeverageCostOfSales']").val();
+        q = parseFloat(q);
+        q = isNaN(q)?0:q;
+        TotFBSales = p+q;
+        $("input[name='TotalCostOfFBSales']").val(TotFBSales.toFixed(2));
+        var TotalCostOfFBSales = TotFBSales;
+        
+        var TotCostOfRev = 0;
+        var m = $("input[name='AudioVisualEquipmentCostOfSale']").val();
+        m = parseFloat(m);
+        m = isNaN(m)?0:m;
+       
+        var n = $("input[name='FB_OtherCostOfSales']").val();
+        n = parseFloat(n);
+        n = isNaN(n)?0:n;
+        TotCostOfRev = m+n ;
+        $("input[name='TotalCostOf_OtherRev']").val(TotCostOfRev.toFixed(2));
+        var TotalCostOf_OtherRev = TotCostOfRev
+
+        $("input[name='TotalCostOfSales']").val((TotFBSales + TotCostOfRev ).toFixed(2));
+        var TotalCostOfSales = (TotFBSales + TotCostOfRev) ;
+
+        $("input[name='GrossProfit']").val((TotalCostOfFBSales + TotalCostOf_OtherRev ).toFixed(2));
+        var GrossProfit =(TotalCostOfFBSales + TotalCostOf_OtherRev );
+ 
+      
+        var TotSalWag=0;
+        var c = $("input[name='SalaryAndWages']").val();
+        c = parseFloat(c);
+        c = isNaN(c)?0:c;
+               
+        var TotSalWag=0;
+        var d = $("input[name='Bonuses_and_Incentives']").val();
+        d = parseFloat(d);
+        d = isNaN(d)?0:d;
+        TotSalWag = c+d;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+
+        var f = $("input[name='EmployeeBenefits']").val();
+        f = parseFloat(f);
+        f = isNaN(f)?0:f;
+        $("input[name='PayrollRelatedExpenses']").val(f.toFixed(2));
+
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag + f).toFixed(2));
+        var PayrollAndRelatedExpenses = (TotSalWag + f);
+      
+        
+        
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+        $("input[name='Total_Other_Expenses']").val(TotalAmount.toFixed(2))
+        var Total_Other_Expenses = TotalAmount;
+
+        
+        $("input[name='DepartmentIncome']").val((GrossProfit - PayrollAndRelatedExpenses - Total_Other_Expenses).toFixed(2))
+
+      
+        
+        
+
+      
+    }
+</script>
+ 
+{% endblock content %}

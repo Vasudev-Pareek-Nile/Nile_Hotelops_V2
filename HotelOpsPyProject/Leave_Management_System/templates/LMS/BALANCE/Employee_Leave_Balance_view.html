@@ -1,0 +1,41 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<table class="table table-bordered" id="tbleb">
+    <thead>
+        <tr>
+            <td>Type</td>
+            <td>Balance</td>
+           
+        </tr>
+    </thead>
+    <tbody>
+        {% for leave in Leave_balance %}
+        <tr>
+            <td>{{leave.Leave_Type_Master.Type }}</td>
+            <td>{{leave.Balance}}</td>
+         
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2" class="align-center" style="text-align: center;">No Data Found !!!</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+

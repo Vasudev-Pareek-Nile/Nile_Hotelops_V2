@@ -1,0 +1,36 @@
+{% extends 'ExAG_Security/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div                                                   >
+        <div class="card-header">AG Security List</div>
+        <br>
+        <table id="title" class="table table-bordered">
+            <thead>
+                <th>Month</th>
+                <th>Year</th>
+                <th width="250"  id="mid">  Action </th>
+            </thead>
+            {% for x in mem%}
+            <tr>
+                <td>{{x.Monthtitle}}</td> 
+                <td>{{x.EntryYear}}</td>
+
+                <td>
+                    <a class="btn btn-primary" href="/ExpenseReport/AG_SecurityEdit/{{x.id}}">Edit</a>
+                    <a  onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger" href="/ExpenseReport/AG_SecurityDelete/{{x.id}}">Delete </a>
+                    <a class="btn btn-primary" href="/ExpenseReport/AG_Securityviewdata/{{x.id}}">View</a>
+                </td>
+                                          
+            </tr>
+            {% endfor %}
+           
+        </table>
+        <br><br>
+        
+        <br>
+        <br>
+        
+    {% endblock content %}

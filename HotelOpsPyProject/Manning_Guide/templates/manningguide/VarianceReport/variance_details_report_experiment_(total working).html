@@ -1,0 +1,285 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+
+<style>
+  body{
+    font-size:13px;
+  }
+
+  table td, th{
+    font-size:13px;
+  }
+  .table th {
+    padding: 0.5rem 0.25rem !important;
+    background-color: aliceblue !important;
+    color: #076e00 !important;
+  }
+  .table td {
+      border-top: 1px solid #E9E9EA;
+      white-space: nowrap;
+      vertical-align: middle;
+      padding: 0.3rem !important;
+      font-size: 13px !important;
+  }
+  .TextCenter{
+    text-align: center;
+    min-width: 10% !important;
+    max-width: 10% !important;
+    width: 10% !important;
+  }
+
+	table {
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+    font-size:13px;
+	}
+
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th, td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+</style>
+
+<div class="card">
+    <div class="card-body" id="varianceReport">
+        {% comment %} <div id="varianceReport"></div> {% endcomment %}
+    </div>
+</div>
+
+
+<script>
+  const colGroupHTML = `
+    <colgroup>
+      <col style="width:22%">
+      <col style="width:8%">
+      <col style="width:8%">
+      <col style="width:8%">
+      <col style="width:6%">
+      <col style="width:6%">
+      <col style="width:6%">
+      <col style="width:12%">
+      <col style="width:12%">
+      <col style="width:12%">
+    </colgroup>
+  `;
+
+fetch('http://127.0.0.1:8000/Manning_Guide/api/variance_details_report/')
+  .then(res => res.json())
+  .then(res => {
+    const data = res.data;
+    const container = document.getElementById('varianceReport');
+
+    let currentDivision = null;
+    let currentDepartment = null;
+    let table = null;
+    let tbody = null;
+
+    // Department totals
+    let deptBudSal = 0, deptActSal = 0;
+    let deptBudHC = 0, deptActHC = 0;
+    let deptBudCTC = 0, deptActCTC = 0;
+    
+    // Division totals
+    let divBudSal = 0, divActSal = 0;
+    let divBudHC = 0, divActHC = 0;
+    let divBudCTC = 0, divActCTC = 0;
+
+    function appendDeptTotal() {
+      if (!tbody) return;
+
+      const deptBudAvg = deptBudHC ? (deptBudSal / deptBudHC).toFixed(2) : 0;
+      const deptActAvg = deptActHC ? (deptActSal / deptActHC).toFixed(2) : 0;
+      const deptVarAvg = (deptBudAvg - deptActAvg).toFixed(2);
+
+      // console.log(`${deptActAvg} = ${deptActSal} / ${deptActHC}`)
+
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr class="table-success fw-bold">
+          <td class="Designation">${row_Department} TOTAL</td>
+          <td class="TextCenter">${Number(deptBudAvg).toLocaleString()}</td>
+          <td class="TextCenter">${Number(deptActAvg).toLocaleString()}</td>
+          <td class="TextCenter">${Number(deptVarAvg).toLocaleString()}</td>
+          <td class="TextCenter">${deptBudHC}</td>
+          <td class="TextCenter">${deptActHC}</td>
+          <td class="TextCenter">${deptBudHC - deptActHC}</td>
+          <td class="TextCenter">${Number(deptBudCTC).toLocaleString()}</td>
+          <td class="TextCenter">${Number(deptActCTC).toLocaleString()}</td>
+          <td class="TextCenter">${Number(deptBudCTC - deptActCTC).toLocaleString()}</td>
+        </tr>
+      `);
+
+
+      // Reset totals for next department
+      deptBudSal = deptActSal = 0;
+      deptBudHC = deptActHC = 0;
+      deptBudCTC = deptActCTC = 0;
+
+    }
+    function appendDivisionTotal() {
+      if (!currentDivision) return;
+
+      const divBudAvg = divBudHC ? (divBudSal / divBudHC).toFixed(2) : 0;
+      const divActAvg = divActHC ? (divActSal / divActHC).toFixed(2) : 0;
+      const divVarAvg = (divBudAvg - divActAvg).toFixed(2);
+
+      container.insertAdjacentHTML('beforeend', `
+        <table class="table table-bordered table-sm mb-5">
+          ${colGroupHTML}
+          <tbody>
+            <tr class="table-primary fw-bold">
+              <td class="Designation">${row_Division} TOTAL</td>
+              <td class="TextCenter">${Number(divBudAvg).toLocaleString()}</td>
+              <td class="TextCenter">${Number(divActAvg).toLocaleString()}</td>
+              <td class="TextCenter">${Number(divVarAvg).toLocaleString()}</td>
+              <td class="TextCenter">${divBudHC}</td>
+              <td class="TextCenter">${divActHC}</td>
+              <td class="TextCenter">${divBudHC - divActHC}</td>
+              <td class="TextCenter">${Number(divBudCTC).toLocaleString()}</td>
+              <td class="TextCenter">${Number(divActCTC).toLocaleString()}</td>
+              <td class="TextCenter">${Number(divBudCTC - divActCTC).toLocaleString()}</td>
+            </tr>
+          </tbody>
+        </table>
+      `);
+
+      // reset for next division
+      divBudSal = divActSal = 0;
+      divBudHC = divActHC = 0;
+      divBudCTC = divActCTC = 0;
+    }
+
+    data.forEach((row, index) => {
+      // Convert string numbers to actual numbers
+      const Bud_AvgSal = parseFloat((row.Bud_AvgSal || 0).toString().replace(/,/g, ''));
+      const Act_AvgSal = parseFloat((row.Act_AvgSal || 0).toString().replace(/,/g, ''));
+      // console.log("Act_AvgSal is here", row.Act_AvgSal)
+      const Bud_HC = parseInt(row.Bud_HC || 0);
+      const Act_HC = parseInt(row.Act_HC || 0);
+      const Bud_TotalCTC = parseFloat((row.Bud_TotalCTC || 0).toString().replace(/,/g, ''));
+      const Act_TotalCTC = parseFloat((row.Act_TotalCTC || 0).toString().replace(/,/g, ''));
+
+      // DIVISION HEADER
+      if (row.Division !== currentDivision) {
+        
+        // close previous division
+        if (currentDivision !== null) {
+          appendDivisionTotal();
+        }
+
+        currentDivision = row.Division;
+        currentDepartment = null;
+
+        container.insertAdjacentHTML(
+          'beforeend',
+          `<h4 class="mt-4 text-primary">${currentDivision}</h4>`
+        );
+      }
+
+
+      // DEPARTMENT HEADER
+      if (row.Department !== currentDepartment) {
+        appendDeptTotal();
+        currentDepartment = row.Department;
+
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td class="Designation">${row.Designation}</td>
+            <td class="TextCenter">${Number(Bud_AvgSal).toLocaleString()}</td>
+            <td class="TextCenter">${Number(Act_AvgSal).toLocaleString()}</td>
+            <td class="TextCenter">${Number(Bud_AvgSal - Act_AvgSal).toLocaleString()}</td>
+            <td class="TextCenter">${Bud_HC}</td>
+            <td class="TextCenter">${Act_HC}</td>
+            <td class="TextCenter">${Bud_HC - Act_HC}</td>
+            <td class="TextCenter">${Number(Bud_TotalCTC).toLocaleString()}</td>
+            <td class="TextCenter">${Number(Act_TotalCTC).toLocaleString()}</td>
+            <td class="TextCenter">${Number(Bud_TotalCTC - Act_TotalCTC).toLocaleString()}</td>
+          </tr>
+        `);
+
+
+        table = container.lastElementChild;
+        tbody = table.querySelector('tbody');
+      }
+
+      // console.log(`act_actual: ${Act_AvgSal}`)
+      // Update department totals
+      // deptBudSal += Bud_AvgSal * Bud_HC;
+      // deptActSal += Act_AvgSal * Act_HC;
+      deptBudHC += Bud_HC;
+      deptActHC += Act_HC;
+      deptBudCTC += Bud_TotalCTC;
+      deptActCTC += Act_TotalCTC;
+
+      if (Bud_AvgSal > 0) {
+        deptBudSal += Bud_AvgSal;
+      }
+
+      if (Act_AvgSal > 0) {
+        deptActSal += Act_AvgSal;
+      }
+
+      // DIVISION totals (weighted)
+      // divBudSal += Bud_AvgSal * Bud_HC;
+      // divActSal += Act_AvgSal * Act_HC;
+      divBudHC += Bud_HC;
+      divActHC += Act_HC;
+      divBudCTC += Bud_TotalCTC;
+      divActCTC += Act_TotalCTC;
+      
+      if (Bud_AvgSal > 0) {
+        divBudSal += Bud_AvgSal;
+      }
+
+      if (Act_AvgSal > 0) {
+        divActSal += Act_AvgSal;
+      }
+
+      row_Department = row.Department
+      row_Division = row.Division
+
+      // console.log(`is here: ${Act_AvgSal}`)
+
+
+      // ROW
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td style="width: 22%" class="Designation">${row.Department}</td>
+          <td style="width: 22%" class="Designation">${row.Designation}</td>
+          <td style="width: 8%" class="BUD_AVG_SAL TextCenter">${Number(Bud_AvgSal).toLocaleString()}</td>
+          <td style="width: 8%" class="ACT_AVG_SAL TextCenter">${Number(Act_AvgSal).toLocaleString()}</td>
+          <td style="width: 8%" class="VAR_AVG_SAL TextCenter">${Number((Bud_AvgSal - Act_AvgSal)).toLocaleString()}</td>
+          <td style="width: 6%" class="BUD_HC TextCenter">${Bud_HC}</td>
+          <td style="width: 6%" class="ACT_HC TextCenter">${Act_HC}</td>
+          <td style="width: 6%" class="VAR_HC TextCenter">${Bud_HC - Act_HC}</td>
+          <td style="width: 12%" class="BUD_TOTAL_CTC TextCenter">${Number(Bud_TotalCTC).toLocaleString()}</td>
+          <td style="width: 12%" class="ACT_TOTAL_CTC TextCenter">${Number(Act_TotalCTC).toLocaleString()}</td>
+          <td style="width: 12%" class="VAR_TOTAL_CTC TextCenter">${Number(Bud_TotalCTC - Act_TotalCTC).toLocaleString()}</td>
+        </tr>
+      `);
+
+      // Last row department total
+      //if (index === data.length - 1) appendDeptTotal();
+      if (index === data.length - 1) {
+        appendDeptTotal();
+        appendDivisionTotal();
+      }
+    });
+  });
+</script>
+
+
+
+
+{% endblock content %}

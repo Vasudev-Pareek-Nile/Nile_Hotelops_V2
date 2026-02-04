@@ -1,0 +1,736 @@
+{% load maningfilter %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manning Guide</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+      
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td  {
+        padding: 3px;
+        
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        color: #fff;
+        font-size: 10px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+        
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+    @page {
+      size: landscape;
+      margin: 1cm;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 120px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Manning Guide - {{ selectedOrganizationName }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 120px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+    <main>
+      <div class="main-container">
+        {% if divisions %}
+        <h5 class="alert alert-primary">On Roll Manning Manning</h5>
+        <table class="table table-striped custom-table">
+          <tbody>
+            
+            {% for division in divisions %}
+            <tr>
+                <td colspan="13" style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+            </tr>
+            <tr>
+                <td colspan="13" style="background-color: #88ab8e; color: #fff; text-transform: uppercase;"><strong>{{ division.DivisionName }}</strong></td>
+            </tr>
+            {% for department in division.onrolldepartmentmaster_set.all %}
+            <tr>
+                <td colspan="13" style="background-color: #6a7a5d; color: #fff; text-transform: uppercase;"><strong>{{ department.DepartmentName }}<strong></td>
+            </tr>
+            <tr>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DIV</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DEPT</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">POSITION</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">LEVELS</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AVG SALARY</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">HC</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">MORNING</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">GENERAL</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AN</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">NIGHT</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">M/BREAK</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">RELIEVERS</th>
+                <th style="background-color: #0aa485; color: #fff; font-size: 10px;">TOTAL CTC</th>
+            </tr>
+            {% for designation in department.onrolldesignationmaster_set.all %}
+            {% with budget=budgets_dict|get:department.DepartmentName|get:designation.designations %}
+            <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                <td style="width: 50px;">{{ designation.Div }}</td>
+                <td style="width: 50px;">{{ designation.Dept }}</td>
+                <td style="width: 230px;">{{ designation.designations }}</td>
+                <td style=" text-align: center;">{{ designation.Lavel }}</td>
+                <td style="width: 120px; text-align: right;">
+                    {{ budget.aavg_salary|default:'0.0'|formatingdata }}
+                </td>
+                <td style=" text-align: center;">
+                    {{ budget.head_count|default:'0'  }}
+                </td>
+                <td>&nbsp;</td>
+                <td style=" text-align: right;">
+                    &nbsp;
+                </td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style=" text-align: right;">
+                    {{ budget.budgetmultiplication_result|default:'0.0'|formatingdata }}
+                </td>
+            </tr>
+            {% endwith %}
+            {% endfor %}
+            <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                <td colspan="3" style="text-transform: uppercase;"><b>{{ department.DepartmentName }} Total<b></td>
+                <td>&nbsp;</td>
+                <td style="width: 130px; text-align: right;">{{department_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                <td style=" text-align: center;">{{ department_totals|get:department.DepartmentName|get:"total_headcount"|default:"0" }}</td>
+                <td>&nbsp;</td>
+                <td style=" text-align: right;"></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td style=" width: 130px; text-align: right;">{{ department_totals|get:department.DepartmentName|get:"budgetmultiplication_result"|formatingdata|default:"0" }}</td>
+            </tr>
+            {% endfor %}
+           <!-- Displaying division totals -->
+                <tr data-division="{{ division.DivisionName }}">
+                    <td colspan="3" style="text-transform: uppercase;  text-align: center;"><b>{{ division.DivisionName }} Total<b></td>
+                    <td style="width: 50px;">&nbsp;</td>
+                    <td style="width: 130px; text-align: right;">{{ division_totals|get:division.DivisionName|get:"divisionsalary_headcount_product"|formatingdata|default:"0.00" }}</td>
+                    <td style=" width: 130px; text-align: center;">{{ division_totals|get:division.DivisionName|get:"divisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style="width: 130px; text-align: right;">{{ division_totals|get:division.DivisionName|get:"divisionmultiplication_result"|formatingdata|default:"0.00" }}</td>
+                </tr>
+
+        {% endfor %}
+        <tr>
+            <td colspan="13"  ><strong>&nbsp;</strong></td>
+        </tr>
+        <tr >
+            <td colspan="3" style="text-transform: uppercase; width: 300px; background-color: #95917e; color: #fff;"><strong>TOTAL ON ROLL<strong></td>
+                <td style="width: 60px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 130px; text-align: right; background-color: #95917e; color: #fff;"><b>{{ grandsalarydivion|formatingdata  }}<b></td>
+                <td style="width: 70px; text-align: center; background-color: #95917e; color: #fff;"><b>{{ grand_total_headcount }}<b></td>
+                <td style="width: 70px;  background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 70px; text-align: right; background-color: #95917e; color: #fff;"><b><b></td>
+                <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                <td style="width: 130px; text-align: right; background-color: #95917e; color: #fff;"><b>{{divisionmultiplication_result|formatingdata}}<b></td>
+                
+           
+        </tr>
+           
+        </tbody>
+      </table>
+      <h4 class="alert alert-primary">Departments Total</h4>
+      <table class="table table-striped custom-table">
+          <thead>
+              <tr>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DIV</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DEPT</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">POSITION</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">LEVELS</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AVG SALARY</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">HC</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">MORNING</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">GENERAL</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px; ">AN</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">NIGHT</th>
+                  <th style="background-color: #0aa485;  color: #fff; font-size: 10px;">M/BREAK</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">RELIEVERS</th>
+                  <th style="background-color: #0aa485; color: #fff; font-size: 10px;">TOTAL CTC</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% if divisions %}
+                  {% for division in divisions %}
+                  <tr>
+                      <td colspan="13" style="background-color: #88ab8e; color: #fff; text-transform: uppercase;"><strong>{{ division.DivisionName }}</strong></td>
+                  </tr>
+                      {% for department in division.onrolldepartmentmaster_set.all %}
+                        
+                      <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                          <td colspan="3" style="text-transform: uppercase;">{{ department.DepartmentName }} Total</td>
+                          <td>&nbsp;</td>
+                          <td style=" text-align: right;">{{department_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                          <td style=" text-align: center;">{{ department_totals|get:department.DepartmentName|get:"total_headcount"|default:"0" }}</td>
+                          <td>&nbsp;</td>
+                          <td style=" text-align: right;">&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td>&nbsp;</td>
+                          <td style=" text-align: right;">{{ department_totals|get:department.DepartmentName|get:"budgetmultiplication_result"|formatingdata|default:"0" }}</td>
+                      </tr>
+                         
+                      
+
+                     
+                          
+                      {% endfor %}
+                    
+                  {% endfor %}
+              {% else %}
+                  <tr>
+                      <td colspan="13">Data not found for selected hotel.</td>
+                  </tr>
+              {% endif %}
+             
+          </tbody>
+      </table>
+      {% endif %}
+
+
+      {% if Contractdivisions %}
+      <h4 class="alert alert-primary">Contract  Manning </h4>
+      <table class="table table-striped custom-table">
+        <tbody>
+          
+              {% for division in Contractdivisions %}
+              <tr>
+                  <td colspan="13"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+              </tr>
+                  <tr>
+                      <td colspan="13" style="background-color: #88ab8e; color: #fff; text-transform: uppercase;"><strong>{{ division.DivisionName }}</strong></td>
+                  </tr>
+                  {% for department in division.contractdepartmentmaster_set.all %}
+                      <tr>
+                          <td colspan="13" style="background-color: #6a7a5d; color: #fff; text-transform: uppercase;"><strong> {{ department.DepartmentName }}<strong></td>
+                      </tr>
+                      <tr>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DIV</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DEPT</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">POSITION</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">LEVELS</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AVG SALARY</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">HC</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">MORNING</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">GENERAL</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px; ">AN</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">NIGHT</th>
+                          <th style="background-color: #0aa485;  color: #fff; font-size: 10px;">M/BREAK</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">RELIEVERS</th>
+                          <th style="background-color: #0aa485; color: #fff; font-size: 10px;">TOTAL CTC</th>
+                      </tr>
+                      {% for designation in department.contractdesignationmaster_set.all %}
+                      {% with Contractbudget=Contractbudgets_dict|get:department.DepartmentName|get:designation.designations %}
+                      <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                          <td style="width: 50px;">{{ designation.Div }} </td>
+                             
+                          
+                          <td style="width: 50px;">{{ designation.Dept }}</td>
+                              
+                          
+                          <td style="width: 300px;">{{ designation.designations }}  </td>
+                             
+                         
+                          <td style=" text-align: center;">{{ designation.Lavel }}</td>
+                          <td style=" text-align: right;">
+                             
+                                  {{ Contractbudget.Contractavg_salary|default:'0.0' }}
+                                 
+                          </td>
+                          <td style="text-align: center;">
+                             
+                                  {{ Contractbudget.Contracthead_count|default:'0'  }}
+                               
+                          </td>
+                          <td >&nbsp;</td>
+                          <td style=" text-align: right;">
+                            &nbsp;
+                                 
+                              
+                          </td>
+                         <td>&nbsp;</td>
+                         <td>&nbsp;</td>
+                         <td>&nbsp;</td>
+                         <td>&nbsp;</td>
+                         <td style=" text-align: right;">
+                            
+                                    {{  Contractbudget.Contractmultiplication_result|default:'0.0' }}
+                            
+                        </td>
+                      </tr>
+                      {% endwith %}
+                  {% endfor %}
+                  
+                  <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                    <td colspan="3" style="text-transform: uppercase;"><b>{{ department.DepartmentName }} Total<b></td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{Contractdepartment_totals|get:department.DepartmentName|get:"salary_headcount_contract"|formatingdata|default:"0" }}</td>
+                    <td style=" text-align: center;">{{Contractdepartment_totals|get:department.DepartmentName|get:"Contracthead_count"|formatingdata|default:"0" }}</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{Contractdepartment_totals|get:department.DepartmentName|get:"Contractmultiplication_result"|formatingdata|default:"0" }}</td>
+                </tr>
+                      
+                  {% endfor %}
+                  <tr data-division="{{ division.DivisionName }}" style="background-color:  #0aa485;">
+                    <td colspan="3" style="text-transform: uppercase; text-align: center;"><b>{{ division.DivisionName }} Total<b>
+                       
+                    </td>
+                    <td style="width: 50px;">&nbsp;</td>
+                    <td style=" text-align: right;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisionsalary_headcount_product"|formatingdata|default:"0.00" }}</td>
+                    <td style=" text-align: center;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisiontotal_headcount"|formatingdata|default:"0.00" }}</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisionmultiplication_result"|formatingdata|default:"0.00" }}</td>
+                </tr> 
+              {% endfor %}
+              <tr>
+                <td colspan="13"  ><strong>&nbsp;</strong></td>
+            </tr>
+            <tr >
+                <td colspan="3" style="text-transform: uppercase; width: 310px; background-color: #95917e; color: #fff;"><strong>Total Contract<strong></td>
+                    <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 120px; text-align: right; background-color: #95917e; color: #fff;">{{ contractgrandsalarydivion|formatingdata  }}</td>
+                    <td style="width: 70px; text-align: center; background-color: #95917e; color: #fff;">{{ Contractgrand_total_headcount }}</td>
+                    <td style="width: 70px;  background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 70px; text-align: right; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+                    <td style="width: 120px; text-align: right; background-color: #95917e; color: #fff;">{{grandContractdivisionmultiplication_result|formatingdata}}</td>
+                    
+               
+            </tr>
+            
+
+      </tbody>
+    </table>
+    <br>
+    {% endif %}
+
+    {% if Servicedivisions %}
+    <h4 class="alert alert-primary">Shared Services Manning</h4>
+
+    <table class="table table-striped  custom-table">
+     <thead>
+         <tr>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DIV</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">DEPT</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">POSITION</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">LEVELS</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AVG SALARY</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">HC</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">MORNING</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">GENERAL</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px; ">AN</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">NIGHT</th>
+             <th style="background-color: #0aa485;  color: #fff; font-size: 10px;">M/BREAK</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">RELIEVERS</th>
+             <th style="background-color: #0aa485; color: #fff; font-size: 10px;">TOTAL CTC</th>
+         </tr>
+     </thead>
+     <tbody>
+         {% if divisions %}
+             {% for division in Servicedivisions %}
+             <tr>
+                 <td colspan="13"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+             </tr>
+                 <tr>
+                     <td colspan="13" style="background-color: #88ab8e; color: #fff; text-transform: uppercase;"><strong>{{ division.DivisionName }}</strong></td>
+                 </tr>
+                 {% for department in division.servicesdepartmentmaster_set.all %}
+                     <tr>
+                         <td colspan="13" style="background-color: #6a7a5d; color: #fff; text-transform: uppercase;"><strong> {{ department.DepartmentName }}<strong></td>
+                     </tr>
+                   
+                     {% for designation in department.servicesdesignationmaster_set.all %}
+                     {% with Servicesbudget=Servicesbudgets_dict|get:department.DepartmentName|get:designation.designations %}
+                     <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                        <td style="width: 50px;">{{ designation.Div }} </td>
+                           
+                        
+                        <td style="width: 50px;">{{ designation.Dept }}</td>
+                            
+                        
+                        <td style="width: 300px;">{{ designation.designations }}  </td>
+                           
+                       
+                        <td style=" text-align: center;">{{ designation.Lavel }}</td>
+                        <td style=" text-align: right;">
+                            {{ Servicesbudget.Servicesavg_salary | default:'0.0' }}
+                        </td>
+                        <td style=" text-align: center;">
+                            {{ Servicesbudget.Serviceshead_count | default:'0' }}
+                        </td>
+                        <td >&nbsp;</td>
+                        <td>
+                            &nbsp; 
+                        </td>
+                       <td>&nbsp;</td>
+                       <td>&nbsp;</td>
+                       <td>&nbsp;</td>
+                       <td>&nbsp;</td>
+                       <td style=" text-align: right;">
+                        {{ Servicesbudget.Servicesmultiplication_result | default:'0.0' }} 
+                      </td>
+                    </tr>
+                    {% endwith %}
+                 {% endfor %}
+                 <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                    <td colspan="3" style="text-transform: uppercase;"><b>{{ department.DepartmentName }} Total <b></td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{departmentservices_dict|get:department.DepartmentName|get:"TotalServicessalary_headcount_contract"|formatingdata|default:"0.0" }}</td>
+                    <td style=" text-align: center;">{{departmentservices_dict|get:department.DepartmentName|get:"TotalServiceshead_count"|formatingdata|default:"0" }}</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{departmentservices_dict|get:department.DepartmentName|get:"TotalServicesmultiplication_result"|formatingdata|default:"0.0" }}</td>
+                </tr>
+                     
+                 {% endfor %}
+                 <tr data-division="{{ division.DivisionName }}" style="background-color:  #0aa485;">
+                    <td colspan="3" style="text-transform: uppercase; text-align: center;"><b>{{ division.DivisionName }} Total<b>
+                       
+                    </td>
+                    <td style="width: 50px;">&nbsp;</td>
+                    <td style=" text-align: right;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisionsalary_headcount_product"|formatingdata|default:"0.00" }}</td>
+                    <td style=" text-align: center;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisiontotal_headcount"|formatingdata|default:"0.00" }}</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;"></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style=" text-align: right;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisionmultiplication_result"|formatingdata|default:"0.00" }}</td>
+                </tr> 
+             {% endfor %}
+         {% else %}
+           
+         {% endif %}
+         <tr>
+          <td colspan="13"  ><strong>&nbsp;</strong></td>
+      </tr>
+      <tr >
+          <td colspan="3" style="text-transform: uppercase; width: 310px; background-color: #95917e; color: #fff;"><strong>Total Shared Services<strong></td>
+              <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 120px; text-align: right; background-color: #95917e; color: #fff;">{{ Servicesgrandsalarydivion|formatingdata  }}</td>
+              <td style="width: 70px; text-align: center; background-color: #95917e; color: #fff;">{{ ServicesContractgrand_total_headcount }}</td>
+              <td style="width: 70px;  background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 70px; text-align: right; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 70px; background-color: #95917e; color: #fff;">&nbsp;</td>
+              <td style="width: 120px; text-align: right; background-color: #95917e; color: #fff;">{{Servicesgranddivisionmultiplication_result|formatingdata}}</td>
+              
+         
+      </tr>
+      
+     </tbody>
+ </table>
+ {% endif %}
+ {% if cafeteria_meal_cost %}
+    <!-- Render cafeteria meal cost data -->
+{% endif %}
+
+{% if employees_insurance_cost %}
+    <!-- Render employee insurance cost data -->
+{% endif %}
+ <br>
+ <table class="table table-striped  custom-table">
+    <thead>
+        <tr>
+            <td colspan="13"  ><strong>&nbsp;</strong></td>
+        </tr>
+        <tr>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">&nbsp;</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">&nbsp;</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">&nbsp;</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">&nbsp;</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">AVG SALARY</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">HC</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">MORNING</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">GENERAL</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px; ">AN</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">NIGHT</th>
+            <th style="background-color: #0aa485;  color: #fff; font-size: 10px;">M/BREAK</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">RELIEVERS</th>
+            <th style="background-color: #0aa485; color: #fff; font-size: 10px;">TOTAL CTC</th>
+        </tr>
+        {% if divisions %}
+        <tr >
+            <td colspan="4" style="text-transform: uppercase; width: 300px;  "><strong>TOTAL ON ROLL<strong></td>
+                
+                <td style="width: 130px; text-align: right; "><b>{{ grandsalarydivion|formatingdata  }}<b></td>
+                <td style="width: 70px; text-align: center;"><b>{{ grand_total_headcount }}<b></td>
+                <td style="width: 70px;  ">&nbsp;</td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 130px; text-align: right; "><b>{{divisionmultiplication_result|formatingdata}}<b></td>
+                
+           
+        </tr>
+        {% endif %}
+       
+      {% if Contractdivisions %}
+        <tr >
+            <td colspan="4" style="text-transform: uppercase; width: 300px;"><strong>TOTAL - CONTRACT<strong></td>
+               
+                <td style="width: 130px; text-align: right; "><b>{{ contractgrandsalarydivion|formatingdata  }}<b></td>
+                <td style="width: 70px; text-align: center;"><b>{{ Contractgrand_total_headcount }}<b></td>
+                <td style="width: 70px;  ">&nbsp;</td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 130px; text-align: right; "><b>{{grandContractdivisionmultiplication_result|formatingdata}}<b></td>
+        </tr>
+        {% endif %}
+       
+
+        {% if Servicedivisions %}
+        <tr >
+            <td colspan="4" style="text-transform: uppercase; width: 300px;"><strong>TOTAL - SHARED SERVICES<strong></td>
+                
+                    <td style="width: 130px; text-align: right; "><b>{{ Servicesgrandsalarydivion|formatingdata  }}<b></td>
+                    <td style="width: 60px; text-align: center; "><b>{{ ServicesContractgrand_total_headcount }}<b></td>
+                    <td style="width: 70px;  ">&nbsp;</td>
+                    <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                    <td style="width: 70px;">&nbsp;</td>
+                    <td style="width: 70px; ">&nbsp;</td>
+                    <td style="width: 70px; ">&nbsp;</td>
+                    <td style="width: 70px; ">&nbsp;</td>
+                    <td style="width: 130px; text-align: right; "><b>{{Servicesgranddivisionmultiplication_result|formatingdata}}<b></td>
+        </tr>
+        {% endif %}
+        {% if cafeteria_meal_cost %}
+        <tr >
+            <td colspan="4" style="text-transform: uppercase; width: 300px;"><strong>TOTAL - CAFETERIA MEAL COST<strong></td>
+                
+                <td style="width: 130px; text-align: right; "><b>{{Avgsalarymealcoat|formatingdata}}<b></td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;  ">&nbsp;</td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 130px; text-align: right; "><b>{{meal_cost|formatingdata}}<b></td>
+        </tr>
+        {% endif %}
+        {% if employees_insurance_cost %}
+        <tr >
+            <td colspan="4" style="text-transform: uppercase; width: 300px;"><strong>TOTAL - EMPLOYEE INSURANCE COST<strong></td>
+                
+                <td style="width: 130px; text-align: right; "><b>{{Avgsalaryinsurancecoat |formatingdata}}<b></td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;  ">&nbsp;</td>
+                <td style="width: 70px; text-align: center; "><b>&nbsp;<b></td>
+                <td style="width: 70px;">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 70px; ">&nbsp;</td>
+                <td style="width: 130px; text-align: right; "><b>{{Insurance_cost|formatingdata}}<b></td>
+        </tr>
+        {% endif %}
+       
+    </thead>
+</table>
+
+
+
+
+
+
+
+
+
+      </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;"> 
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              <b>{{ current_datetime }}<b>
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder"><b>Report Generate from HotelOps<b></span>
+            </td>
+        </tr>
+    </table>
+
+    </footer>
+  </div>
+
+  
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

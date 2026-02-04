@@ -1,0 +1,175 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container col-md-12" >
+    <div class="card">
+        <div class="card-header">Add Organizations  Configuration</div>
+        <div class="container text-center">
+            {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+            {% endif %} {% endfor %}
+          </div>
+        <form action=""  method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Prefix Emp Code</label>
+                        <input type="text" name="OID_Code" class="form-control"  value="{{config.OID_Code}}" >
+                    </div>    
+                </div>
+               
+                <div class="col-md-8">
+                    <div class="form-group m-3">
+                        <label for="">Url</label>
+                       
+                    <textarea name="OrgUrl" class="form-control" rows="2">{{config.OrgUrl}}</textarea>
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">CID</label>
+                        <input type="text" name="cid" class="form-control"  value="{{config.cid}}" >
+                    </div>    
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Organization</label>
+                        <select name="OID"  class="form-control">
+                            <option value="">Select Organization</option>
+                        
+                {% for itm in memOrg %}
+                <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                {% endfor %}
+                        </select>
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Type</label>
+                      
+                        <select name="UploadFormatType"  class="form-control">
+                           <option value="">Select Type</option>
+                           <option value="api">Api</option>
+                            
+                            <option value=".txt">Text</option>
+                            <option value=".csv">Csv</option>
+                            <option value=".xlsx">Excel</option>
+
+                           
+                        </select>
+                    </div>    
+                </div>
+                
+               
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Salary Cycle End Date</label>
+                        <select name="EndDate" class="form-control">
+                            <option value="">Select</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                          </select>
+                          
+                    </div>
+                </div> 
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Upload Format</label>
+                        {% if config %}  
+                        <p>Previous :- 
+                            
+                            <a href="{{config.DownloadFormat}}"   class="fa fa-eye" target="_blank"></a>
+                        </p>
+                        {% endif %}
+                        <input type="file"  name="DownloadFormat" class="form-control"  >
+                    </div>
+                </div> 
+                
+                
+               
+               
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Total Minimum Duty Hours</label>
+                        <input type="number" step="0.01" name="TotalMinimumDutyHours" class="form-control"  value="{{config.TotalMinimumDutyHours}}" >
+                    </div>    
+                </div>
+               
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Total Grace Hours</label>
+                        <input type="number" step="0.01" name="TotalDutyGraceHours" class="form-control"  value="{{config.TotalDutyGraceHours}}" >
+                    </div>    
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Is ESIC Calculate</label>
+                        <select  name="IsESICCalculate" class="form-control"  value="{{config.IsESICCalculate}}">
+                            <option value="True">Yes</option>
+                            <option value="False">No</option>
+                        </select>
+                    </div>    
+                </div>
+            </div>
+            <div class="card-footer text-right"> 
+            
+           <input type="submit" class="btn btn-primary btn-sm">
+            
+             
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ config.OID }}";
+        $("select[name='OID']").val(selectedOrganization);
+        var selectedEndDate = "{{ config.EndDate }}";
+        $("select[name='EndDate']").val(selectedEndDate);
+        var selectType = "{{ config.UploadFormatType }}";
+        $("select[name='UploadFormatType']").val(selectType);
+
+        var selectType = "{{ config.IsESICCalculate }}";
+        $("select[name='IsESICCalculate']").val(selectType);
+        
+    });
+</script>
+
+
+
+{% endblock content %}

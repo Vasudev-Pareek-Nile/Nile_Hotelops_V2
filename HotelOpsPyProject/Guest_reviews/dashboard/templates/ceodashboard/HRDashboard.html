@@ -1,0 +1,1023 @@
+{% extends "ceodashboard/homebase.html" %}
+
+{% block body_id %}HRDashboard{% endblock %}
+
+
+
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'ceodashboard/css/dashboard.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+{% endblock %}
+
+    {% block content %}
+
+    <div class="wrapper wrapper-content">
+        <div class="row">
+            <div class="col-sm-12 text-right" style="margin-bottom: 10px;">
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="HotelRevenueDataChart1(this,'htlissue',1)">Yesterday</button>
+                    <button class="btn btn-default" onclick="HotelRevenueDataChart1(this,'htlissue',2)">Weekly</button>
+                    <button class="btn btn-default" onclick="HotelRevenueDataChart1(this,'htlissue',3)">Monthly</button>
+                    <button class="btn btn-default" onclick="HotelRevenueDataChart1(this,'htlissue',4)">Yearly</button>
+                </div>
+            </div>
+            <br>
+        </div>
+        <div>
+            <div class="row">
+
+                <div class="col-sm-4" style="margin-bottom: 10px;">
+                    <div id="calendar" class="calendar-container"></div>
+                    <div id="tooltipcalender" class="tooltip1"></div>
+
+
+                </div>
+                <div class="col-sm-3" style="padding-left:16px;">
+
+                    <div class=""
+                        style="background: #cef4d8;padding: 10px;margin: 0px; text-align: center; font-size:14px">
+                        Birthday</div>
+                    <div class="ibox-content" style="padding: 10px;">
+
+
+
+
+                        <div class="div_UC_Birth">
+
+                            {% for birthday in bdayData %}
+                            <div style="font-size:12px; text-align: center;">
+                                {{ birthday.EmpName }}({{ birthday.hotel_name }}) - {{ birthday.Date }}
+                            </div>
+                            {% if not forloop.last %}
+                            <hr>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <div class="col-sm-5" style="padding-top: 12px;
+                padding-right: 40px;
+                padding-left: 30px;">
+
+                    <div id="loader-htlissue" class="loader-container">
+                        <div class="loader"></div>
+                    </div>
+
+
+                    <ul class="stat-list">
+                        <li>
+                            <h2 class="no-margins" style="font-size: 19px; padding-bottom: 8px;">
+                                <span style="font-size: 14px;"> PMS</span>:
+                                <span id="CompRoom">{{CompRoom}}</span>,
+                                <span style="font-size: 14px;">HotelOps</span> :
+                                <a href="#" id="H_CompRoom" onclick="ShowCompRoomDetails()">{{H_CompRoom}}</a>
+                                <span class="float-right">
+                                    <span style="font-size: 14px;"> Variance</span> : <span
+                                        id="V_CompRoom">{{V_CompRoom}}</span>
+                                </span>
+                            </h2>
+                            <small style="font-size: 12px;">Comp Rooms</small>
+                            <div class="stat-percent" id="CompRoomPer">{{CompRoomPer}}% <i
+                                    class="fa fa-key text-navy"></i></div>
+                            <div class="progress progress-mini">
+                                <div id="CompRoomProgress" style="width: 3%;" class="progress-bar"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <h2 class="no-margins"><a href="#" id="TotalGlitch"
+                                    onclick="ShowGlitchDetails()">{{TotalGlitch}}</a></h2>
+                            <small style="font-size: 12px;">Total no of Glitches</small>
+                            <div class="stat-percent" id="TotalGlitchPer">{{TotalGlitchPer}}% <i
+                                    class="fa fa-heartbeat text-navy"></i></div>
+                            <div class="progress progress-mini">
+                                <div id="TotalGlitchProgress" style="width: 1%;" class="progress-bar"></div>
+                            </div>
+                        </li>
+                        <li>
+                            <h2 class="no-margins"><a href="#" id="TotalIncident"
+                                    onclick="ShowIncidentDetails()">{{TotalIncident}}</a></h2>
+                            <small style="font-size: 12px;">Total no of Incidents</small>
+                            <div class="stat-percent" id="TotalIncidentPer">
+                                {{TotalIncidentPer}}% <i class="fa fa-warning text-navy"></i>
+                            </div>
+                            <div class="progress progress-mini">
+                                <div id="TotalIncidentProgress" style="width: 0%;" class="progress-bar"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Check List</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-primary"
+                                    onclick="RDChecklistChartData(this,'checklistloader', 1)">Yesterday</button>
+                                <button class="btn btn-default"
+                                    onclick="RDChecklistChartData(this,'checklistloader', 2)">Weekly</button>
+                                <button class="btn btn-default"
+                                    onclick="RDChecklistChartData(this,'checklistloader', 3)">Monthly</button>
+                                <button class="btn btn-default"
+                                    onclick="RDChecklistChartData(this,'checklistloader', 4)">Yearly</button>
+                            </div>
+
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div id="loader-checklistloader" class="loader-container">
+                                    <div class="loader"></div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="echarts-container" style="height: 220px;" id="checklist-chart">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Manning Guide</h5>
+                            <div class="ibox-tools">
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="Org_id" onchange="MainingGuideChart('mainingGuide')">
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">
+                                    <div >
+                                        <select id="level" name="level" onchange="MainingGuideChart('mainingGuide')" class="form-control">
+                                            <option value="" disabled selected>Level</option>
+                                            <option value="A">A</option>
+                                            <option value="T">T</option>
+                                            <option value="E">E</option>
+                                            <option value="M">M</option>
+                                            <option value="M1">M1</option>
+                                            <option value="M2">M2</option>
+                                            <option value="M3">M3</option>
+                                            <option value="M4">M4</option>
+                                            <option value="M5">M5</option>
+                                            <option value="M6">M6</option>
+                                        </select>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="loader-mainingGuide" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="echarts-container"
+                                        style="height: 300px; width: 1110PX; padding-left: 15px;"
+                                        id="mainingGuideChart">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+           
+
+
+
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Training Hours</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-primary"
+                                    onclick="trainingHoursDatachart(this,'training', 1)">Yesterday</button>
+                                <button class="btn btn-default"
+                                    onclick="trainingHoursDatachart(this,'training', 2)">Weekly</button>
+                                <button class="btn btn-default"
+                                    onclick="trainingHoursDatachart(this,'training', 3)">Monthly</button>
+                                <button class="btn btn-default"
+                                    onclick="trainingHoursDatachart(this,'training', 4)">Yearly</button>
+                            </div>
+
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div id="loader-training" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="echarts-container" style="height: 220px;"
+                                        id="trainingHours-chart">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>Consumption</h5>
+                            <div class="btn-group">
+                                <button class="btn btn-primary"
+                                    onclick="ConsumptionDataChart1(this,'csd', 1)">Yesterday</button>
+                                <button class="btn btn-default"
+                                    onclick="ConsumptionDataChart1(this,'csd', 1)">Weekly</button>
+                                <button class="btn btn-default"
+                                    onclick="ConsumptionDataChart1(this,'csd', 1)">Monthly</button>
+                                <button class="btn btn-default"
+                                    onclick="ConsumptionDataChart1(this,'csd', 1)">Yearly</button>
+
+
+                            </div>
+
+                        </div>
+                        <div class="ibox-content">
+                            <div class="row">
+                                <div id="loader-csd" class="loader-container">
+                                    <div class="loader"></div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="echarts-container" style="height: 220px;"
+                                        id="consumptionchart">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title collapse-link">
+                            <h5>Open Positions </h5>
+                            <div class="ibox-tools">
+
+                                <span class="label label-success" id="OpenPositionsCount"></span>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+
+
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive ofm" style="display: none; ">
+                            <table class="table table-hover no-margins">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel</th>
+                                        <th>Designation</th>
+                                        <th>Opened On</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="OpenPositionsBody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title collapse-link">
+                            <h5>Interview Assessment list</h5>
+                            <div class="ibox-tools">
+                                <span class="label label-success " id="IAListCount"></span>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive" style="display: none;">
+                            <div class="ibox-content table-responsive ofm" >
+                                <table class="table table-hover no-margins">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Employee</th>
+                                            <th>Designation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="IAListBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title collapse-link">
+                            <h5>Resignations</h5>
+                            <div class="ibox-tools">
+                                <span class="label label-success " id="ResignListCount"></span>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive ofm" style="display: none;">
+                            <table class="table table-hover no-margins tblrsg">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel</th>
+                                        <th>Name/Designation</th>
+
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ResignListBody">
+                                    
+                                
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title collapse-link">
+                            <h5>Leave Application list</h5>
+                            <div class="ibox-tools">
+                                <span class="label label-success" id="leaveListCount"></span>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive" style="display: none;">
+                            <table class="table table-hover no-margins">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel</th>
+                                        <th>Employee</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaveApplicationBody">
+                               
+                                    
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="ibox">
+                        <div class="ibox-title collapse-link">
+                            <h5>Minutes of Meetings</h5>
+                            <div class="ibox-tools">
+                                <span class="label label-success " id="MOMListCount"></span>
+                                
+                                <a>
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive ofm" style="max-height: 570px; overflow: auto;display: none;">
+                                    <table class="table table-hover no-margins">
+                                        <thead>
+                                            
+                                        </thead>
+                                        <tbody id='MOMListBody'>
+                                        </tbody>
+                                    </table>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title  collapse-link">
+                            <h5>Follow-Ups</h5>
+                            <div class="ibox-tools">
+                                <a class="btn btn-primary" style="position: relative;top: -7px;" onclick="AddFollowTask()">New</a>
+                                <a>
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="ibox-content" style="max-height: 570px; overflow: auto; display: none;">
+    
+                            <ul class="todo-list m-t small-list" id="followups"></ul>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-lg-4">
+                    
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title collapse-link">
+                                <h5>Exit Interview  Form </h5>
+                                <div class="ibox-tools">
+                                    <span class="label label-success " id="exitInterviewListCount"></span>
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive ofm" style="display: none;">
+                                <table class="table table-hover no-margins tblrsg">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Name/Designation</th>
+
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="exitInterviewBody"> 
+                                         </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                   
+
+                </div>
+                <div class="col-lg-4">
+                    <div class="ibox border-bottom">
+                        <div class="ibox-title collapse-link">
+                            <h5>PADP list</h5>
+                            <div class="ibox-tools">
+                                <span class="label label-success " id="PADPListCount"></span>
+                                <a class="collapse-link">
+                                    <i class="fa fa-chevron-down"></i>
+                                </a>
+
+                            </div>
+                        </div>
+                        <div class="ibox-content table-responsive ofm" style="display: none;">
+                            <table class="table table-hover no-margins">
+                                <thead>
+                                    <tr>
+                                        <th>Hotel</th>
+                                        <th>Employee</th>
+                                        <th>Correction</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="PADPListBody">
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+            
+       
+
+
+    </div>
+
+
+    <div class="modal fade show" id="DailyBreakageDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Daily Breakage Details:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered table-sm" id="tbl_trainingmaster" style="font-size:11px">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #958a79;">Sr. No.</th>
+                                        <th style="background-color: #958a79;">Item</th>
+                                        <th style="background-color: #958a79; text-align: center;">Nos</th>
+                                        <th style="background-color: #958a79; text-align: center;">Total Cost</th>
+                                        <th style="background-color: #958a79;">Person Responsible</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody id="DailyBreakageDetailsBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal CompRoomDetailsModel" id="CompRoomDetailsModal" tabindex="-1" style="display: none;"
+        aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width:100%;min-width:90%">
+            <div class="modal-content">
+                <div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Comp Room Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="closeModal() ">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12" style="max-height: 500px;overflow: auto;">
+                                <table id="tblCompRoomDetails" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: #958a79;">Hotel</th>
+                                            <th style="background-color: #958a79;">Guest Name</th>
+                                            <th style="background-color: #958a79;">Company Name</th>
+                                            <th style="background-color: #958a79;">No. Of Rooms</th>
+                                            <th style="background-color: #958a79;">Arrival Date</th>
+                                            <th style="background-color: #958a79;">Departure Date</th>
+                                            <th style="background-color: #958a79;">GM Status</th>
+                                            <th style="background-color: #958a79;">PDF</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="compRoomDetailsBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="closeModal() ">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal GlitchDetailsModel show" id="GlitchDetailsModal" tabindex="-1"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width:100%;min-width:90%">
+            <div class="modal-content">
+                <form id="myLeaveFrom" action="LeaveApprove" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Glitch Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="closeGlitchModal()">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+
+                                <table style="min-width:400px;margin:0 auto">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <button type="button" class="btn btn-info m-r-sm btn_total_glitch"
+                                                    onclick="ToggleGlitch('')">1</button>
+                                                Total Glitch
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger m-r-sm btn_open_glitch"
+                                                    onclick="ToggleGlitch('Open')">0</button>
+                                                Open Glitch(s)
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary m-r-sm btn_close_glitch"
+                                                    onclick="ToggleGlitch('Close')">1</button>
+                                                Closed Glitch(s)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12" style="max-height: 500px;overflow: auto;">
+
+                                <table id="tblGlitchDetails" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: #958a79; ">Hotel</th>
+                                            <th style="background-color: #958a79; ">Guest Name</th>
+                                            <th style="background-color: #958a79; ">Company Name</th>
+                                            <th style="background-color: #958a79; ">Complaint</th>
+                                            <th style="background-color: #958a79; ">Service Recovery</th>
+                                            <th style="background-color: #958a79; ">Process Lapse</th>
+                                            <th style="background-color: #958a79; ">Process Lapse Category</th>
+                                            <th style="background-color: #958a79; ">Gm Comment</th>
+                                            <th style="background-color: #958a79; ">Status</th>
+                                            <th style="background-color: #958a79; ">Created On</th>
+                                            <th style="background-color: #958a79; ">PDF</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblGlitchDetailsBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="closeGlitchModal()">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal LeaveModal " tabindex="-1" role="dialog" aria-modal="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="myLeaveFrom" action="LeaveApprove" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Leave Application Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+    
+                        <input type="hidden" name="AppID" id="id" value="7541">
+                        <input type="hidden" name="OID" id="oid" value="1001">
+                        <input type="hidden" name="UserID" id="UserID" value="20240920152518">
+                        <input type="hidden" name="Remark" id="Remark" value="">
+    
+                        <div class="">
+                            <div class="row">
+                                <label class="col-sm-3 text-b">Leave Type</label>
+                                <label class="col-sm-5 "><span id="sp_LeaveType">CL</span></label>
+    
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 text-b">From</label>
+                                <label class="col-sm-3"><span id="sp_From">23 Oct 2024</span></label>
+                                <label class="col-sm-2 text-b">To</label>
+                                <label class="col-sm-3"><span id="sp_To">23 Oct 2024</span></label>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 text-b">Reason</label>
+                                <label class="col-sm-9"><span id="sp_Reason">Hospital Visit</span></label>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="BtnAction" value="approve" class="btn btn-primary">Approve</button>
+                        <button type="submit" name="BtnAction" value="reject" class="btn btn-danger">Reject</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal padpModal " tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">PADP Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe style="min-width: 100%; min-height: 500px " src="/KRA/PADP/ViewMGRPADP?U=20230713137341&amp;ID=462&amp;O=1101"></iframe>
+                </div>
+                <div class="modal-footer"><span class="btn btn-primary   " onclick="PADPActiveShowRej('a',462,'Manager','',this,1101)" title="Approve"><i class="glyphicon glyphicon-check"></i> Approve</span><span class="btn btn-primary   " onclick="PADPActiveShowRej('r',462,'Manager','',this,1101)" title="Return"><i class="glyphicon glyphicon-remove"></i> Return</span><span type="button" class="btn btn-secondary" data-dismiss="modal">Close</span></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal ViewResignModal" tabindex="-1" role="dialog" aria-modal="true" style="display: none;">
+        <div class="modal-dialog" role="document" style="min-width: 60%; min-width: 900px ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Employee Resignation Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered tblr">
+                                <tbody><tr>
+                                    <th width="200px">Name</th>
+                                    <td id="Name">Fataniya RanchodbhaiBhikhubhai</td>
+                                    <th width="200px">Employee Code</th>
+                                    <td width="200px" id="Emp_Code">5402</td>
+                                </tr>
+                                <tr>
+                                    <th>Date Of Joining</th>
+                                    <td id="DOJ">15 Apr 2024</td>
+                                    <th width="200px">Department</th>
+                                    <td id="Department">Engineering</td>
+                                </tr>
+                                <tr>
+                                    <th>Designation</th>
+                                    <td id="Designation">Carpenter</td>
+                                </tr>
+                            </tbody></table>
+                            <br>
+                            <table class="table table-bordered tblr">
+                                <tbody><tr>
+                                    <th width="200px">Date of Resignation </th>
+                                    <td id="ResDate">07 Oct 2024</td>
+                                    <th width="200px">Type of Resignation</th>
+                                    <td width="200px" id="TypeofRes">Written</td>
+                                </tr>
+                                <tr>
+                                    <th>Notice Period</th>
+                                    <td id="NoticePeriod">15 Days</td>
+                                    <th>Reason of Resignantion</th>
+                                    <td id="Res_Reason">Due to medical problem</td>
+                                </tr>
+    
+                                <tr>
+                                    <th>Resignation Submited To</th>
+                                    <td id="Ressubmittedto">HOD &amp; HR</td>
+                                    <th>Last working day</th>
+                                    <td id="LastWorkingDays">14 Oct 2024</td>
+                                </tr>
+                                <tr>
+                                    <th>Resignation acceptance date</th>
+                                    <td id="Res_acceptance_Date">07 Oct 2024</td>
+                                    <th>Resignation acceptance by </th>
+                                    <td id="Res_acceptance_By">HOD &amp; HR</td>
+                                </tr>
+    
+    
+                            </tbody></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal IAModal" tabindex="-1" role="dialog" aria-modal="true" style="display: none; padding-left: 0px;">
+        <div class="modal-dialog" role="document" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Interview Assessment Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="IAiframe" style="min-width: 100%; min-height: 500px " src="/InterviewAssessment/Home/View/6384"></iframe>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal MOMDetailsModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">MOM Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe style="min-width: 100%; min-height: 500px " src="/MOM/Home/MOMView?M=2715&amp;s=pd"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal IncidentDetailsModel" id="IncidentDetailsModal" tabindex="-1" style="display: none;"
+        aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width:100%;min-width:90%">
+            <div class="modal-content">
+                <div>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Incident Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            onclick="closeIncidentModal() ">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12" style="max-height: 500px;overflow: auto;">
+                                <table id="tblIncidentDetails" class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: #958a79;">Hotel</th>
+                                            <th style="background-color: #958a79;">Location</th>
+                                            <th style="background-color: #958a79;">Incident Date</th>
+                                            <th style="background-color: #958a79;">Description</th>
+                                            <th style="background-color: #958a79;">Accident Cause</th>
+                                            <th style="background-color: #958a79;">Any casualty</th>
+                                            <th style="background-color: #958a79;">Damaged caused</th>
+                                            <th style="background-color: #958a79;">Investigation</th>
+                                            <th style="background-color: #958a79;">PDF</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="IncidentDetailsBody"> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="closeIncidentModal() ">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade show" id="consumptionDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+    style="display: none; padding-left: 0px; " aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="max-width:900px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Consumption Details:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Item details will be inserted here -->
+                <div id="itemDetails"></div>
+                <div class="row">
+                    <div class="col-sm-12 " style="max-height:400px;overflow:auto; ">
+                        <table class="table table-bordered table-sm" id="tbl_trainingmaster" style="font-size:11px">
+                            <thead>
+                                <tr>
+                                    <th style="background-color: #958a79;">Sr. No.</th>
+                                    <th style="background-color: #958a79;">Date</th>
+                                    <th style="background-color: #958a79; text-align: center;">ItemCode</th>
+                                    <th style="background-color: #958a79; text-align: center;">Item</th>
+                                    <th style="background-color: #958a79;">Department</th>
+                                    <th style="background-color: #958a79;">Store</th>
+                                    <th style="background-color: #958a79;">Quantity</th>
+                                    <th style="background-color: #958a79; text-align: center;">Rate</th>
+                                    <th style="background-color: #958a79; text-align: center;">TotalAmount</th>
+                                    
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody id="consumptionDetailsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+    
+    <div class="modal fade show" id="TrainingHoursDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Training Hours Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered table-sm" id="tbl_trainingmaster" style="font-size:11px">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #958a79;">Topic</th>
+                                        <th style="background-color: #958a79;">Department</th>
+                                        <th style="background-color: #958a79;">No.Of. Members</th>
+                                        <th width="90px" style="background-color: #958a79;">Training Date</th>
+                                        <th width="90px" style="background-color: #958a79;">Start Time</th>
+                                        <th width="80px" style="background-color: #958a79;">End Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TrainingHoursDetailsModalBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+
+
+
+
+    {% endblock %}
+
+
+    {% block extra_js %}
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+        <script src="{% static 'ceodashboard/js/dashboard.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    {% endblock %}

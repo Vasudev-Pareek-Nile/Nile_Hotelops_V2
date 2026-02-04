@@ -1,0 +1,107 @@
+{% extends 'EmpAbscondingTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+<form method="post" action="{% url 'EmpAbscondingEdit' %}" enctype="multipart/form-data">
+  
+  {% csrf_token %}
+  <div class="container register-form">
+    <div class="card card-primary">
+      <div class="card-header">
+        <p>Update Employee Absconding Details</p>
+      </div>
+     
+      <div class="card-body">
+       
+      
+        <input type="hidden" name="ID" value="{{Ed.id}}"> 
+        {% render_field EmpAbscondingForm.OrganizationID class="form-control" %}
+        {% render_field EmpAbscondingForm.CreatedBy class="form-control" %}
+        <div class="">
+          <div class="row">
+             <div class="col-sm-3">
+              <label>Employee Code</label>
+              {% render_field EmpAbscondingForm.Emp_Code class="form-control" %}
+            </div>
+            <div class="col-sm-3">
+              <label>Name</label>
+              {% render_field EmpAbscondingForm.Name  class="form-control"  %}
+            </div>
+           
+            <div class="col-sm-3">
+              <label>Date Of Joining</label>
+              {% render_field EmpAbscondingForm.DOJ class="form-control" %}
+            </div>
+           
+            <div class="col-sm-3">
+              <label>Department</label>
+              {% render_field EmpAbscondingForm.Dept class="form-control" %}
+            </div>
+          
+            <div class="col-sm-3">
+              <label>Designation</label>
+              {% render_field EmpAbscondingForm.Designation  class="form-control" %}
+            </div>
+           
+          </div>
+      </div>
+
+            <br>
+
+        
+          <div class="">
+              <h4 class="text-centre">
+                Absconding Details
+
+              </h4>
+              <div class="row" >
+                <div class="col-sm-3">
+                  <label>Date Of Absconding</label>
+                    {% render_field EmpAbscondingForm.Date_Of_Absconding  class="form-control"   %}
+                  </div> 
+                
+                     
+                      <div class="col-sm-3">
+                        <label>Remarks</label>
+                          {% render_field EmpAbscondingForm.Remarks  class="form-control"   %}
+                        </div> 
+                        
+               
+              
+              </div>
+              
+            
+          </div>
+
+          <br>
+
+          <!-- Repeat the above pattern for other form fields -->
+      
+     
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <script>
+        $(function(){
+                $("select").each(function(){
+                    var v=$(this).attr('value');
+                    if(v!=undefined){
+                        $(this).val(v);
+                    }
+                })
+    
+        })
+       </script>
+
+
+  {% endblock content %}

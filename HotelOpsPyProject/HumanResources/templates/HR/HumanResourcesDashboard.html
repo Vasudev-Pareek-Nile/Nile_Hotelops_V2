@@ -1,0 +1,169 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+    <style>
+        .btn-category {
+            width: 150px;
+            margin: 8px;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .stats-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+        .stats-box .count {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .demo.btn.disble {
+            opacity: 0.5;
+        }
+    
+        .productListM {
+            display: flex;
+            flex-wrap: wrap;
+           
+        }
+        
+        .productListM a {
+            flex: 0 0 calc(10% - 0px);
+            margin: 5px;
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+
+            background-color: #fe8938;
+            border: 1px solid #fe8938;
+
+            border-radius: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .productListM a:hover {
+            background-color: #34444c;
+            border-color: #34444c;
+        }
+        .ti {
+            font-size: 13px;
+        }
+        td {
+            text-transform: uppercase;
+        }
+        
+
+        .min-w-40 {
+            min-width: 40px;
+            margin-right:10px;
+        }
+
+        .bg-info-transparent{
+            min-width: 44px;
+        }
+
+        .EmployeeListCard{
+            background:white;
+            padding:10px;
+            border-radius: 10px;
+        }
+
+        .btn{
+            border-radius: 5px;
+        }
+
+        #clear, #filter{
+            padding-block: 8px;
+        }
+
+    </style>
+    
+    <div class="row" style="background-color: #f3f3f4">
+        {% if show_OrgFilter %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <form method='GET'>
+                        <div class="row">
+                            <div class="col-sm-6 col-lg-5">
+                                <select name="OrganizationID" class="form-control select2">
+                                    {% for itm in memOrg %}
+                                    <option value="{{ itm.OrganizationID }}" 
+                                        {% if itm.OrganizationID|stringformat:"s" == selectedOrganizationID %}selected{% endif %}>
+                                        {{ itm.OrganizationName }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex justify-items-start align-items-center gap-1">
+                                <button type="submit" class="btn btn-primary" id="filter">
+                                    Filter 
+                                </button>
+                            
+                                <a href="{% url "HumanResourcesDashboard" %}" class="btn btn-danger" id="clear">
+                                    Clear
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <hr>
+        {% endif %}
+
+
+        <div class="col-sm-12  text-center">
+            <div class="productListM"  style="background-color:#f3f2f2">
+                {% if Is_Show_Module %}
+                    <a href="{% url "ViewActual" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Manning Guide</span></a>
+                    <a href="{% url "OpenPositionList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Open Position</span></a>
+                {% endif %}
+                <a href="{% url "InterviewAssessmentList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Interview Assessment</span></a>
+                <a href="{% url "emplistloi" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Letter Of Intent</span></a>
+                <a href="{% url "EmployeeList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Employee Data</span>  </a>
+
+                <a href="{% url "emplistloa" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Appointment Letters</span></a>
+                <a href="{% url "Issue_view" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Issue</span></a>
+                <a href="{% url "ListPC" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Probation Letters</span></a>
+                <a href="{% url "emplistcl" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Confirmation Letters</span></a>
+                {% if Is_Show_Module %}
+                    <a href="{% url "PADPList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">PADP</span></a>
+                {% endif %}
+                <a href="{% url "emplistlsi" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Increment Letters</span></a>
+                <a href="{% url "emplistpl" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Promotion Letters</span></a>
+                <a href="{% url "EmpResigantionList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Employee Resignation</span></a>
+                <a href="{% url "Exit_list" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Exit Interview</span></a>
+
+                <a href="{% url "Clearance_view" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Clearance</span></a>
+                <a href="{% url "emplistloe" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Experience Letters</span></a>
+                <a href="{% url "FullandFinalList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">F & F</span></a>
+                <a href="{% url "EmpTerminationList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Termination Letters</span></a>
+                <a href="{% url "EmpAbscondingList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Absconding</span></a>
+
+                <a href="{% url "WarningList" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Warning Letters</span></a>
+                <a href="http://hotelops.in:8501/?token={{UserID}}" target="_blank" class="demo btn btn-primary btn-lg btnLnk text-UpperCase"><span class="ti">Reports</span></a>
+                
+                <a href="{% url "editor_list" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">Policy Editor list</span></a>
+
+                {% comment %} <a href="{% url "User_Rights_View" %}" class="demo btn btn-primary btn-lg btnLnk text-UpperCase" role="button"><span class="ti">User Module Rights</span></a> {% endcomment %}
+
+            </div>
+        </div>
+</div>
+    
+
+
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+{% endblock %}

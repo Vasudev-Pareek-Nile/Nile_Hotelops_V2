@@ -1,0 +1,76 @@
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Equipment Inventory View </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>Date</th>
+                    <td>{{Ed.Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Equipment Name</th>
+                      <td>{{Ed.Equipment_Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Brand Name</th>
+                      <td>{{Ed.Brand_Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Model No</th>
+                      <td>{{Ed.Model_No}}</td>
+                    </tr>
+                    <tr>
+                      <th>In Working Condition</th>
+                      <td>{{Ed.In_Working_Condition}}</td>
+                    </tr>
+                    <tr>
+                      <th>Last Servicing Date</th>
+                      <td>{{Ed.Last_Servicing_Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>AMC Covered</th>
+                      <td>{{Ed.AMC_Covered}}</td>
+                    </tr>
+                    <tr>
+                      <th>Serial No</th>
+                      <td>{{Ed.Serial_No}}</td>
+                    </tr>
+                    <tr>
+                      <th>Remarks</th>
+                      <td>{{Ed.Remarks}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %} 

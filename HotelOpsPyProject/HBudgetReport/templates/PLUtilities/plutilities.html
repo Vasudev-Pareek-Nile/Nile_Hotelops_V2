@@ -1,0 +1,26 @@
+{% extends 'PLUtilities/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div class="container">
+        <h1>PLUtilities Master</h1>
+        <table id="title" border="5">
+            <thead>
+                <th>Id</th>
+                <th>Title</th>
+                <!--<th colspan="2" id="mid">Action</th> -->
+            </thead>
+            {% for x in mem%}
+            <tr>
+                <td>{{x.id}}</td>
+                <td>{{x.title}}</td> 
+                                          
+            </tr>
+            {% endfor %}
+           
+        </table>
+           
+    </div>
+    {% endblock content %}

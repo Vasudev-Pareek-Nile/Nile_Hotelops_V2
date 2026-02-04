@@ -1,0 +1,155 @@
+{% extends 'letterse/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+    }
+	#clear, #filter{
+		padding-block: 8px;
+	}
+</style>
+
+<div class="card pb-4">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Letter of  Salary Increment</span></div>
+        </div>
+    </div>
+
+    <!-- <br> -->
+    <div class="card-body">
+            <div class="col-md-12">
+                <form method="GET" class="row g-4">
+                    <div class="col-md-5">
+                        <select name="I" id="organizationSelect" class="form-control">
+                            <option value="">Select Organization Name</option>
+                            {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}">{{ itm.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                
+                    <div class="col-md-4 d-flex justify-items-start align-items-center gap-2">
+                        <button type="submit" class="btn btn-primary" id="filter">
+                            <i class="fa fa-filter"></i> Filter
+                        </button>
+                    
+                        <a href="{% url 'emplistlsi' %}" class="btn btn-danger" id="Clear">
+                            Clear
+                        </a>
+                    </div>
+                </form>  
+            </div>
+
+
+
+            <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+                <thead>
+                    <tr class="active" style="background-color:#8e9ebc">
+                        <tr>
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+    
+                            <th class="Designation">Designation</th>
+                            <th class="Department">Department</th>
+                            <th class="Date">Date of Increment</th>
+                            
+                            <th class="Signed" style="width: 150px;">Signed Document</th>
+    
+                            <th class="Action" style="width: 150px;">Action</th>
+                            </tr>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+                    {% for IncreamentLetter in IncreamentLetters  %}
+                    <tr>
+                        <td>{{IncreamentLetter.emp_code}}</td>
+                        <td> {{IncreamentLetter.first_name}} {{IncreamentLetter.last_name}}   </td>
+                    
+                        <td>{{IncreamentLetter.designation}}</td>
+                        <td>{{IncreamentLetter.department}}</td>  
+                        <td>{{IncreamentLetter.date_of_salary_increament|date:'d-m-Y'}}</td>  
+                    
+                        <td>
+                        <span style="position: relative; ">
+                            {% if IncreamentLetter.file_name  %}
+                            
+                            <a class="btn btn-danger btn-sm text-white mb-2" href="{% url "repalce_filelsi" %}?EmpID={{IncreamentLetter.EmpID}}&LOI_ID={{IncreamentLetter.id}}&Page=emplistlsi&OID={{IncreamentLetter.OrganizationID}}">Delete File</a>
+                            <br/>
+                            <a class="btn btn-primary btn-sm" href="{% url "download_filelsi" %}?LOI_ID={{IncreamentLetter.id}}">Download File</a>
+                            
+                            {% else %}
+
+                            <a class="btn btn-primary btn-sm" href="{% url "upload_filelsi" %}?EmpID={{IncreamentLetter.EmpID}}&LOI_ID={{IncreamentLetter.id}}&Page=emplistlsi&OID={{IncreamentLetter.OrganizationID}}">Upload File</a>
+
+                            {% endif %} 
+                                
+                                
+                            
+                    
+                            </td>
+                        </span>
+                        </td>
+                        <td>
+
+                            
+                                <span style="position: relative; ">
+                                {% if IncreamentLetter.id == last_Increamen_id %}
+                                    <a class="btn btn-primary btn-sm" href="{% url 'entryemplsi' %}?EC={{EC}}&EmpID={{IncreamentLetter.EmpID}}&LOI_ID={{IncreamentLetter.id}}&DepartmentName={{ Emobj.Department }}" shref="">Edit</a>
+                                
+                                {% endif %}
+                                    <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_Salary_Increment" %}?LOI_ID={{IncreamentLetter.id}}&EmpID={{IncreamentLetter.EmpID}}">View</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "generate_Letter_of_Salary_Increment" %}?LOI_ID={{IncreamentLetter.id}}&EmpID={{IncreamentLetter.EmpID}}&head=False">Print</a>
+
+                                
+
+
+
+
+                                </span>
+                                
+                        
+
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+     
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
+       
+       
+    });
+    
+    
+</script>
+
+{% endblock content %}

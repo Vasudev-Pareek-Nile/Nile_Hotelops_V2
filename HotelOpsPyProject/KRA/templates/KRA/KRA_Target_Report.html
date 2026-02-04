@@ -1,0 +1,265 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+
+<style>
+    html, body {
+        overflow-y: hidden;
+        height: 100%;
+    } 
+
+    .page-wrapper .content {
+        padding: 0px 0px !important;
+    }
+
+    #tableBody td{
+        font-size: 11px;
+    }
+
+    #tableHead th{
+        font-weight: bold;
+        font-size: 11px;
+        text-align:center;
+    }
+
+    .card-footer {
+        z-index: 999;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 15px;
+        background: #fff;
+        border-top: 1px solid #e6e6e6;
+    }
+
+    #CardBody {
+        position: relative;
+        max-height: calc(100vh - 150px);
+        overflow-x: auto;  
+        overflow-y: auto;   
+        padding-left: -0px;  
+        padding-top: -0px;  
+        scrollbar-width: thin;
+    }
+    
+    #CardBody::-webkit-scrollbar {
+        width: 30px;       
+        height: 30px;       
+    }
+
+    #CardBody::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;  /* thumb color */
+        border-radius: 8px;
+        border: 3px solid #f1f1f1;  /* adds space around thumb */
+    }
+
+    #CardBody::-webkit-scrollbar-track {
+        background: #f1f1f1; /* scrollbar track color */
+        border-radius: 8px;
+    }
+
+    .card {
+        overflow: hidden;
+        position: relative;
+    }
+
+    #profile-card {
+        overflow: hidden;
+        position: relative;
+    }
+
+    .form-control {
+        /* font-size: 12px !important; */
+        line-height: 1 !important;
+        height: 34px !important;
+    }
+
+    .VerifyHidden{
+        display: none;
+    }
+    .AlignLeft{
+        text-align: right !important;
+    }
+
+
+
+    /* Sticky header for kraTable */
+    #kraTable, table {
+        border-collapse: separate !important;
+        border-spacing: 0px !important;
+        width: 100%;
+    }
+
+    #kraTable thead th {
+        position: sticky;
+        top: 0;                 
+        background: #f2f2f2;   
+        z-index: 10;            
+        white-space: nowrap;
+    }
+
+    /* Sticky first column (KRA) */
+    #kraTable th:first-child,
+    #kraTable td:first-child {
+        position: sticky;
+        left: 0;
+        background: #fff;
+        z-index: 5;
+        font-weight: 600;
+    }
+
+    /* First column + header intersection */
+    #kraTable thead th:first-child {
+        z-index: 15; 
+        background: #e0e0e0;
+    }
+
+    #profile-card .card-body {
+        padding: 0 !important;
+    }
+
+    #filter_box{
+        border: 0.5px solid #d3d3d4;
+    }
+</style>
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body" id="CardBody">
+    
+        <div id="kraTable_Box">
+            <table class="table table-bordered" id="kraTable" border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width:100%;">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between" id="filter_box">
+            <div class="d-flex gap-2">
+                {% comment %} <div class="">
+                    <select class="form-control" name="month_no" id="monthSelect">
+                        <option value="1"  {% if CMonth == 1 %}selected{% endif %}>Jan</option>
+                        <option value="2"  {% if CMonth == 2 %}selected{% endif %}>Feb</option>
+                        <option value="3"  {% if CMonth == 3 %}selected{% endif %}>Mar</option>
+                        <option value="4"  {% if CMonth == 4 %}selected{% endif %}>Apr</option>
+                        <option value="5"  {% if CMonth == 5 %}selected{% endif %}>May</option>
+                        <option value="6"  {% if CMonth == 6 %}selected{% endif %}>Jun</option>
+                        <option value="7"  {% if CMonth == 7 %}selected{% endif %}>Jul</option>
+                        <option value="8"  {% if CMonth == 8 %}selected{% endif %}>Aug</option>
+                        <option value="9"  {% if CMonth == 9 %}selected{% endif %}>Sep</option>
+                        <option value="10" {% if CMonth == 10 %}selected{% endif %}>Oct</option>
+                        <option value="11" {% if CMonth == 11 %}selected{% endif %}>Nov</option>
+                        <option value="12" {% if CMonth == 12 %}selected{% endif %}>Dec</option>
+                    </select>
+                </div> {% endcomment %}
+
+                <div class="">
+                    <select class="form-control" name="year"  id="yearSelect">
+                        {% for i in CYear %}
+                            <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+
+<!-- loaders -->
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+
+<script>
+    async function loadKRATable(year=null) {
+        showLoader("profile-card");
+        try {
+            // Build query params
+            let query = "";
+            if(year) query += `year=${year}&`;
+
+            const response = await fetch(
+                `/KRA/api/KRA_Target_Report_Api/?${query}`
+            );
+            const result = await response.json();
+
+            if (!result.status || !result.data.length) {
+                alert("No data found");
+                hideLoader("profile-card");
+                return;
+            }
+            hideLoader("profile-card");
+
+            const data = result.data;
+            const table = document.getElementById("kraTable");
+            const thead = table.querySelector("thead");
+            const tbody = table.querySelector("tbody");
+
+            // Extract headers dynamically
+            const headers = Object.keys(data[0]);
+
+            // Build table header
+            let headerRow = "<tr>";
+            headers.forEach(h => {
+                headerRow += `<th style="background:#f2f2f2">${h}</th>`;
+            });
+            headerRow += "</tr>";
+            thead.innerHTML = headerRow;
+
+            // Build table body
+            let bodyHtml = "";
+            data.forEach(row => {
+                bodyHtml += "<tr>";
+                headers.forEach(h => {
+                    bodyHtml += `<td>${row[h] ?? ""}</td>`;
+                });
+                bodyHtml += "</tr>";
+            });
+            tbody.innerHTML = bodyHtml;
+
+        } catch (error) {
+            console.error("API Error:", error);
+            hideLoader("profile-card");
+        }
+    }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initial load with current selected values
+        // const monthSelect = document.getElementById("monthSelect");
+        const yearSelect = document.getElementById("yearSelect");
+
+        loadKRATable(yearSelect.value);
+
+        // Reload table when filters change
+        // monthSelect.addEventListener("change", () => {
+        //     loadKRATable(yearSelect.value);
+        // });
+
+        yearSelect.addEventListener("change", () => {
+            loadKRATable(yearSelect.value);
+        });
+    });
+</script>
+
+
+{% endblock content %}

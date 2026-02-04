@@ -1,0 +1,334 @@
+{% extends "Interview/homebase.html" %} {% block content %}
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    .custom-label {
+        width: 200px; 
+        font-family: "Arial Nova",
+        margin-top: 50px; 
+    }
+    
+    .form-control {
+        flex-grow: 1;
+        margin-top: 5px;
+    }
+    
+    
+</style>   
+ 
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 23px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #f44336; /* Red color for the "left" (unchecked) position */
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #4CAF50; /* Green color for the "right" (checked) position */
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(27px); /* Adjust the translation to match the width of the slider */
+    }
+    .ibox-content {
+       
+        
+        border-style: none; 
+       
+    }
+</style>
+<main  id="ibox1">
+    <div class="ibox-content">
+        <div class="sk-spinner sk-spinner-wave">
+            <div class="sk-rect1"></div>
+            <div class="sk-rect2"></div>
+            <div class="sk-rect3"></div>
+            <div class="sk-rect4"></div>
+            <div class="sk-rect5"></div>
+        </div>
+
+
+
+<div class="col-md-12">
+    <form method="POST">
+        {% csrf_token %}
+  
+        <div class="card">
+            <div class="card-header">
+                <strong>Exit Form</strong>
+            </div>
+            <div class="card-body">
+                <input type="hidden" name="hotel" value="{{warning_instance.OrganizationID }}" />
+                <div class="row">
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Employee Code:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="EmployeeCode" value="{{ warning_instance.EmployeeCode }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Employee Name:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="EmpName" value="{{ warning_instance.EmpName }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                        <label class="from-label custom-label">Date of Joining:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="DateofJoining" value="{{ warning_instance.DateofJoining|date:"d-m-Y"  }}" readonly >
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Department:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="Department" value="{{ warning_instance.Department }}" readonly >
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Job Title:<span class="text-danger">*</span></label>
+
+                        <input type="text" class="form-control" name="Designation" value="{{ warning_instance.Designation }}" readonly >
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                        <label class="from-label custom-label">Date of Leaving:<span class="text-danger">*</span></label>
+                       <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="">
+                  </div>
+                    
+                </div>
+
+               
+                    
+                   
+                    
+                    
+                
+                <div class="row align-items-center">
+                   
+                  
+
+
+                     <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <label class="me-2">Notice Period Given:<span class="text-danger">*</span></label>
+                            <div class="d-flex">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="NoticePeriod" value="Yes" style="width: 23px;">
+                                    <span style="margin-left: 5px;">Yes</span>
+                                </label>
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Resign" value="Resign" style="width: 23px;" id="resignCheckbox">
+                                    <span style="margin-left: 5px;">Resign</span>
+                                </label>
+                               
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Termination" value="Termination" style="width: 23px;" id="terminationCheckbox">
+                                    <span style="margin-left: 5px;">Termination</span>
+                                </label>
+                                <script>
+                                    const resignCheckbox = document.getElementById('resignCheckbox');
+                                    const terminationCheckbox = document.getElementById('terminationCheckbox');
+                               
+                                    resignCheckbox.addEventListener('change', function() {
+                                        if (resignCheckbox.checked) {
+                                            terminationCheckbox.checked = false;
+                                        }
+                                    });
+                               
+                                    terminationCheckbox.addEventListener('change', function() {
+                                        if (terminationCheckbox.checked) {
+                                            resignCheckbox.checked = false;
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <label  class="from-label custom-label">Reasons of Leaving:</label>
+                            <select class="form-control" name="reasons" id="reasonDropdown">
+                                {% for reason in reasons %}
+                                    <option value="{{ reason.Reason_Leaving_name }}">
+                                        {{ reason.Reason_Leaving_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+               
+                <br>
+                <table class="table table-bordered ">
+                    <thead>
+                      <tr>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">&nbsp;</th>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Yes/No</th>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Remarks</th>
+                       
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiencedata in experiencedatas %}
+                    <tr>
+                        <td style="width: 250px;  ">{{experiencedata.experience_name}}
+                            <input type="hidden" name="experiencedata_ID_{{ forloop.counter0 }}" value="{{ experiencedata.id }}" />
+                        </td>
+                        <td style="width: 50px;">
+                           
+                           
+                                
+                                <label class="switch">
+                                    <input type="checkbox" name="chekdata_{{ forloop.counter0 }}" value="Yes" id="customToggle">
+                                    <span class="slider round"></span>
+                                </label>
+                            
+                        </td>
+                           
+                        <td style="width: 400px;">
+                            <textarea class="form-control" name="remarkexit_{{ forloop.counter0 }}" rows="1"></textarea>
+
+                        </td>
+                        
+                    </tr>
+                    {% if forloop.last %}
+                        <input type="hidden" name="TotalExitInterview" value="{{ forloop.counter0 }}" />
+                    {% endif %}
+                    {% endfor %}     
+                      </tbody>
+                  </table>  
+                  <br>
+                  <table class="table table-bordered ">
+                      <thead>
+                        <tr>
+                          
+                          <th style="background-color: #958a79; color: black; font-size: 11px;">Reting</th>
+                          <th style="background-color: #958a79; color: black; font-size: 11px;">&nbsp;</th>
+                         
+                        </tr>
+                      </thead>
+                      <tbody>
+                    {% for ratingleveing in ratingleveings %}
+                      <tr>
+                          <td style="width: 400px;  ">{{ratingleveing.rating_name}}
+                            <input type="hidden" name="ratingleveing_ID_{{ forloop.counter0 }}" value="{{ ratingleveing.id }}" />
+                          </td>
+                         
+                             
+                          <td style="width: 400px;">
+                          
+                            <select class="form-control" name="remarks_{{ forloop.counter0 }}" style="width: 100%;">
+                                
+                                <option value="Very Poor">Very Poor</option>
+                                <option value="Poor">Poor</option>
+                                <option value="Average">Average</option>
+                                <option value="Good">Good</option>
+                                <option value="Very Good">Very Good</option>
+                               
+                            </select>
+  
+                          </td>
+                          
+                      </tr>
+                    {% if forloop.last %}
+                      <input type="hidden" name="TotalRatingviewdata" value="{{ forloop.counter0 }}" />
+                    {% endif %}
+                    {% endfor %}     
+                        </tbody>
+                    </table>
+                    
+
+            </div>
+
+            <div class="col-sm-12">
+                <label style="font-size: 13px; font-weight: bold; display: inline-block; margin-right: 10px;" >Final Comment:</label>
+                <textarea class="form-control" name="FinalComment" rows="2"></textarea>
+            </div>
+            <div class="col-sm-12 mt-3">
+                <div style="display: inline-flex; align-items: center;">
+                    <label style="font-size: 13px; font-weight: bold; margin-right: 10px;">
+                        Would you re-hire this employee?
+                    </label>
+                    
+                    <label class="switch">
+                        <input type="checkbox" name="rehire" value="Yes" id="customToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+
+            
+           <br>
+            <div class="card-footer text-right">
+                <input type="submit"  id="toggleSpinners" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+</main>
+<script>
+    $(function(){
+        $('#toggleSpinners').on('click', function(e){
+            var form = document.querySelector('form');
+
+            if (form.checkValidity()) {
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            } else {
+                e.preventDefault(); 
+                form.reportValidity(); 
+            }
+        });
+    });
+</script>
+<script>
+    function setDefaultDate() {
+        var dateInput = document.getElementById('date_of_leaving');
+        if (dateInput && !dateInput.value) {
+            var today = new Date();
+            var year = today.getFullYear();
+            
+            
+            var month = (today.getMonth() + 1).toString().padStart(2, '0'); 
+            var day = today.getDate().toString().padStart(2, '0');
+            
+           
+            var formattedDate = `${year}-${month}-${day}`;
+            
+            
+            dateInput.value = formattedDate;
+        }
+    }
+    
+   
+    window.onload = setDefaultDate;
+    
+</script>
+{% endblock content %}

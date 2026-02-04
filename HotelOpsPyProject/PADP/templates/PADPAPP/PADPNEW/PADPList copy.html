@@ -1,0 +1,149 @@
+{% extends 'PADPAPP/homebase.html' %}
+
+
+{% block content %} 
+
+<style>
+
+table thead th{
+  text-transform:uppercase;
+  font-size:14px;
+  font-weight:bold !important;
+}
+  </style>
+  
+  
+  <body>
+<div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+            <h4>PADP List</h4>
+      </div>
+      
+      <div class="card-body">
+        
+        <form method="get" >
+          <div class="row">
+              <div class="col-md-3">
+                  <div class="input-group">
+                      <!-- <div class="input-group-addon">Name</div> -->
+                      {% comment %} <label for="EmployeeName" >Name</label> {% endcomment %}
+                      <select name="EmployeeName" id="EmployeeName" class="form-control">
+                          <option value="" disabled selected>Select Employee</option>
+                          {% for empName in empNames %}
+                              <option value="{{ empName.EmpID }}">{{ empName.full_name }}</option>
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <select id="departmentDropdown" name="department" class="form-control">
+                            <option value="" disabled selected>Select Department</option>
+                        </select>
+                    </div>
+                </div>
+
+              <div class="col-md-2">
+                  <button type="submit"  class="btn mr-4 btn-primary" style="padding-inline:20px;">Filter</button>
+                  <a href="{% url 'PADPList' %}" class="btn btn-danger ml-3" style="padding-inline:20px;">Clear</a>
+              </div>
+          </div>
+      </form>
+
+        <div class="mb-3" style="text-align: right;">
+          <input
+              type="text"
+              id="searchInput"
+              class="form-control"
+              placeholder="Search ..."
+              style="width: 200px; display: inline-block;"
+              onkeyup="searchTable()"
+            >
+        </div>
+
+      <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Emp Code</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th class="text-center">Level</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for empName in empNames %}
+            <tr>
+                <td>{{ empName.EmployeeCode }}</td>
+                <td>{{ empName.full_name }}</td>
+                <td>{{ empName.department }}</td>
+                <td>{{ empName.designation }}</td>
+                <td class="text-center">{{ empName.level }}</td>
+                <td>
+                    <a
+                        href="{% url 'Userinfo' %}?EmpCode={{ empName.EmployeeCode }}&EmpID={{empName.EmpID}}"
+                        class="btn btn-primary btn-sm"
+                        style="font-size: 13px; color: white; margin-right: 1px;"
+                    >
+                        Select
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+  </div>
+</div>
+  
+  <script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const dropdown = document.getElementById("departmentDropdown");
+
+        fetch("{% url 'Show_Department_Api' %}")
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(dept => {
+                    const option = document.createElement("option");
+                    option.value = dept.id;
+                    option.textContent = dept.DepartmentName;
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error loading departments:", error));
+    });
+</script>
+
+{% endblock %}

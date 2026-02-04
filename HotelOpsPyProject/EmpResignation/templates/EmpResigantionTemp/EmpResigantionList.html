@@ -1,0 +1,100 @@
+{% extends 'EmpResigantionTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+  <style>
+
+    table thead th{
+      text-transform:uppercase;
+      font-size:14px;
+      font-weight:bold !important;
+    }
+    
+    #clear, #filter{
+      padding-block: 8px;
+    }
+  </style>
+
+  <div class="card">
+    <div class="card-header"><span class="text-uppercase fw-bold">Resigantion</span></div>
+
+    <div class="card-body">
+      <div class="col-md-12">
+        <form method="get" class="row g-4">
+          <div class="col-md-5">
+              <select name="I" class="form-control">
+                  <option value="">Select</option>
+                  {% for itm in memorg %}
+                      <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                          {{ itm.OrganizationName }}
+                      </option>
+                  {% endfor %}
+              </select>
+          </div>
+          <div class="col-md-4 d-flex justify-items-start align-items-center gap-2">
+              <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                  <i class="fa fa-filter"></i> Filter
+              </button>
+          
+              <a href="{% url 'EmpResigantionList' %}" class="btn btn-danger ml-3" id="clear">
+                  Clear
+              </a>
+          </div>
+      </form>
+    </div>
+
+      <table class="table table-striped" style="font-size:11px">
+          <thead>
+              <tr class="active" style="background-color:#8e9ebc">
+                  <th class="EmpCode">Emp Code</th>
+                  <th class="Name">Name</th>
+
+                  <th class="Designation">Designation</th>
+                  <th class="Department">Department</th>
+                  <th class="Date">Date Of Joining</th>
+
+                  <th class="Date">Last Work. Date</th>
+                  <th class="">Notice Period</th>
+                
+                  <th class="Action">Action</th>
+              </tr>
+
+          </thead>
+          
+            
+              <tbody>
+              {% for i in Resigantions %}
+                  <tr>
+                      <td>{{ i.Emp_Code }}</td>
+                  <td>{{ i.Name }}</td>
+                  <td>{{ i.Dept }}</td>
+                  <td>{{ i.Designation }}</td>
+                  <td>{{ i.DOJ|date:"d-m-Y" }}</td>
+                  <td>{{ i.LastWorkingDays|date:"d-m-Y" }}</td>
+                  <td>{{ i.NoticePeriod }}</td>
+
+                  <td>
+                      <div class="btn btn-group gap-2">
+                          <a href="{% url 'EmpResigantionEntry' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&DepartmentName={{ i.Dept }}&Page=EmpResigantionList&OID={{i.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                          {% comment %} <a href="{% url 'EmpResigantionDelete' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{EmpID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                          <a href="{% url 'EmpResigantionPDF' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" class="btn btn-danger text-white btn-sm" target="_blank">View</a>
+                          
+                      </div>
+                      
+
+                  </td>
+                  </tr>
+              {% endfor %}
+              
+          </tbody>
+
+      </table>
+  </div>
+</div>
+
+<script>
+    var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+
+</script>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'Clearance/homebase.html' %}
+
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+    <style>
+        
+      
+        body {
+          font-family: 'Arial Nova', sans-serif;
+        }
+      
+     
+      </style>
+
+
+<!-- Load jQuery and DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<div class="col-md-8  mx-auto " >
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+          <strong>Master Clearance Item</strong>
+        </div>
+        <div class="col-md-6 text-right">
+         
+          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newItemModal">
+            New Item
+          </button>
+        </div>
+      </div>
+    </div>
+    <br>
+    <table id="example" class="table table-bordered">
+      <thead class="thead">
+        <tr class="table-success">
+          <th class="center-align">Item</th>
+          <th class="center-align">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for clearance  in clearances %}
+        <tr>
+            <td>{{ clearance.ApprovedItem }}</td>
+           
+            <td >
+              <span>
+                <a href="#" class="btn btn-primary btn-sm edit-btn" data-id="{{ clearance.id }}" data-itemtitle="{{ clearance.ApprovedItem }}" style="color: white; text-decoration: none; font-size: 12px;" title="Edit" data-toggle="modal" data-target="#editModal">
+                    Edit
+                </a>
+                <a
+                            onclick="return confirm('Are you sure you want to delete?')"
+                            href="{% url 'MasterClearanceItemDelete' %}?ID={{ clearance.id }}"
+                            class="btn btn-danger btn-sm"
+                            style="font-size: 12px; margin-right: 1px;"
+                        >Delete
+              </a>
+              </span>
+            </td> 
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newItemModal" tabindex="-1" role="dialog" aria-labelledby="newItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newItemModalLabel">Add New Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'add_item' %}" id="itemForm">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="ApprovedItem">Item Name</label>
+                <input type="text" class="form-control" id="ApprovedItem" name="ApprovedItem" placeholder="Enter Item">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+    </form>
+    
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel">Edit Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Modal form -->
+          <form id="editForm" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="clearanceId" name="clearance_id" value="">
+            <div class="form-group">
+              <label for="itemTitle">Item Title</label>
+              <input type="text" class="form-control" id="itemTitle" name="item_title">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveChanges">Save changes</button>
+              </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    $(document).on('click', '.edit-btn', function() {
+      var clearanceId = $(this).data('id');
+      var itemTitle = $(this).data('itemtitle');
+      
+      // Populate the form with current values
+      $('#clearanceId').val(clearanceId);
+      $('#itemTitle').val(itemTitle);
+    });
+  
+    // AJAX request to submit the form data
+    $('#saveChanges').on('click', function() {
+      var formData = $('#editForm').serialize();  // Serialize form data
+  
+      $.ajax({
+        type: 'POST',
+        url: "{% url 'edit_clearance' %}",  // Your URL for the view
+        data: formData,
+        success: function(response) {
+          // Handle success (e.g., close the modal and update the page)
+          $('#editModal').modal('hide');
+          location.reload();  // Reload the page to reflect changes
+        },
+        error: function(response) {
+          // Handle errors
+          alert('Error: ' + response.responseJSON.message);
+        }
+      });
+    });
+  </script>
+
+{% endblock content %}

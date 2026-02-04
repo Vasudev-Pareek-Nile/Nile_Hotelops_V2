@@ -1,0 +1,26 @@
+from django.contrib import admin
+from .models import area,Location,project_review,Front_admin,front_perent,front_subchild,front_child,Front_of_House,front_public_area,front_administrative,Frontss_details,guest_room,lobby,metting_details,publicarea_details,administrative_details,Notes1,Notes2,Notes3,Notes4,Notes5,Notes6
+# Register your models here.
+admin.site.register(area)
+admin.site.register(Location)
+admin.site.register(project_review)
+admin.site.register(Front_admin)
+admin.site.register(front_perent)
+admin.site.register(front_subchild)
+admin.site.register(front_child)
+admin.site.register(front_administrative)
+admin.site.register(Front_of_House)
+admin.site.register(front_public_area)
+admin.site.register(Frontss_details)
+admin.site.register(guest_room)
+admin.site.register(lobby)
+admin.site.register(metting_details)
+admin.site.register(publicarea_details)
+admin.site.register(administrative_details)
+admin.site.register(Notes1)
+admin.site.register(Notes2)
+admin.site.register(Notes3)
+admin.site.register(Notes4)
+admin.site.register(Notes5)
+admin.site.register(Notes6)
+

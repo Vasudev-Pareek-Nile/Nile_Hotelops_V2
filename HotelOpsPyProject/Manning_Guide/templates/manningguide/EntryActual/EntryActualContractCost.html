@@ -1,0 +1,731 @@
+{% extends "manningguide/homebase.html" %}
+{% load custom_filters %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    
+     <style>
+        .actions {
+            margin-left: 10px;
+        }
+
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .custom-card {
+            width: 98%;
+            margin: auto;
+        }
+        .modal-dialog{
+            width: 72%;
+            max-width: 72%;
+            min-width: 720px;
+        }
+        th, td {
+            font-size: 13px;
+            font-family: 'Arial Nova', Arial, sans-serif;
+            border: 1px solid #ddd;
+        }
+        .input-small {
+            width: 70px;
+            height: 30px;
+            text-align: center; 
+        }
+        th {
+            text-align: center;
+            font-size: 13px;
+        }
+        table {
+            width: 100%;
+        }
+        .center-text {
+            text-align: center;
+        }
+        .center-input {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+    <style>
+        .btn-group {
+            margin-bottom: 10px; 
+        }
+        {% comment %} .custom-btn {
+            margin-right: 10px; 
+            padding-block: 10px;
+            color: black !important;
+            border: 1px solid #dedede !important;
+        } {% endcomment %}
+        .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #000000 !important;
+            {% comment %} margin-right: 10px;  {% endcomment %}
+            padding-block: 10px;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 44px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 42px !important;
+            right:11px !important;
+        }
+        .HeaderWithColor{
+            background-color:#edf0fb !important;
+           
+            border-color: #bdac9f !important;
+            text-transform:uppercase !important;
+          }
+
+        .TableThColor{
+            background-color:#edf0fb !important;
+            font-size:13px; 
+            font-weight: bold !important;
+        }
+
+        .HeaderWithproperty{
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style> 
+
+     <style>
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+              background:#fff !important;
+             }
+             h4{
+               margin-bottom:10px !important;
+               font-size:16px;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+        }
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 14px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+            {% comment %} margin-right: 10px;  {% endcomment %}
+            padding-block: 10px;
+            color: black !important;
+            border: 1px solid #dedede !important;
+        }
+
+         {% comment %} .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        } {% endcomment %}
+
+        .TableThColor {
+    background-color: #edf0fb !important;
+}
+        .HeaderWithColor {
+            background-color: #edf0fb !important;
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        table thead th {
+            background: #edf0fb  !important;
+        }
+
+            table {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        table thead tr:first-child th:first-child {
+                border-top-left-radius: 4px;
+        }
+
+        table thead tr:first-child th:last-child {
+                border-top-right-radius: 4px;
+        }
+
+        table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 4px;
+        }
+
+            table tbody tr:last-child td:last-child {
+                    border-bottom-right-radius: 4px;
+            }
+
+ 
+    .filter-box{
+        margin-left: -16px;
+    }
+    #OnRollFilterForm{
+        margin-bottom: -3px;
+    }
+    .table th {
+        {% comment %} padding: 1rem -0.25rem !important; {% endcomment %}
+        padding: 0.5rem 0.25rem !important;
+        background-color: aliceblue !important;
+        color: #076e00 !important;
+    }
+    .table td {
+        font-size: 13px !important;
+        padding: 0.3rem !important;
+    }
+</style>
+    
+</head>
+<body>
+    {% comment %} <div class="content container-fluid pb-0"> {% endcomment %}
+    {% comment %} <div class="card"> {% endcomment %}
+
+{% comment %} <div class="content container-fluid pb-0"> {% endcomment %}
+    <div class="row">
+        <div class="col-sm-12"> 
+            <span class="text-uppercase fw-bold">Entry Actual - Contract</span>
+        
+            <form method="GET" class="mt-3" id="OnRollFilterForm">
+                <div class="row">
+                <div class="col-md-5">
+                    <div class="input-block">
+                    {% comment %} <label for="EmployeeCode" class="form-label">Select Organizations</label> {% endcomment %}
+                    <select name="hotel_name"  class="form-control select2">
+                        {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.Organization_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                </div>
+            
+                <div class="col-md-2  filter-box">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{% url 'EntryActualContractCost' %}" class="btn btn-danger">Clear</a>
+                </div>
+                </div>
+            </form>  
+        
+    </div>
+    </div>
+
+
+   <div class="row">
+     <div class="col-md-12">
+
+       
+           
+                <div class="btn-list d-flex flex-md-row flex-column gap-2 mb-3">
+                    <a class="btn btn-primary btn-sm active" href="{% url 'EntryActualContractCost' %}?hotel_name={{ hotel_name }}" >Entry Actual Contract</a>
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'Entrymealcost' %}?hotel_name={{ hotel_name }}">Entry Actual Meal Cost</a>
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'EntryInsurancesCost' %}?hotel_name={{ hotel_name }}" >Entry Actual Insurance Cost</a>
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'EntrySharedServices' %}?hotel_name={{ hotel_name }}" >Entry Actual Shared Services</a>
+                </div>
+            </div>
+        </div>
+   
+
+    {% if SelHotelName and SelHotelName != 'Select' %}
+        <div class="card p-4">
+            <h3 class="mb-2">Selected Hotel:</h3>
+            <p>Hotel ID: {{ SelHotelName }}</p>
+        </div>
+    {% endif %}     
+{% comment %} </div>       {% endcomment %}
+
+    <div class="row mb-5">
+    
+        <div class="col-sm-12">
+            <form method="post">
+                {% csrf_token %}
+                <div style="width:100%;left:0px;padding:7px;position:fixed;bottom:0;background:#fff;z-index:999;text-align:right">
+
+                    <button type="submit" class="btn btn-primary Btn-sm">Submit</button>
+                </div>
+                <input type="hidden" name="hotel_name" value="{{ hotel_name }}" />
+
+                <div class="table-responsive">
+              
+                <table class="table table-bordered ">
+                    <thead>
+                      
+                    </thead>
+                    <tbody>
+                        {% if divisions %}
+                            {% for division in divisions %}
+                                <tr>
+                                    <td colspan="13" class="HeaderWithColor" ><strong>{{ division.DivisionName }}</strong></td>
+                                </tr>
+                                {% for department in division.contractdepartmentmaster_set.all %}
+                                    <tr>
+                                        <td colspan="13" style="background-color: #6a6162;  text-transform: uppercase;"><strong> {{ department.DepartmentName }}<strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="TableThColor">DIV</th>
+                                        <th class="TableThColor">DEPT</th>
+                                        <th class="TableThColor">POSITION</th>
+                                        <th class="TableThColor">LVL</th>
+                                        <th class="TableThColor">AVG SAL</th>
+                                        <th class="TableThColor">HC</th>
+                                        <th class="TableThColor">MORG</th>
+                                        <th class="TableThColor">GEN</th>
+                                        <th class="TableThColor">AN</th>
+                                        <th class="TableThColor">NIGHT</th>
+                                        <th class="TableThColor">M/BREAK</th>
+                                        <th class="TableThColor">RELI</th>
+                                        <th class="TableThColor">TOTAL CTC</th>
+                                    </tr>
+                                  
+                                {% for designation in department.contractdesignationmaster_set.all %}
+                                    {% with default_value=default_values|get_item:designation.id %}
+                                    <tr data-division="{{division.DivisionName}}" data-department="{{department.DepartmentName}}" data-designation="{{ designation.designations }}">
+                                        <td>{{ designation.Div }} 
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td>{{ designation.Dept }}
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td style="width: 310px;">{{ designation.designations }} 
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td><input type="text" value="{{ designation.Lavel }}" style="width: 50px;" class="form-control input-small" readonly/></td>
+                                        <td style=" text-align: center; vertical-align: middle;">
+                                            <input type="text" id="salaryAvrege_{{ forloop.counter0 }}" 
+                                                   name="avg_salary_data_{{ designation.id }}"
+                                                   style=" width: 98px;"
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.avg_salary|default:'' }}"
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="headdeta_{{ forloop.counter0 }}" 
+                                                   name="head_count_data_{{ designation.id }}" 
+                                                   class="form-control input-small" 
+                                                   style="width: 80px;"
+                                                   value="{{ default_value.head_count|default:'0' }}"
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})" readonly>
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="morningdeta_{{ forloop.counter0 }}" 
+                                                   name="morning_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.morning|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="grnalcount_{{ forloop.counter0 }}" 
+                                                   name="general_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.general_deta|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="Aftercountdeta_{{ forloop.counter0 }}" 
+                                                   name="afternoon_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.afternoon|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="nightdeta_{{ forloop.counter0 }}" 
+                                                   name="night_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.night|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="mbreakgdeta_{{ forloop.counter0 }}" 
+                                                   name="m_break_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.m_break|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td style="width: 80px;">
+                                            <input type="text" id="relieverdeta_{{ forloop.counter0 }}" 
+                                                   name="relievers_data_{{ designation.id }}" 
+                                                   style="width: 80px;" 
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.relievers|default:'' }}" 
+                                                   onkeyup="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})">
+                                        </td>
+                                        <td >
+                                            <input type="text" id="total_ctc_{{ forloop.counter0 }}" 
+                                                   name="total_ctc_data_{{ designation.id }}" 
+                                                   style=" width: 90px;"
+                                                   class="form-control input-small" 
+                                                   value="{{ default_value.total_ctc|default:'' }}" readonly>
+                                        </td>
+                                    </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                                
+                                 <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}"  style="background-color: #d9d9d9;">
+                                    <td class="total_header_color" colspan="3" style="text-transform: uppercase;">
+                                       <b> {{ department.DepartmentName }} TOTAL</b>
+                                        <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                                    </td>
+                                    <td class="total_header_color" style="width: 50px;">&nbsp;</td>
+                                    <td class="total_header_color"><input type="text" id="avgsalarytotal_{{ department.DepartmentName }}" name="avg_salarycount_{{ forloop.counter0 }}" value="{{ avg_salarycount }}" style=" width: 98px;" class="form-control input-small" onkeyup="calculateDivisionTotal('{{division.DivisionName}}')" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="headtotal_{{ department.DepartmentName }}" name="head_count__{{ forloop.counter0 }}" value="{{ default_values.head_count }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="morningtotal_{{ department.DepartmentName }}" name="morning_total_data_{{ forloop.counter0 }}" value="{{ default_values.morning_total_data }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="generaltotal_{{ department.DepartmentName }}" name="general_totals_{{ forloop.counter0 }}"  value="{{ default_values.general_totals }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="aftertotal_{{ department.DepartmentName }}" name="afternoon_total_{{ forloop.counter0 }}" value="{{ default_values.afternoon_total }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="nighttotal_{{ department.DepartmentName }}" name="night_total_{{ forloop.counter0 }}" value="{{ default_values.night_total }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="breaktotal_{{ department.DepartmentName }}" name="m_break_total_{{ forloop.counter0 }}" value="{{ default_values.m_break_total }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="relievertotal_{{ department.DepartmentName }}" name="relievers_total_{{ forloop.counter0 }}" value="{{ default_values.relievers_total }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="totalctcstotal_{{ department.DepartmentName }}" name="total_ctc_total_{{ forloop.counter0 }}" value="{{ default_values.total_ctc_total }}" style=" width: 90px;"  class="form-control input-small" readonly></td>
+                                </tr> 
+                                    
+                                {% endfor %}
+                                <tr  data-division="{{ division.DivisionName }}" style="background-color:  #34444c;">
+                                    <td class="total_header_color" colspan="3" style="text-transform: uppercase;  "><b>{{ division.DivisionName }} TOTAL</b>
+                                        <input type="hidden" name="division_ID_{{ forloop.counter0 }}" value="{{ division.id }}" />
+                                    </td>
+                                    <td class="total_header_color" style="width: 50px;">&nbsp;</td>
+                                    <td class="total_header_color" ><input type="text" id="AvgSalaryTotalDivision_{{ division.DivisionName }}" name="avg_salary_total2_{{ forloop.counter0 }}" value="{{ default_values.avg_salary_total2 }}" style=" width: 98px;"  class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="HeadCountTotalDivision_{{ division.DivisionName }}" name="head_count_total2_{{ forloop.counter0 }}" value="{{ default_values.head_count_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="MorningTotalDivision_{{ division.DivisionName }}" name="morning_total2_{{ forloop.counter0 }}" value="{{ default_values.morning_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="GeneralTotalDivision_{{ division.DivisionName }}" name="general_total2_{{ forloop.counter0 }}"  value="{{ default_values.general_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="AfternoonTotalDivision_{{ division.DivisionName }}" name="afternoon_total2_{{ forloop.counter0 }}" value="{{ default_values.afternoon_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="NightTotalDivision_{{ division.DivisionName }}" name="night_total2_{{ forloop.counter0 }}" value="{{ default_values.night_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="MbreakTotalDivision_{{ division.DivisionName }}" name="m_break_total2_{{ forloop.counter0 }}" value="{{ default_values.m_break_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="RelieversTotalDivision_{{ division.DivisionName }}" name="relievers_total2_{{ forloop.counter0 }}" value="{{ default_values.relievers_total2 }}" style="width: 80px;" class="form-control input-small" readonly></td>
+                                    <td class="total_header_color"><input type="text" id="TotalctcDivision_{{ division.DivisionName }}" name="total_ctc_total2_{{ forloop.counter0 }}" value="{{ default_values.total_ctc_total2 }}" style=" width: 90px;"  class="form-control input-small" readonly></td>
+                                </tr> 
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="13">Data not found for selected hotel.</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="13"  ><strong>&nbsp;</strong></td>
+                        </tr>
+                        <tr>
+                            <td class="total_header_color" colspan="3" style="text-transform: uppercase; width: 320px;"><strong>GRAND TOTAL<strong></td>
+                            <td  class="total_header_color" style="width: 70px;">&nbsp;</td>
+                            <td class="total_header_color"><input type="text" id="grandsalarytotal" name="grandsalarytotal"  style=" width: 98px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandheadtotal" name="grandheadtotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandmorningtotal" name="grandmorningtotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandgeneraltotal" name="grandgeneraltotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandafternoontotal" name="grandafternoontotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandnighttotal" name="grandnighttotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandmbreaktotal" name="grandmbreaktotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandrelieverstotal" name="grandrelieverstotal" style="width: 80px;" class="form-control input-small" readonly></td>
+                            <td class="total_header_color"><input type="text" id="grandtotalctc" name="grandtotalctc" style=" width: 90px;" class="form-control input-small" readonly></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+                
+                <div style="position:fixed;right:5px;top:40%;text-align: right;padding-right:0px;">
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ hotel_name }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+       $('select').select2();
+    });
+</script>
+
+<script>
+    function calculateTotal(departmentName, index) {
+        let morningTotal = 0;
+        let generalTotal = 0;
+        let afternoonTotal = 0;
+        let nightTotal = 0;
+        let breakTotal = 0;
+        let relieverTotal = 0;
+        let avgSalaryTotal = 0;
+        let headCountTotal = 0;
+        let totalCtcTotal = 0;
+        let headDetaValue = 0;
+        let totalctcstotal = 0;
+    
+        console.log(`Calculating totals for department: ${departmentName}, index: ${index}`);
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='morning_data']`).forEach(input => {
+            morningTotal += parseFloat(input.value) || 0;
+        });
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='general_data']`).forEach(input => {
+            generalTotal += parseFloat(input.value) || 0;
+        });
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='afternoon_data']`).forEach(input => {
+            afternoonTotal += parseFloat(input.value) || 0;
+        });
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='night_data']`).forEach(input => {
+            nightTotal += parseFloat(input.value) || 0;
+        });
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='m_break_data']`).forEach(input => {
+            breakTotal += parseFloat(input.value) || 0;
+        });
+    
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='relievers_data']`).forEach(input => {
+            relieverTotal += parseFloat(input.value) || 0;
+        });
+    
+       
+    
+        headCountTotal = morningTotal + generalTotal + afternoonTotal + nightTotal + breakTotal + relieverTotal;
+        
+    
+        console.log({
+            morningTotal, generalTotal, afternoonTotal, nightTotal,
+            breakTotal, relieverTotal, avgSalaryTotal, headCountTotal, totalCtcTotal
+        });
+    
+        const setValue = (id, value) => {
+            $(`tr[data-department='${departmentName}'] input[id='${id}']`).val(value);
+        };
+    
+        setValue(`morningtotal_${departmentName}`, morningTotal);
+        setValue(`generaltotal_${departmentName}`, generalTotal);
+        setValue(`aftertotal_${departmentName}`, afternoonTotal);
+        setValue(`nighttotal_${departmentName}`, nightTotal);
+        setValue(`breaktotal_${departmentName}`, breakTotal);
+        setValue(`relievertotal_${departmentName}`, relieverTotal);
+        setValue(`avgsalarytotal_${departmentName}`, avgSalaryTotal);
+        setValue(`headtotal_${departmentName}`, headCountTotal);
+        
+    
+        const getValue = (department, id) => {
+            return parseFloat($(`tr[data-department='${department}'] input[id='${id}']`).val()) || 0;
+        };
+    
+        let morningValue = getValue(departmentName, `morningdeta_${index}`);
+        let generalValue = getValue(departmentName, `grnalcount_${index}`);
+        let afterValue = getValue(departmentName, `Aftercountdeta_${index}`);
+        let nightValue = getValue(departmentName, `nightdeta_${index}`);
+        let mbreakValue = getValue(departmentName, `mbreakgdeta_${index}`);
+        let relieverValue = getValue(departmentName, `relieverdeta_${index}`);
+    
+        headDetaValue = morningValue + generalValue + afterValue + nightValue + mbreakValue + relieverValue;
+        console.log(`headDetaValue: ${headDetaValue}`);
+        setValue(`headdeta_${index}`, headDetaValue);
+    
+        let avgSalaryValue = getValue(departmentName, `salaryAvrege_${index}`);
+        let headCountValue = getValue(departmentName, `headdeta_${index}`);
+        let totalCtcValue = avgSalaryValue * headCountValue;
+    
+        setValue(`total_ctc_${index}`, totalCtcValue);
+        
+        document.querySelectorAll(`tr[data-department='${departmentName}'] input[name*='total_ctc_data']`).forEach(input => {
+            totalctcstotal += parseFloat(input.value) || 0;
+        });
+
+        avgSalaryTotal = totalctcstotal / headCountTotal || 0;
+        setValue(`totalctcstotal_${departmentName}`, totalctcstotal.toFixed(2));
+        setValue(`avgsalarytotal_${departmentName}`, avgSalaryTotal.toFixed(2));
+
+
+        calculateDivisionTotal(document.querySelector(`tr[data-department='${departmentName}']`).dataset.division);
+    }
+    
+    
+    
+
+    function calculateDivisionTotal(divisionName) {
+        let morningTotalDivision = 0;
+        let generalTotalDivision = 0;
+        let afternoonTotalDivision = 0;
+        let nightTotalDivision = 0;
+        let breakTotalDivision = 0;
+        let relieverTotalDivision = 0;
+        let avgSalaryTotalDivision = 0;
+        let headCountTotalDivision = 0;
+        let totalCtcDivision = 0;
+        let TotalctcDivision = 0;
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='morningtotal_']`).forEach(input => {
+            morningTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='generaltotal_']`).forEach(input => {
+            generalTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='aftertotal_']`).forEach(input => {
+            afternoonTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='nighttotal_']`).forEach(input => {
+            nightTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='breaktotal_']`).forEach(input => {
+            breakTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='relievertotal_']`).forEach(input => {
+            relieverTotalDivision += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='avgsalarytotal_']`).forEach(input => {
+            avgSalaryTotalDivision += parseFloat(input.value) || 0;
+        });
+        
+        document.querySelectorAll(`tr[data-division='${divisionName}'] input[id^='totalctcstotal_']`).forEach(input => {
+            TotalctcDivision += parseFloat(input.value) || 0;
+        });
+
+        
+        headCountTotalDivision = morningTotalDivision + generalTotalDivision + afternoonTotalDivision + nightTotalDivision + breakTotalDivision + relieverTotalDivision;
+
+        
+        avgSalaryTotalDivision = TotalctcDivision / headCountTotalDivision || 0;
+      
+        const setValue = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.value = value;
+            }
+        };
+
+        setValue(`MorningTotalDivision_${divisionName}`, morningTotalDivision);
+        setValue(`GeneralTotalDivision_${divisionName}`, generalTotalDivision);
+        setValue(`AfternoonTotalDivision_${divisionName}`, afternoonTotalDivision);
+        setValue(`NightTotalDivision_${divisionName}`, nightTotalDivision);
+        setValue(`MbreakTotalDivision_${divisionName}`, breakTotalDivision);
+        setValue(`RelieversTotalDivision_${divisionName}`, relieverTotalDivision);
+        setValue(`AvgSalaryTotalDivision_${divisionName}`, avgSalaryTotalDivision.toFixed(2));
+        setValue(`HeadCountTotalDivision_${divisionName}`, headCountTotalDivision);
+        
+        setValue(`TotalctcDivision_${divisionName}`, TotalctcDivision.toFixed(2));
+
+        calculateGrandTotal();
+    }
+
+    function calculateGrandTotal() {
+        let grandMorningTotal = 0;
+        let grandGeneralTotal = 0;
+        let grandAfternoonTotal = 0;
+        let grandNightTotal = 0;
+        let grandMbreakTotal = 0;
+        let grandRelieversTotal = 0;
+        let grandAvgSalaryTotal = 0;
+        let grandHeadCountTotal = 0;
+        let grandtotalctc = 0;
+
+        document.querySelectorAll(`input[id^='MorningTotalDivision_']`).forEach(input => {
+            grandMorningTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='GeneralTotalDivision_']`).forEach(input => {
+            grandGeneralTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='AfternoonTotalDivision_']`).forEach(input => {
+            grandAfternoonTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='NightTotalDivision_']`).forEach(input => {
+            grandNightTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='MbreakTotalDivision_']`).forEach(input => {
+            grandMbreakTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='RelieversTotalDivision_']`).forEach(input => {
+            grandRelieversTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='AvgSalaryTotalDivision_']`).forEach(input => {
+            grandAvgSalaryTotal += parseFloat(input.value) || 0;
+        });
+
+        document.querySelectorAll(`input[id^='HeadCountTotalDivision_']`).forEach(input => {
+            grandHeadCountTotal += parseFloat(input.value) || 0;
+        });
+        
+
+        document.querySelectorAll(`input[id^='TotalctcDivision_']`).forEach(input => {
+            grandtotalctc += parseFloat(input.value) || 0;
+        });
+       
+
+        grandAvgSalaryTotal =  grandtotalctc / grandHeadCountTotal || 0;
+        const setValue = (name, value) => {
+            const element = document.querySelector(`input[name='${name}']`);
+            if (element) {
+                element.value = value;
+            }
+        };
+
+        setValue('grandmorningtotal', grandMorningTotal);
+        setValue('grandgeneraltotal', grandGeneralTotal);
+        setValue('grandafternoontotal', grandAfternoonTotal);
+        setValue('grandnighttotal', grandNightTotal);
+        setValue('grandmbreaktotal', grandMbreakTotal);
+        setValue('grandrelieverstotal', grandRelieversTotal);
+        setValue('grandsalarytotal', grandAvgSalaryTotal.toFixed(2));
+        setValue('grandheadtotal', grandHeadCountTotal);
+        setValue('grandtotalctc', grandtotalctc.toFixed(2));
+    }
+
+    window.onload = function() {
+       
+        let departments = document.querySelectorAll('tr[data-department]');
+        let divisions = document.querySelectorAll('tr[data-division]');
+    
+        
+        departments.forEach((dept, index) => {
+            let departmentName = dept.dataset.department;
+            calculateTotal(departmentName, index);
+        });
+    
+        
+        divisions.forEach((div, index) => {
+            let divisionName = div.dataset.division;
+            calculateDivisionTotal(divisionName);
+        });
+    
+        
+
+
+
+        
+        calculateGrandTotal();
+    };
+</script>
+</html>
+{% endblock content %}

@@ -1,0 +1,700 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+{% comment %} {% extends 'EMP_PAY/NewHomeBase.html' %}
+{% block NewHomeBase %} {% endcomment %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+<style>
+    html, body {
+        overflow-y: hidden;
+        height: 100%;
+    } 
+
+    .page-wrapper .content {
+        padding: 0px 10px !important;
+    }
+
+    #tableBody td{
+        font-size: 11px;
+    }
+
+    #tableHead th{
+        font-weight: bold;
+        font-size: 11px;
+    }
+
+    .card-footer {
+        z-index: 999;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 15px;
+        background: #fff;
+        border-top: 1px solid #e6e6e6;
+    }
+
+    #CardBody {
+        position: relative;
+        max-height: calc(100vh - 180px);
+        overflow-x: auto;  
+        overflow-y: auto;   
+        padding-left: -0px;  
+        padding-top: -0px;  
+        scrollbar-width: thin;
+    }
+    
+    #CardBody::-webkit-scrollbar {
+        width: 30px;       
+        height: 30px;       
+    }
+
+    #CardBody::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;  /* thumb color */
+        border-radius: 8px;
+        border: 3px solid #f1f1f1;  /* adds space around thumb */
+    }
+
+    #CardBody::-webkit-scrollbar-track {
+        background: #f1f1f1; /* scrollbar track color */
+        border-radius: 8px;
+    }
+
+    #GenerateSalaryTable {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0px;
+        table-layout: fixed;
+        margin-left: auto;   
+        margin-right: auto;
+    }
+
+
+    .card {
+        overflow: hidden;
+        position: relative;
+    }
+
+    #profile-card {
+        overflow: hidden;
+        position: relative;
+    }
+
+
+    /* ---------- header heights (two header rows) ---------- */
+    :root {
+        --header-row-1-height: 36px; /* first header row with colspans */
+        --header-row-2-height: 36px; /* second header row with actual column labels */
+        --total-header-height: calc(var(--header-row-1-height) + var(--header-row-2-height));
+    }
+
+    #GenerateSalaryTable thead tr:first-child th {
+        position: sticky;
+        top: 0;
+        height: var(--header-row-1-height);
+        /* line-height: var(--header-row-1-height); */
+        background: #f0f2f5;
+        z-index: 50; 
+        text-align: center;
+        border-bottom: 1px solid #dee2e6;
+    }
+    #GenerateSalaryTable thead tr:nth-child(2) th {
+        position: sticky;
+        top: var(--header-row-1-height);
+        height: var(--header-row-2-height);
+        /* line-height: var(--header-row-2-height); */
+        background: #f8f9fa;
+        z-index: 25;
+        border-bottom: 1px solid #dee2e6;
+    } 
+
+    /* Normal cell appearance */
+    #GenerateSalaryTable th,
+    #GenerateSalaryTable td {
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background: #fff;
+        padding: 6px 8px;
+        white-space: nowrap;
+    }
+
+    /* Explicit widths */
+    #GenerateSalaryTable th:nth-child(1),
+    #GenerateSalaryTable td:nth-child(1) { width: 48px; } 
+    #GenerateSalaryTable th:nth-child(2),
+    #GenerateSalaryTable td:nth-child(2) { width: 25px; }   
+    #GenerateSalaryTable th:nth-child(3),
+    #GenerateSalaryTable td:nth-child(3) { width: 70px; }  
+    #GenerateSalaryTable th:nth-child(4),
+    #GenerateSalaryTable td:nth-child(4) { width: 150px; }  
+
+    /* Sticky + cumulative left offsets */
+    #GenerateSalaryTable th:nth-child(1),
+    #GenerateSalaryTable td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 40;
+        background: #fff;
+        /* white-space: nowrap; */
+    }
+    #GenerateSalaryTable th:nth-child(2),
+    #GenerateSalaryTable td:nth-child(2) {
+        position: sticky;
+        left: 48px; 
+        z-index: 39;
+        background: #fff;
+        /* white-space: nowrap; */
+    }
+    #GenerateSalaryTable th:nth-child(3),
+    #GenerateSalaryTable td:nth-child(3) {
+        position: sticky;
+        left: calc(48px + 25px);
+        z-index: 38;
+        background: #fff;
+        /* white-space: nowrap; */
+    }
+    #GenerateSalaryTable th:nth-child(4),
+    #GenerateSalaryTable td:nth-child(4) {
+        position: sticky;
+        left: calc(48px + 25px + 70px); 
+        z-index: 37;
+        background: #fff;
+        box-shadow: 4px 0 6px -4px rgba(0,0,0,0.15); 
+        /* white-space: nowrap; */
+    }
+
+    /* --- Header row alignment for thead as well --- */
+    #GenerateSalaryTable thead tr:nth-child(2) th:nth-child(1) { left: 0; z-index: 45; }
+    #GenerateSalaryTable thead tr:nth-child(2) th:nth-child(2) { left: 48px; z-index: 44; }
+    #GenerateSalaryTable thead tr:nth-child(2) th:nth-child(3) { left: calc(48px + 25px); z-index: 43; }
+    #GenerateSalaryTable thead tr:nth-child(2) th:nth-child(4) { left: calc(48px + 25px + 70px); z-index: 42; }
+
+
+    #GenerateSalaryTable th:nth-child(4),
+    #GenerateSalaryTable td:nth-child(4) {
+        box-shadow: 4px 0 6px -4px rgba(0,0,0,0.15);
+    }
+
+    #GenerateSalaryTable thead tr:first-child th,
+    #GenerateSalaryTable thead tr:nth-child(2) th {
+    /* keep header above normal rows */
+    }
+
+    @media (max-width: 900px) {
+        #CardBody {
+            max-height: calc(100vh - 200px);
+        }
+        #GenerateSalaryTable th,
+        #GenerateSalaryTable td {
+            font-size: 12px;
+        }
+    }
+
+    .form-control {
+        /* font-size: 12px !important; */
+        line-height: 1 !important;
+        height: 34px !important;
+    }
+
+    .VerifyHidden{
+        display: none;
+    }
+    .AlignLeft{
+        text-align: right !important;
+    }
+</style>
+
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body" id="CardBody">
+    
+        <form method="post" id="VerifySalaryTableForm">
+            {% csrf_token %}
+            <table class="table table-bordered mt-2" id="GenerateSalaryTable">
+                <thead id="tableHead">
+                    <tr id="TableFirstTr">
+                        <!-- <th colspan="2"></th> -->
+                        <th colspan="1"></th>
+                        <th colspan="1"></th>
+                        <th colspan="2">Personal Details</th>
+                        <th colspan="9">work Details</th>
+                        <th colspan="6">Fixed Salary</th>
+                        <th colspan="5">Earning Salary</th>
+                        <th colspan="10">Deduction Salary</th>
+                        <th colspan="4">Company Contribution</th>
+                        <th colspan="1"></th>
+                        <th colspan="1"></th>
+                        <th colspan="6">Other Details</th>
+                    </tr>
+                    <tr>
+                        <th>Sr</th>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll"></th>
+                        <th>Code</th>
+                        <th>Emp Name</th>
+                        <th>HR</th>
+                        <th>FC</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>EmpStatus</th>
+                        <th>DOJ</th>
+                        <th class="AlignLeft text-end">Total Days</th>
+                        <th class="AlignLeft text-end">Paid Days</th>
+                        <th class="AlignLeft text-end">Absent Days</th>
+
+                        <th class="AlignLeft text-end">Gross Salary</th>
+                        <th class="AlignLeft text-end">Basic</th>
+                        <th class="AlignLeft text-end">HRA</th>
+                        <th class="AlignLeft text-end">Conveyance Allowance</th>
+                        <th class="AlignLeft text-end">Other Allowance</th>
+                        <th class="AlignLeft text-end">Total Fixed</th>
+                        
+                        <th class="AlignLeft text-end">Basic</th>
+                        <th class="AlignLeft text-end">HRA</th>
+                        <th class="AlignLeft text-end">Conveyance Allowance</th>
+                        <th class="AlignLeft text-end">Other Allowance</th>
+                        <th class="AlignLeft text-end">Total Earned</th>
+
+
+                        <th class="AlignLeft text-end">PT</th>
+                        <th class="AlignLeft text-end">Employee PF</th>
+                        <th class="AlignLeft text-end">Esic</th>
+                        <th class="AlignLeft text-end">Meals</th>
+                        <th class="AlignLeft text-end">Accommodation</th>
+                        <th class="AlignLeft text-end">Arrers</th>
+                        <th class="AlignLeft text-end">Advance Loan</th>
+                        <th class="AlignLeft text-end">Tax Deduction</th>
+                        <th class="AlignLeft text-end">Other Deduction</th>
+                        <th class="AlignLeft text-end">Total Deduction</th>
+
+                        <th class="AlignLeft text-end">Employe'r PF</th>
+                        <th class="AlignLeft text-end">Bonus</th>
+                        <th class="AlignLeft text-end">ESIC</th>
+                        <th class="AlignLeft text-end">Total Company Contribution</th>
+
+                        <th class="AlignLeft text-end">Net Salary</th>
+                        <th class="AlignLeft text-end">CTC</th>
+
+                        <th>Bank_Name</th>
+                        <th>Bank Branch</th>
+                        <th class="AlignLeft text-end">Account Number</th>
+                        <th class="AlignLeft text-end">IFSC Code</th>
+
+                        <th class="AlignLeft text-end">Esic Number</th>
+                        <th class="AlignLeft text-end">PF Number</th>
+                    </tr>      
+                </thead>
+                <tbody id="tableBody">
+                    
+                </tbody>
+            </table>
+
+            <div class="card-footer d-flex justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="">
+                        <select name="Status" class="form-control">
+                            <option value="2" {% if Status == '2' %}selected{% endif %}>All</option>
+                            <option value="1" {% if Status == '1' %}selected{% endif %}>Verified</option>
+                            <option value="0" {% if Status == '0' %}selected{% endif %}>Pending</option>
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <select class="form-control" name="month_no">
+                            <option value="1"  {% if CMonth == 1 %}selected{% endif %}>Jan</option>
+                            <option value="2"  {% if CMonth == 2 %}selected{% endif %}>Feb</option>
+                            <option value="3"  {% if CMonth == 3 %}selected{% endif %}>Mar</option>
+                            <option value="4"  {% if CMonth == 4 %}selected{% endif %}>Apr</option>
+                            <option value="5"  {% if CMonth == 5 %}selected{% endif %}>May</option>
+                            <option value="6"  {% if CMonth == 6 %}selected{% endif %}>Jun</option>
+                            <option value="7"  {% if CMonth == 7 %}selected{% endif %}>Jul</option>
+                            <option value="8"  {% if CMonth == 8 %}selected{% endif %}>Aug</option>
+                            <option value="9"  {% if CMonth == 9 %}selected{% endif %}>Sep</option>
+                            <option value="10" {% if CMonth == 10 %}selected{% endif %}>Oct</option>
+                            <option value="11" {% if CMonth == 11 %}selected{% endif %}>Nov</option>
+                            <option value="12" {% if CMonth == 12 %}selected{% endif %}>Dec</option>
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <select class="form-control" name="year">
+                            {% for i in CYear %}
+                                <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search Employee Here ..."
+                            style="width: 200px; display: inline-block; height:34px;"
+                            onkeyup="searchTable()"
+                            onkeydown="if (event.key === 'Enter') event.preventDefault();"
+                        >
+                    </div>
+                </div>
+                
+                
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" id="ExportExcelBtn">Download Excel</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="HRBulkVerify" {% if  request.session.Department_Name|lower == 'hr' %}{% else %}disabled{% endif %}>HR Verify</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="FCBulkVerify" {% if  request.session.Department_Name|lower == 'finance' %}{% else %}disabled{% endif %}>FC Verify</button>
+                    <a class="btn btn-sm btn-outline-secondary">SE: 
+                        <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                    </a>
+                </div>
+            </div>
+         </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
+<!-- search table -->
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+
+<!-- loaders -->
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+
+<!-- List api for table -->
+<script>
+
+    function loadPayrollList(year, month_no, status) {
+        showLoader("profile-card");
+
+        let OID = '{{OrganizationID}}';
+        let Year = year;
+        let Month = month_no;
+        let Status = status;
+
+        console.log("OID:", OID);
+        console.log("Year:", Year);
+        console.log("Month:", Month);
+        console.log("Status:", Status);
+
+        $.ajax({
+            url: `/Employee_Payroll/api/Verify_Salary_Slip_API?OID=${OID}&Year=${Year}&Month=${Month}&Status=${Status}`,
+            success: function (response) {
+                let tbody = $('#tableBody');
+                tbody.empty();
+
+                console.log("Salary Slip Response:", response);
+
+                // Ensure Employees array exists
+                let employees = response.Employees || [];
+
+                console.log("Employees Array:", employees);
+
+                // Loop through each employee
+                employees.forEach((emp, index) => {
+                    let slip = emp.Slip || {};
+                    let fixed = emp.Fixed || {};
+                    let earning = emp.Earning || {};
+                    let deduction = emp.Deductions || {};
+                    let CC = emp.Company_Contribution || {};
+
+                    // console.log("------------------------------------")
+                    // console.log(`CC data is here --- for ${slip.EmployeeCode}: ${JSON.stringify(CC)}`)
+                    // console.log("------------------------------------")
+
+                    let HrVerify = slip.HrVerify
+                    let FcVerify = slip.FcVerify
+
+                    if (HrVerify){
+                        HRText = '<i class="fa fa-check text-success" data-bs-toggle="tooltip" aria-label="fa fa-check" data-bs-original-title="fa fa-check"></i><span class="VerifyHidden">Verified</span>'
+                    }else{
+                        HRText = '<i class="fa fa-times text-danger" data-bs-toggle="tooltip" aria-label="fa fa-times" data-bs-original-title="fa fa-times"></i><span class="VerifyHidden">Pending</span>'
+                    }
+                    
+                    if (FcVerify){
+                        FCText = '<i class="fa fa-check text-success" data-bs-toggle="tooltip" aria-label="fa fa-check" data-bs-original-title="fa fa-check"></i><span class="VerifyHidden">Verified</span>'
+                    }else{
+                        FCText = '<i class="fa fa-times text-danger" data-bs-toggle="tooltip" aria-label="fa fa-times" data-bs-original-title="fa fa-times"></i><span class="VerifyHidden">Pending</span>'
+                    }
+
+                    let row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><input type="checkbox" class="checkBox" name="all_emp_codes" value="${slip.SlipID}" data-year="${slip.year}" data-month_no="${slip.month}" data-lastStatus="${slip.lastStatus}"></td>
+                            <td>${slip.EmployeeCode || '-'}</td>
+                            <td>${slip.Emp_Name || '-'}</td>
+                            <td>${HRText}</td>
+                            <td>${FCText}</td>
+                            <td>${slip.Designation || '-'}</td>
+                            <td>${slip.Department || '-'}</td>
+                            <td>${slip.EmpStatus || '-'}</td>
+                            <td>${slip.DOJ || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Total_No_Days_In_Month || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Present_Days || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Absent_Days || '-'}</td>
+                            <td class="AlignLeft text-end">${fixed["Gross (A)"] || 0}</td>
+                            <td class="AlignLeft text-end">${fixed["Basic"] || 0}</td>
+                            <td class="AlignLeft text-end">${fixed["HRA"] || 0}</td>
+                            <td class="AlignLeft text-end">${fixed["Conveyance Allowance"] || 0}</td>
+                            <td class="AlignLeft text-end">${fixed["Other Allowance"] || 0}</td>
+                            <td class="AlignLeft text-end">${slip.Total_Fixed || 0}</td>
+                            <td class="AlignLeft text-end">${earning["Basic"] || 0}</td>
+                            <td class="AlignLeft text-end">${earning["HRA"] || 0}</td>
+                            <td class="AlignLeft text-end">${earning["Conveyance Allowance"] || 0}</td>
+                            <td class="AlignLeft text-end">${earning["Other Allowance"] || 0}</td>
+                            <td class="AlignLeft text-end">${slip.Total_Earning || 0}</td>
+                            <td class="AlignLeft text-end">${deduction["PT"] || 0}</td>
+                            <td class="AlignLeft text-end">${deduction["Employee PF @12% (Basic)"] || 0}</td>
+                            <td class="AlignLeft text-end">${deduction["ESIC @ 0.75%"] || 0}</td>
+                            <td class="AlignLeft text-end">${deduction["Meals"] || 0}</td>
+                            <td class="AlignLeft text-end">${deduction["Accommodation"] || 0}</td>
+                            <td class="AlignLeft text-end">${slip.Arrers || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Advance_Loan || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Tax_Deduction || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Other_Deduction || '-'}</td>
+                            <td class="AlignLeft text-end">${slip.Total_Deduction || 0}</td>
+
+                            <td class="AlignLeft text-end">${CC["Employer PF"] || 0}</td>
+                            <td class="AlignLeft text-end">${CC["Bonus"] || 0}</td>
+                            <td class="AlignLeft text-end">${CC["Company Contribution to ESIC @ 3.25%"] || 0}</td>
+                            <td class="AlignLeft text-end">${slip.Total_Company_Contribution || 0}</td>
+
+
+                            <td class="AlignLeft text-end">${slip.NetSalary || 0}</td>
+                            <td class="AlignLeft text-end">${slip.CTC || '-'}</td>
+                            <td>${safeValue(slip.Bank_Name)}</td>
+                            <td>${safeValue(slip.Bank_Branch)}</td>
+                            <td class="AlignLeft text-end">${safeValue(slip.Bank_Account_Number)}</td>
+                            <td class="AlignLeft text-end">${safeValue(slip.Bank_IFSC_Code)}</td>
+                            <td class="AlignLeft text-end">${safeValue(slip.ESIC_Number)}</td>
+                            <td class="AlignLeft text-end">${safeValue(slip.Provident_Fund_Number)}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+
+                hideLoader("profile-card");
+            },
+            error: function (xhr) {
+               alert('No Data Available For Applied Filters.');
+                console.error(xhr);
+                hideLoader("profile-card");
+            }
+        });
+
+        function safeValue(value) {
+            if (value === null || value === undefined) return '-';
+            if (typeof value === 'string') {
+                let val = value.trim().toLowerCase();
+                if (val === 'none' || val === 'na' || val === 'nan' || val === '') return '-';
+            }
+            return value;
+        }
+    }
+
+    // Example: Load current month
+    $(document).ready(function () {
+        // Call initially
+        const defaultYear = $('select[name="year"]').val();
+        const defaultMonth = $('select[name="month_no"]').val();
+        // const defaultMonth = 10
+        const defaultStatus = $('select[name="Status"]').val();
+
+        loadPayrollList(defaultYear, defaultMonth, defaultStatus);
+
+        // Re-run when any select changes
+        $('select[name="year"], select[name="month_no"], select[name="Status"]').on('change', function () {
+            const year = $('select[name="year"]').val();
+            const month = $('select[name="month_no"]').val();
+            const status = $('select[name="Status"]').val();
+
+            loadPayrollList(year, month, status);
+        });
+    });;
+</script>
+
+
+<!-- Checkbox system -->
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            // Select only visible checkboxes
+            $("#GenerateSalaryTable tbody tr:visible .checkBox")
+                .prop("checked", $(this).prop("checked"));
+            updateSelectedCount();
+        });
+    });
+
+    $(document).on("change", ".checkBox", function () {
+        let allVisible = $("#GenerateSalaryTable tbody tr:visible .checkBox").length;
+        let checkedVisible = $("#GenerateSalaryTable tbody tr:visible .checkBox:checked").length;
+
+        $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+        updateSelectedCount();
+    });
+
+    function updateSelectedCount() {
+        let count = $("#GenerateSalaryTable tbody tr:visible .checkBox:checked").length;
+        $("#selectedCount").text(count);
+    }
+</script>
+
+
+<!-- Excel Sheet -->
+<script>
+    $('#ExportExcelBtn').click(function () {
+        // Clone the table (so we don’t modify the original DOM)
+        let table = document.getElementById("GenerateSalaryTable").cloneNode(true);
+
+        // 🧹 Remove 2nd column (index 1 = 2nd column)
+        for (let row of table.rows) {
+            if (row.cells.length > 1) {
+                row.deleteCell(1);
+            }
+        }
+        
+        // Create workbook
+        let workbook = XLSX.utils.table_to_book(table, { sheet: "Salary Report" });
+        let ws = workbook.Sheets["Salary Report"];
+
+        // 🧾 Adjust these column letters based on your Excel structure
+        // const accountCol = 'AO';  // Account Number
+        // const pfCol = 'AR';       // PF Number
+
+        const accountCol = 'AP';  // Account Number
+        const pfCol = 'AS';       // PF Number
+
+        // Convert cells in those columns to text explicitly
+        for (let row = 3; row <= 1000; row++) { // assuming max 1000 rows
+            const accCell = ws[accountCol + row];
+            const pfCell = ws[pfCol + row];
+
+            if (accCell && accCell.v) {
+                accCell.t = 's'; // force text
+                accCell.v = String(accCell.v);
+            }
+            if (pfCell && pfCell.v) {
+                pfCell.t = 's';
+                pfCell.v = String(pfCell.v);
+            }
+        }
+
+        XLSX.writeFile(workbook, "Salary_Report.xlsx");
+    });
+</script>
+
+
+
+<!--  bulk Verify -->
+<script>
+    document.getElementById("HRBulkVerify").addEventListener("click", function () {
+        let PressedButton = 'HRBulkVerify'
+        Verify_Slip(PressedButton)
+    });
+
+    document.getElementById("FCBulkVerify").addEventListener("click", function () {
+        let PressedButton = 'FCBulkVerify'
+        Verify_Slip(PressedButton)
+    });
+
+    function Verify_Slip(PressedButton) {
+        showLoader("profile-card");
+
+        let selectedEmployees = [];
+
+        // Loop over all checked checkboxes
+        $("#VerifySalaryTableForm input[name='all_emp_codes']:checked").each(function () {
+            let empData = {
+                SlipID: $(this).val(),
+                PressedButton:PressedButton,
+                year: $(this).data("year"),
+                month_no: $(this).data("month_no"),
+                lastStatus: $(this).data("lastStatus"),
+            };
+            selectedEmployees.push(empData);
+        });
+
+        console.log("Selected Data:", selectedEmployees)
+
+
+        // let SlipID = SlipID;
+        // let Button = Button;
+
+        $.ajax({
+            url: "{% url 'Bulk_Verify_Salary_Slip' %}",
+            method: "POST",
+            data: {
+                employees: JSON.stringify(selectedEmployees),
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                // FromDate: fromDate,
+                // ToDate: toDate
+            },
+            success: function (data) {
+                // console.log("✅ Data sent successfully");
+                // console.log("Server response:", data);
+                // console.log("Server response year --:", data.year);
+                // console.log("Server response month --:", data.month_no);
+                console.log("Server response lastStatus --:", data.lastStatus);
+                // let status = 0
+                loadPayrollList(data.year, data.month_no, data.lastStatus);
+                hideLoader("profile-card");
+            },
+            error: function (xhr) {
+                hideLoader("profile-card");
+                console.error("❌ Error:", xhr.responseText);
+            }
+        });
+    }
+</script>
+
+{% endblock content %} 

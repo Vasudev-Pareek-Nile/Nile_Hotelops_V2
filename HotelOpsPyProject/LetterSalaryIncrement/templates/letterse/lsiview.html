@@ -1,0 +1,48 @@
+
+{% load static %}
+
+
+{% block content %}
+<style>
+  
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:2px !important;font-family: Arial Nova;
+    font-size:10px;
+    
+  }
+  
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;font-family: Arial Nova;
+  }
+  p {     margin: 0 !important;
+    
+    font-family: Arial Nova;font-size: 11px; }
+    .noborder,.noborder td {
+      border-width: 0px;text-align: justify;
+      
+          }
+
+          h2{text-align: center;}
+</style>
+  
+
+    
+    </style>
+
+
+<DIV>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  {{header | safe}}
+  {{Ed.data | safe }}
+</DIV>
+
+    {% endblock content %} 
+

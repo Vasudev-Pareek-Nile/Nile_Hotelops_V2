@@ -1,0 +1,163 @@
+{% extends "agreement/homebase.html" %} {% block content %}
+
+<style>
+  table th {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  td {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  body {
+    font-family: arial nova;
+  }
+
+  /* Reduce padding and font size for smaller table */
+  #example {
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  /* Optional: Make table responsive for smaller screens */
+  @media only screen and (max-width: 600px) {
+    #example {
+      font-size: 12px;
+    }
+  }
+</style>
+<div class="col-md-12">
+  <table class="table table-bordered">
+    <thead class="thead">
+      <tr class="table-success">
+        <th style="background-color: #007bff; color: white">Total Contracts</th>
+        <th style="background-color: #ffc107">Generated Contracts</th>
+        <th style="background-color: #28a745; color: white">
+          Signed Contracts
+        </th>
+        <th style="background-color: #dc3545; color: white">
+          Expired Contracts
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ total_contracts }}</td>
+
+        <td>{{ generated_count }}</td>
+
+        <td>{{ signed_count }}</td>
+
+        <td>{{ expired_count }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br />
+<div class="col-md-12 mx-auto">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-6" style="color: #1ab394">
+        <strong>HOTEL MANAGEMENT AGREEMENT </strong>
+      </div>
+    </div>
+  </div>
+  <br />
+  <div class="row justify-content-end">
+    <div class="col-auto">
+      <a href="{% url 'agreement_add' %}" class="btn btn-primary">
+        ADD HOTEL MANAGEMENT AGREEMENT
+      </a>
+    </div>
+  </div>
+  <br />
+
+  <table id="example" class="table table-bordered">
+    <thead class="thead">
+      <tr class="table-success">
+        <th>Company Name</th>
+        <th>Hotel Name</th>
+        <th>No. of Rooms</th>
+        <th>Owner's Name</th>
+
+        <th>Pan Number</th>
+
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Contract Status</th>
+
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for addlist in addlist %}
+      <tr>
+        <td>{{addlist.company_name}}</td>
+        <td>{{addlist.Name_of_Hotel}}</td>
+        <td>{{addlist.Number_of_Room}}</td>
+        <td>{{addlist.Director_Name}}</td>
+
+        <td>{{addlist.pan_number}}</td>
+
+        <td>{{addlist.start_date | date:'d-m-Y'}}</td>
+
+        <td>{{addlist.end_date | date:'d-m-Y'}}</td>
+
+        <td>
+          {% if addlist.status == 0 %} Generated {% elif addlist.status == 1 %}
+          Signed {% elif addlist.status == -1 %} Expired {% endif %}
+        </td>
+
+        <td style="width: 100px">
+          <a
+            href="{% url 'agreement_add' %}?ID={{addlist.id}}"
+            class="fa fa-edit"
+            style="color: blue"
+          ></a>
+          <a
+            href="{% url 'agreement_pdf' %}?ID={{addlist.id}}"
+            class="fa fa-file-pdf-o"
+            style="color: blue"
+          ></a>
+
+          <a
+            onclick="return confirm('Are you sure you want to delete? ')"
+            href="{% url 'agreement_delet'  %}?ID={{addlist.id}}"
+          >
+            <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+            <span style="color: red"></span>
+          </a>
+          <a
+            href="{% url 'agreement_uploded' %}?ID={{addlist.id}}"
+            class="fa fa-upload"
+            style="color: blue"
+          ></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    var table = $("#example").DataTable({
+      paging: true,
+      searching: true,
+      order: [],
+      columnDefs: [{ targets: "_all", className: "text-center" }],
+    });
+  });
+</script>
+{% endblock content %}

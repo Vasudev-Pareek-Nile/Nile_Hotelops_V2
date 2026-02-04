@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   
+    <style>
+       
+        
+        .align-center
+        {
+
+            text-align: center;
+        }
+        .border {
+            border: 1px solid black;
+        }
+        .margintop
+        {
+            margin-top: 20px;
+        }
+    .body{
+        font-size: 11px;
+        font-family: Arial-nova;
+    }
+    .tablebordered
+    {
+        border: 1px solid #ccc; 
+        
+    padding: 8px;
+    text-align: left;
+     
+    }
+    table td,th{
+        padding: 3px;
+        
+       
+        
+
+    }
+   .label
+   {
+    font-size: 11px;
+    font-weight:bolder;
+    text-align: center;
+    
+   }
+   .ApproveBy{
+    font-weight:bold;
+    text-align: center;
+   }
+   .data{
+    text-align: center;
+   }
+   .widthobj
+   {
+    padding-top: 5px;
+    width: 170px;
+   font-weight: bold;
+   
+   }
+   
+   .widthatt
+   {
+    padding-top:5 px;
+    width: 180px;
+    background-color: #1ab394;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+   }
+   .widthRIMP{
+width: 40px;
+
+   }
+   .containereffinff {
+    width: 100%;
+    overflow: hidden; 
+}
+.marginappeeappor{
+    margin-top: 20px;
+}
+.headbg
+{
+    background-color: #1ab394;
+    text-align: center;
+    color: white;
+    padding: 5px;
+
+font-weight: bold;}
+.headbgspec{
+    background-color: #1ab394;
+    text-align: left;
+    color: white;
+    padding-top:5px ;
+
+font-weight: bold;
+}
+.capital{
+    text-transform: uppercase !important ;
+}
+#FINALAPPROVAL{
+    text-align: center;
+    line-height: 1.8;
+    margin-top: 50px;
+}
+
+  </style>
+    
+</head>
+<body>
+    <div class="container">
+        <table>
+            <tr>
+                <td style="width: 270px;">&nbsp;</td>
+                <td style="text-align: center !important; text-transform: uppercase; font-size: 14px; font-weight: bold;width: 270px;"><u>PROBATION CONFIRMATION</u></td>
+                <td style="width: 270px;">&nbsp;</td>
+            </tr>
+        </table>
+        <table class="tablebordered marginappeeappor ">
+            <tr>
+                <th class="widthatt capital" style="text-align: left;"><strong>Employee Data</strong></th>
+            </tr>
+        </table>
+
+        <br>
+        <table class=" tablebordered ">
+            <tbody>
+                <tr>
+                    <td style="width: 270px;">
+                        <label class="label">Employee Code:&nbsp</label>
+                        <span class="data">{{Emp_obj.EmpCode|default:"&nbsp;" }}</span>
+                    </td>
+                    <td style="width: 300px;">
+                        <label class="label">Employee Name:&nbsp</label>
+                        <span class="data">{{Emp_obj.EmpName|default:"&nbsp;" }}</span>
+                    </td>
+                    <td style="width: 300px;">
+                        <label class="label">Joining Date:&nbsp</label>
+                        <span class="data">{{Emp_obj.JoiningDate |date:'j M Y'}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="label">Department:&nbsp</label><span class="data">{{Emp_obj.Department|default:"&nbsp;" }}</span></td>
+                    <td>
+                        <label class="label">Position:&nbsp</label>
+                        <span class="data">{{Emp_obj.Position|default:"&nbsp;" }}</span>
+                    </td>        
+                    <td>
+                        <label class="label">Confirmation Due Date:&nbsp</label>
+                        <span class="data">{{Emp_obj.ConfDate|date:'j M Y'}}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>  
+        {% for Category in Categories %}
+        
+            <table class="tablebordered
+                    marginappeeappor "  >
+                        <tr><th class="widthatt capital" style="text-align: left;"><strong>{{Category.Category}}</strong></th></tr>
+            </table>
+
+            <table class="tablebordered marginappeeappor"  >
+                    <thead>
+                        
+                        <tr class="headbg capital" >
+                        <th style="width: 270px; ">Points</th>
+                        <th style="width: 270px;">Yes/No</th>
+                        <th style="width: 270px;">Remarks</th>
+                        </tr>
+                    </thead>
+                
+                    <tbody>
+                        
+                        {% for item in Category.items  %}
+                                
+                    
+                    
+                                <tr>
+                                    <td>{{item.Item}}</td>
+                                    <td style="text-align: center;">{% if item.emp_detail.0.IsYes == True  %}Yes{% else %}No{% endif %}<span>&nbsp;</span></td>
+                                    <td>{{item.emp_detail.0.Remarks|default:"&nbsp;" }}</textarea></td>
+                                </tr>
+                    
+                        
+                        {% endfor %}
+                    </tbody>
+            </table>
+        {% endfor %}
+
+        <br>
+                                    
+        <table class="tablebordered marginappeeappor "  >
+            <tr><th class="widthatt capital" style="text-align: left;"><strong>Objectives and their goals</strong></th></tr>
+        </table>   
+
+        {% for d  in data  %} 
+            <p> Objectives:- {{d.name}}</p>
+            Goals:-
+                {% for g in d.goals %}    
+            <p>
+                {{g.name}}
+                </p>
+                {% endfor %}
+        {% endfor %}
+
+        <table class="tablebordered marginappeeappor">
+            <tr>
+                <td style="width: 540px;">Employee’s Strengths</td>
+                <td style="width: 270px;">{{Emp_obj.Strengths|default:"&nbsp;"}}</td>
+            </tr>
+            <tr>
+                <td>Employee’s Areas for Improvement</td>
+                <td>{{Emp_obj.Improvement|default:"&nbsp;"}}</td>
+            </tr>
+            <tr>
+                <td>Has the employee completed a minimum of 90 % Training as per Corporate Training Guidelines? </td>
+                <td>
+                    
+                    {% if Emp_obj.Guidelines == True  %}Yes{% else %}No{% endif %}
+                </td>
+
+            </tr>
+            <tr>
+                <td>Guidelines</td>
+                <td>
+                    
+                    {{Emp_obj.Trainingattended|default:"&nbsp;"  }}
+                </td>
+
+            </tr>
+            {% comment %} <tr>
+                <td>{{Emp_obj.Trainingattended|default:"N/A" }}</td>
+            </tr> {% endcomment %}
+            <tr>
+                <td>Employment is confirmed?</td>
+                <td>
+                    
+                    {% if Emp_obj.EmpConfirm == True  %}Yes{% else %}No{% endif %}
+                </td>
+            </tr>
+            {% if extended_value != '' %}
+                <tr>
+                    <td>Extended</td>
+                    <td>{{ Emp_obj.Extended|default:"&nbsp;"}}&nbsp;</td>
+                </tr>
+            {% endif %}
+        
+        
+        </table>
+    </div>
+<br>
+    <div class="container">
+        <table class="">
+            <tbody>
+                <tr>
+                    <td style="width: 270px; text-align:center;">
+                        <label class="ApproveBy">Approve By</label>
+                    </td>
+                    <td style="width: 300px;">
+                        <label class="">&nbsp</label>
+                    </td>
+                    <td style="width: 300px;">
+                        <label class="">&nbsp</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <span>
+                            {% for person in Reporting_To_Personal_Details %}
+                                {% if person.Prefix %}
+                                    {{ person.Prefix }}
+                                {% endif %}
+                                {% if person.FirstName %}
+                                    {{ person.FirstName }}
+                                {% endif %}
+                                {% if person.MiddleName %}
+                                    {{ person.MiddleName }}
+                                {% endif %}
+                                {% if person.LastName %}
+                                    {{ person.LastName }}
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                        <br>
+                        <span class="ApproveBy">
+                            {% for Details in work_details %}
+                                {{ Details.Designation }}
+                            {% endfor %}
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table> 
+    </div>
+</body>
+</html>

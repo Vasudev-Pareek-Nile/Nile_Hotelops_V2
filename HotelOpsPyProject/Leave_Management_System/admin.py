@@ -1,0 +1,5 @@
+from django.contrib import admin
+from .models import Leave_Type_Master,Leave_Config_Details,Leave_Application,Leave_Process_Details,Leave_Process_Master,Emp_Leave_Balance_Master,EmpMonthLevelDebitMaster,EmpMonthLevelCreditMaster,National_Holidays,Optional_Holidays
+list_display = [Leave_Type_Master,Leave_Config_Details,Leave_Application,Leave_Process_Details,Leave_Process_Master,Emp_Leave_Balance_Master,EmpMonthLevelDebitMaster,EmpMonthLevelCreditMaster,National_Holidays,Optional_Holidays]
+
+admin.site.register(list_display)

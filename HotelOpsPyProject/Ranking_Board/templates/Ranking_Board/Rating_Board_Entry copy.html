@@ -1,0 +1,238 @@
+{% extends "Ranking_Board\homebase.html" %}
+{% load static %}
+{% block content %} 
+     
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9fafb;
+        padding: 32px 16px;
+        color: #000;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #d1d5db;
+    }
+
+    thead {
+        background-color: #f9fafb;
+    }
+
+    th {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    th.main-header {
+        background-color: #f3f4f6;
+    }
+
+    th.htl-header {
+        vertical-align: middle;
+        background-color: #ffffff;
+        min-width: 120px;
+    }
+
+    th.sub-header {
+        background-color: #f9fafb;
+        min-width: 80px;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s;
+    }
+
+    tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    td {
+        padding: 10px 12px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        font-size: 13px;
+    }
+
+    td:first-child {
+        text-align: left;
+        font-weight: 500;
+    }
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+    @media print {
+        body {
+            background-color: #fff;
+            padding: 0;
+        }
+
+        .card {
+            box-shadow: none;
+            padding: 16px;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        body {
+            padding: 16px 8px;
+        }
+
+        .card {
+            padding: 16px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        th, td {
+            padding: 8px;
+            font-size: 12px;
+        }
+    }
+</style>
+
+<style>
+    .input-small {
+        width: 98px;
+        height: 30px;
+        text-align: center;
+    }
+
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        padding-right: 56px;
+    }
+</style>
+
+<!-- <div class="container"> -->
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-2">Hotel Ranking Dashboard</h4>
+    </div>
+    <div class="card-body">
+        <form action="" method="POST">
+            {% csrf_token %}
+
+            <div class="mb-2">
+                <label>Entry Date 
+                    <input type="date" class="form-control" value="{{current_date}}" name="EntryDate" required>
+                </label>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="htl-header">HTL</th>
+                        <th colspan="2" class="main-header">TRIP ADVISOR</th>
+                        <th colspan="2" class="main-header">Google Review</th>
+                        <th colspan="2" class="main-header">MMT</th>
+                        <th colspan="2" class="main-header">Booking.Com</th>
+                    </tr>
+                    <tr>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                    </tr>
+                </thead>
+                <tbody id="Ranking_Board_Table">
+
+                </tbody>
+            </table>
+
+            <!-- Fixed Footer Buttons (outside scrollable area) -->
+            <div class="card-footer text-end">
+                <button type="button" class="btn btn-primary mt-1" id="Save">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- </div> -->
+
+
+<script>
+    $(document).ready(function() {
+        function loadRankingBoard() {
+            $.ajax({
+                url: "{% url "OrganizationList_Api" 3 %}",   // 🔹 Replace with your actual API URL
+                method: "GET",
+                dataType: "json",
+                success: function(data) {
+                    let tbody = $("#Ranking_Board_Table");
+                    tbody.empty(); // Clear previous data
+
+                    if (data.length === 0) {
+                        tbody.append(`<tr><td colspan="9">No data found</td></tr>`);
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        let row = `
+                            <tr>
+                                <td title="${item.OrganizationName}">${item.ShortDisplayLabel}</td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                                <td><input type="text" class="form-control input-small" value=""></td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error loading ranking data:", error);
+                    $("#Ranking_Board_Table").html(`<tr><td colspan="9">Error loading data</td></tr>`);
+                }
+            });
+        }
+        // Load data on page ready
+        loadRankingBoard();
+    });
+</script>
+{% endblock content %} 
+
+

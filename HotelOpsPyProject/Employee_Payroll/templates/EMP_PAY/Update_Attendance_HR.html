@@ -1,0 +1,64 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container col-md-12" >
+    <div class="card">
+        <div class="card-header">Update Attendance</div>
+       
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Date</label>
+                        <input type="date" readonly value={{obj.Date |date:'Y-m-d'}} class="form-control" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">In Time</label>
+                        <input type="time" readonly value={{obj.In_Time}} class="form-control" name="in" >
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Out Time</label>
+                        <input type="time"  readonly value={{obj.Out_Time}} class="form-control" name="Out" >
+                    </div>    
+                </div>
+               
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Current Status</label>
+                         <input type="text" readonly value="{{obj.Status}}" class="form-control" name="Status" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Status</label>
+                        <select name="Status" id="" class="form-control">
+                            <option value="">No Changes</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+
+                            <option value="Week Off">Week Off</option>
+
+                            {% for  leave in leave_type %}
+                            <option value="{{leave.Type}}">{{leave.Type}}</option>
+                            {% endfor %}
+                        </select> 
+                    </div>
+                </div>
+               
+               
+            </div>
+            <div class="card-footer text-right"> 
+            
+           <input type="submit" class="btn btn-primary btn-sm">
+            
+             
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

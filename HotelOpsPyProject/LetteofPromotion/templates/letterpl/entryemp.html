@@ -1,0 +1,351 @@
+{% extends 'letterpl/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+ <style>
+    form p {
+        display: inline-block;
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+{
+    visibility: hidden;
+}
+label{
+    padding-top: 14px;
+    margin-bottom:5px;
+}
+ </style>
+
+<div class="card">
+    <div class="card-header"><strong>New Employee Promotion Letter</strong></div>
+</div>
+
+<div class="card">
+    <form action="" method="post">
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="emp_code">Emp Code</label>
+                            <input type="text" class="form-control" name="emp_code" value="{{ Promotionobj.emp_code }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="prefix">Prefix</label>
+                            <input type="text" class="form-control" name="prefix" value="{{ Promotionobj.prefix }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" name="first_name" value="{{ Promotionobj.first_name }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" value="{{ Promotionobj.last_name }}" required readonly>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_promotion">Date of Promotion</label>
+                            <input type="date" class="form-control" name="date_of_promotion" value="{% if Promotionobj.date_of_promtion %}{{ Promotionobj.date_of_promtion|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" required >
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <input type="text" class="form-control" name="department" value="{{ Promotionobj.department }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" class="form-control" name="designation" value="{{ Promotionobj.designation }}" required readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="promotion_designation">Promotion Designation</label>
+                            <select class="form-control" name="promotion_designation" id="promotion_designation" required>
+                                <option value="">Select</option>
+                                {% for Designation in Designations %}
+                                    <option value="{{ Designation.designations }}" 
+                                        {% if Promotionobj.Promotiondesignation == Designation.designations %} 
+                                            selected 
+                                        {% endif %} 
+                                        data-department="{{ Designation.OnRollDepartmentMaster.DepartmentName }}">
+                                        {{ Designation.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="promotion_department">Promotion Department</label>
+                            <input type="text" class="form-control" name="promotion_department" id="promotion_department" readonly>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        $(document).ready(function() {
+                            updateDepartment();
+                    
+                            $('#promotion_designation').change(function() {
+                                updateDepartment();
+                            });
+                    
+                            function updateDepartment() {
+                                const selectedOption = $('#promotion_designation option:selected');
+                                const department = selectedOption.data('department') || '';
+                                $('#promotion_department').val(department);
+                            }
+                        });
+                    </script>
+                    
+                    
+                      <!-- Issuing Manager Name -->
+                      <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_designation">Issuing Designation</label>
+                            <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                                <option value="">Select</option>
+                                {% for ManagerName in ManagerNames %}
+                                    <option value="{{ ManagerName.designations }}" {% if Promotionobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                        {{ ManagerName.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Issuing Manager Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_manager_name">Issuing Manager Name</label>
+                            <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ Promotionobj.Issuing_manager_name }}" required readonly>
+                        </div>
+                    </div>
+        
+
+
+
+
+
+
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+
+                            <label for="PWI">Promotion with Increment</label> 
+                            <input type="checkbox"  {% if Promotionobj.PWI %}checked{% endif %} class="m-4" name="PWI" id="PWI" value="P"  >
+                            
+                            <input type="hidden" name="CTC" >
+                        </div>
+                    </div>
+                </div>
+
+              
+ 
+          
+         
+
+
+
+          
+            
+             
+            <table class="table table-bordered m-3" id="PWIShow" style="display: none;" >
+                <thead>
+                    <tr>
+                        <th>Components</th>
+                        <th>Present Emoluments</th>
+                        <th>Revised Salary</th>
+                    </tr>
+                </thead>
+                <tbody id="salaryTable">
+                    {% for SalaryTitle in SalaryTitles %}
+                    <tr>
+                        <td>
+                            {% if SalaryTitle.IsBold %}
+                            <span style="font-weight: bold;">{{SalaryTitle.Title}}</span>
+                            {% else %}
+                            <span>{{SalaryTitle.Title}}</span>
+                            {% endif %}
+                            <input type="hidden" name="TitleID_{{forloop.counter0}}" value="{{SalaryTitle.id}}">
+                        </td>
+                        <td>
+                            {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)"  or SalaryTitle.Title == "CTC (A+C)" %}
+                            <input type="number" name="PresentEmoluments_{{forloop.counter0}}" 
+                                   value="{{SalaryTitle.PresentEmoluments}}" 
+                                   class="form-control present-emoluments"
+                                   data-index="{{forloop.counter0}}"
+                                   data-title-presentemoluments="{{SalaryTitle.Title}}_PresentEmoluments"
+                                   readonly>
+                            {% else %}
+                            <input type="number" name="PresentEmoluments_{{forloop.counter0}}" 
+                                   value="{{SalaryTitle.PresentEmoluments}}" 
+                                   class="form-control present-emoluments"
+                                   data-index="{{forloop.counter0}}"
+                                   data-type="{{SalaryTitle.Type}}"
+                                   data-title-presentemoluments="{{SalaryTitle.Title}}_PresentEmoluments" readonly>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)"  or SalaryTitle.Title == "CTC (A+C)" %}
+                            
+                            <input type="number" name="RevisedSalary_{{forloop.counter0}}" 
+                                   value="{{SalaryTitle.RevisedSalary}}" 
+                                   class="form-control revised-salary"
+                                   data-title-revisedsalary="{{SalaryTitle.Title}}_RevisedSalary" readonly>
+                            {% else %}
+                            <input type="number" name="RevisedSalary_{{forloop.counter0}}" 
+                                   value="{{SalaryTitle.RevisedSalary}}" 
+                                   class="form-control revised-salary"
+                                   data-title-revisedsalary="{{SalaryTitle.Title}}_RevisedSalary">
+                            
+
+                            {% endif %}
+
+
+                        </td>
+                    </tr>
+                    {% if forloop.last %}
+                    <input type="hidden" name="Total_Title" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    function updateRevisedSalary() {
+                        let grossPresent = 0;
+                        let grossRevised = 0;
+                        let deductionsPresent = 0;
+                        let deductionsRevised = 0;
+                        let contributionPresent = 0;
+                        let contributionRevised = 0;
+            
+                        document.querySelectorAll('.present-emoluments').forEach(function(element) {
+                            let index = element.getAttribute('data-index');
+                            let type = element.getAttribute('data-type');
+                            let presentEmoluments = parseFloat(element.value) || 0;
+                            let revisedSalary = parseFloat(document.querySelector(`input[name="RevisedSalary_${index}"]`).value) || 0;
+            
+                            if (type === 'A') {
+                                grossPresent += presentEmoluments;
+                                grossRevised += revisedSalary;
+                            } else if (type === 'B') {
+                                deductionsPresent += presentEmoluments;
+                                deductionsRevised += revisedSalary;
+                            } else if (type === 'C') {
+                                contributionPresent += presentEmoluments;
+                                contributionRevised += revisedSalary;
+                            }
+                        });
+            
+                        // Remove calculations for Employee PF, ESIC, and Company Contribution to ESIC
+                        
+                        // Update Gross Revised
+                        document.querySelector('input[data-title-revisedsalary="Gross (A)_RevisedSalary"]').value = grossRevised.toFixed(2);
+            
+                        // Update Revised Deductions and Contributions
+                        document.querySelector('input[data-title-revisedsalary="Total Employee Deduction (B)_RevisedSalary"]').value = deductionsRevised.toFixed(2);
+                        document.querySelector('input[data-title-revisedsalary="Total Company Contribution (C)_RevisedSalary"]').value = contributionRevised.toFixed(2);
+            
+                      
+                        // Update Revised CTC
+                        let ctcRevised = grossRevised + contributionRevised;
+                        document.querySelector('input[data-title-revisedsalary="CTC (A+C)_RevisedSalary"]').value = ctcRevised.toFixed(2);
+                        const ctcInputField = document.querySelector('input[name="CTC"]');
+                        if (ctcInputField) {
+                            console.log("Revised CTC value:", ctcRevised.toFixed(2));
+                            ctcInputField.value = ctcRevised.toFixed(2);
+                        }
+
+                    }
+            
+                    // Add event listeners for input elements to trigger revised salary calculation
+                    document.querySelectorAll('.revised-salary').forEach(function(element) {
+                        element.addEventListener('input', updateRevisedSalary);
+                    });
+            
+                    // Initial calculation on page load
+                    updateRevisedSalary();
+                });
+            </script>
+            
+        </div>
+        </div>
+        
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+        </div>
+</form>
+           
+</div>
+  
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkbox = document.getElementById('PWI');
+        const pwiDiv = document.getElementById('PWIShow');
+
+        // Function to toggle visibility
+        function togglePWI() {
+            if (checkbox.checked) {
+                pwiDiv.style.display = 'block';
+            } else {
+                pwiDiv.style.display = 'none';
+            }
+        }
+
+        // Attach event listener
+        checkbox.addEventListener('change', togglePWI);
+
+        // Initial check (to handle page load state)
+        togglePWI();
+    });
+</script>
+
+
+<script>
+    function updateManagerName() {
+        const select = document.getElementById("Issuing_designation");
+        const selectedOption = select.options[select.selectedIndex];
+        const fullName = selectedOption.getAttribute("data-fullname");
+        document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateManagerName();
+    });
+
+    document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+
+
+{% endblock content %}

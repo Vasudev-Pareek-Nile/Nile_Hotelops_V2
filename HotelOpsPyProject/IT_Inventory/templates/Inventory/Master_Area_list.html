@@ -1,0 +1,92 @@
+{% extends "Inventory/homebase.html" %} {% block content %}
+
+<style>
+      body {
+        font-family: arial nova;
+        font-size: 13px;
+    }
+     table th {
+        text-transform: uppercase;
+        font-size: 11px;
+      }
+    .delete:hover{
+        background-color: white;
+        border-color: red;
+    }
+
+    .delete:hover i{
+        color: red;
+    }
+
+    .delete i{
+        color: white;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .EditButton:hover{
+        background-color: white;
+        border-color: #3a4a93;
+    }
+
+    .EditButton:hover i{
+        color: #3a4a93;
+    }
+</style>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 900px;"> <!-- Reduced width and centered with mx-auto -->
+            {{ message }}
+        </div>
+        <script>
+            setTimeout(function() {
+                document.querySelector('.alert').remove();
+            }, 3000); 
+        </script>
+    {% endfor %}
+{% endif %}
+
+<div class="card">
+  <div class="card-header d-flex justify-content-between">
+      <h4 class="text-uppercase fw-bold">Master Area List</h4>
+      <a href="{% url 'Master_Area_add' %}" class="btn btn-primary">New Area Add</a>
+  </div>
+
+      
+  <div class="card-body">
+    <table id="example" class="table table-bordered table-striped custom-table mb-0 datatable dataTable no-footer">
+      <thead class="thead-">
+        <tr class="table-success">
+          <th>Area Name</th>
+          
+        
+           <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+          {% for area in areas  %} 
+        <tr>
+          <td>{{ area.Area_name}}</td>
+          
+               
+          {% comment %} <td>
+            <a href="{% url 'Master_Area_add' %}?ID={{area.id}}" class="fa fa-edit" style="color: blue"></a>
+           
+            <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'area_delete'  %}?ID={{area.id}}">
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+
+          </td> {% endcomment %}
+
+          <td>
+            <a class="btn btn-primary EditButton btn-sm" href="{% url 'Master_Area_add' %}?ID={{area.id}}"><i class="fas fa-edit"></i></a>
+            <a onclick="return confirm('Are you sure you want to delete? ')  " class="btn btn-primary btn-sm delete Delete-Entry" href="{% url 'area_delete'  %}?ID={{area.id}}"><i class="fas fa-trash-alt"></i></a>
+        </td>
+        </tr>
+        {% endfor %} 
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock content %}

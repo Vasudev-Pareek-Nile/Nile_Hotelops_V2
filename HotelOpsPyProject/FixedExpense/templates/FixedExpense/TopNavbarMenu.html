@@ -1,0 +1,30 @@
+<!-- New - Example Element Element -->
+<div class="nav-element-container d-flex gap-4">
+        <!-- New - Element -->
+            <!-- New - View Actual - Element -->
+    <li class="list-unstyled"><a href= "/FixedExpense/FixedExpenseEntry" class="nav-link dropdown-main-color text-white">Entry</a></li> 
+    <li class="list-unstyled"><a href= "/FixedExpense/FixedExpenseList" class="nav-link dropdown-main-color text-white">List</a></li> 
+    <li class="list-unstyled"><a href= "/FixedExpense/FixedExpenseList" class="nav-link dropdown-main-color text-white">Yearly Report</a></li> 
+    
+    {% if request.session.OrganizationID == "3" %}
+        <li class="list-unstyled"><a href="/FixedExpense/FixedExpenseHotelCombineMontlyReport" class="nav-link dropdown-main-color text-white">Monthly Hotel Combine Report</a></li>
+    {% endif %}
+
+    {% if request.session.UserID == "20201212178780" %}
+        <li class="list-unstyled"><a href="http://nile.hotelops.in/FixedExpense/Home/ManageMaster" class="nav-link dropdown-main-color text-white">Manage Master</a></li>
+    {% endif %}
+    <!-- New - Element -->
+    {% comment %} <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+        <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+            <span>demo</span>
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item dropdown-item-color" href="sub-demo">Sub-demo</a>
+            <a class="dropdown-item dropdown-item-color" href="sub-demo">Sub-demo</a>
+            <a class="dropdown-item dropdown-item-color" href="sub-demo">Sub-demo</a>
+            <a class="dropdown-item dropdown-item-color" href="sub-demo">Sub-demo</a>
+            <a class="dropdown-item dropdown-item-color" href="sub-demo">Sub-demo</a>
+        </div>
+    </li> {% endcomment %}
+    
+</div>

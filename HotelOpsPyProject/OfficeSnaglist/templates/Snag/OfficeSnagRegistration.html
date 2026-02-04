@@ -1,0 +1,102 @@
+{% extends 'Snag/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'OfficeSnagRegistration' %}  enctype="multipart/form-data">
+    {{ Office_Snag_Registration_Form }}
+
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In Office Snaglist Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Area</label>
+                {% render_field OfficeSnagForm.Area class="form-control" placeholder="Area"  %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Date</label>
+                {% render_field OfficeSnagForm.Date class="form-control" placeholder="Date" %}
+              </div>
+            </div> 
+           
+        
+        </table>
+
+        <br>
+
+                      <table class="table table-bordered">
+                        <tr>
+                          <th width="300">Category</th>
+                          <th>Description</th>
+                          <th>Status</th>
+                          <th>Remarks</th>
+
+
+                      
+                      
+
+                        {% for i in DbItemMaster %}
+                              <tr>
+                                <td>{{i.Category_Name}}</td>
+                                <td>{{i.Category_Title_Name}}</td>
+                                <td class="rb">
+                                  <input type="hidden"  rows=2 value="{{i.id}}" name="ItemID_{{ forloop.counter0 }}" >
+                                  {% comment %} <input type="text"  rows=2 value="{{i.id}}" name="Remarks_{{ forloop.counter0 }}" > {% endcomment %}
+                                  <select type="text"  rows=2 name="Status_{{ forloop.counter0 }}">
+                                    <option>select</option>
+                                    <option value="YES">YES</option>
+                                    <option value="NA">NA</option>
+                                  </select>
+                                  <td>
+                                    <textArea type="text"  rows=3 maxlength=400   name="Remarks_{{ forloop.counter0 }}"></textarea> 
+                                    {% comment %} <textArea type="text"  rows=2 name="Remarks_{{ forloop.counter0 }}"></textarea> {% endcomment %}
+                                  </td>
+                                  {% comment %} <input type="textArea"  rows=2 name="Remarks_{{ forloop.counter0 }}"> {% endcomment %}
+                                </td>
+                                <td>
+                                 
+                                  {% if forloop.last %}
+                                  <input type="hidden"  rows=2 value="{{forloop.counter }}" name="TotalItem" >
+                                  {% endif %}
+                                {% comment %} </td>
+                                <td class="rb">
+                                    <textArea></textarea>  
+                                </td>                               {% endcomment %}
+                              </tr>
+                             
+                        {% endfor %}
+                      </table> 
+
+                    
+
+                
+           
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+
+
+  {% endblock content %}  

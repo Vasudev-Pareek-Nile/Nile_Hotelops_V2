@@ -1,0 +1,104 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<style>
+    table{
+        border: 1px solid #E9E9EA;
+    }
+    table, tr td, th{
+        border: 1px solid #afafb0;
+    }
+
+    #employeeTable thead tr th{
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header mb-2">
+        <span class="mb-0 fw-bold text-uppercase">Clearance</h3>
+    </div>
+
+    <div class="card-body ">
+        <table id="employeeTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Code</th>
+                    
+                    <th>Name</th>
+                    <th>Department</th>
+                    <!-- <th>Designation</th> -->
+                    <!-- <th style="width: 70px;">DOJ</th> -->
+                    <!-- <th >Status</th> -->
+                    <!-- <th class="text-center" >HR</th>  -->
+                    <th>HK</th> 
+                    <th>IT</th>
+                    <!-- <th class="text-center" >F&B</th>
+                    <th class="text-center" >FIN</th>
+                    <th class="text-center" >DEPT</th> -->
+                    <th class="text-center" >Type</th>
+                    <!-- <th class="text-center">Action</th> -->
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for al in merged_qs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ al.emp_code }}</td>
+
+                    <td>{{ al.first_name }} {{ al.last_name }}</td>
+
+                    <td>{{ al.department }}</td>
+
+                    <td>
+                        {% comment %} {{al.HK}} {% endcomment %}
+                        {% if al.HK %}
+                        {% comment %} {% if al.uniform_info_id %} {% endcomment %}
+                            <a href="{% url 'HouseKeepingRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&Hide=True" 
+                            class="btn btn-sm btn-Secondary text-white" target="_blank">
+                                Issued 
+                            </a>
+                        {% else %}
+                        
+                            <a href="{% url 'HouseKeepingRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}" 
+                                class="btn btn-sm btn-primary" target="_blank">
+                                Issue 
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% comment %} {{al.HK}} {% endcomment %}
+                        {% if al.HK %}
+                        {% comment %} {% if al.uniform_info_id %} {% endcomment %}
+                            <a href="{% url 'ITRequest_ViewOnly' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&ID={{al.it_info_id}}&Hide=True" 
+                            class="btn btn-sm btn-Secondary text-white" target="_blank">
+                                Issued 
+                            </a>
+                        {% else %}
+                        
+                            <a href="{% url 'ITRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}" 
+                                class="btn btn-sm btn-primary" target="_blank">
+                                Issue 
+                            </a>
+                        {% endif %}
+                    </td>
+
+                    {% comment %} <td><a href="{% url 'ITRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}" class="btn btn-sm btn-primary" target="_blank">Issue</a></td> {% endcomment %}
+
+                    <td>Issue</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+  
+
+{% endblock content %}

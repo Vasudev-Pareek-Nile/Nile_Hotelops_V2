@@ -1,0 +1,301 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+ <style>
+  body {
+    font-family: 'Arial Nova', sans-serif; /* Use correct font name with quotes */
+  }
+
+    .actions {
+        margin-left: 10px;
+    }
+    .actions a {
+        margin-right: 5px;
+        text-decoration: none;
+        color: blue;
+    }
+    .actions a:hover {
+        text-decoration: underline;
+    }
+    .custom-card {
+        width: 98%; /* Adjust the width as needed */
+        margin: auto; /* Center the card */
+    }
+    .modal-dialog{
+        width: 72%;
+        max-width: 72%;
+        min-width: 720px;
+    }
+    th, td {
+        font-size: 13px;
+        font-family: 'Arial Nova', Arial, sans-serif;
+        border: 1px solid #ddd;
+    }
+    .input-small {
+        width: 70px;
+        height: 30px;
+    }
+    th {
+        text-align: center;
+        font-size: 10px;
+    }
+ 
+        .custom-label {
+          width: 300px; /* Adjust the width as needed */
+        }
+        .form-control {
+          flex-grow: 1;
+        }
+     
+    .btn-group {
+        margin-bottom: 10px; 
+
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+        
+             }
+             .card{
+                border-radius:10px;
+             }
+             h4{
+               margin-bottom:10px !important;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+            font-size: 13px !important;
+        }
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 14px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+                    {% comment %} margin-right: 10px;  {% endcomment %}
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+        .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #000000 !important;
+            {% comment %} margin-right: 10px;  {% endcomment %}
+            padding-block: 10px;
+        }
+
+        .HeaderWithColor {
+            background-color: #edf0fb !important;
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        .card .card-header {
+            padding: 20px;
+            padding-bottom: 0px;
+            {% comment %} border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important; {% endcomment %}
+            background: transparent;
+        }
+
+        .submit-input{
+            height:35px;
+        }
+        .submit-button{
+            margin-left:-10px;
+        }
+        .filter-box-filters{
+            {% comment %} font-size: 13px  !important; {% endcomment %}
+            padding: 7px !important;
+            text-transform: capitalize !important;
+        }
+</style>
+
+{% comment %} <section class="pt-0">
+    <div class="tab-pane">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6"><strong>Manage Budget - Insurance Cost</strong></div>
+                </div>
+            </div>
+            <br>
+            <div class="col-md-8">
+                <form method="GET">
+                    <div class="row">
+                        <div class="col-md-6 mb-1">
+                           
+                            <select name="hotel_name" class="form-control" style="20px; margin-right: 20px;">
+                                <option value="Select" {% if SelHotelName == 'Select' %}selected{% endif %}>Select</option>
+                                {% for itm in memOrg %}
+                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == SelHotelName %}selected{% endif %}>
+                                    {{ itm.Organization_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-sm" style="margin-top: 3px; ">
+                                <i class="fa fa-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                   
+                </form>
+            </div>
+            <br>
+            <div class="col-md-9">
+                <div class="btn-group">
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'BudgetOndeta' %}?hotel_name={{ SelHotelName }}" style="color: inherit; ">Budget On Roll</a>
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'BudgetContract' %}?hotel_name={{ SelHotelName }}" style="color: inherit; ">Budget Contract</a>
+                    <a class="btn btn-default btn-sm  custom-btn " href="{% url 'MealCost' %}?hotel_name={{ SelHotelName }}" style="color: inherit; ">Budget Meal Cost</a>
+                    <a class="btn btn-primary btn-sm active custom-btn " href="{% url 'InsuranceCost' %}?hotel_name={{ SelHotelName }}" style="color: white;">Budget Insurance Cost</a>
+                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'SharedServicesbudget' %}?hotel_name={{ SelHotelName }}" style="color: inherit; ">Budget Shared Services</a>
+                </div>
+            </div>
+            <hr>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="col-md-8">
+                    <div class="row">
+                        <input type="hidden" name="hotel_name" value="{{ SelHotelName }}" />
+                        <div class="col-md-6 mb-1 d-flex align-items-center">
+                            <label for="EmployeeInsurancecost" class="from-label custom-label">Employee Insurance Cost</label>
+                            <input type="number" class="form-control" id="EmployeeInsurancecost" name="EmployeeInsurancecost" value="{{ EmployeeInsurancecost }}" required>
+                        </div>
+                        <div class="col-md-2 mb-1 d-flex align-items-center">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="card-footer">
+                    <div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+ {% endcomment %}
+
+{% comment %} <div class="content container-fluid pb-0"> {% endcomment %}
+<div class="row">
+    <div class="col-sm-12">
+        <section class="pt-0">
+            <div class="tab-pane">
+            
+                <div class="card ">
+                    <div class="card-header">                   
+                        <span class="text-uppercase fw-bold">Manage Budget - Insurance Cost</span>                    
+                    </div>
+                    <div class="card-body">               
+                        <form method="GET" class="mb-0">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="input-block">
+                                        {% comment %} <label for="hotelnamelabel" class="form-label">Select Organizations</label> {% endcomment %}
+                                        <select name="hotel_name" id="hotelnamelabel" class="form-control select2" style="20px; margin-right: 20px;">
+                                            <option value="Select" {% if SelHotelName == 'Select' %}selected{% endif %}>Select</option>
+                                            {% for itm in memOrg %}
+                                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == SelHotelName %}selected{% endif %}>
+                                                {{ itm.Organization_name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                        
+                                <div class="col-md-2 filter-box">
+                                    <button type="submit" class="btn btn-primary filter-box-filters">Filter</button>
+                                    <a href="{% url 'InsuranceCost' %}" class="btn btn-danger filter-box-filters">Clear</a>
+                                </div>
+                            </div>
+                        </form>  
+                    </div>
+                </div>
+                    
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="btn-list d-flex flex-md-row flex-column gap-2 mb-3">
+                                    <a class="btn btn-default btn-sm  custom-btn" href="{% url 'BudgetOndeta' %}?hotel_name={{ SelHotelName }}" >Budget On Roll</a>
+                                    <a class="btn btn-default btn-sm custom-btn" href="{% url 'BudgetContract' %}?hotel_name={{ SelHotelName }}" >Budget Contract</a>
+                                    <a class="btn btn-default btn-sm custom-btn"  href="{% url 'MealCost' %}?hotel_name={{ SelHotelName }}" >Budget Meal Cost</a>
+                                    <a class="btn btn-primary btn-sm active"  href="{% url 'InsuranceCost' %}?hotel_name={{ SelHotelName }}" >Budget Insurance Cost</a>
+                                    <a class="btn btn-default btn-sm custom-btn" href="{% url 'SharedServicesbudget' %}?hotel_name={{ SelHotelName }}" >Budget Shared Services</a>
+                                </div>
+
+                    
+
+                           {% comment %} <div class="card d-flex justify-items-center p-4"> {% endcomment %}
+                            <form method="POST" >
+                                <div class="row">
+                                    {% csrf_token %}
+
+                                    <div class="col-md-3">
+                                        <div class="input-block">
+                                            <input type="hidden" name="hotel_name" value="{{ SelHotelName }}" />
+                                            <label for="EmployeeInsurancecost" class="from-label fw-bold custom-label mb-2">Employee Insurance Cost</label>
+                                            <input type="number" class="form-control submit-input" id="EmployeeInsurancecost" name="EmployeeInsurancecost" value="{{ EmployeeInsurancecost }}" required>
+                                        </div>
+                                    </div>
+                                
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-sm btn-primary submit-button" style="margin-top:29px;" >
+                                            Submit 
+                                        </button>
+                                    </div>
+                               </div>
+                            </form>  
+                            {% comment %} </div> {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </section>
+    </div>
+</div>
+{% comment %} </div> {% endcomment %}
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ SelHotelName }}";
+        // console.log("seleced Organization id is here:", selectedOrganization)
+        $("select[name='hotel_name']").val(selectedOrganization);
+        $('select').select2();
+    });
+</script>
+{% endblock content %}

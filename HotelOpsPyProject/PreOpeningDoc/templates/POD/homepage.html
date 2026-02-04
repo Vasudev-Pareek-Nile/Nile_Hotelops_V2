@@ -1,0 +1,49 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    .Ulmodule li {
+        flex:0;
+        margin: 10px;
+        background: #6789bd;
+        padding: 15px;
+        border-radius: 5px;
+        list-style: none;
+        min-width: 150px;
+        align-items: stretch;
+        
+    }
+    
+    ul.Ulmodule {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: flex-end;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        
+        align-items:  stretch ;
+        
+    }
+    .Ulmodule li a{
+      color: #fff;
+      font-size:25px;
+    }
+  
+</style>
+    <div>
+        <ul class="Ulmodule">
+                <li><a href="/PreOpeningDoc/FixedSigEntry">Fixed Signages Entry</a></li>
+                <li><a href="/PreOpeningDoc/ProImpPlanEntry">Project Implementaion Plan Entry</a></li>
+                <li><a href="/PreOpeningDoc/SnagList">Snag List</a></li>
+                <li><a href="/PreOpeningDoc/ProImpProcessList">Project Implementaion Process</a></li>
+                <li><a href="/PreOpeningDoc/HotelHandoverList">HANDOVER SCHEDULE OF HOTEL FACILITIES</a></li>
+               
+        </ul>
+    </div>
+
+    {% endblock content %}

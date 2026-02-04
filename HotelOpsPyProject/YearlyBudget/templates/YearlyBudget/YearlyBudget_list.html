@@ -1,0 +1,109 @@
+{% extends 'YearlyBudget/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+        
+  .hotel-container {
+  display: flex;
+  align-items: center; /* Vertically center items within the container */
+}
+table th,td{
+    font-size: 12px;
+}
+</style> 
+       
+      
+<div class="container">
+    <div class="container col-md-12 text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+    
+    <div class="card-header">Yearly Budget List</div>
+    <br>
+    
+    
+    
+    
+    <form method="GET">
+        <div class="row justify-content-center" >
+        <div class="col-md-6 ">            
+            <select name="I" class="form-control ">
+                        
+            {% for itm in memOrg %}
+                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                    {{ itm.Organization_name }}
+                </option>
+            {% endfor %}
+           </select>
+        </div>           
+        <div class="col-md-1">
+
+            <button type="submit" class="btn btn-primary btn-block btn-sm" >Filter</button>
+        </div>            
+                   <div class="col-md-2">
+            <a href="{% url 'YearlyBudget_list' %}" class="btn btn-primary btn-sm ">Clear Filter</a>
+        </div>
+            
+        </div>
+    </form>
+
+        
+           
+       
+    <br>
+    <div>
+      
+        <br>
+        <table id="title" class="table table-bordered">
+            <thead>
+                <th width = "400px">Organization Name</th>
+                <th width = "400px">Year</th>
+        
+                <th width="250"  id="mid">  Action </th>
+            </thead>
+            {% for x in data %}
+            <tr>
+                
+                {% for org in memOrg  %}
+                   {% if org.OrganizationID == x.OrganizationID %}
+                   <td>    {{ org.Organization_name }}</td>
+                   {% endif %}
+                {%endfor  %}
+                <td>{{x.EntryYear}}</td> 
+                <td>
+                    
+                    <a class="btn btn-primary" href="{% url 'YearlyBudget_Entry_Details' %}?EntryYear={{ x.EntryYear }}&I={{ x.OrganizationID }}">Edit</a>
+
+                    
+                    <a class="btn btn-primary" href="{% url 'YearlyBudget_View' id=x.id   %}">View</a>
+                </td>
+                                          
+            </tr>
+            {% empty %}
+           <tr> <td colspan="3" style="text-align: center;">No Data Found !!! </td></tr>
+            {% endfor %}
+           
+        </table>
+        <br><br>
+        
+        <br>
+        
+    </div>
+</div>
+<script>
+    
+  $(document).ready(function () {
+    var selectedOrganization = "{{ I }}";
+    $("select[name='I']").val(selectedOrganization);
+    
+}); 
+</script>
+     
+
+{% endblock content %}

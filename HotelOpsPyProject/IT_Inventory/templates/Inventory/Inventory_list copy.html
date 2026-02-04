@@ -1,0 +1,579 @@
+{% extends "Inventory/homebase.html" %} 
+{% load IT_Inventory_Filters %}
+{% block content %}
+<style>
+  table th {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+  td {
+    text-align: center;
+    font-size: 12px;
+  }
+
+  #example {
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  .text-danger {
+    color: red;
+  }
+
+
+    .delete:hover{
+        background-color: white;
+        border-color: red;
+    }
+
+    .delete:hover i{
+        color: red;
+    }
+
+    .delete i{
+        color: white;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .EditButton:hover, .view-qr-btn:hover{
+        background-color: white;
+        border-color: #3a4a93;
+    }
+
+    .EditButton:hover i, .view-qr-btn:hover i{
+        color: #3a4a93;
+    }
+
+    .view-qr-btn
+
+</style>
+
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .card-header{
+        margin-bottom:-25px;
+    }
+</style>
+
+
+
+<div class="col-md-12">
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %}" role="alert" style="color: #5143d9;">
+            {{ message }}
+        </div>
+        <script>
+            setTimeout(function() {
+                document.querySelector('.alert').remove();
+            }, 3000); 
+        </script>
+    {% endfor %}
+    {% endif %}
+
+<div class="card pb-4">
+    <div class="card-header d-flex justify-content-between">
+        <h4 class="text-uppercase fw-bold">IT Inventory List</h4>
+        <a href="{% url 'Inventory_Add' %}" class="btn btn-primary"> Add Inventory </a>
+    </div>
+    <!-- <br> -->
+    <div class="col-md-12">
+        <form method="GET" class="row" style="padding-inline: 21px">
+            <div class="m-1 col-md-3">
+                <label for="organization" class="form-label">Organization</label>
+                <select name="OrganizationID" id="organization" class="form-control select2">
+                    {% if SessionOrganizationID == 3 %}
+                        <option value="All">All</option>
+                    {% endif %}
+                    {% for itm in orgs %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                        {{ itm.OrganizationName }}
+                    </option>
+                    {% endfor %}
+                </select> 
+            </div>
+
+            <div class="m-1 col-md-2">
+                <label for="InventoryType" class="form-label">Inventory Type</label>
+                <select name="InventoryType" id="InventoryType"  class="form-control select2" placeholder="e.g. Hardware">
+                    <option value="">All</option>
+                    <option value="Hardware" {% if request.GET.InventoryType == 'Hardware' %}selected{% endif %}>Hardware</option>
+                    <option value="Software" {% if request.GET.InventoryType == 'Software' %}selected{% endif %}>Software</option>
+                </select> 
+            </div>
+
+            <div class="m-1 col-md-2">
+                <label for="HardwareType"  class="form-label">Item Type</label>
+                <select name="HardwareType" id="HardwareType" class="form-control select2">
+                    <option value="">All</option>
+                    {% for Category in Categorys %}
+                        <option value="{{ Category.Category_Type }}" {% if Category.Category_Type == inventorys.type %} selected {% endif %}>{{ Category.Category_Type }}</option>
+                    {% endfor %}
+                    {% for software_type in software_types %}
+                        <option value="{{ software_type.software_name }}" {% if software_type.software_name == inventorys.Area %} selected {% endif %}>{{ software_type.software_name }}</option>
+                    {% endfor %}
+                </select> 
+            </div>
+            
+            
+            <div class="m-1 col-md-2">
+                <label for="SerialNo"  class="form-label">Serial No</label>
+                <select name="SerialNo" id="SerialNo" class="form-control select2">
+                    <option value="">All</option>
+                    {% for Serial in SerialNoList %}
+                        <option value="{{ Serial.SerialNo }}">{{ Serial.SerialNo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="m-1 col-md-2 position-relative">
+                <div class="input-block mb-3">
+                    <label for="Make" class="form-label">Make</label>
+                    <select name="Make" id="Make" class="form-control select2" placeholder="e.g. HP">
+                        <option value="">All</option>
+                        {% for company in companys %}
+                            <option value="{{ company.Company_name }}" {% if company.Company_name == inventorys.Make %} selected {% endif %}>{{ company.Company_name }}</option>
+                        {% endfor %}
+                    </select> 
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="input-block mb-3">
+                    <label class="form-label">Warranty Status</label>
+                    <select class="form-control" id="warrantyStatus" name="Warrantiy_Status">
+                        <option value="">Select Status</option>
+                        <option value="N/A"{% if inventorys.AMC_Status == "N/A" %}selected{% endif %}>N/A</option>
+                        <option value="Under Warranty"{% if inventorys.AMC_Status == "Under_Warranty" %}selected{% endif %}>Under Warranty</option>
+                        <option value="Expired"{% if inventorys.AMC_Status == "Expired" %}selected{% endif %}>Expired</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="col-md-2">
+                <div class="input-block mb-3">
+                    <label class="form-label">AMC Status</label>
+                    <select class="form-control" name="AMC_Status" id="AMC_Status">
+                        <option value="">Select Status</option>
+                        <option value="N/A">N/A</option>
+                        <option value="Under Warranty">Under Warranty</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                </div>
+            </div>
+        </form>  
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        {% comment %} <table id="example" class="table table-bordered table-striped table-hover" style="width:100%"> {% endcomment %}
+        <table id="example" class="table table-striped custom-table mb-0 datatable dataTable no-footer" style="width:100%">
+            <thead class="thead">
+                <tr class="">
+                    <th>#</th>
+                    <th>Inventory</th>
+                    <th>Description</th>
+                    <th>Type</th>
+                    {% comment %} <th>Software <br> Quantity</th> {% endcomment %}
+                    <!-- <th>software_AMC_Start</th> -->
+                    <th>SerialNo</th>
+                    <th>MAKE | MODEL |<br> Comm. Date</th>
+                    <th>Warranty <br> PERIOD</th>
+                    <th>WARRANTY <br> STATUS</th>
+                    <th>AMC PERIOD</th> 
+                    <th>AMC STATUS</th>
+                    <th>Quantity <br> Per Unit Price <br> Yearly Expense</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for itInventorys in inventory_data %}
+                <tr>
+                    <td>{{ forloop.counter }}</td> 
+                    <td data-st="InventoryType" data-s="{{ itInventorys.inventory.Inventory_Type }}">{{itInventorys.inventory.Inventory_Type}}</td> 
+                    <td data-st="Description" data-s="{{ itInventorys.inventory.Description }}">{{itInventorys.inventory.Description}}</td> 
+                    <td data-st="ItemType" data-s="{{ itInventorys.inventory.Inventory_Type }}">
+                        {% if itInventorys.inventory.Inventory_Type == "Hardware" %}
+                           {{itInventorys.inventory.type}}
+                        {% elif itInventorys.inventory.Inventory_Type == "Software" %} 
+                            {{itInventorys.inventory.softwaretype}}
+                        {% endif %}
+                    </td>
+                    <!-- <td>{{itInventorys.inventory.software_AMC_Start}}</td>  -->
+                    {% comment %} <td>{{itInventorys.inventory.Quantity}}</td>  {% endcomment %}
+                    <td data-st="SerialNo" data-s="{{ itInventorys.inventory.SerialNo }}">{{itInventorys.inventory.SerialNo}}</td> 
+                    <td data-st="Make" data-s="{{ itInventorys.inventory.Make }}">{{itInventorys.inventory.Make}} | {{itInventorys.inventory.Model_No}} |<br> {{itInventorys.inventory.Commissioning_Date|format_ymd_to_dmy }}</td> 
+                    <td>{{itInventorys.inventory.Warrantiy_start|format_ymd_to_dmy }}<br>{{itInventorys.inventory.Warrantiy_end|format_ymd_to_dmy }}</td> 
+                    <td data-st="WarrantiyStatus" data-s="{{ itInventorys.inventory.Warrantiy_Status }}">
+                        <span class="{% if itInventorys.inventory.Warrantiy_Status == 'Expired' %}text-danger{% endif %}">{{itInventorys.inventory.Warrantiy_Status}}</span>
+                    </td> 
+                    <td>
+                        {% if itInventorys.inventory.Inventory_Type == "Hardware" %}
+                            {{ itInventorys.inventory.amcstart|format_ymd_to_dmy }}<br>{{ itInventorys.inventory.amcend|format_ymd_to_dmy }}
+                        {% elif itInventorys.inventory.Inventory_Type == "Software" %} 
+                            {{ itInventorys.inventory.software_AMC_Start|format_ymd_to_dmy }}<br>{{ itInventorys.inventory.software_AMC_end|format_ymd_to_dmy }}
+                        {% endif %}
+                    </td>
+                    <td data-st="AMCStatus" data-s="{{ itInventorys.inventory.AMCStatus }}">
+                        {% if itInventorys.inventory.Inventory_Type == "Hardware" %}
+                            <span class="{% if itInventorys.inventory.AMC_Status == 'Expired' %}text-danger{% endif %}">{{itInventorys.inventory.AMC_Status}}</span>
+                        {% elif itInventorys.inventory.Inventory_Type == "Software" %} 
+                            <span class="{% if itInventorys.inventory.software_AMC_Status == 'Expired' %}text-danger{% endif %}">{{itInventorys.inventory.software_AMC_Status}}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if itInventorys.inventory.Inventory_Type == "Hardware" %}
+                            {{ itInventorys.inventory.hardware_quantity }}<br>
+                            {{ itInventorys.inventory.hardware_unit_price }}<br>
+                            {{ itInventorys.inventory.hardware_AMC_Yearly_Expense }}
+                        {% elif itInventorys.inventory.Inventory_Type == "Software" %} 
+                            {{ itInventorys.inventory.Software_Quantity }}<br>
+                            {{ itInventorys.inventory.Software_unit_price }}
+                            {{ itInventorys.inventory.software_AMC_Yearly_Expense }}
+                        {% endif %}
+                    </td>
+                    {% comment %} <td>
+                        <span class="{% if itInventorys.inventory.AMC_Status == 'Expired' %}text-danger{% endif %}">{{itInventorys.inventory.AMC_Status}}</span>
+                    </td> {% endcomment %}
+                    <td class="d-flex gap-1">
+                       <a href="#" class="btn btn-primary btn-block btn-sm view-qr-btn " data-toggle="modal" data-target="#qrModal{{ forloop.counter }}" data-item-id="{{ itInventorys.inventory.id }}"><i class="fas fa-qrcode"></i></a>
+                       {% comment %} <a href="#" class="btn btn-primary btn-block btn-sm view-qr-btn " data-toggle="modal" data-target="#qrModal{{ forloop.counter }}" data-item-id="{{ itInventorys.inventory.id }}">View QR</a> {% endcomment %}
+                
+                        <div class="modal fade" id="qrModal{{ forloop.counter }}" tabindex="-1" role="dialog" aria-labelledby="qrModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header  d-flex justify-content-between">
+                                        <h5 class="modal-title" id="qrModalLabel">QR Code</h5>
+                                        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="qrCodeContainer{{ forloop.counter }}">
+                                            <div class="d-flex justify-content-between">
+                                                <p><span class="fw-bold">Inventory Type:</span> <br> {{itInventorys.inventory.Inventory_Type}}</p>
+                                                <p><span class="fw-bold">Type:</span> <br>
+                                                {% if itInventorys.inventory.Inventory_Type == "Hardware" %}
+                                                        {{itInventorys.inventory.type}}
+                                                {% elif itInventorys.inventory.Inventory_Type == "Software" %} 
+                                                        {{itInventorys.inventory.softwaretype}}
+                                                    {% endif %}
+                                                </p>
+                                                <p><span class="fw-bold">Description:</span><br> {{itInventorys.inventory.Description}}</p>
+                                                <p><span class="fw-bold">Serial No:</span><br> {{itInventorys.inventory.SerialNo}}</p>
+                                            </div>
+                                            <img id="qrCodeImage{{ forloop.counter }}" src="{{ itInventorys.qr_code_url }}" alt="QR Code">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" id="printQR{{ forloop.counter }}" download="qr_code_Details{{ forloop.counter }}.png">Print</button>
+                                    
+                                        <a href="#" class="btn btn-primary" id="downloadQR{{ forloop.counter }}" download="qr_code{{ forloop.counter }}.png">Download</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <a class="btn btn-primary EditButton btn-sm" href="{% url 'Inventory_Add'  %}?ID={{itInventorys.inventory.id}}"><i class="fas fa-edit"></i></a>
+
+                        <a onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-primary btn-sm delete Delete-Entry" href="{% url 'Inventory_delete' %}?ID={{ itInventorys.inventory.id }}"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+                {% endfor %} 
+            </tbody> 
+        </table>
+    </div>
+</div>
+    
+    <br />
+
+</div>
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+{% comment %} <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filters = {
+            InventoryType: document.getElementById('InventoryType'),
+            HardwareType: document.getElementById('HardwareType'),
+            SerialNo: document.getElementById('SerialNo'),
+            Make: document.getElementById('Make'),
+            WarrantiyStatus: document.getElementById('warrantyStatus'),
+            AMCStatus: document.querySelector('[name="AMC_Status"]'),
+        };
+
+        const tableRows = document.querySelectorAll('#example tbody tr');
+
+        // Helper to get the data from data-s attributes
+        function getCellData(row, key) {
+            const cell = row.querySelector(`[data-st="${key}"]`);
+            return cell ? cell.getAttribute('data-s')?.toLowerCase() : '';
+        }
+
+        // Filter table rows based on selected inputs
+        function filterTable() {
+            tableRows.forEach(row => {
+                let isVisible = true;
+
+                Object.entries(filters).forEach(([key, input]) => {
+                    const filterValue = input.value.trim().toLowerCase();
+                    if (filterValue && getCellData(row, key).indexOf(filterValue) === -1) {
+                        isVisible = false;
+                    }
+                });
+
+                row.style.display = isVisible ? '' : 'none';
+            });
+        }
+
+        // Add event listeners
+        Object.values(filters).forEach(input => {
+            input.addEventListener('input', filterTable);
+            input.addEventListener('change', filterTable);
+        });
+    });
+</script> {% endcomment %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const filters = document.querySelectorAll('form select');
+        filters.forEach(function (filter) {
+            filter.addEventListener('change', function () {
+                this.form.submit();
+            });
+        });
+    });
+</script>
+
+
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("success");
+        const isError = urlParams.get("error");
+        const message = urlParams.get("message");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+                }
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+        }
+
+        if (isError && ['true', '1', 'yes'].includes(isError.toLowerCase())) {
+            const errorModalElement = document.getElementById("statusErrorsModal");
+            const errorText = document.getElementById("errorMessageText");
+
+            if (errorModalElement) {
+                if (errorText && message) {
+                    errorText.textContent = decodeURIComponent(message);
+                }
+                const errorModal = new bootstrap.Modal(errorModalElement);
+                errorModal.show();
+            }
+        }
+
+        // Cleanup URL
+        const newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    });
+</script> 
+
+
+<script>
+    window.onload = function() {
+        {% for itInventorys in inventory_data %}
+        const qrCodeBase64_{{ forloop.counter }} = "{{ itInventorys.qr_code_base64 }}";
+        
+        document.getElementById('qrCodeImage{{ forloop.counter }}').src = "data:image/png;base64," + qrCodeBase64_{{ forloop.counter }};
+        document.getElementById('qrCodeContainer{{ forloop.counter }}').src = "data:image/png;base64," + qrCodeBase64_{{ forloop.counter }};
+
+        document.getElementById('downloadQR{{ forloop.counter }}').addEventListener('click', function() {
+            const downloadLink = document.createElement('a');
+            downloadLink.href = "data:image/png;base64," + qrCodeBase64_{{ forloop.counter }};
+            downloadLink.download = "qr_code{{ forloop.counter }}.png";
+            downloadLink.click();
+        });
+
+        document.getElementById('printQR{{ forloop.counter }}').addEventListener('click', function () {
+            const modalContent = document.querySelector('#qrModal{{ forloop.counter }} .modal-content');
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Print QR Code Details</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            img { display: block; margin: 20px auto; max-width: 100%; height: auto; }
+                            p { margin-bottom: 10px; }
+                            .fw-bold { font-weight: bold; }
+                            .d-flex { display: flex; justify-content: space-between; flex-wrap: wrap; }
+                            .modal-header, .modal-body, .modal-footer { margin-bottom: 20px; }
+                            button, a { display: none; } /* Hide buttons in print */
+                        </style>
+                    </head>
+                    <body>
+                    ${modalContent.innerHTML}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+        });
+
+
+      
+        document.getElementById('qrCodeImage{{ forloop.counter }}').addEventListener('click', function() {
+            alert("Welcome!");
+        });
+      
+        document.getElementById('qrCodeContainer{{ forloop.counter }}').addEventListener('click', function() {
+            alert("Welcome!");
+        });
+        {% endfor %}
+    };
+</script> 
+
+{% endblock content %}

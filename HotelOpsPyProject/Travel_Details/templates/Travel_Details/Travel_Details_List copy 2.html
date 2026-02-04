@@ -1,0 +1,641 @@
+{% extends 'Travel_Details/homebase.html' %}
+{% load static %}
+{% block content %} 
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+  <style>
+    .HeaderWithColor{
+        /* background-color:#edf0fb !important; */
+        color:black;
+        text-transform:uppercase;
+        font-size:15px;
+        text-align:center;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+    }
+
+    .card-header{
+        margin-bottom:-25px;
+    }
+  </style>
+  <style>
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        {% comment %} border-top: 5px solid #3498db; {% endcomment %}
+        border-top: 5px solid #FC133D;
+        {% comment %} border-top: 5px solid #FF902F; {% endcomment %}
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .delete:hover{
+        background-color: white;
+        border-color: red;
+    }
+
+    .delete:hover i{
+        color: red;
+    }
+
+    .delete i{
+        color: white;
+        transition: all 0.5s ease-in-out;
+    }
+
+    .EditButton:hover{
+        background-color: white;
+        border-color: #3a4a93;
+    }
+
+    .EditButton:hover i{
+        color: #3a4a93;
+    }
+
+    .Comment{
+        max-width: 150px !important;
+        width: 150px !important;
+        min-width: 150px !important;
+    }
+
+    .Billing{
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+
+    .Action{
+        width: 100px !important;
+        min-width: 100px !important;
+        max-width: 100px !important;
+    }
+
+  </style>
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <p class="text-uppercase fw-bold fs-6">Travel Details List</p>
+        <div>
+            <button onclick="exportTableToExcel()" class="btn btn-primary btn-sm">Export to Excel</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="generateFilteredPDF()">Download PDF</button>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+        <div class="col-md-12" >
+            <form method="GET" action="{% url 'Travel_Details_List' %}" class="row" id="filterForm">
+                <div class="col-md-2">
+                    <label for="BookedBy"  class="form-label">Booked By</label>
+                    <input type="text" class="form-control" name="BookedBy" id="BookedBy" value="{{ filter_data.BookedBy }}" placeholder="e.g. {{ request.session.FullName }}" list="BookedByNameList">
+                    <datalist id="BookedByNameList">
+                            <option value="{{ request.session.FullName }}">{{ request.session.FullName }}</option>
+                    </datalist>
+                </div>
+
+                <div class="col-md-2 position-relative">
+                    <div class="input-block mb-3">
+                        <label for="BookingForName" class="form-label">Booking For (Name)</label>
+                         <input type="text" class="form-control" name="BookingForName" value="{{ filter_data.BookingForName }}" id="BookingForName" placeholder="e.g. Nile Hospitality" list="EmployeeList">
+                        <datalist id="EmployeeList">
+                            {% for emp in employees %}
+                                <option value="{{ emp.EmpName }}">
+                                    {{ emp.EmpName }}
+                                </option>
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+        
+                <div class="col-md-2">
+                    <label for="BookingDate"  class="form-label">Booking Date</label>
+                    <input type="date" class="form-control"  value="{{ filter_data.BookingDate }}" name="BookingDate" id="BookingDate">
+                </div>
+
+                <div class="col-md-2">
+                    <label for="travel_mode"  class="form-label">Travel Mode</label>
+                    <select class="form-control" name="travel_mode" id="travel_mode">
+                        <option value="">select</option>
+                        {% for mode in travel_modes %}
+                            <option value="{{ mode }}" {% if filter_data.travel_mode == mode %}selected{% endif %}>{{ mode }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- <div class="col-md-2">
+                    <label for="travel_mode"  class="form-label">Travel Mode</label>
+                    <select class="form-control" name="travel_mode" id="travel_mode">
+                        <option value="">select</option>
+                        <option value="Train">Train</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Flight">Flight</option>
+                        <option value="By Road">By Road</option>
+                    </select>
+                </div> -->
+
+
+                <div class="col-md-2">
+                    <label for="month_select" class="form-label">Month</label>
+                   <select name="month" id="month_select" class="form-control">
+                        <option value="">Select</option>
+                        {% for m in months %}
+                            <option value="{{ m }}" {% if filter_data.month == m %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- <div class="col-md-2">
+                    <label for="month_select" class="form-label">Month</label>
+                    <select id="month_select" class="form-control" name="month" required>
+                        <option value="">Select</option>
+                        <option value="January - {{CurrentYear}}" {% if selected_month == 1 %}selected{% endif %}>January - {{CurrentYear}}</option>
+                        <option value="February - {{CurrentYear}}" {% if selected_month == 2 %}selected{% endif %}>February - {{CurrentYear}}</option>
+                        <option value="March - {{CurrentYear}}" {% if selected_month == 3 %}selected{% endif %}>March - {{CurrentYear}}</option>
+                        <option value="April- {{CurrentYear}}" {% if selected_month == 4 %}selected{% endif %}>April - {{CurrentYear}}</option>
+                        <option value="May - {{CurrentYear}}" {% if selected_month == 5 %}selected{% endif %}>May - {{CurrentYear}}</option>
+                        <option value="June - {{CurrentYear}}" {% if selected_month == 6 %}selected{% endif %}>June - {{CurrentYear}}</option>
+                        <option value="July - {{CurrentYear}}" {% if selected_month == 7 %}selected{% endif %}>July - {{CurrentYear}}</option>
+                        <option value="August - {{CurrentYear}}" {% if selected_month == 8 %}selected{% endif %}>August - {{CurrentYear}}</option>
+                        <option value="September - {{CurrentYear}}" {% if selected_month == 9 %}selected{% endif %}>September - {{CurrentYear}}</option>
+                        <option value="October - {{CurrentYear}}" {% if selected_month == 10 %}selected{% endif %}>October - {{CurrentYear}}</option>
+                        <option value="November - {{CurrentYear}}" {% if selected_month == 11 %}selected{% endif %}>November - {{CurrentYear}}</option>
+                        <option value="December - {{CurrentYear}}" {% if selected_month == 12 %}selected{% endif %}>December - {{CurrentYear}}</option>
+                    </select>
+                </div>  -->
+
+                <div class="col-md-2">
+                    <label for="Billing" class="form-label">Billing</label>
+                    <input type="text" id="Billing" class="form-control" name="billing" value="{{ filter_data.Billing }}" list="orgList">
+                    <datalist id="orgList">
+                        {% for org in memOrg %}
+                            <option value="{{ org.Organization_name }}">{{ org.Organization_name }}</option>
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="col-md-12 text-end mt-3">
+                    <a href="{% url "Travel_Details_List" %}" type="button" id="RefreshBtn" class="btn btn-primary btn-sm" onclick="generateFilteredPDF()">Clear Filter</a>
+                </div>
+            </form>  
+
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-bordered MyDatatable" id="travelTable">
+            <thead>
+                <tr>
+                    <th class="HeaderWithColor">Sr#</th>
+                    <th class="HeaderWithColor">Booked By</th>
+                    <th class="HeaderWithColor">Name</th>
+                    <th class="HeaderWithColor">Booking <br> Date</th>
+                    <th class="HeaderWithColor">Travel Date <br> From - To</th>
+                    <th class="HeaderWithColor">Travel - Route <br> From - To</th>
+                    <th class="HeaderWithColor">Fare</th>
+                    <th class="HeaderWithColor">Travel <br> Mode</th>
+                    <th class="HeaderWithColor">PNR</th>
+                    <th class="HeaderWithColor">Total <br> Amount</th>
+                    <th class="HeaderWithColor Comment">Comment</th>
+                    <th class="HeaderWithColor Billing">Billing</th>
+                    <th class="HeaderWithColor Action">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for user in travel_details %}
+                {% with user.travels|length as travel_count %}
+                    {% for travel in user.travels %} 
+                        <tr>
+                            {% if forloop.first %} 
+                                <td rowspan="{{ travel_count }}" class="text-center">{{ forloop.parentloop.counter }}</td>
+                                <td rowspan="{{ travel_count }}">{{ user.booked_by }}</td>
+                                <td rowspan="{{ travel_count }}">{{ user.name }}</td>
+                                <td rowspan="{{ travel_count }}" class="text-center">{{ user.booking_date|date:'d-m-y'  }}</td>
+                            {% endif %}
+
+                            <td class="text-center">{{ travel.travel_Date_from|date:'d-m-y' }} 
+                                {% if travel.travel_Date_to %}
+                                    <br>
+                                    <strong>To</strong> <br>  {{ travel.travel_Date_to|date:'d-m-y' }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center" >{{ travel.travel_route_from }} 
+                                {% if travel.travel_route_to  %}
+                                    <br>
+                                    <strong>To</strong> <br> {{ travel.travel_route_to }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ travel.fare }}</td>
+                            <td class="text-center">{{ travel.travel_mode }}</td>
+                            <td class="text-center">{{ travel.pnr }}</td>
+                            {% if forloop.first %}
+                                <td rowspan="{{ travel_count }}" class="text-center">{{ user.Total_Amount }}</td>
+                            {% endif %}
+                            <td >{{ travel.comment }}</td>
+                            <td >{{ travel.billing }}</td>
+                            {% if forloop.first %}
+                                <td class="text-center" rowspan="{{ travel_count }}" >
+                                    <a class="btn btn-primary EditButton btn-sm" href="{% url "Create_Travel_Request" %}?Travel_Entry_ID={{ user.id }}&OID={{ user.organization_id }}"><i class="fas fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-sm delete Delete-Entry" href="{% url "Delete_Travel_Request" %}?Travel_Entry_ID={{user.id}}&OID={{travel.organization_id}}"><i class="fas fa-trash-alt"></i></a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% endwith %}
+            {% endfor %}  
+            </tbody>
+            
+            <tfoot>
+                <tr>
+                    <td colspan="9" class="text-end fw-bold HeaderWithColor" >Grand Total:</td>
+                    <td class="text-center fw-bold HeaderWithColor">{{ grand_total }}</td>
+                    <td colspan="3" class="HeaderWithColor"></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Travel Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+
+
+
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("success");
+        const isError = urlParams.get("error");
+        const message = urlParams.get("message");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+                }
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+        }
+
+        if (isError && ['true', '1', 'yes'].includes(isError.toLowerCase())) {
+            const errorModalElement = document.getElementById("statusErrorsModal");
+            const errorText = document.getElementById("errorMessageText");
+
+            if (errorModalElement) {
+                if (errorText && message) {
+                    errorText.textContent = decodeURIComponent(message);
+                }
+                const errorModal = new bootstrap.Modal(errorModalElement);
+                errorModal.show();
+            }
+        }
+
+        // Cleanup URL
+        // const newUrl = window.location.origin + window.location.pathname;
+        // window.history.replaceState({}, document.title, newUrl);
+    });
+</script>
+
+
+<script>
+    function exportTableToExcel() {
+        const table = document.getElementById("travelTable");
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(table, { raw: true });  // auto handles rowspan/colspan
+
+        XLSX.utils.book_append_sheet(wb, ws, "Travel Details");
+        XLSX.writeFile(wb, "Travel_Details.xlsx");
+    }
+</script> 
+
+
+<!-- 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const bookedByInput = document.getElementById('BookedBy');
+        const bookingForInput = document.getElementById('BookingForName');
+        const bookingDateInput = document.getElementById('BookingDate');
+        const billingInput = document.getElementById('Billing');
+        const monthSelect = document.getElementById('month_select');
+        const travelModeSelect = document.getElementById('travel_mode');
+
+        const table = document.getElementById('travelTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+
+        function formatDateToDMY(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+            return `${day}-${month}-${year}`;
+        }
+
+        function filterTable() {
+            const bookedByValue = bookedByInput.value.toLowerCase();
+            const bookingForValue = bookingForInput.value.toLowerCase();
+            const bookingDateValue = formatDateToDMY(bookingDateInput.value).toLowerCase();
+            const billingValue = billingInput.value.toLowerCase();
+            const monthValue = monthSelect.value.toLowerCase();
+            const travelModeValue = travelModeSelect.value.toLowerCase();
+
+            let currentSrNo = 1;
+            let groupedRows = [];
+            rows.forEach(row => row.style.display = '');
+
+            let group = [];
+            rows.forEach(row => {
+                if (row.querySelector('td[rowspan]')) {
+                    if (group.length > 0) groupedRows.push(group);
+                    group = [row];
+                } else {
+                    group.push(row);
+                }
+            });
+            if (group.length > 0) groupedRows.push(group);
+
+            groupedRows.forEach(group => {
+                const firstRow = group[0];
+
+                const bookedBy = firstRow.children[1]?.textContent.toLowerCase();
+                const bookingFor = firstRow.children[2]?.textContent.toLowerCase();
+                const bookingDate = firstRow.children[3]?.textContent.trim(); // "12-05-2024"
+                const billing = firstRow.children[11]?.textContent.toLowerCase();
+
+                let bookingMonthYear = '';
+                if (bookingDate) {
+                    const parts = bookingDate.split('-'); // [dd, mm, yy]
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0], 10);
+                        const month = parseInt(parts[1], 10) - 1; // JS months are 0-based
+                        const yearSuffix = parts[2];
+                        const fullYear = parseInt(yearSuffix, 10) + 2000; // assume all are 2000s
+
+                        const dateObj = new Date(fullYear, month, day);
+                        const monthName = dateObj.toLocaleString('default', { month: 'long' }); // "May"
+                        bookingMonthYear = `${monthName} - ${fullYear}`;
+                    }
+                }
+                
+                console.log(`Row: ${bookingDate}, Parsed Month-Year: ${bookingMonthYear}, Selected: ${monthValue}`);
+
+
+                const travelModeMatch = group.some(row => {
+                    const travelText = row.children[7]?.textContent.toLowerCase();
+                    return !travelModeValue || travelText === travelModeValue;
+                });
+
+                const matches =
+                    (!bookedByValue || bookedBy.includes(bookedByValue)) &&
+                    (!bookingForValue || bookingFor.includes(bookingForValue)) &&
+                    (!bookingDateValue || bookingDate.includes(bookingDateValue)) &&
+                    (!billingValue || billing.includes(billingValue)) &&
+                    (!monthValue || bookingMonthYear.toLowerCase().trim() === monthValue.toLowerCase().trim()) &&
+                    (!travelModeValue || travelModeMatch);
+
+                console.log("-----------------------------------------------");
+                console.log(`Row: ${bookingDate}, Parsed Month-Year: ${bookingMonthYear}, Selected: ${monthValue}`);
+
+                group.forEach(row => {
+                    row.style.display = matches ? '' : 'none';
+                });
+
+                if (matches && firstRow.children[0].hasAttribute('rowspan')) {
+                    firstRow.children[0].textContent = currentSrNo++;
+                }
+            });
+        }
+
+        // Add event listeners
+        bookedByInput.addEventListener('input', filterTable);
+        bookingForInput.addEventListener('input', filterTable);
+        bookingDateInput.addEventListener('input', filterTable);
+        billingInput.addEventListener('input', filterTable);
+        monthSelect.addEventListener('change', filterTable);
+        travelModeSelect.addEventListener('change', filterTable);
+    });
+</script>
+ -->
+
+
+<script>
+    function generateFilteredPDF() {
+        // document.getElementById("loaderContainer").style.display = "flex";
+
+        const bookedBy = document.getElementById('BookedBy').value;
+        const bookingDate = document.getElementById('BookingDate').value;
+        const billing = document.getElementById('Billing').value;
+
+        const BookingForName = document.getElementById('BookingForName').value;
+        const month = document.getElementById('month_select').value; // or 'month' if you change ID
+        const travel_mode = document.getElementById('travel_mode').value;
+
+        const params = new URLSearchParams();
+
+        if (bookedBy) params.append('BookedBy', bookedBy);
+        if (bookingDate) params.append('BookingDate', bookingDate);
+        if (billing) params.append('Billing', billing);
+
+        if (BookingForName) params.append('BookingForName', BookingForName);
+        if (month) params.append('month', month);
+        if (travel_mode) params.append('travel_mode', travel_mode);
+
+        const pdfUrl = `{% url 'Travel_Details_Data_PDF' %}?` + params.toString();
+        window.location.href = pdfUrl;
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+        let clearButton = document.querySelector("#RefreshBtn"); // Select the "Clear" button
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    
+        if (clearButton) {
+            clearButton.addEventListener("click", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on clear button click
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("filterForm");
+
+        // Select all inputs, selects, and date pickers inside form
+        const inputs = form.querySelectorAll("input, select");
+
+        inputs.forEach(input => {
+            input.addEventListener("change", function () {
+                form.submit();
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

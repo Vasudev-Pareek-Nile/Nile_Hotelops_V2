@@ -1,0 +1,135 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+<div class="container">
+    
+
+    <div class="card-header col-md-12 mb-3 "> 
+        <div class="row">
+            <div class="col-md-6">
+                Shfit  Details
+
+            </div>
+            <div class="col-md-6 text-right">
+                    <a href="{% url 'IntialShfitCreate' %}?create=True" class="btn btn-primary btn-sm">Intail Shift Create</a>
+            </div>
+        </div>
+
+    </div>
+    
+    
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="example" class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+
+                        <th>Shfit Type</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in emp_list %}
+                    <tr>
+                        <td>{{ emp.EmployeeCode }}</td>
+                        <td>{{ emp.FirstName }} {{ emp.MiddleName }} {{ emp.LastName }}</td>
+                        <td> 
+                            <input type="hidden" class="initial-shfit" value="{{ emp.ShfitType }}">
+                            <select   name="shfit" class="form-control shfit-select" data-EmployeeCode="{{ emp.EmployeeCode }}">
+                          
+                                <option value="Morning">Morning</option>
+                                <option value="General">General</option>
+                                <option value="Afternoon">Afternoon</option>
+                                <option value="Evening">Evening</option>
+                                <option value="Night">Night</option>                                
+                                <option value="Break">Break</option>
+                            </select>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    
+
+    <script>
+        $(document).ready(function() {
+            
+            var table = $("#example").DataTable({
+                "paging": true,
+                "searching": true,
+                "order": [],
+               
+            });
+    
+            
+           
+        });
+        
+        
+    </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $('.shfit-select').each(function() {
+                var EmployeeCode = $(this).attr('data-EmployeeCode');
+                var initialshfit = $(this).closest('tr').find('.initial-shfit').val();
+                $(this).val(initialshfit);
+            });
+    
+            $('.shfit-select').change(function() {
+                
+                var EmployeeCode = $(this).attr('data-EmployeeCode');
+                var ShfitType = $(this).val(); 
+               
+                UpdateShift(EmployeeCode, ShfitType); 
+            });
+        });
+    
+        function UpdateShift(EmployeeCode, ShfitType) {
+            $.ajax({
+                url: '/Employee_Payroll/UpdateShift/', 
+                type: 'GET',
+                data: {
+                    'EmployeeCode': EmployeeCode,
+                    'ShfitType': ShfitType,
+                   
+                },
+                success: function(response) {
+                    if (response.message) {
+                        console.log(response.message); 
+                      
+                    }
+                }
+                ,
+                error: function(xhr, status, error) {
+                    console.error('shfit update failed');
+                }
+            });
+        }
+    </script>
+    
+
+{% endblock content %}
+ 

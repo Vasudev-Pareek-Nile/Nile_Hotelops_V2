@@ -1,0 +1,176 @@
+{% extends 'GuestVoice/GuestVoicehomebase.html' %}
+{% block content %} 
+{% load custom_filters %}
+{% load static %}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <h4 class="card-title">Enter Your Medallia Data </h4>
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Guest_Name">Guest Name</label>
+                                <input type="text" class="form-control" id="Guest_Name" name="Guest_Name" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label for="month_select" class="col-form-label">Month</label>
+                                <select name="month" id="month_select" class="form-control" name="month_select" required>
+                                    <option value="">Select Month</option>
+                                    <option value="January" {% if selected_month == 1 %}selected{% endif %}>January</option>
+                                    <option value="February" {% if selected_month == 2 %}selected{% endif %}>February</option>
+                                    <option value="March" {% if selected_month == 3 %}selected{% endif %}>March</option>
+                                    <option value="April" {% if selected_month == 4 %}selected{% endif %}>April</option>
+                                    <option value="May" {% if selected_month == 5 %}selected{% endif %}>May</option>
+                                    <option value="June" {% if selected_month == 6 %}selected{% endif %}>June</option>
+                                    <option value="July" {% if selected_month == 7 %}selected{% endif %}>July</option>
+                                    <option value="August" {% if selected_month == 8 %}selected{% endif %}>August</option>
+                                    <option value="September" {% if selected_month == 9 %}selected{% endif %}>September</option>
+                                    <option value="October" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                                    <option value="November" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                                    <option value="December" {% if selected_month == 12 %}selected{% endif %}>December</option>
+                                </select>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="CheckIn">Check In</label>
+                                <input type="date" class="form-control" id="CheckIn" name="CheckIn" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="CheckInProcess">Check-in Process</label>
+                                <input type="number" class="form-control" id="CheckInProcess" name="CheckInProcess" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label for="Cleanliness" class="col-form-label">Cleanliness  of Room and Bathroom</label>
+                                <select name="Cleanliness" id="Cleanliness" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="Yes" {% if selected_month == "Yes" %}selected{% endif %}>Yes</option>
+                                    <option value="No" {% if selected_month == "No" %}selected{% endif %}>No</option>
+                                </select>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="ConditionOfHotel">Condition of the Hotel</label>
+                                <input type="number" class="form-control" id="ConditionOfHotel" name="ConditionOfHotel" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="WOHProgramExperience">Overall WOH Program Experience</label>
+                                <input type="number" class="form-control" id="WOHProgramExperience" name="WOHProgramExperience" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="HelpfulnessofStaff">Helpfulness of Staff</label>
+                                <input type="number" class="form-control" id="HelpfulnessofStaff" name="HelpfulnessofStaff" required>
+                            </div>
+                        </div>
+
+                        <!-- Right Side inputs -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="room_no">Room No</label>
+                                <input type="number" class="form-control" id="room_no" name="room_no" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="response_date">Response Date</label>
+                                <input type="date" class="form-control" id="response_date" name="response_date" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="check_out">Check Out</label>
+                                <input type="date" class="form-control" id="check_out" name="check_out" required>
+                            </div>
+                            
+                            <div class="input-block mb-3">
+                                <label for="working_order" class="col-form-label">Working Order</label>
+                                <select name="working_order" id="working_order" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="Yes" {% if selected_working_order == "Yes" %}selected{% endif %}>Yes</option>
+                                    <option value="No" {% if selected_working_order == "No" %}selected{% endif %}>No</option>
+                                </select>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="customer_service">Customer Service</label>
+                                <input type="number" class="form-control" id="customer_service" name="customer_service" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="breakfast_experience">Overall Breakfast Experience</label>
+                                <input type="number" class="form-control" id="breakfast_experience" name="breakfast_experience" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="spa_experience">Spa Experience</label>
+                                <input type="number" class="form-control" id="spa_experience" name="spa_experience" required>
+                            </div>
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="hk_services">Overall Delivery of HK Services</label>
+                                <input type="number" class="form-control" id="hk_services" name="hk_services" required>
+                            </div>
+                        </div>
+
+
+                        <!-- Right Side - 3 inputs -->
+                        <div class="col-md-4">
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="nps">NPS</label>
+                                <input type="number" class="form-control" id="nps" name="nps" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="staff_responsiveness">Staff Responsiveness to Guest Needs</label>
+                                <input type="number" class="form-control" id="staff_responsiveness" name="staff_responsiveness" required>
+                            </div>
+                            
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="woh_app_experience">WOH App Experience</label>
+                                <input type="number" class="form-control" id="woh_app_experience" name="woh_app_experience" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="fnb_experience">Overall FnB Experience</label>
+                                <input type="number" class="form-control" id="fnb_experience" name="fnb_experience" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="guest_needs">Property Anticipated Guest Needs</label>
+                                <input type="number" class="form-control" id="guest_needs" name="guest_needs" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Satisfaction_lp_benefits">Satisfaction with LP Member Benefits</label>
+                                <input type="number" class="form-control" id="Satisfaction_lp_benefits" name="Satisfaction_lp_benefits" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="comments">Comments:</label>
+                                <textarea rows="4" cols="5" class="form-control" id="comments" name="comments" placeholder="Enter message"></textarea>
+                            </div>
+                        
+                        </div>
+                        
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

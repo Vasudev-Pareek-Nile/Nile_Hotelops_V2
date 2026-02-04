@@ -1,0 +1,54 @@
+{% extends "agreement/homebase.html" %} {% block content %}
+
+<div class="container">
+  <div class="col-md-6 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>HOTEL MANAGEMENT AGREEMENT </strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-10">
+              <div class="form-group m-3">
+                <label for="">Article Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="artical_number"
+                  value="{{agreemnt.artical_number}}"
+                  id=""
+                />
+              </div>
+              <div class="form-group m-3">
+                <label for="">Name of Article</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="name_artical"
+                  value="{{agreemnt.name_artical}}"
+                  id=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if agreemnt is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content%}

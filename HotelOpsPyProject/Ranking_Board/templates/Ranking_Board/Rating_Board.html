@@ -1,0 +1,274 @@
+{% extends "Ranking_Board\homebase.html" %}
+{% load static %}
+{% block content %} 
+     
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            padding: 32px 16px;
+            color: #000;
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #d1d5db;
+        }
+
+        thead {
+            background-color: #f9fafb;
+        }
+
+        th {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        th.main-header {
+            background-color: #f3f4f6;
+        }
+
+        th.htl-header {
+            vertical-align: middle;
+            background-color: #ffffff;
+            min-width: 120px;
+        }
+
+        th.sub-header {
+            background-color: #f9fafb;
+            min-width: 80px;
+        }
+
+        tbody tr {
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        td {
+            padding: 10px 12px;
+            text-align: center;
+            border: 1px solid #d1d5db;
+            font-size: 13px;
+        }
+
+        td:first-child {
+            text-align: left;
+            font-weight: 500;
+        }
+
+        .page-wrapper .content {
+            padding: 0px !important;
+        }
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+
+            .card {
+                box-shadow: none;
+                padding: 16px;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 16px 8px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 16px;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+
+
+    </style>
+
+    <!-- <div class="container"> -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-2">Hotel Ranking Dashboard</h4>
+            <div>
+                <a href="{% url 'Ranking_Board_Entry_View' %}" class="btn btn-primary btn-sm" id="AddButton">Add </a>
+                <a href="{% url 'Ranking_Board_Entry_View' %}?Date=" class="btn btn-primary btn-sm" id="EditButton">Edit</a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-2 justify-content-between">
+                <label>Entry Date 
+                    <input type="date" class="form-control" value="{{current_date}}" name="EntryDate" id="EntryDate" required>
+                </label>
+                <button class="btn btn-primary" id="SearchBtn">Search</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="htl-header">HTL</th>
+                        <th colspan="2" class="main-header">TRIP ADVISOR</th>
+                        <th colspan="2" class="main-header">Google Review</th>
+                        <th colspan="2" class="main-header">MMT</th>
+                        <th colspan="2" class="main-header">Booking.Com</th>
+                        <!-- <th colspan="2" rowspan="2" >Action</th> -->
+                    </tr>
+                    <tr>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                    </tr>
+                </thead>
+                <tbody id="Ranking_Board_Table">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- </div> -->
+
+    
+<script>
+$(document).ready(function() {
+    // let HotelID = '3'; // or dynamically set
+    let HotelID = '{{OrganizationID}}'; // or dynamically set
+
+    // 🔹 Load default data for current date
+    let defaultDate = $('#EntryDate').val();
+    if (defaultDate) {
+        fetchData(defaultDate, HotelID);
+    }
+
+    url = "{% url 'Ranking_Board_Entry_View' %}?Date=" + defaultDate;
+    $('#EditButton').attr("href", url);
+
+    // $('#SearchBtn').click(function() {
+    //     let date = $('#EntryDate').val();  
+    //     let HotelID = '{{OrganizationID}}';
+
+
+    //     url = "{% url 'Ranking_Board_Entry_View' %}?Date=" + date;
+    //     $('#EditButton').attr("href", url);
+
+    //     console.log("date is here::", date);
+
+    //     if (!date) {
+    //         alert("Please select a date!");
+    //         return;
+    //     }
+    //     fetchData(date, HotelID);
+    // }); 
+    function executeSearch() {
+        let date = $('#EntryDate').val();  
+        let HotelID = '{{OrganizationID}}';
+
+        url = "{% url 'Ranking_Board_Entry_View' %}?Date=" + date;
+        $('#EditButton').attr("href", url);
+
+        console.log("date is here::", date);
+
+        if (!date) {
+            alert("Please select a date!");
+            return;
+        }
+        fetchData(date, HotelID);
+    }
+
+    $('#EntryDate').change(function() {
+        executeSearch();
+    });
+
+    $('#SearchBtn').click(function() {
+        executeSearch();
+    }); 
+
+
+    // let date = '2025-10-17';
+    // HotelID = '3'
+    function fetchData(date, hotelID) {
+        $.ajax({
+            url: "{% url 'hotel-ranking-api' %}",  
+            method: "GET",
+            data: { 
+                date: date,
+                HotelID: hotelID
+            },        
+            dataType: "json",
+            success: function(data) {
+                let tbody = $("#Ranking_Board_Table");
+                tbody.empty();
+
+                if (data.length === 0) {
+                    tbody.append(`<tr><td colspan="9">No data found</td></tr>`);
+                    return;
+                }
+
+                console.log("data is here::", data);
+
+                data.forEach(item => {
+                    let row = `
+                        <tr>
+                            <td>${item.HotelName}</td>
+                            <td>${item.ta_ranking || ''}</td>
+                            <td>${item.ta_nrr || ''}</td>
+                            <td>${item.google_ranking || ''}</td>
+                            <td>${item.google_nrr || ''}</td>
+                            <td>${item.mmt_ranking || ''}</td>
+                            <td>${item.mmt_nrr || ''}</td>
+                            <td>${item.booking_ranking || ''}</td>
+                            <td>${item.booking_nrr || ''}</td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                            // <td><a href="#" class="text-black">${item.id}<i class="fas fa-edit"></i></a></td>
+                });
+            },
+            error: function () {
+                $("#Ranking_Board_Table").html(`<tr><td colspan="9">Error loading data</td></tr>`);
+            }
+        });
+    }
+});
+</script>
+{% endblock content %} 
+
+

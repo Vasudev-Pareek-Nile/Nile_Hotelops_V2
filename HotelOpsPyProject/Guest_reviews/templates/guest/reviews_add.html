@@ -1,0 +1,101 @@
+{% extends "guest/homebase.html" %} {% block content %}
+
+<style>
+  body {
+    font-family: arial nova;
+    font-size: 13px;
+  }
+  label{
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+    
+  }
+</style>
+{% for msg in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Hey!</strong> {{ msg }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+
+<div class="container">
+  <div class="d-flex justify-content-center">
+    <!-- Centering the form horizontally -->
+    <div class="col-md-10">
+      <div class="card">
+        <form method="POST" enctype="multipart/form-data">
+         {% csrf_token %}
+           <div class="card-header" style="color: #1ab394"><strong>Social Media Guest Feedback</strong></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="form-group m-3">
+                  <label for="">Date:</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="date"
+                    value=""
+                    id="date"
+                    required
+                  />
+                </div>
+                <div class="form-group m-3">
+                  <label for="">Sources</label>
+                  <select name="sources" class="form-control">
+                    <option value="">Select a source</option>
+                    {% comment %} <option value="Source 1">Booking.com</option> {% endcomment %}
+                    <option value="Booking.com" {% if sources == "Booking.com" %}selected{% endif %}>Booking.com</option>
+                     <option value="MakeMyTrip.com" {% if sources == "MakeMyTrip.com" %}selected{% endif %}>MakeMyTrip.com</option>
+                      <option value="Agoda.com" {% if sources == "Agoda.com" %}selected{% endif %}>Agoda.com</option>
+                       <option value="Google reviews" {% if sources == "Google reviews" %}selected{% endif %}>Google reviews</option>
+                        <option value="Goibibo.com" {% if sources == "Goibibo.com" %}selected{% endif %}>Goibibo.com</option>
+                         <option value="ClearTrip.com" {% if sources == "ClearTrip.com" %}selected{% endif %}>ClearTrip.com</option>
+                            <option value="BON.com" {% if sources == "BON.com" %}selected{% endif %}>BON.com</option>
+                          <option value="Expedia" {% if sources == "Expedia" %}selected{% endif %}>Expedia</option>
+                          <option value="Trip Advisor" {% if sources == "Trip Advisor" %}selected{% endif %}>Trip Advisor</option>
+                            <option value="Hotel Brand" {% if sources == "Hotel Brand" %}selected{% endif %}>Hotel Brand</option>
+                             <option value="Other" {% if sources == "Other" %}selected{% endif %}>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="form-group m-3">
+                  <label for="">Hotel Name</label>
+                  <select name="hotel" class="form-control">
+                  {% for organization in memOrg %}
+        <option value="{{ organization.OrganizationID }}" {% if organization.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+            {{ organization.Organization_name }}
+        </option>
+    {% endfor %}
+                  </select>
+                </div>
+                <div class="form-group m-3">
+                  <label for="">Upload pictures</label>
+                  <input type="file" class="form-file" name="image" value="" id=""  required/>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer text-right">
+            <input type="submit" class="btn btn-primary" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    // Get today's date
+    var today = new Date();
+    
+    // Format the date to YYYY-MM-DD (required format for date input)
+    var formattedDate = today.toISOString().split('T')[0];
+    
+    // Set the value of the date input field
+    document.getElementById('date').value = formattedDate;
+</script>
+{% endblock content %}

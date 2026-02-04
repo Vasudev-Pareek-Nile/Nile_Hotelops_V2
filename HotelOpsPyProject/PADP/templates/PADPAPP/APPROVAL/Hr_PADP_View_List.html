@@ -1,0 +1,161 @@
+{% extends 'PADPAPP/homebase.html' %}
+
+
+{% block content %} 
+<style>
+    table th{
+        text-transform: uppercase;
+    }
+</style>
+<div class="container">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+
+     
+    <div class="">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-6">PADP List</div>
+                <div class="col-md-6 text-right"></div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12"> 
+                <form method="get" class="d-flex">
+                
+               
+              
+               
+                <div class="form-group m-1"> <select name="Status" id="" class="form-control ml-2">
+
+                    <option value="True" {% if Status == selectedStatus %}selected{% endif %}>Approved</option>
+                    <option value="False" {% if Status == selectedStatus %}selected  {% endif %}>Pending</option>
+
+                </select></div>
+                
+                <div class="form-group m-1">
+                    <select name="month" class="form-control ml-2">
+                        <option value="1" {% if month == selectedmonth %}{% endif %} >January</option>
+                        <option value="2" {% if month == selectedmonth %}{% endif %} >February</option>
+                        <option value="3" {% if month == selectedmonth %}{% endif %} >March</option>
+                        <option value="4" {% if month == selectedmonth %}{% endif %} >April</option>
+                        <option value="5" {% if month == selectedmonth %}{% endif %} >May</option>
+                        <option value="6" {% if month == selectedmonth %}{% endif %} >June</option>
+                        <option value="7" {% if month == selectedmonth %}{% endif %} >July</option>
+                        <option value="8" {% if month == selectedmonth %}{% endif %} >August</option>
+                        <option value="9" {% if month == selectedmonth %}{% endif %} >September</option>
+                        <option value="10" {% if month == selectedmonth %}{% endif %} >October</option>
+                        <option value="11" {% if month == selectedmonth %}{% endif %} >November</option>
+                        <option value="12" {% if month == selectedmonth %}{% endif %} >December</option>
+                      </select>
+                      
+                </div>
+                <div class="form-group m-1"><button type="submit" class="btn btn-primary btn-sm ml-2" >Filter</button>
+                
+                    <a href="{% url 'Hr_PADP_View_List' %}" class="btn btn-primary btn-sm" style="width: 80px;">Clear Filter</a></div>
+                
+               
+                
+            </form>
+            </div>
+           
+            
+          </div>
+        <br>
+        <table class="table table-bordered table-sm" id="example" >
+            <thead>
+                <tr>
+                   
+                    <th>Emp Code</th>
+                    <th >Review Date</th>
+                    <th>Appraisee Name</th>
+                    <th >Aprraisee Level</th>
+                    <th >Approval Status</th>
+                    <th >Next Approval Status</th>
+
+                    <th >Action</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for pad in padp  %}  
+              
+              <tr>
+                   
+                    <td>{{pad.EmployeeCode}}</td>
+                    <td>{{pad.Review_Date |date:'d-m-Y'}}</td>
+                    <td>{{pad.Appraisee_Name}}</td>
+                    
+                  
+                    <td>{{pad.Aprraise_Level}}</td>
+
+                    <td>
+                     {% if pad.Submit_Status == "1" and pad.Aprraise_Level == pad.Approval_Status  %}Submitted By{% endif %}
+                     {% if pad.Submit_Status == "1" and  pad.Aprraise_Level != pad.Approval_Status %}Approved By{% endif %}
+                    
+                     {{pad.Approval_Status}}
+                    </td>
+                    
+                    </td>
+                  
+                    <td>
+                        {% if pad.Approval_Status != pad.Next_Aprroval_Level and pad.Final_Approve == False %}Pending From{% endif %}
+                        {{ pad.Next_Aprroval_Level}}
+                    </td> 
+                    <td>
+                        {% if pad.Submit_Status == "1" %} <a href="{% url 'PADP_Add' %}?ID={{pad.id}}"><i class="fa fa-edit text-primary"></i></a>{% endif %}
+                        <a class="fa fa-eye" href="{% url 'Apporve_Padp_View' %}?ID={{pad.id}}"></a>
+                         <a href="{% url 'PADP_View' %}?ID={{pad.id}}"><i class="fa fa-file-pdf-o"></i></a>
+                   
+                    </td>
+
+                </tr>
+                {% endfor %}
+              
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+      
+           
+        });
+
+        
+       
+    });
+    
+    $(document).ready(function () {
+       
+        var selectedStatus = "{{ Status }}";
+        $("select[name='Status']").val(selectedStatus);
+        
+        var selectedmonth = "{{ month }}";
+        $("select[name='month']").val(selectedmonth);
+        
+    });
+
+
+
+    
+</script>
+{% endblock %}

@@ -1,0 +1,6 @@
+from django.contrib import admin
+from .models import LETTEROFSALARYINCREAMENT,LETTEROFSALARYINCREAMENTDeletedFileofEmployee,LETTEROFSALARYINCREAMENTEmployeeDetail
+# Register your models here.
+admin.site.register(LETTEROFSALARYINCREAMENTEmployeeDetail)
+admin.site.register(LETTEROFSALARYINCREAMENT)
+admin.site.register(LETTEROFSALARYINCREAMENTDeletedFileofEmployee)

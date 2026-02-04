@@ -1,0 +1,322 @@
+{% extends 'EmpResigantionTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  label{
+    padding-top: 14px;
+    margin-bottom:5px;
+  }
+
+
+.CustomFooter{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: white; /* optional */
+    padding: 10px;     /* optional */
+    text-align: center; /* optional */
+    z-index: 999; 
+    padding-right: 23px;
+    display: flex;
+    justify-content: end;
+    border-top: 1px solid #00000054;
+}
+
+
+</style>
+
+<div class="card">
+  <div class="card-header"><span class="text-uppercase fw-bold">Employee Resignation Form</strong></div>
+
+  <form action="" method="post">
+    <div class="card-body">
+      <div class="col-md-12">
+        <div class="row">
+          <!-- Employee Code -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="emp_code">Employee Code:</label>
+              <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ Resigantiontobj.Emp_Code|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+          <!-- Employee Name -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="name">Employee Name:</label>
+              <input type="text" name="name" id="name" class="form-control" value="{{ Resigantiontobj.Name|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+        
+
+          <!-- Date of Joining -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="doj">Date of Joining:</label>
+              <input type="date" name="doj" id="doj" class="form-control" value="{{ Resigantiontobj.DOJ|date:'Y-m-d' }}" readonly>
+            </div>
+          </div>
+
+         
+
+          <!-- Department -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="dept">Department:</label>
+              <input type="text" name="dept" id="dept" class="form-control" value="{{ Resigantiontobj.Dept|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Designation -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="designation">Designation:</label>
+              <input type="text" name="designation" id="designation" readonly class="form-control" value="{{ Resigantiontobj.Designation|default_if_none:'' }}">
+            </div>
+          </div>
+           <!-- Date of Resignation -->
+           <div class="col-md-3">
+            <div class="form-group">
+              <label for="LastEmpStatus">Last Employee Status:</label>
+              <input type="text" name="LastEmpStatus" id="LastEmpStatus" readonly class="form-control" value="{{ Resigantiontobj.LastEmpStatus|default_if_none:'' }}">
+            </div>
+          </div>  
+
+          
+           <div class="col-md-1">
+            <div class="form-group">
+              <label for="LastEmpStatus">Level:</label>
+              <input type="text" name="Level" id="Level" readonly class="form-control" value="{{ Resigantiontobj.Level|default_if_none:'' }}">
+            </div>
+          </div>  
+
+
+          <!-- Notice Period -->
+        <div class="col-md-3">
+          <div class="form-group">
+              <label for="notice_period">Notice Period:</label>
+              <select name="notice_period" id="notice_period" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Not Served" {% if Resigantiontobj.NoticePeriod == 'Not Served' %}selected{% endif %}>Not Served</option>
+                  <option value="15 Days" {% if Resigantiontobj.NoticePeriod == '15 Days' %}selected{% endif %}>15 Days</option>
+                  
+                  <option value="1 Month" {% if Resigantiontobj.NoticePeriod == '1 Month' %}selected{% endif %}>1 Month</option>
+
+                  <option value="2 Months" {% if Resigantiontobj.NoticePeriod == '2 Months' %}selected{% endif %}>2 Months</option>
+                  <option value="3 Months" {% if Resigantiontobj.NoticePeriod == '3 Months' %}selected{% endif %}>3 Months</option>
+              </select>
+          </div>
+      </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+              <label for="date_of_resignation">Date of Resignation:</label>
+              <input type="date" name="date_of_resignation" id="date_of_resignation" class="form-control" value="{% if  Resigantiontobj.Date_Of_res %}{{Resigantiontobj.Date_Of_res|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}">
+            </div>
+        </div>
+
+         <!-- Last Working Day -->
+          <div class="col-md-3">
+            <div class="form-group">
+                <label for="last_working_day">Last Working Day:</label>
+                <input type="date" name="last_working_day" id="last_working_day" class="form-control" value="{% if Resigantiontobj.LastWorkingDays %}{{Resigantiontobj.LastWorkingDays|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}">
+            </div>
+        </div>
+        <script>
+            // Get references to elements
+            const noticePeriodSelect = document.getElementById('notice_period');
+            const lastWorkingDayInput = document.getElementById('last_working_day');
+        
+            // Function to calculate the last working day
+            function calculateLastWorkingDay() {
+                const today = new Date();
+                const selectedNoticePeriod = noticePeriodSelect.value;
+        
+                let monthsToAdd = 0;
+        
+                if (selectedNoticePeriod === '1 Month') {
+                    monthsToAdd = 1;
+                } else if (selectedNoticePeriod === '2 Months') {
+                    monthsToAdd = 2;
+                } else if (selectedNoticePeriod === '3 Months') {
+                    monthsToAdd = 3;
+                }
+        
+                // Add months to today's date
+                const futureDate = new Date(today.setMonth(today.getMonth() + monthsToAdd));
+        
+                // Format the date to YYYY-MM-DD
+                const formattedDate = futureDate.toISOString().split('T')[0];
+        
+                // Update the input field value
+                lastWorkingDayInput.value = formattedDate;
+            }
+        
+            // Attach event listener to notice period select
+            noticePeriodSelect.addEventListener('change', calculateLastWorkingDay);
+            calculateLastWorkingDay();
+        </script>
+
+       
+            <!-- Resignation Acceptance Date -->
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="res_acceptance_date">Resignation Acceptance Date:</label>
+              <input type="date" name="res_acceptance_date" id="res_acceptance_date" class="form-control" value="{% if  Resigantiontobj.Res_acceptance_Date %}{{Resigantiontobj.Res_acceptance_Date|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}">
+              
+            </div>
+          </div>
+          <!-- Type of Resignation -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="TypeofRes">Type of Resignation:</label>
+              <select name="TypeofRes" id="TypeofRes" class="form-control" required>
+                  <option value="">Select</option>
+                  <option value="Voluntary" {% if Resigantiontobj.TypeofRes == 'Voluntary' %}selected{% endif %}>Voluntary</option>
+                  <option value="Involuntary" {% if Resigantiontobj.TypeofRes == 'Involuntary' %}selected{% endif %}>Involuntary</option>
+                  <option value="Retirement" {% if Resigantiontobj.TypeofRes == 'Retirement' %}selected{% endif %}>Retirement</option>
+              </select>
+          </div>
+          
+          </div>
+
+
+          <!-- Resignation Reason -->
+          <div class="col-md-4">
+    <div class="form-group">
+        <label for="res_reason">Reason for Resignation:</label>
+        <select name="res_reason" id="res_reason" class="form-control">
+            <option value="">Select</option>
+            <option value="Better salary" {% if Resigantiontobj.Res_Reason == 'Better salary' %}selected{% endif %}>Better salary</option>
+            <option value="Better brand" {% if Resigantiontobj.Res_Reason == 'Better brand' %}selected{% endif %}>Better brand</option>
+            <option value="Personal decision" {% if Resigantiontobj.Res_Reason == 'Personal decision' %}selected{% endif %}>Personal decision</option>
+            <option value="Better Opportunity" {% if Resigantiontobj.Res_Reason == 'Better Opportunity' %}selected{% endif %}>Better Opportunity</option>
+            <option value="Career Growth" {% if Resigantiontobj.Res_Reason == 'Career Growth' %}selected{% endif %}>Career Growth</option>
+            <option value="Due to family reason" {% if Resigantiontobj.Res_Reason == 'Due to family reason' %}selected{% endif %}>Due to family reason</option>
+            <option value="Due to medical problem" {% if Resigantiontobj.Res_Reason == 'Due to medical problem' %}selected{% endif %}>Due to medical problem</option>
+            <option value="Other" {% if Resigantiontobj.Res_Reason == 'Other' %}selected{% endif %}>Other</option>
+        </select>
+    </div>
+</div>
+
+
+          <!-- Resignation Submitted To -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="ressubmittedto">Resignation Submitted To:</label>
+              <!-- <input type="text" name="ressubmittedto" id="ressubmittedto" class="form-control" value="{{ Resigantiontobj.Ressubmittedto|default_if_none:'' }}"> -->
+              <select name="ressubmittedto" id="ressubmittedto" class="form-control">
+                <option value="">Select</option>
+                {% for names in EmployeeNames%}
+                <option value="{{names.EmployeeName}}" {% if Resigantiontobj.Ressubmittedto == names.EmployeeName %}selected{% endif %}>{{names.EmployeeName}}</option>
+                {% endfor %}
+            </select>
+            </div>
+          </div>
+
+
+
+          <!-- Resignation Accepted By -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="res_acceptance_by">Resignation Accepted By:</label>
+              <!-- <input type="text" name="res_acceptance_by" id="res_acceptance_by" class="form-control" value="{{ Resigantiontobj.Res_acceptance_By|default_if_none:'' }}"> -->
+
+              
+              <select name="res_acceptance_by" id="res_acceptance_by" class="form-control">
+                <option value="">Select</option>
+                {% for names in EmployeeNames%}
+                <option value="{{names.EmployeeName}}" {% if Resigantiontobj.Res_acceptance_By == names.EmployeeName %}selected{% endif %}>{{names.EmployeeName}}</option>
+                {% endfor %}
+            </select>
+            </div>
+          </div>
+
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="ResignationRevoke">Resignation Revoke:</label>
+              <input type="checkbox" name="ResignationRevoke" id="ResignationRevoke" value="Revoke" class="ml-2 mt-3" {% if Resigantiontobj.ResignationRevoke %}checked{% endif %}>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="ResignationRevoke">No Hire:</label>
+              <input type="checkbox" name="NoHire" id="NoHire" class="ml-2 mt-3" >
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    {% csrf_token %}
+    <div class="CustomFooter">
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </div>
+  </form>
+</div>
+</div>
+
+
+<script>
+  // Get references to the date inputs
+  const dojInput = document.getElementById('doj');
+  const dateOfResignationInput = document.getElementById('date_of_resignation');
+  const lastWorkingDayInput_val = document.getElementById('last_working_day');
+  const resAcceptanceDateInput = document.getElementById('res_acceptance_date');
+
+  function validateDates() {
+    const doj = new Date(dojInput.value);
+    const dateOfResignation = new Date(dateOfResignationInput.value);
+    const lastWorkingDay = new Date(lastWorkingDayInput_val.value);
+    const resAcceptanceDate = new Date(resAcceptanceDateInput.value);
+
+    let errorMessage = '';
+
+    if (dateOfResignation < doj) {
+      errorMessage += 'Date of Resignation cannot be earlier than Date of Joining.\n';
+      dateOfResignationInput.value = dojInput.value; // reset to DOJ
+    }
+
+    if (lastWorkingDay < doj) {
+      errorMessage += 'Last Working Day cannot be earlier than Date of Joining.\n';
+      lastWorkingDayInput_val.value = dojInput.value;
+    }
+
+    if (resAcceptanceDate < doj) {
+      errorMessage += 'Resignation Acceptance Date cannot be earlier than Date of Joining.\n';
+      resAcceptanceDateInput.value = dojInput.value;
+    }
+
+    if (errorMessage) {
+      alert(errorMessage);
+    }
+  }
+
+  // Attach the validation to date change events
+  dateOfResignationInput.addEventListener('change', validateDates);
+  lastWorkingDayInput_val.addEventListener('change', validateDates);
+  resAcceptanceDateInput.addEventListener('change', validateDates);
+
+  // Optional: validate on form submit too
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const doj_val = new Date(dojInput.value);
+    const dateOfResignation_Val = new Date(dateOfResignationInput.value);
+    const lastWorkingDay_val = new Date(lastWorkingDayInput_val.value);
+    const resAcceptanceDate_val = new Date(resAcceptanceDateInput.value);
+
+    if (dateOfResignation_Val < doj_val || lastWorkingDay_val < doj_val || resAcceptanceDate_val < doj_val) {
+      e.preventDefault();
+      validateDates();
+    }
+  });
+</script>
+
+
+
+{% endblock content %}

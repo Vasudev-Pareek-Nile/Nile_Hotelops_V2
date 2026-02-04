@@ -1,0 +1,59 @@
+
+{% load static %}
+
+
+{% block content %}
+<style>
+  h4{
+    font-family: 'Arial Nova';
+    font-size: 17px;
+  }
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;font-family: Arial Nova;
+  }
+
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+    font-family: Arial Nova;
+  }
+
+  p {     
+    margin: 0 !important;
+    font-family: Arial Nova;font-size: 15px; 
+    text-align: justify;
+  }
+
+  .noborder,.noborder td {
+    border-width: 0px;
+  }
+
+  h2{text-align: center;}
+
+ .pdf-content {
+    margin-left: 50px !important;
+    margin-right: 50px !important;
+  }
+</style>
+
+<DIV class="pdf-content">
+  <br>
+  <br>
+  <br>
+  <br><br>
+  <br>
+  <br>
+  <br>
+  {{header | safe}}
+  <br>
+
+{{Ed.data | safe }}
+{% comment %} {{ rendered_content|safe }} {% endcomment %}
+
+</DIV>
+
+    {% endblock content %} 
+

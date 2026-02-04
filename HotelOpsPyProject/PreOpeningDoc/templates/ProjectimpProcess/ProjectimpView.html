@@ -1,0 +1,135 @@
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+  </style>
+
+  
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Project Implementaion Process Details -  {{mem.Date}}</h2>               
+            </td>    
+                     
+        </tr>
+    </table>
+    <br>
+<br/>
+<div class="card-body">
+    <form action="{%url 'ProImpProcessView' mem.id %}" method = "post">
+        {% csrf_token %}                
+  
+      </div>                                                        
+    </form>
+</div>
+</div>
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>Project</th>
+            <th>{{mem.Project}}</th>      
+        </tr>
+        <tr>
+            <th>Start Date</th>
+            <th>{{mem.StartDate}}</th>      
+        </tr>
+        <tr>
+            <th>Forecast Completion Date</th>
+            <th>{{mem.ForecastCompletionDate}}</th>      
+        </tr>
+        <tr>
+            <th>Attention</th>
+            <th>{{mem.Attention}}</th>      
+        </tr>
+        <tr>
+            <th>Issue</th>
+            <th>{{mem.Issue}}</th>      
+        </tr>    
+        <tr>
+            <th>By</th>
+            <th>{{mem.By}}</th>      
+        </tr>
+        <tr>
+            <th>Date</th>
+            <th>{{mem.Date}}</th>      
+        </tr>    
+             
+             
+            
+    </table>
+<br>
+<br>
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>    
+        <th> </th>
+        <th>Activity</th>
+        <th>Action By Nights</th>
+        <th>Response Time</th>
+        <th>Completion By</th>
+        <th>Remarks</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>
+        <td></td>
+        <td>{{x.ProjectImpProcessMaster.category}}</td>     
+        <td>{{x.ProjectImpProcessMaster.title}}</td> 
+        <td>{{x.ResponseTime}}</td>   
+        <td>{{x.CompletionBy}}</td>
+        <td>{{x.Remarks}}</td>
+    </tr>
+    
+    {% endfor %}
+
+</table>
+</div>
+
+
+
+<script>
+    $(function(){
+
+        var c=""
+        $("#title tr").each(function(){
+                var ct =$(this).find('td').eq(0).attr('data-c')
+               if(c=="" || c !=ct){
+                $(this).find('td').eq(0).addClass('bold')
+               }else{
+                    $(this).find('td').eq(0).text('')
+                   
+               }
+            c=ct            
+        })
+    })
+
+   
+</script>
+{% endblock content %}

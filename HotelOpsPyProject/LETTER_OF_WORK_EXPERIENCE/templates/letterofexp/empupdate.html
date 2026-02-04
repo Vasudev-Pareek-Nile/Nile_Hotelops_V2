@@ -1,0 +1,57 @@
+{% extends 'letterofexp/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+ 
+
+<style>
+    form p {
+        display: inline-block;
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+{
+    visibility: hidden;
+}
+ </style>
+
+<div class="card">
+    <div class="card-header">Update Employee Experience Letter</div>
+    <form action="" method="post">
+    <div class="card-body">
+        <div style="padding: 20px;">
+
+          
+
+                     {{form.media }}
+                     {{form.as_p}}
+
+                {%  csrf_token %}
+                <br>
+              
+                       
+        </div>  
+    </div>
+    <div class="card-footer text-right">
+        <input type="submit" class="btn btn-success btn-sm" value="Update">
+    </div>
+</form>
+           
+</div>
+
+
+
+
+{% endblock content %}

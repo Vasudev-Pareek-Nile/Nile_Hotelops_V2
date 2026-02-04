@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request for Reference Check for {{ candidate_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content p {
+            margin: 15px 0;
+        }
+        .content a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .content img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 20px auto; /* Center the image */
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="content">
+            <p>Dear <b>{{ name }}</b>,</p>
+            <p>Thank you for submitting your information to the HR department at <b>{{ OrganizationName }}</b>.</p>
+            <p>We have received your details and our HR team will review your submission shortly. If any additional information is required, we will reach out to you directly.</p>
+            <p>In the meantime, if you have any questions or need further assistance, please do not hesitate to contact us.</p>
+            
+            <p>We appreciate your interest in joining our organization and look forward to being in touch soon.</p>
+            
+            <p>Best regards,</p>
+            <p>{{ OrganizationName }} HR Team</p>
+           
+            <img src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{Logo}}" alt="{{OrganizationName}}">
+        </div>
+    </div>
+</body>
+</html>

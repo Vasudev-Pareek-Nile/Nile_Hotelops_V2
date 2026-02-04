@@ -1,0 +1,567 @@
+{% extends "check/homebase.html" %}
+{% block content %}
+
+ <style>
+    .ibox-content {
+       
+        
+        border-style: none; 
+       
+    }
+    .spinner {
+        border: 3px solid #f3f3f3; /* Light grey */
+        border-top: 3px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 12px; /* Adjust size as needed */
+        height: 12px; /* Adjust size as needed */
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .ui-autocomplete {
+        max-height: 200px; /* Adjust height as needed */
+        overflow-y: auto;  /* Enable vertical scroll */
+        overflow-x: hidden; /* Hide horizontal scroll */
+    }
+    
+</style> 
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+<style>
+  .ui-autocomplete-loading {
+    background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+  }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css">
+
+<body>
+
+
+<main class="my-form" id="ibox1">
+    <div class ="ibox-content">
+        <div class="sk-spinner sk-spinner-wave">
+            <div class="sk-rect1"></div>
+            <div class="sk-rect2"></div>
+            <div class="sk-rect3"></div>
+            <div class="sk-rect4"></div>
+            <div class="sk-rect5"></div>
+        </div>
+       
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <form method="POST">
+                        <div class="card-header" ><strong>Reference Check Form</strong></div>
+                        <div class="card-body">
+                            {% csrf_token %}
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="candidate_name">Employee Name:</label>
+                                        <input type="text" class="form-control" id="candidate_name" name="candidate_name" readonly required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="candidate_department">Employee Department:</label>
+                                        <input type="text" class="form-control" id="candidate_department" name="candidate_department" readonly required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h4>Reference  Details First</h4>
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="individual_name_1"> Name:<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="individual_name_1" name="Ref1_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4"  >
+                                    <div class="form-group">
+                                        <label for="individual_email_1"> Email:<span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control" id="individual_email_1" name="Ref1_email" required>
+                                      
+                                        <span id="emailError1" style="color:red;"></span>
+        
+                                        <script>
+                                            document.getElementById('individual_email_1').addEventListener('input', function () {
+                                                const email = this.value;
+                                                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                const emailError = document.getElementById('emailError1');
+        
+                                                if (!regex.test(email)) {
+                                                    emailError.textContent = "Invalid email format";
+                                                } else {
+                                                    emailError.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="individual_mobile_1">Mobile Number:<span class="text-danger">*</span></label>
+                                    <div class="form-group">
+                                        <input type="tel" class="form-control" id="individual_mobile_1" name="Ref1_mobile_number" required>
+                                        <br>
+                                        <span id="mobileError1" style="color:red;"></span>
+
+                                        <script>
+                                            document.getElementById('individual_mobile_1').addEventListener('input', function () {
+                                                const mobile = this.value;
+                                                // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+                                                const regex = /^[6-9]\d{9}$/;
+                                                const mobileError1 = document.getElementById('mobileError1');
+
+                                                if (!regex.test(mobile)) {
+                                                    mobileError1.textContent = "Invalid mobile number";
+                                                } else {
+                                                    mobileError1.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                               
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                       
+                                        <label for="">Organization Name:<span class="text-danger">*</span></label>
+                                        <div style="position: relative;">
+                                        <input type="text" class="form-control" id="Ref1_Organization" name="Ref1_Organization" placeholder="Enter Organization" required>
+                                        <span class="loading-spinner" id="loader-Ref1_Organization" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                        </span>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Designation:<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="designation1" name="Ref1_Designation" placeholder="Enter Designation" required>
+                                        <span class="loading-spinner" id="loader-designation1" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Candidate Designation:<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="Ref1_candidate_Designation" name="Ref1_candidate_Designation" placeholder="Enter Designation" required>
+                                        <span class="loading-spinner" id="loader-Ref1_candidate_Designation" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <h4>Reference Details Second</h4>
+                          
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="individual_name_2"> Name:</label>
+                                        <input type="text" class="form-control" id="individual_name_2" name="Ref2_name" >
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_email_2"> Email:</label>
+                                        <input type="email" class="form-control" id="individual_email_2" name="Ref2_email" >
+                                        <span id="emailError2" style="color:red;"></span>
+        
+                                        <script>
+                                            document.getElementById('individual_email_2').addEventListener('input', function () {
+                                                const email = this.value;
+                                                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                const emailError = document.getElementById('emailError2');
+        
+                                                if (!regex.test(email)) {
+                                                    emailError.textContent = "Invalid email format";
+                                                } else {
+                                                    emailError.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="individual_mobile_2"> Mobile Number:</label>
+                                    <div class="form-group">
+                                        <input type="tel" class="form-control" id="individual_mobile_2" name="Ref2_mobile_number" >
+                                        <br>
+                                        <span id="mobileError2" style="color:red;"></span>
+
+                                        <script>
+                                            document.getElementById('individual_mobile_2').addEventListener('input', function () {
+                                                const mobile = this.value;
+                                                // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+                                                const regex = /^[6-9]\d{9}$/;
+                                                const mobileError2 = document.getElementById('mobileError2');
+
+                                                if (!regex.test(mobile)) {
+                                                    mobileError2.textContent = "Invalid mobile number";
+                                                } else {
+                                                    mobileError2.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="ui-widget">
+                                        <label for="">Organization Name:</label>
+                                        <div style="position: relative;">
+                                          <input type="text" class="form-control" id="Ref2_Organization" name="Ref2_Organization" placeholder="Enter Organization" >
+                                          <span class="loading-spinner" id="loader-Ref2_Organization" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Designation:</label>
+                                        <input type="text" class="form-control" id="designation2" name="Ref2_Designation" placeholder="Enter Designation" >
+                                        <span class="loading-spinner" id="loader-designation2" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                       
+                                       
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Candidate Designation:<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="Ref2_candidate_Designation" name="Ref2_candidate_Designation" placeholder="Enter Designation" >
+                                        <span class="loading-spinner" id="loader-Ref2_candidate_Designation" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4>Reference Details Third</h4>
+                          
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="individual_name_3"> Name:</label>
+                                        <input type="text" class="form-control" id="individual_name_3" name="Ref3_name" >
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_email_3"> Email:</label>
+                                        <input type="email" class="form-control" id="individual_email_3" name="Ref3_email" >
+                                        <span id="emailError3" style="color:red;"></span>
+        
+                                        <script>
+                                            document.getElementById('individual_email_3').addEventListener('input', function () {
+                                                const email = this.value;
+                                                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                                const emailError = document.getElementById('emailError3');
+        
+                                                if (!regex.test(email)) {
+                                                    emailError.textContent = "Invalid email format";
+                                                } else {
+                                                    emailError.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="individual_mobile_3"> Mobile Number:</label>
+                                    <div class="form-group">
+                                        <input type="tel" class="form-control" id="individual_mobile_3" name="Ref3_mobile_number" >
+                                        <br>
+                                        <span id="mobileError3" style="color:red;"></span>
+
+                                        <script>
+                                            document.getElementById('individual_mobile_3').addEventListener('input', function () {
+                                                const mobile = this.value;
+                                                // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+                                                const regex = /^[6-9]\d{9}$/;
+                                                const mobileError3 = document.getElementById('mobileError3');
+
+                                                if (!regex.test(mobile)) {
+                                                    mobileError3.textContent = "Invalid mobile number";
+                                                } else {
+                                                    mobileError3.textContent = "";
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="ui-widget">
+                                        
+                                        <label for="">Organization Name:</label>
+                                        <div style="position: relative;">
+                                          <input type="text" class="form-control" id="birds" name="Ref3_Organization" placeholder="Enter Organization" >
+                                          <span class="loading-spinner" id="loader-birds" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Designation:</label>
+                                        <input type="text" class="form-control" id="designation3" name="Ref3_Designation" placeholder="Enter Designation" >
+                                        <span class="loading-spinner" id="loader-designation3" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                       
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" >
+                                    <div class="form-group">
+                                        <label for="individual_mobile_1">Candidate Designation:<span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" id="Ref3_candidate_Designation" name="Ref3_candidate_Designation" placeholder="Enter Designation" >
+                                        <span class="loading-spinner" id="loader-Ref3_candidate_Designation" style="display: none; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">
+                                            <div class="spinner"></div>
+                                          </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer text-right">
+                            <button type="submit" id="toggleSpinners" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+<script>
+    $(function() {
+        // Function to initialize autocomplete for the designation inputs
+        function initializeAutocomplete(inputId, loaderId) {
+            $("#" + inputId).autocomplete({
+                source: function(request, response) {
+                    // Show the loading spinner
+                    $("#" + loaderId).show();
+                    $.ajax({
+                        url: "http://127.0.0.1:8000/Reference_check/designation-autocomplete/",  // URL to fetch designation suggestions
+                        data: { term: request.term },
+                        success: function(data) {
+                            // Hide the loading spinner
+                            $("#" + loaderId).hide();
+                            response(data);
+                        },
+                        error: function() {
+                            // Hide the loading spinner on error
+                            $("#" + loaderId).hide();
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    $("#" + inputId).val(ui.item.value); // Set the selected value
+                },
+                close: function() {
+                    // Hide the loading spinner when the autocomplete closes
+                    $("#" + loaderId).hide();
+                }
+            });
+        }
+
+        
+        initializeAutocomplete("designation1", "loader-designation1");
+        initializeAutocomplete("designation2", "loader-designation2");
+        initializeAutocomplete("designation3", "loader-designation3");
+
+        initializeAutocomplete("Ref1_candidate_Designation", "loader-Ref1_candidate_Designation");
+        initializeAutocomplete("Ref2_candidate_Designation", "loader-Ref2_candidate_Designation");
+        initializeAutocomplete("Ref3_candidate_Designation", "loader-Ref3_candidate_Designation");
+
+
+
+
+
+    });
+    </script>
+<script>
+    $(function() {
+        function setupAutocomplete(inputId, loaderId) {
+            $(inputId).autocomplete({
+                source: function(request, response) {
+                    $(loaderId).show();  // Show loading spinner
+                    $.ajax({
+                        url: "http://127.0.0.1:8000/Reference_check/search/",
+                        dataType: "json",
+                        data: {
+                            term: request.term
+                        },
+                        success: function(data) {
+                            console.log("Data received:", data);
+                            response($.map(data, function(item) {
+                                return {
+                                    label: item.Hotal_name,
+                                    value: item.Hotal_name,
+                                    id: item.id
+                                };
+                            }));
+                            $(loaderId).hide();  
+                        },
+                        error: function(xhr, status, error) {
+                            console.log("Error:", error);
+                            $(loaderId).hide(); 
+                        }
+                    });
+                },
+                minLength: 2,
+                search: function() {
+                    $(loaderId).show();  
+                },
+                response: function() {
+                    $(loaderId).hide();  
+                },
+                select: function(event, ui) {
+                    console.log("Selected:", ui.item);
+                    $(inputId).val(ui.item.Hotal_name);
+                }
+            });
+        }
+    
+        setupAutocomplete("#birds", "#loader-birds");
+        setupAutocomplete("#Ref2_Organization", "#loader-Ref2_Organization");
+        setupAutocomplete("#Ref1_Organization", "#loader-Ref1_Organization");
+    });
+    </script>
+   
+   <!-- Intl Tel Input JS -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<script>
+    $(function(){
+        $('#toggleSpinners').on('click', function(e){
+            var form = document.querySelector('form');
+
+            if (form.checkValidity()) {
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            } else {
+                e.preventDefault(); 
+                form.reportValidity(); 
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        function getQueryParam(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+  
+        var AIDFromUrl = getQueryParam('AID');
+        if (AIDFromUrl) {
+            $('#employeeCode').val(AIDFromUrl).prop('readonly', true);
+            fetchCandidateDetails(AIDFromUrl);
+        }
+  
+        $('#AIDFromUrl').on('input', function () {
+            var AIDFromUrl = $(this).val().trim();
+            if (AIDFromUrl === '') {
+                clearForm();
+            } else {
+              fetchCandidateDetails(AIDFromUrl);
+            }
+        });
+  
+        function fetchCandidateDetails(AIDFromUrl) {
+            var organizationID = '{{OrganizationID}}';
+            var hotelApiToken = '{{hotelapitoken}}';
+  
+            $.ajax({
+                url: '/InterviewAssessment/InterviewAssementCandidateDetails/',
+                type: 'GET',
+                data: {
+                    AID: AIDFromUrl,
+                    OID: organizationID
+                },
+                dataType: 'json',
+                headers: {
+                    'hotel-api-token': hotelApiToken
+                },
+                success: function (data) {
+                    if (data) {
+                        $('#candidate_name').val(data.Name);
+                        $('#candidate_department').val(data.Department);
+                    } else {
+                        clearForm();
+                        alert('Candidate details not found!');
+                    }
+                },
+                error: function () {
+                    clearForm();
+                    alert('Error fetching Candidate details.');
+                }
+            });
+        }
+  
+        function clearForm() {
+            $('#candidate_name').val('');
+            $('#candidate_department').val('');
+        }
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        // Initialize for individual_mobile_1
+        var input1 = document.querySelector("#individual_mobile_1");
+        window.intlTelInput(input1, {
+            initialCountry: "auto",
+            geoIpLookup: function(success, failure) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "us";
+                    success(countryCode);
+                });
+            },
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
+  
+        // Initialize for individual_mobile_2
+        var input2 = document.querySelector("#individual_mobile_2");
+        window.intlTelInput(input2, {
+            initialCountry: "auto",
+            geoIpLookup: function(success, failure) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "us";
+                    success(countryCode);
+                });
+            },
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
+  
+        // Initialize for individual_mobile_3
+        var input3 = document.querySelector("#individual_mobile_3");
+        window.intlTelInput(input3, {
+            initialCountry: "auto",
+            geoIpLookup: function(success, failure) {
+                $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                    var countryCode = (resp && resp.country) ? resp.country : "us";
+                    success(countryCode);
+                });
+            },
+            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
+        });
+    });
+  </script>
+  
+{% endblock content %}

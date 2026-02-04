@@ -1,0 +1,91 @@
+{% extends 'apps/homebase.html' %}
+{% load static %}
+<!--
+written By : Himanshu Pal
+-->
+{% block content %}
+
+
+<head>
+  <style media="screen">
+
+    .Ulmodule li {
+      display: inline-flex;
+      margin: 10px;
+      background: #175683;
+      padding: 10px;
+      border-radius: 5px;
+  }
+  
+  ul.Ulmodule {
+      display: flex;
+  }
+  .Ulmodule li a{
+    color: #fff;
+
+
+  }
+
+
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      background-image: url('{% static "images/bg.jpg" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .jumbotron h5,
+    h3 {
+      text-align: center;
+    }
+
+
+    .alert {
+      margin: 0px;
+    }
+
+
+
+    .glow {
+      font-size: 50px;
+      color: white;
+      text-align: center;
+      -webkit-animation: glow 1s ease-in-out infinite alternate;
+      -moz-animation: glow 1s ease-in-out infinite alternate;
+      animation: glow 1s ease-in-out infinite alternate;
+    }
+
+    @-webkit-keyframes glow {
+      from {
+        text-shadow: 0 0 10px #eeeeee, 0 0 20px #000000, 0 0 30px #000000, 0 0 40px #000000, 0 0 50px #9554b3, 0 0 60px #9554b3, 0 0 70px #9554b3;
+      }
+
+      to {
+        text-shadow: 0 0 20px #eeeeee, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+      }
+    }
+  </style>
+</head>
+<br>
+<br>
+
+<div class="text-center" >
+    <ul class="Ulmodule">
+        {% comment %} <li><a href="/showpage/">Cake Order</a></li> {% endcomment %}
+        <li><a href="/cakeorder/CakeOrderList">Cake Order</a></li>
+        <li><a href="/casualmanpower/casualmanpowerlist/">Casual Man Power Requisition</a></li>
+        <li><a href="/cleranceform/cleranceformlist">Clerance Form</a></li>
+        <li><a href="/uniforminventorysheet/list">Uniform Inventory</a></li>
+        <li><a href="/masterlineninventory/masterlinenlist">Linen Inventory</a></li>
+
+
+    </ul>
+  <br>
+</div>
+
+<br><br><br><br>
+
+
+
+{% endblock content %}

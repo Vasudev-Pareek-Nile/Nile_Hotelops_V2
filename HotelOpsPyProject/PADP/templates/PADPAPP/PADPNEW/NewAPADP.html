@@ -1,0 +1,1151 @@
+{% extends 'PADPAPP/homebase.html' %}
+{% load apadpfilter %}
+{% block content %}
+ 
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+      }
+      .large-radio {
+        position: relative;
+        transform: scale(2.0);
+        margin-right: 7px;
+        appearance: none;
+        border: 1px solid #666;
+        border-radius: 50%;
+        margin-top: 6px;
+        width: 12px;
+        height: 12px;
+        outline: none;
+        cursor: pointer;
+        background-color: transparent;
+        transition: background-color 0.3s ease;
+    }
+   
+    /* Style for checked state */
+    .large-radio:checked {
+        background-color: green;
+        border-color: green;
+    }
+   
+   
+    .large-radio:checked::before {
+        content: '\2713';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        color: white;
+        font-size: 11px;
+    }
+   
+</style>
+ <style>
+        .input-box {
+            display: none;
+        }
+    </style>
+    <style>
+        .top-margin {
+            margin-top: 10px;
+        }
+
+        .CustomStyle{
+            background-color: #34444c !important;
+            color:white !important;
+            text-transform:uppercase;
+            font-size:14px;
+            text-align: center;
+        }
+
+        .DevelopmentGoals{
+            background-color: #6a6162 !important; 
+            text-align: center;
+            color: white !important;
+        }
+    </style>
+    <style>
+       #Refresh{
+           transition: all 0.5s ease-in-out;
+       }
+       #Refresh:hover{
+           background-color:transparent;
+           color: #FF902F !important;
+       }
+       textarea {
+           overflow: hidden;
+           resize: none;
+       }
+   
+       .alert {
+           background-color: #4D5154;
+           color: #fff;
+           padding: 15px !important;
+           padding-left: 10px !important;
+       }
+
+       #SalaryCorrectionFrom {
+            pointer-events: none;
+            background-color: #f8f9fa;
+        }
+
+        .ImpField{
+            color: red;
+        }
+        .RefreshSalaryButtonMsg{
+            font-size: 13px;
+        }
+   </style>
+<form method="POST" id="goalForm">
+ {% csrf_token %}
+<div class="row">
+    <div class="col-md-12 ">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h4><strong>A,T,E PADP</strong></h4>
+                
+                {% if request.session.Department_Name == 'HR' %}
+                    {% if apadp_id %}
+                       <a id="Refresh" href="{% url 'Refresh' apadp_id  %}" class="btn mr-4 btn-primary" >
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+             
+            <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="employee_no" class="form-label">Employee Code:</label>
+                            <input type="text" class="form-control" id="" name="EmployeeCode" value="{{existing_apadp.EmployeeCode}}" readonly >
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Employee Name:</label>
+                            <input type="text" class="form-control" id="" name="EmpName" value="{{existing_apadp.EmpName}}" readonly >
+                        </div>
+                       
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Designations:</label>
+                            <input type="text" class="form-control" id="" name="Designation" value="{{existing_apadp.Designation}}" readonly >
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Department:</label>
+                            <input type="text" class="form-control" id="" name="Department" value="{{existing_apadp.Department}}" readonly>
+                        </div>
+                       
+                    </div>
+ 
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="employee_no" class="form-label">Level:</label>
+                            <input type="text" class="form-control" id="" name="Level" value="{{existing_apadp.Level}}" readonly >
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Reporting to Designation:</label>
+                            <input type="text" class="form-control" id="" name="ReportingtoDesigantion" value="{{existing_apadp.ReportingtoDesigantion}}" readonly >
+                        </div>
+                       
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Reporting to Level:</label>
+                            <input type="text" class="form-control" id="" name="ReportingtoLevel" value="{{existing_apadp.ReportingtoLevel}}" readonly >
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Date of Joining:</label>
+                            <input type="text" class="form-control" id="" name="DateofJoining" value="{{existing_apadp.DateofJoining}}" readonly >
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="employee_no" class="form-label">Current Role Tenure:</label>
+                            <input type="text" class="form-control" id="" name="Tenure" value="{{existing_apadp.Tenure}}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Review Period From:</label> 
+                            <input type="date" class="form-control" id="" name="review_from_date" value="{{existing_apadp.review_from_date|date:'Y-m-d'}}"  {% if Departmentsession != 'hr' %}readonly{% endif %}>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Review Period To:</label> 
+                            <input type="date" class="form-control" id="" name="review_to_date" value="{{existing_apadp.review_to_date|date:'Y-m-d'}}"  {% if Departmentsession != 'hr' %}readonly{% endif %}>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="CurrentSalary" class="form-label">Current Salary:</label>
+                            <input type="text" class="form-control" value="{% if existing_apadp.Current_Salary %}{{existing_apadp.Current_Salary}}{% else %}{{NewCTC}}{% endif %}" name="CurrentSalary" id="CurrentSalary" readonly>
+                        </div>
+                    </div>
+            </div>
+        </div>
+{% if apadp_id %}
+<div class="card">
+    <div class="card-body">
+                 
+        <h4 class="alert">
+            &nbsp; &nbsp;SECTION 1: PERFORMANCE APPRAISAL
+        </h4>
+               
+        <table class="table table-bordered table-striped" id="example">
+            <thead>
+                
+            </thead>
+            <tbody>      
+            
+                    <tr>
+                    {% for item in apadp_items %}
+                    <tr style="height: 10px;">
+                        <td colspan="6">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="background-color: #fe8938;" class="text-white"><b>{{ item.ItemName }}</b></td>
+                    </tr>
+                    <tr>
+                        <th class="CustomStyle">Evaluation Key</th>
+                        <th class="CustomStyle">Below Standard<br/>(No Correction)</th>
+                        <th class="CustomStyle">Meets Expectation<br/>(3%)</th>
+                        <th class="CustomStyle">Above Standard<br/>(5%)</th>
+                        <th class="CustomStyle">Outstanding<br/>(8%)</th>
+                    </tr>
+                
+                    
+                    {% for subitem in apadp_subitems %}
+                    {% if subitem.Master_APADP_Item == item %}
+                        <tr class="top-margin">
+                            <td style="width: 400px;">{{ subitem.SubItemName }}</td>
+                            <td style="text-align: center;">
+                                <input type="radio" id="option1_{{ subitem.id }}" name="Performance_{{ subitem.id }}" value="Below Standard" class="large-radio calc"
+                                {% if existing_details_dict|get_item:subitem.id == 'Below Standard' %}checked{% endif %} onclick="updateCounts()">
+                            </td>
+                            <td style="text-align: center;">
+                                <input type="radio" id="option2_{{ subitem.id }}" name="Performance_{{ subitem.id }}" value="Meets Expectation" class="large-radio calc"
+                                {% if existing_details_dict|get_item:subitem.id == 'Meets Expectation' %}checked{% endif %} onclick="updateCounts()">
+                            </td>
+                            <td style="text-align: center;">
+                                <input type="radio" id="option3_{{ subitem.id }}" name="Performance_{{ subitem.id }}" value="Above Standard" class="large-radio calc"
+                                {% if existing_details_dict|get_item:subitem.id == 'Above Standard' %}checked{% endif %} onclick="updateCounts()">
+                            </td>
+                            <td style="text-align: center;">
+                                <input type="radio" id="option4_{{ subitem.id }}" name="Performance_{{ subitem.id }}" value="Outstanding" class="large-radio calc"
+                                {% if existing_details_dict|get_item:subitem.id == 'Outstanding' %}checked{% endif %} onclick="updateCounts()">
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                    {% endfor %}
+            
+            </tbody>
+        </table>    
+        <h4 class="alert">
+            &nbsp; &nbsp;SECTION 2: DEVELOPMENT GOALS
+        </h4>  
+       
+        <table class="table table-bordered " id="example">
+            <thead>
+                <tr>
+                    <th class="DevelopmentGoals">Goal</th>
+                    <th class="DevelopmentGoals">Timeline</th>
+                    <th class="DevelopmentGoals">Status</th>
+                    <th class="DevelopmentGoals">Remarks</th>
+                    <th class="DevelopmentGoals">Goal Start Date</th>
+                    <th class="DevelopmentGoals">Goal Completion Date</th>
+                    <th class="DevelopmentGoals">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for goal in existing_goals %}
+                    <tr>
+                        <td><input type="text" name="Goal[]" class="form-control" value="{{ goal.Goal }}" required /></td>
+                        <td>
+                            <select name="Timeline[]" class="form-control" onchange="updateDate(this)" required>
+                                <option value="">Select Duration</option>
+                                <option value="1_week" {% if goal.Timeline == '1_week' %}selected{% endif %}>1 Week</option>
+                                <option value="2_weeks" {% if goal.Timeline == '2_weeks' %}selected{% endif %}>2 Weeks</option>
+                                <option value="3_weeks" {% if goal.Timeline == '3_weeks' %}selected{% endif %}>3 Weeks</option>
+                                <option value="1_month" {% if goal.Timeline == '1_month' %}selected{% endif %}>1 Month</option>
+                                <option value="2_months" {% if goal.Timeline == '2_months' %}selected{% endif %}>2 Months</option>
+                                <option value="3_months" {% if goal.Timeline == '3_months' %}selected{% endif %}>3 Months</option>
+                                <option value="4_months" {% if goal.Timeline == '4_months' %}selected{% endif %}>4 Months</option>
+                                <option value="5_months" {% if goal.Timeline == '5_months' %}selected{% endif %}>5 Months</option>
+                                <option value="6_months" {% if goal.Timeline == '6_months' %}selected{% endif %}>6 Months</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select name="Status[]" class="form-control" required>
+                                <option value="">Select Status</option>
+                                <option value="On Going" {% if goal.Status == 'On Going' %}selected{% endif %}>On Going</option>
+                                <option value="Met" {% if goal.Status == 'Met' %}selected{% endif %}>Met</option>
+                                <option value="Not Met" {% if goal.Status == 'Not Met' %}selected{% endif %}>Not Met</option>
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control" name="Remarks[]" value="{{ goal.Remarks }}" /></td>
+                        <td class="curentdate"><input type="text" class="form-control" name="GoalStartDate[]" value="{{ goal.GoalStartDate }}" readonly /></td>
+                        <td class="calculatedDate"><input type="text" class="form-control" name="GoalCompletionDate[]" value="{{ goal.GoalCompletionDate }}" readonly /></td>
+                        <td>
+                            <button class="btn btn-danger btn-sm removeRowBtn" style="font-size:11px"><i class="fa fa-close"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+           
+            <tr>
+                <td colspan="6" style="background-color: #ffffff;"></td>
+                <td style="background-color: #ffffff; width: 70px;">
+                    <a class="btn btn-primary btn-sm fa fa-plus" style="font-size:11px; color: #ffffff;" id="addRowBtn"></a>
+                </td>
+            </tr>
+            <caption>
+                <span style="font-size:small;color:red">*Dates will be auto-calculated.</span>
+            </caption>
+        </table>
+       
+
+       {% if SessionEmployeeCode != existing_apadp.EmployeeCode %}
+
+        <h4 class="alert">
+            &nbsp; &nbsp; {{existing_apadp.ReportingtoDesigantion}} Rating
+        </h4> 
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="CustomStyle">Evaluation Key</th>
+                    <th class="CustomStyle">Below Standard  <br/>(No Correction)</th>
+                    <th class="CustomStyle">Meets Expectation<br/>(3%)</th>
+                    <th class="CustomStyle">Above Standard<br/>(5%)</th>
+                    <th class="CustomStyle">Outstanding<br/>(8%)</th>
+                    <th class="CustomStyle">GM Recommendation<br/>(10%)</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 300px;">&nbsp;</td>
+                    <td style="text-align: center;">
+                        <input type="radio" id="dev_option1" name="Development" value="Below Standard" class="large-radio"
+                            {% if existing_apadp and existing_apadp.Development == 'Below Standard' %}checked{% endif %} onclick="return false;"
+                            {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                            >
+
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="radio" id="dev_option2" name="Development" value="Meets Expectation" class="large-radio "
+                            {% if existing_apadp and existing_apadp.Development == 'Meets Expectation' %}checked{% endif %}  onclick="return false;"
+                            {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                            >
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="radio" id="dev_option3" name="Development" value="Above Standard" class="large-radio "
+                            {% if existing_apadp and existing_apadp.Development == 'Above Standard' %}checked{% endif %}  onclick="return false;"
+                            {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                            >
+
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="radio" id="dev_option4" name="Development" value="Outstanding" class="large-radio "
+                            {% if existing_apadp and existing_apadp.Development == 'Outstanding' %}checked{% endif %}  onclick="return false;"
+                            {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                            >
+
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="radio" id="dev_option5" name="Development" value="Gm Recommendation" class="large-radio"
+                            {% if existing_apadp and existing_apadp.Development == 'Gm Recommendation' %}checked{% endif %} 
+                            {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                            >
+                    </td>
+                </tr>
+            </tbody>
+           
+         
+        </table>
+        <h4 class="alert">
+            &nbsp; &nbsp;SECTION 3: FINAL PERFORMANCE RATING
+        </h4>              
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="CustomStyle">Evaluation Key</th>
+                    <th class="CustomStyle">Below Standard  <br/>(No Correction)</th>
+                    <th class="CustomStyle">Meets Expectation<br/>(3%)</th>
+                    <th class="CustomStyle">Above Standard<br/>(5%)</th>
+                    <th class="CustomStyle">Outstanding<br/>(8%)</th>
+                    <th class="CustomStyle">GM Recommendation<br/>(10%)</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <td style="width: 300px;">&nbsp;</td>
+                <td style="text-align: center;">
+                    <input type="radio" id="ratingoption1" name="rating" value="Below Standard" class="large-radio"
+                    {% if existing_performance_rating and existing_performance_rating.rating == 'Below Standard' %}checked{% endif %}  onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="ratingoption2" name="rating" value="Meets Expectation" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.rating == 'Meets Expectation' %}checked{% endif %}  onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="ratingoption3" name="rating" value="Above Standard" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.rating == 'Above Standard' %}checked{% endif %}  onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="ratingoption4" name="rating" value="Outstanding" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.rating == 'Outstanding' %}checked{% endif %}  onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="ratingoption5" name="rating" value="Gm Recommendation" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.rating == 'Gm Recommendation' %}checked{% endif %} onclick="return false;"  
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+            </tbody>
+           
+         
+        </table>
+       
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="CustomStyle">Salary Increment {{existing_performance_rating.SalaryIncrementOption}}</th>
+                    <th class="CustomStyle">No Correction</th>
+                    <th class="CustomStyle">3%</th>
+                    <th class="CustomStyle">5%</th>
+                    <th class="CustomStyle">8%</th>
+                    <th class="CustomStyle">10%</th>
+                    <th class="CustomStyle">Salary Correction</th>
+                    <th class="CustomStyle">Promotion</th>
+                    <th class="CustomStyle">Promotion with Increase</th>
+                   
+                </tr>
+            </thead>
+            <tbody >
+                <td style="width: 300px;">&nbsp;</td>
+                <td style="text-align: center;">
+                    <input type="radio" id="Salaryoption1" name="SalaryIncrementOption" value="No Correction"  class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'No Correction' %}checked{% endif %} {% if apadp_id %}required{% endif %} onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                   
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="Salaryoption2" name="SalaryIncrementOption" value="3%" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '3%' %}checked{% endif %} {% if apadp_id %}required{% endif %} onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                   
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="Salaryoption3" name="SalaryIncrementOption" value="5%" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '5%' %}checked{% endif %} {% if apadp_id %}required{% endif %} onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                   
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="Salaryoption4" name="SalaryIncrementOption" value="8%" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '8%' %}checked{% endif %} {% if apadp_id %}required{% endif %} onclick="return false;"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                   
+                </td>
+ 
+                <td style="text-align: center;">
+                    <input type="radio" id="option4_{{ subitem.id }}" name="SalaryIncrementOption" value="10%" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '10%' %}checked{% endif %} {% if apadp_id %}required{% endif %};"
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                   
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="salaryCorrection" name="SalaryIncrementOption" value="Salary Correction" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'Salary Correction' %}checked{% endif %} {% if apadp_id %}required{% endif %}
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="Promotion" name="SalaryIncrementOption" value="Promotion" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'Promotion' %}checked{% endif %} {% if apadp_id %}required{% endif %}
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+                <td style="text-align: center;">
+                    <input type="radio" id="PromotionwithIncrease" name="SalaryIncrementOption" value= "Promotion with Increase" class="large-radio "
+                    {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == "Promotion with Increase" %}checked{% endif %} {% if apadp_id %}required{% endif %}
+                    {% if not_allowed %}disabled style="cursor: not-allowed;"{% endif %}
+                    >
+                </td>
+            </tbody>
+        </table>
+        <div class="card-header">
+            <div class="row">
+                <!-- Salary Correction Section -->
+               <div class="d-flex flex-column align-items-end">
+                    <button type="button" id="refreshSalary" class="btn btn-primary mb-2">
+                        <i class="fa-solid fa-arrows-rotate"></i> Refresh Salary
+                    </button>
+                    <p class="mb-0 RefreshSalaryButtonMsg">
+                        *If Salary and Designation are missing, please click the <b>Refresh Salary</b> button
+                    </p>
+                </div>
+
+                <div class="col-md-6">
+                   
+                    <!-- <br> -->
+                   
+                    <div class="input-box" id="salaryCorrectionInputs">
+
+                        <div class="col-md-6">
+                            <label for="SalaryCorrectionFrom"class="mt-3 mb-1">From<span class="ImpField">*</span></label>
+                            <input 
+                                type="number" 
+                                step="0.01" 
+                                id="SalaryCorrectionFrom" 
+                                name="SalaryCorrectionFrom" 
+                                value="{{CTC}}"
+                                {% comment %} value="{% if existing_performance_rating.SalaryCorrectionFrom %}{{existing_performance_rating.SalaryCorrectionFrom}}{% else %}{{CTC}}{% endif %}" {% endcomment %}
+
+                                class="form-control readonly" 
+                                title="You must add Salary Correction From"
+                            >
+                        </div>
+                        <span style="font-size:small; color:red;">*Current CTC flows from HR -> Employee data module.</span>
+                        <div class="col-md-6">
+                            <label for="SalaryCorrection"class="mt-3 mb-1">To<span class="ImpField">*</span></label>
+                            <input 
+                                type="number" 
+                                step="0.01" id="SalaryCorrection" 
+                                name="SalaryCorrectionTo" 
+                                value="{{existing_performance_rating.SalaryCorrectionTo}}" 
+                                class="form-control" 
+                                title="You must add Salary Correction From"
+                            >
+                        </div>
+                        <div class="col-md-6">
+                            <label for="JustificationSalaryCorrection"class="mt-3 mb-1">Justification for Salary Correction<span class="ImpField">*</span></label>
+                            <textarea id="JustificationSalaryCorrection" class="form-control" name="JustificationSalaryCorrection" style="min-width:100%;">{{existing_performance_rating.JustificationSalaryCorrection|default_if_none:"" }}</textarea>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+             
+                <!-- Promotion Section -->
+                <div class="col-md-6">
+                   
+                    <!-- <br> -->
+                    <div class="input-box" id="PromotionInputs">
+                        <div class="col-md-12">
+                            <label for="PromotionFrom"class="mt-3 mb-1">From</label>
+                            <input type="text" id="PromotionFrom" name="PromotionFrom" class="form-control readonly" 
+                            value="{% if existing_performance_rating.PromotionFrom %}{{ existing_performance_rating.PromotionFrom }}{% else %}{{ existing_apadp.Designation }}{% endif %}" 
+                            readonly
+                            >
+                        </div>
+                        <span style="font-size:small; color:red;">*Current Designation flows from HR -> Employee data module.</span>
+                        <div class="col-md-12" >
+                            <label for="PromotionTo"class="mt-3 mb-1">To<span class="ImpField">*</span></label>
+                            <select id="PromotionTo" name="PromotionTo" class="form-control" style="min-width:70%;">
+                                <option value="">Select Designation</option>
+                                {% for Designation in Designations %}
+                                    <option value="{{ Designation.designations }}"
+                                        {% if existing_performance_rating and existing_performance_rating.PromotionTo == Designation.designations %}selected{% endif %}>
+                                        {{ Designation.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="JustificationPromotion"class="mt-3 mb-1">Justification for Promotion<span class="ImpField">*</span></label>
+                            <textarea id="JustificationPromotion" name="JustificationPromotion" class="form-control" >{{existing_performance_rating.JustificationPromotion|default_if_none:""  }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </div>
+
+        {% endif %}
+
+        <br>
+        <h4 class="alert">
+            SECTION 4: FINAL COMMENTS 
+        </h4>
+        <div class="col-md-12">
+            <textarea class="form-control" id="" oninput="autoResize(this)" name="Finalcomments" rows="4" {% if apadp_id %}required{% endif %}>{{ existing_apadp.Finalcomments|default:"" }}</textarea>
+        </div>
+        <br>
+        {% comment %} <div class="card-footer text-right">
+            <button type="submit" id="toggleSpinners" class="btn btn-primary text-white">
+                Submit
+            </button>
+            {% if Departmentsession == 'hr' and  existing_apadp.ar_as == "Submitted"   %}
+            <button type="submit" name="ApporveBtn" value="1" class="btn btn-primary text-white">
+                Apporve By HR
+            </button>
+            {% endif %}
+        </div> {% endcomment %}
+    </div>
+</div>
+{% endif %}
+
+<div class="card-footer text-right">
+    <button type="submit" id="toggleSpinners" class="btn btn-primary text-white">
+        Submit
+    </button>
+    {% if Departmentsession == 'hr' and  existing_apadp.ar_as == "Submitted"   %}
+    <button type="submit" name="ApporveBtn" value="1" class="btn btn-primary text-white">
+        Apporve By HR
+    </button>
+    {% endif %}
+</div>
+
+</div>
+</div>
+</form>
+
+<script>
+    $("#salaryCorrection,#PromotionwithIncrease").click(function(e){
+        let belowStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Below Standard"]:checked').length;
+        let meetsExpectationCount = document.querySelectorAll('input[type="radio"].calc[value="Meets Expectation"]:checked').length;
+        let aboveStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Above Standard"]:checked').length;
+        let outstandingCount = document.querySelectorAll('input[type="radio"].calc[value="Outstanding"]:checked').length;
+
+        const counts = {
+            belowStandard: belowStandardCount,
+            meetsExpectation: meetsExpectationCount,
+            aboveStandard: aboveStandardCount,
+            outstanding: outstandingCount
+        };
+
+        const salaryOptions = {
+            "No Correction": belowStandardCount,
+            "3%": meetsExpectationCount,
+            "5%": aboveStandardCount,
+            "8%": outstandingCount
+        };
+
+        // Get the maximum count
+        const maxOption = Object.keys(salaryOptions).reduce((a, b) => 
+            salaryOptions[a] > salaryOptions[b] ? a : b
+        );
+        
+        // debugger
+        if(maxOption=="8%"){
+            // debugger
+       
+    }
+    else{
+        // debugger
+    e.preventDefault();
+    return false
+    }
+
+    })
+    document.getElementById('dev_option5').addEventListener('click', function(e) {
+        let belowStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Below Standard"]:checked').length;
+        let meetsExpectationCount = document.querySelectorAll('input[type="radio"].calc[value="Meets Expectation"]:checked').length;
+        let aboveStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Above Standard"]:checked').length;
+        let outstandingCount = document.querySelectorAll('input[type="radio"].calc[value="Outstanding"]:checked').length;
+
+        const counts = {
+            belowStandard: belowStandardCount,
+            meetsExpectation: meetsExpectationCount,
+            aboveStandard: aboveStandardCount,
+            outstanding: outstandingCount
+        };
+
+        const salaryOptions = {
+            "No Correction": belowStandardCount,
+            "3%": meetsExpectationCount,
+            "5%": aboveStandardCount,
+            "8%": outstandingCount
+        };
+
+        // Get the maximum count
+        const maxOption = Object.keys(salaryOptions).reduce((a, b) => 
+            salaryOptions[a] > salaryOptions[b] ? a : b
+        );
+        
+        // debugger
+        if(maxOption=="8%"){
+            // debugger
+        if (this.checked) {
+            // Enable the radio buttons when dev_option5 is checked
+            document.getElementById('salaryCorrection').disabled = false;
+            document.getElementById('Promotion').disabled = false;
+            document.getElementById('PromotionwithIncrease').disabled = false;
+
+            // Handle other logic for dev_option5
+            document.getElementById('ratingoption5').checked = true;
+            document.getElementById('option4_{{ subitem.id }}').checked = true;
+
+        } else {
+            // Disable the radio buttons when dev_option5 is unchecked
+            document.getElementById('salaryCorrection').disabled = true;
+            document.getElementById('Promotion').disabled = true;
+            document.getElementById('PromotionwithIncrease').disabled = true;
+        }
+    }
+    else{
+        // debugger
+    e.preventDefault();
+    return false
+    }
+    });
+
+    function updateCounts() {
+        let belowStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Below Standard"]:checked').length;
+        let meetsExpectationCount = document.querySelectorAll('input[type="radio"].calc[value="Meets Expectation"]:checked').length;
+        let aboveStandardCount = document.querySelectorAll('input[type="radio"].calc[value="Above Standard"]:checked').length;
+        let outstandingCount = document.querySelectorAll('input[type="radio"].calc[value="Outstanding"]:checked').length;
+
+        const counts = {
+            belowStandard: belowStandardCount,
+            meetsExpectation: meetsExpectationCount,
+            aboveStandard: aboveStandardCount,
+            outstanding: outstandingCount
+        };
+
+        ['dev_option1', 'dev_option2', 'dev_option3', 'dev_option4'].forEach(id => {
+            document.getElementById(id).checked = false;
+        });
+
+        const maxCount = Math.max(belowStandardCount, meetsExpectationCount, aboveStandardCount, outstandingCount);
+        for (const [key, value] of Object.entries(counts)) {
+            if (value === maxCount && value > 0) {
+                document.getElementById(`dev_option${Object.keys(counts).indexOf(key) + 1}`).checked = true;
+                break;
+            }
+        }
+
+        ['ratingoption1', 'ratingoption2', 'ratingoption3', 'ratingoption4', 'ratingoption5'].forEach(id => {
+            document.getElementById(id).checked = false;
+        });
+
+        for (const [key, value] of Object.entries(counts)) {
+            if (value === maxCount && value > 0) {
+                document.getElementById(`ratingoption${Object.keys(counts).indexOf(key) + 1}`).checked = true;
+                break;
+            }
+        }
+
+        const salaryIncrementRadios = document.querySelectorAll('input[name="SalaryIncrementOption"]');
+        salaryIncrementRadios.forEach(radio => {
+            radio.checked = false;
+        });
+
+
+        const salaryOptions = {
+            "No Correction": belowStandardCount,
+            "3%": meetsExpectationCount,
+            "5%": aboveStandardCount,
+            "8%": outstandingCount
+        };
+
+        // Get the maximum count
+        const maxOption = Object.keys(salaryOptions).reduce((a, b) => 
+            salaryOptions[a] > salaryOptions[b] ? a : b
+        );
+
+        // Set the radio button based on the highest count
+        document.querySelector(`input[name="SalaryIncrementOption"][value="${maxOption}"]`).checked = true;
+
+        try{
+        let selectedSalary = 0;
+        salaryIncrementRadios.forEach(radio => {
+            if (radio.checked) {
+                selectedSalary = parseInt(radio.value) || 0;
+            }
+        });
+        document.getElementById('selectedSalary').innerText = `Selected Salary Increment: ${selectedSalary}`;
+        }catch(e){}
+    }
+
+    
+
+    // function toggleSalaryCorrectionRequired(enable) {
+    //     document.getElementById('SalaryCorrectionFrom').required = enable;
+    //     document.getElementById('SalaryCorrection').required = enable;
+    //     document.getElementById('JustificationSalaryCorrection').required = enable;
+
+    //     console.log("the enable value is here::", enable)
+    //     if (enable == true){
+    //         console.log("the enable value is here:: and True")
+    //         document.getElementById('SalaryCorrectionFrom').setAttribute("min", 2);
+    //         document.getElementById('SalaryCorrection').setAttribute("min", 2);
+    //     }
+    // }
+
+    // function toggleSalaryCorrectionRequired(enable) {
+    //     let from = document.getElementById('SalaryCorrectionFrom');
+    //     let to = document.getElementById('SalaryCorrection');
+    //     let justification = document.getElementById('JustificationSalaryCorrection');
+
+    //     // alert("This field is requird")
+
+    //     from.required = enable;
+    //     to.required = enable;
+    //     justification.required = enable;
+
+    //     if (enable) {
+    //         from.setAttribute("min", 2);
+    //         to.setAttribute("min", 2);
+    //         // alert("This field is requird")
+    //     } else {
+    //         from.removeAttribute("min");
+    //         to.removeAttribute("min");
+    //     }
+    // }
+    function toggleSalaryCorrectionRequired(enable) {
+        let from = document.getElementById('SalaryCorrectionFrom');
+        let to = document.getElementById('SalaryCorrection');
+        let justification = document.getElementById('JustificationSalaryCorrection');
+
+        from.required = enable;
+        to.required = enable;
+        justification.required = enable;
+
+        if (enable) {
+            from.setAttribute("min", 2);
+            to.setAttribute("min", 2);
+            justification.setAttribute("minlength", 3);
+
+            // Add custom validation messages
+            from.oninvalid = function () {
+                this.setCustomValidity("This field is required. Please enter a valid salary.");
+            };
+            to.oninvalid = function () {
+                this.setCustomValidity("This field is required. Please enter a valid salary.");
+            };
+            // justification.oninvalid = function () {
+            //     this.setCustomValidity("This field is required. Please provide a justification.");
+            // };
+
+            justification.oninvalid = function () {
+                if (this.value.length < 3) {
+                    this.setCustomValidity("Justification must be at least 3 characters.");
+                } else {
+                    this.setCustomValidity("This field is required. Please provide a justification.");
+                }
+            };
+
+            // Clear message once user types
+            from.oninput = function () { this.setCustomValidity(""); };
+            to.oninput = function () { this.setCustomValidity(""); };
+            justification.oninput = function () { this.setCustomValidity(""); };
+
+        } else {
+            from.removeAttribute("min");
+            to.removeAttribute("min");
+            justification.removeAttribute("minlength");
+
+            // Remove custom validation if not required
+            from.oninvalid = null;
+            to.oninvalid = null;
+            justification.oninvalid = null;
+        }
+    }
+
+    function togglePromotionRequired(enable) {
+        let to = document.getElementById('PromotionTo');
+        let justification = document.getElementById('JustificationPromotion');
+
+        // console.log("Justification textarea :: ", justification)
+
+        to.required = enable;
+        justification.required = enable;
+
+        if (enable) {
+            justification.setAttribute("minlength", 3);
+
+            if (justification){
+                justification.oninvalid = function () {
+                    if (!this.value) {
+                        this.setCustomValidity("This field is required. Please provide a justification.");
+                    } else if (this.value.length < 3) {
+                        this.setCustomValidity("Justification must be at least 3 characters.");
+                    } else {
+                        this.setCustomValidity("");
+                    }
+                };
+            }
+
+            to.oninvalid = function () {
+                this.setCustomValidity("This field is required. Please Select a Designation.");
+            };
+
+
+            to.oninput = function () { this.setCustomValidity(""); };
+            justification.oninput = function () { this.setCustomValidity(""); };
+
+        } else {
+            justification.removeAttribute("minlength");
+            to.oninvalid = null;
+            justification.oninvalid = null;
+        }
+    }
+
+
+    function resetInputs() {
+        $('input[type="checkbox"]').prop('checked', false); // Uncheck all checkboxes
+        $('.input-box').hide(); // Hide all input boxes
+
+        toggleSalaryCorrectionRequired(false);
+        togglePromotionRequired(false)
+    }
+
+    function handleSalaryCorrection() {
+        $('#salaryCorrection').prop('checked', true); // Check Salary Correction checkbox
+        $('#salaryCorrectionInputs').show(); // Show Salary Correction input box
+
+        toggleSalaryCorrectionRequired(true);
+        togglePromotionRequired(false);
+
+    }
+
+    function handlePromotion() {
+        $('#Promotion').prop('checked', true); // Check Promotion checkbox
+        $('#PromotionInputs').show(); // Show Promotion input box
+
+        toggleSalaryCorrectionRequired(false);
+        togglePromotionRequired(true);
+    }
+
+    function handlePromotionIncrease() {
+        $('#PromotionwithIncrease').prop('checked', true); // Check Promotion with Increase checkbox
+        $('#PromotionInputs').show(); // Show Promotion input box
+        $('#salaryCorrectionInputs').show(); // Show Salary Correction input box
+
+        toggleSalaryCorrectionRequired(true);
+        togglePromotionRequired(true);
+    }
+
+    function initializePage() {
+        resetInputs();
+
+        let selectedValue2 = null; // declare globally in this scope
+
+        $('input[name="SalaryIncrementOption"]').on('change', function () {
+            selectedValue2 = $('input[name="SalaryIncrementOption"]:checked').val();
+            // console.log("Selected2 Value = ", selectedValue2 || 'Nothing2 selected');
+
+            // You can also run your switch here so it updates immediately on click
+            handleSelection(selectedValue2);
+        });
+
+        // On page load: check if something is already selected
+        selectedValue = $('input[name="SalaryIncrementOption"]:checked').val();
+        // console.log("Initial Selected Value = ", selectedValue || 'Nothing selected vasudev');
+        if (selectedValue){
+            handleSelection(selectedValue);
+        }
+
+        // Disable the salary increment options if dev_option5 is not checked initially
+        if (!document.getElementById('dev_option5').checked) {
+            document.getElementById('salaryCorrection').disabled = true;
+            document.getElementById('Promotion').disabled = true;
+            document.getElementById('PromotionwithIncrease').disabled = true;
+        }
+
+        // Centralized handler for selection
+        function handleSelection(value) {
+            // console.log("handleSelection Value = ", value || 'Nothing2 selected');
+            switch (value) {
+                case 'Salary Correction':
+                    handleSalaryCorrection();
+                    break;
+                case 'Promotion':
+                    handlePromotion();
+                    break;
+                case 'Promotion with Increase':
+                    handlePromotionIncrease();
+                    break;
+                case 'No Correction':
+                case '3%':
+                case '5%':
+                case '8%':
+                case '10%':
+                    // Keep everything hidden, no required fields
+                    toggleSalaryCorrectionRequired(false);
+                    togglePromotionRequired(false);
+                    break;
+            }
+        }
+
+        // Run it once on page load
+        handleSelection(selectedValue2);
+
+    }
+
+    // Event listener for radio button clicks
+    $('input[name="SalaryIncrementOption"]').on('click', function () {
+        resetInputs(); // Reset inputs before applying the new state
+
+        let selectedValue = $('input[name="SalaryIncrementOption"]:checked').val();
+        // console.log("Selected2 Value = ", selectedValue || 'Nothing2 selected');
+
+        switch (selectedValue) {
+            case 'Salary Correction':
+                handleSalaryCorrection();
+                break;
+            case 'Promotion':
+                handlePromotion();
+                break;
+            case 'Promotion with Increase':
+                handlePromotionIncrease();
+                break;
+            case 'No Correction':
+            case '3%':
+            case '5%':
+            case '8%':
+            case '10%':
+                // Keep everything hidden, no required fields
+                toggleSalaryCorrectionRequired(false);
+                togglePromotionRequired(false);
+                break;
+        }
+    });
+
+
+    // Initialize the page on load
+    $(document).ready(function () {
+        initializePage();
+        // updateCounts();
+    });
+</script>
+ 
+
+<script>
+    document.getElementById('addRowBtn').addEventListener('click', function() {
+        const tableBody = document.getElementById('tableBody');
+   
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td><input type="text" name="Goal[]" class="form-control" required /></td>
+            <td>
+                <select name="Timeline[]" class="form-control" onchange="updateDate(this)" required>
+                    <option value="">Select Duration</option>
+                    <option value="1_week">1 Week</option>
+                    <option value="2_weeks">2 Weeks</option>
+                    <option value="3_weeks">3 Weeks</option>
+                    <option value="1_month">1 Month</option>
+                    <option value="2_months">2 Months</option>
+                    <option value="3_months">3 Months</option>
+                    <option value="4_months">4 Months</option>
+                    <option value="5_months">5 Months</option>
+                    <option value="6_months">6 Months</option>
+                </select>
+            </td>
+            <td>
+                <select name="Status[]" class="form-control" required>
+                    <option value="">Select Status</option>
+                    <option selected="">On Going</option>
+                    <option>Met</option>
+                    <option>Not Met</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control" name="Remarks[]" /></td>
+            <td class="curentdate"><input type="text" class="form-control" name="GoalStartDate[]" readonly /></td>
+            <td class="calculatedDate"><input type="text" class="form-control" name="GoalCompletionDate[]" readonly /></td>
+            <td>
+                <button class="btn btn-danger btn-sm removeRowBtn" style="font-size:11px"><i class="fa fa-close"></i></button>
+            </td>
+        `;
+        tableBody.appendChild(newRow);
+    });
+   
+    function formatDate(date) {
+        const day = date.getDate();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[date.getMonth()];
+        const year = date.getFullYear();
+        return `${day} ${month} ${year}`;
+    }
+   
+    function updateDate(selectElement) {
+        var currentDate = new Date();
+        var selectedValue = selectElement.value;
+        var futureDate;
+   
+        var formattedCurrentDate = formatDate(currentDate);
+        var row = selectElement.closest('tr');
+        var currentDateInput = row.querySelector('.curentdate input');
+        if (currentDateInput) {
+            currentDateInput.value = formattedCurrentDate; // Set value in the input field
+        }
+   
+        if (selectedValue.includes("week")) {
+            var weeks = parseInt(selectedValue.split("_")[0]);
+            futureDate = new Date(currentDate);
+            futureDate.setDate(currentDate.getDate() + weeks * 7);
+        } else if (selectedValue.includes("month")) {
+            var months = parseInt(selectedValue.split("_")[0]);
+            futureDate = new Date(currentDate);
+            futureDate.setMonth(currentDate.getMonth() + months);
+        }
+   
+        var formattedFutureDate = formatDate(futureDate);
+        var calculatedDateInput = row.querySelector('.calculatedDate input');
+        if (calculatedDateInput) {
+            calculatedDateInput.value = formattedFutureDate; // Set value in the input field
+        }
+    }
+   
+    document.getElementById('tableBody').addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('removeRowBtn')) {
+            const row = e.target.closest('tr');
+            if (row) {
+                row.remove();
+            }
+        }
+    });
+   
+</script>
+ 
+
+<script>
+    function autoResize(textarea) {
+      textarea.style.height = 'auto'; // Reset height
+      textarea.style.height = textarea.scrollHeight + 'px'; // Set to scroll height
+    }
+
+    // $(function() {
+    //     document.querySelectorAll('textarea').forEach(autoResize);
+    // });
+    
+    $('input[type="radio"].calc').on('click', function() {
+        updateCounts();
+    });
+    // $(document).ready(function() {
+    //     updateCounts();
+    // });
+  </script>
+
+<script>
+    document.getElementById("refreshSalary").addEventListener("click", function() {
+        fetch(`/PADP/Refresh_Salary_Data_PADP/{{ apadp_id }}/`, {
+            method: "GET",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Update fields dynamically
+                document.getElementById("SalaryCorrectionFrom").value = data.salary;
+                document.getElementById("PromotionFrom").value = data.designation;
+                alert("The Salary Fetched Successfully")
+            }
+        })
+        .catch(err => console.error("Error refreshing salary:", err));
+    });
+</script>
+ 
+{% endblock %}
+ 

@@ -1,0 +1,256 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+<style>
+  body{
+  font-size: 14px  !important;
+  font-family: 'Arial Nova', Arial, sans-serif !important;
+  background:#fff !important;
+  }
+  h4{
+    margin-bottom:10px !important;
+    font-size:16px;
+    }
+
+    .form-control{
+  border-radius:4px;  
+  }      
+  .btn{
+  border-radius:4px;
+  }
+
+  tr th {
+  background-color: #edf0fb !important;
+  border-color: #D3D3D4 !important;
+  color: #fff !important;
+  font-size: 13px  !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  }
+  td {        
+  background-color: #f7f9fc !important;
+  }
+
+
+  .custom-btn {
+        margin-right: 10px; 
+        padding-block: 10px;
+        color: black !important;
+        border: 1px solid #dedede !important;
+    }
+
+  .btn.active {
+  background-color: #edf0fb !important;
+  border-color: #edf0fb !important;
+  color: #ffffff !important;
+  margin-right: 10px; 
+  padding-block: 10px;
+  }
+
+  .HeaderWithColor {
+  /* background-color: #edf0fb !important; */
+  color: black;
+  border-color: #D3D3D4 !important; 
+  text-transform: uppercase !important;
+  }
+
+  table thead th {
+  background: #edf0fb  !important;
+  }
+
+  table {
+  border-radius: 5px;
+  overflow: hidden;
+  }
+
+  table thead tr:first-child th:first-child {
+    border-top-left-radius: 4px;
+  }
+
+  table thead tr:first-child th:last-child {
+    border-top-right-radius: 4px;
+  }
+
+  table tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 4px;
+  }
+
+  table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 4px;
+  }
+
+  #myTable tr td:not(:first-child){
+  text-align:center;
+  }
+
+  .select2-dropdown {
+  z-index: 999;
+  }
+  .filter-box{
+  margin-left: -16px;
+  }
+
+  .card .card-header {
+  padding: 20px;
+  padding-bottom: 0px;
+  {% comment %} border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important; {% endcomment %}
+  background: transparent;
+  }
+  .submitfilterform {
+  margin-bottom: -5px;
+  }
+</style>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+        <span class="fw-bold text-uppercase">Designation Wise Report</span>
+      </div>
+        
+        
+        <div class="card-body">
+          <form method="GET" class="submitfilterform">
+            <div class="row">
+              <div class="col-md-5">
+                <div class="input-block">
+                  <select name="Designation" class="form-control select2">
+                    <option value="">Select Designation</option>
+                    {% for Designation in Designationfilter %}
+                      <option value="{{ Designation.designations }}" {% if selected_designation == Designation.designations %}selected{% endif %}>
+                        {{ Designation.designations }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+          
+              <div class="col-md-3 filter-box">
+                <button type="submit" class="btn  btn-primary">Filter</button>
+                <a class="btn btn-danger"  href="{% url 'DesignationWiseReportPdf' %}?Designation={{ selected_designation }}">Export</a>
+              </div>
+            </div>
+          </form>  
+
+          <table class="table table-bordered" id="myTable">
+            <tbody>
+              <tr>
+                <th class="TableThColor" title="Hotel">Hotel</th>
+                <th class="TableThColor" title="Budgeted CTC">Bud CTC</th>
+                <th class="TableThColor" title="Actual CTC">Act CTC</th>
+                <th class="TableThColor" title="Variance">Variance</th>
+                <th class="TableThColor" title="Budgeted HC">Bud HC</th>
+                <th class="TableThColor" title="Actual HC">Act HC</th>
+                <th class="TableThColor" title="Variance">Variance</th>
+                <th class="TableThColor" title="Budgeted Total CTC">Bud Total CTC</th>
+                <th class="TableThColor" title="Actual Total CTC">Act Total CTC</th>
+                <th class="TableThColor" title="Variance">Variance</th>
+              </tr>
+              <tbody>
+                {% for hotel_name, designation_totals in designation_totals_by_hotel.items %}
+                {% with budget_totals=budget_totals_by_hotel|get_item:hotel_name %}
+                    <tr>
+                        <td>{{ hotel_name }}</td>
+                        <td >{{ budget_totals.avg_salary|formatingdata }}</td>
+                        <td >{{ designation_totals.salary|formatingdata }}</td>
+                        <td style=" color: {% if designation_totals.variance_avg_salary < 0 %}green{% else %}red{% endif %};">
+                          {{ designation_totals.variance_avg_salary|formatingdata }}
+                      </td>
+                        <td >{{ budget_totals.head_count }}</td>
+                        <td >{{ designation_totals.headcount }}</td>
+                        <td style=" color: {% if designation_totals.variance_headcount < 0 %}green{% else %}red{% endif %};">
+                          {{ designation_totals.variance_headcount }}
+                      </td>
+                        <td >{{ budget_totals.budgetmultiplication_result|formatingdata }}</td>
+                        <td >{{ designation_totals.totalsalarydeta|formatingdata }}</td>
+                        <td style=" color: {% if designation_totals.variance_totalctc < 0 %}green{% else %}red{% endif %};">
+                          {{ designation_totals.variance_totalctc|formatingdata }}
+                      </td>
+                      
+                    </tr>
+                {% endwith %}
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+
+<script>
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        try {
+            var wb = XLSX.utils.book_new(); // Create a new workbook
+
+            function applyStyles(ws, styles, numCols) {
+                for (let col = 0; col < numCols; col++) {
+                    const cellRef = XLSX.utils.encode_cell({ c: col, r: 0 });
+                    if (!ws[cellRef]) ws[cellRef] = {};
+                    ws[cellRef].s = styles.header;
+                }
+
+                let rowIndex = 1;
+                $('#myTable tr, #myTable2 tr, #myTable3 tr, #myTable4 tr, #myTable5 tr').each(function() {
+                    const divisionRow = $(this).find('strong').first();
+                    if (divisionRow.length) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.division;
+                        }
+                    } else if ($(this).find('td').first().text().includes('Total')) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.totalRow;
+                        }
+                    }
+                    rowIndex++;
+                });
+            }
+
+            // Example for one table only; ensure this works before expanding to other tables
+            var ws1 = XLSX.utils.table_to_sheet(document.getElementById('myTable'));
+            ws1['!cols'] = [{ wpx: 200 }, ...Array(11).fill({ wpx: 90 })]; // First column 200px, others 110px
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+
+            XLSX.utils.book_append_sheet(wb, ws1, "Table1");
+
+            // Export file
+            XLSX.writeFile(wb, 'DignationsWise.xlsx');
+            console.log('Exported successfully!');
+        } catch (error) {
+            console.error('Error exporting file:', error);
+        }
+    });
+</script>
+
+{% endblock %}

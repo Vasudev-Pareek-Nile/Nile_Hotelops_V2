@@ -1,0 +1,644 @@
+{% extends "OpenPositions/homebase.html" %} 
+{% load openpostionfilter %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    .stat-bar {
+        display: flex;
+        gap: 10px;
+        
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        padding: 5px 10px;
+        border-radius: 5px;
+        background-color: #00b3b3;
+        color: black;
+        font-weight: bold;
+        width: 250px;
+    }
+
+    .stat-item.yellow {
+        background-color: #ffcc00;
+    }
+
+    .stat-item.red {
+        background-color: #ff4d4d;
+    }
+
+    .stat-value {
+        margin-left: 5px;
+        padding: 5px 10px;
+        background-color: white;
+        color: black;
+        border-radius: 5px;
+        text-align: right; 
+        display: inline-block; 
+        
+    }
+    .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: white;
+    }
+
+    .filter-bar select, .filter-bar input {
+        width: 270px;
+        height: 30px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
+    .filter-bar button {
+        padding: 6px 15px;
+        
+        
+        
+    }
+
+    .btn-search {
+        background-color: #00b3b3;
+        color: white;
+    }
+
+    .btn-clear {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .data-table-container {
+        margin-top: 20px;
+    }
+   
+    .table-hover tbody tr:hover {
+        background-color: #edf2ee; 
+        
+    }
+
+        .modal-lg {
+            max-width: 90%; /* Default width ko increase karke 90% kar diya */
+        }
+        .modal-gs
+        {
+            max-width: 60%; /* Default width ko increase karke 90% kar diya */
+        }
+        .stat-item {
+            display: flex
+        ;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #00b3b3;
+            color: black;
+            font-weight: bold;
+            width: 250px;
+            justify-content: space-between;
+            align-content: space-around;
+        }
+</style>
+<style>
+   
+    #myStackedBarChart {
+        width: 1250px; 
+        height: 200px; 
+    }
+
+    .chart-wrapper {
+        display: inline-block;
+        padding-bottom: 20px; 
+    }
+</style>
+
+{% comment %} <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet"> {% endcomment %}
+
+{% comment %} <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css"> {% endcomment %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script> {% endcomment %}
+
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-gs" role="document">
+        <div class="modal-content">
+            <div class="modal-header  d-flex justify-content-between">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div style="font-size: 11px;"  >
+        
+            
+                <div class="filter-bar">
+                    <form method="GET" action="{% url 'ResumeShorting' %}"> 
+                      
+                         <input 
+                        type="text" 
+                        id="searchInput" 
+                        name="search"
+                        class="form-control" 
+                        placeholder="Search by....." 
+                        style="width: 300px; display: inline-block;" 
+                        value="{{ request.GET.search }}" 
+                       
+                    >
+                    <select name="location">
+                        <option value="All Locations">All Location</option> 
+                        {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationName }}" {% if itm.OrganizationName == selected_location %}selected{% endif %} >  {{ itm.OrganizationName }} </option>
+                        {% endfor %}
+                    </select>
+                 <select name="department">
+                    <option value="All Departments">All Departments</option>
+                    
+                    {% for department in departmentsfilters %}
+                    <option value="{{ department.DepartmentName }}" {% if department.DepartmentName == selected_department %}selected{% endif %}>
+                        {{ department.DepartmentName }}
+                    </option>
+                    {% endfor %}
+                </select>
+                    <select name="job_title">
+                        <option value="All Designations">All Designations</option>
+                        <option value="NA" {% if "NA" == selected_job_title %}selected{% endif %}>No Assigned Designations</option>
+                        {% for Designationdata in Designations %}
+                        <option value="{{ Designationdata.designations }}" {% if Designationdata.designations == selected_job_title %}selected{% endif %}>
+                            {{ Designationdata.designations }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <select name="action">
+                        
+                        <option value="New" {% if selected_action == 'New' %}selected{% endif %}>New</option>
+                        <option value="Shortlisted" {% if selected_action == 'Shortlisted' %}selected{% endif %}>Shortlisted</option>
+                        <option value="Rejected" {% if selected_action == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        <option value="Recommended" {% if selected_action == 'Recommended' %}selected{% endif %}>Recommended</option>
+                        <option value="Hired" {% if selected_action == 'Hired' %}selected{% endif %}>Hired</option>
+                        <option value="Re-Dial" {% if selected_action == 'Re-Dial' %}selected{% endif %}>Re-Dial</option>
+                    </select>
+                    
+
+
+
+
+                    
+                   <button type="submit" class="btn btn-primary text-white">Search</button>
+
+                  
+                    <a href="{% url 'ResumeShorting' %}" class="btn btn-info">Clear Filter</a>
+                </div> 
+            </form>
+                <br>
+              
+
+                <div class="stat-bar">
+                    <div class="stat-item" style="background-color: rgba(219,232,238,255)">Shortlisted <span class="stat-value">{{ action_counts.Shortlisted }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(45, 42, 44, 0.27)">New <span class="stat-value">{{ no_action_resumes_count }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(225,211,186,255)">Recommended <span class="stat-value">{{ action_counts.Recommended }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(197,214,210)">Hired <span class="stat-value">{{ action_counts.Hired }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(225,186,186,255)">Rejected <span class="stat-value">{{ action_counts.Rejected }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(168,127,168,255)">Re-Dial <span class="stat-value">{{ action_counts.Re_dial }}</span></div>
+                    <div class="stat-item" style="background-color: rgba(186,197,225,255)">Total Resumes <span class="stat-value">{{ resumes_count }}</span></div>
+                </div>
+                
+                <br>
+                <style>
+                    .chart-container {
+                        width: 100%;
+                        height: calc(30vh); /* Adjust height as a percentage of the viewport height */
+                    }
+            
+                    #loadingMessage {
+                        text-align: center;
+                        font-size: 16px;
+                        color: #666;
+                    }
+                </style>
+               
+                <div class="mb-3" style="text-align: right;">
+                   
+                </div>
+                <script>
+                    function searchTable() {
+                        const input = document.getElementById("searchInput").value.toLowerCase();
+                        window.location.href = window.location.pathname + '?search=' + input;
+                    }
+                </script>
+                 <table    class="table table-bordered table-hover"  >
+                    <thead class="thead">
+                      <tr >
+                        <th>Sr#</th>
+                        <th>Candidate</th>
+                        <th>Contact Details</th>
+                        <th>Resume</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                        <th>Applied On</th>
+                        <th>Source</th>
+                       
+                      </tr>
+                    </thead>
+                    <tbody id="tableBody" >
+                        {% for CareesResume in CareesResumes %}
+                        <tr>
+                         <td style="width: 50px;">{{ CareesResumes.start_index|add:forloop.counter0 }}</td>  
+                        <td style="width: 400px;">
+                            <span style="font-size: 16px; font-weight: bold; color: #36454F;">
+                                {{ CareesResume.first_name }}&nbsp;{{ CareesResume.last_name }}
+                            </span><br>
+                            <span style="font-size: 11px; font-weight:bold; color: #36454F;">
+                                {{ CareesResume.job_title }}-{{ CareesResume.location }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="tel:{{ CareesResume.phone }}" style="letter-spacing: 1px; font-size: 14px; color: #02060a;">{{ CareesResume.phone }}</a><br>
+                            <a href="mailto:{{ CareesResume.email }}" style="letter-spacing: 1px; font-size: 14px; color: #02060a;">{{ CareesResume.email }}</a>
+                        </td>
+                        
+
+                       
+                        <td>
+                            {% if CareesResume.id %}
+                              <a href="javascript:void(0)" 
+                                 data-href="{% url 'view_Resume' %}?ID={{ CareesResume.id }}" 
+                                 class="btn btn-primary btn-sm"
+                                 onclick="showEduDetails(this)">Resume</a>
+                            {% endif %}
+                        </td>
+                        
+                        
+
+                        <td>
+                            {% if CareesResume.actionsresume_set %}
+                                {% if  CareesResume.actionsresume_set.all %}
+                                    {% for action in CareesResume.actionsresume_set.all %}
+                                        {{ action.action }}&nbsp;By<br>  
+                                        <span style=" font-weight: bold; color: #36454F;">{{ action.CreatedByUsername|default_if_none:"&nbsp;"  }}</span><br>
+                                        {{ action.reason_date|date:"d M Y" }}
+                                    {% endfor %}
+                                {% else %}
+                                    No actions available
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <!-- Dropdown with dynamic actions -->
+                                <div class="dropdown mr-1">
+                                    <a class="btn btn-secondary btn-sm dropdown-toggle" style="font-size: 13px; color: white;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Actions
+                                    </a>
+                                    <div class="dropdown-menu">
+                                        {% if "Shortlisted" not in CareesResume.actionsresume_set.all|pluck:"action" %}
+                                            <a class="dropdown-item" href="#" data-action="Shortlisted" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Shortlisted</a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="#" style="pointer-events: none; color: gray;">Shortlisted (Already Taken)</a>
+                                        {% endif %}
+                            
+                                        {% if "Rejected" not in CareesResume.actionsresume_set.all|pluck:"action" %}
+                                            <a class="dropdown-item" href="#" data-action="Rejected" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Rejected</a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="#" style="pointer-events: none; color: gray;">Rejected (Already Taken)</a>
+                                        {% endif %}
+                            
+                                        {% if "Hired" not in CareesResume.actionsresume_set.all|pluck:"action" %}
+                                            <a class="dropdown-item" href="#" data-action="Hired" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Hired</a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="#" style="pointer-events: none; color: gray;">Hired (Already Taken)</a>
+                                        {% endif %}
+                            
+                                        {% if "Recommended" not in CareesResume.actionsresume_set.all|pluck:"action" %}
+                                            <a class="dropdown-item" href="#" data-action="Recommended" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Recommended</a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="#" style="pointer-events: none; color: gray;">Recommended (Already Taken)</a>
+                                        {% endif %}
+                            
+                                        {% if "Re_dial" not in CareesResume.actionsresume_set.all|pluck:"action" %}
+                                            <a class="dropdown-item" href="#" data-action="Re_dial" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Re-Dial</a>
+                                        {% else %}
+                                            <a class="dropdown-item" href="#" style="pointer-events: none; color: gray;">Re-Dial (Already Taken)</a>
+                                        {% endif %}
+                            
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#editResumeModal" data-page-number="{{ page_number }}" data-resume-source="{{ CareesResume.campaign_source }}" data-resume-id="{{ CareesResume.id }}">Edit Resume</a>
+                                    </div>
+                                </div>
+                                &nbsp;
+                                <a href="{% url 'InterviewAssessmentCreate' %}?OPID={{CareesResume.id}}" class="btn btn-primary btn-sm create-ia-btn" style="font-size: 13px; color: white;">
+                                    Create IA
+                                </a>
+                            </div>
+                        </td>
+                        
+                        
+                        
+                        <td>{{ CareesResume.AppliedDate|date:"d-M-Y" }}</td>
+                        <td>{{ CareesResume.campaign_source|default:"&nbsp;" }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+                  </tbody>
+                  
+              
+                  </table> 
+                
+                  <div class="pagination-container" style="text-align: right; width: 100%; display: flex; justify-content: flex-end;">
+                    <nav>
+                       <ul class="pagination">
+    {% if CareesResumes.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ CareesResumes.previous_page_number }}&location={{ selected_location|urlencode }}&department={{ selected_department|urlencode }}&job_title={{ selected_job_title|urlencode }}&action={{ selected_action|urlencode }}&search={{ search_term|urlencode }}">&laquo; Previous</a>
+        </li>
+    {% endif %}
+
+    {% if CareesResumes.number > 3 %}
+        <li class="page-item">
+            <a class="page-link" href="?page=1&location={{ selected_location|urlencode }}&department={{ selected_department|urlencode }}&job_title={{ selected_job_title|urlencode }}&action={{ selected_action|urlencode }}&search={{ search_term|urlencode }}">1</a>
+        </li>
+        {% if CareesResumes.number > 4 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+        {% endif %}
+    {% endif %}
+
+    {% for page_num in CareesResumes.paginator.page_range %}
+        {% if page_num > CareesResumes.number|add:-3 and page_num < CareesResumes.number|add:3 %}
+            <li class="page-item {% if CareesResumes.number == page_num %}active{% endif %}">
+                <a class="page-link" href="?page={{ page_num }}&location={{ selected_location|urlencode }}&department={{ selected_department|urlencode }}&job_title={{ selected_job_title|urlencode }}&action={{ selected_action|urlencode }}&search={{ search_term|urlencode }}">{{ page_num }}</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+
+    {% if CareesResumes.number < CareesResumes.paginator.num_pages|add:-3 %}
+        {% if CareesResumes.number < CareesResumes.paginator.num_pages|add:-4 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+        {% endif %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ CareesResumes.paginator.num_pages }}&location={{ selected_location|urlencode }}&department={{ selected_department|urlencode }}&job_title={{ selected_job_title|urlencode }}&action={{ selected_action|urlencode }}&search={{ search_term|urlencode }}">{{ CareesResumes.paginator.num_pages }}</a>
+        </li>
+    {% endif %}
+
+    {% if CareesResumes.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ CareesResumes.next_page_number }}&location={{ selected_location|urlencode }}&department={{ selected_department|urlencode }}&job_title={{ selected_job_title|urlencode }}&action={{ selected_action|urlencode }}&search={{ search_term|urlencode }}">Next &raquo;</a>
+        </li>
+    {% endif %}
+</ul>
+
+                    </nav>
+                </div>
+                
+                  
+</div>
+
+
+<div class="modal fade" id="editResumeModal" tabindex="-1" role="dialog" aria-labelledby="editResumeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editResumeModalLabel"><b>Resume</b></h5>
+                <button type="button" class="btn-close" aria-label="Close" data-dismiss="modal">
+                    &times;
+                </button>
+            </div>
+            <form id="editResumeForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="resume"><b>Resume Preview</b></label>
+                                <iframe id="resumeSrc" src="" style="width: 100%; height: 450px;" frameborder="0"></iframe>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="firstName"><b>First Name</b></label>
+                                <input type="text" class="form-control" id="firstName" name="first_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName"><b>Last Name</b></label>
+                                <input type="text" class="form-control" id="lastName" name="last_name">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone"><b>Phone</b></label>
+                                <input type="text" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="jobTitle"><b>Job Title</b></label>
+                                <select class="form-control" id="jobTitle" name="job_title">
+                                    <option value="">All Designations</option>
+                                    <option value="NA">No Assigned Designations</option>
+
+                                    {% for Designationdata in Designations %}
+                                    <option value="{{ Designationdata.designations }}" {% if Designationdata.designations == selected_job_title %}selected{% endif %}>
+                                        {{ Designationdata.designations }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="location"><b>Location</b></label>
+                                <select id="location" name="location" class="form-control">
+                                    <option value="">All Location</option>
+                                    {% for itm in memOrg %}
+                                    <option value="{{ itm.OrganizationName }}" 
+                                            {% if itm.OrganizationName == selected_location %}selected{% endif %}>
+                                        {{ itm.OrganizationName }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="email"><b>Email</b></label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 
+
+
+
+
+
+
+
+<script>
+    $('#editResumeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var resumeId = button.data('resume-id'); // Extract info from data-* attributes
+        var ResumeSource = button.data('resume-source');
+        var PageNumber = button.data('page-number');
+
+        // Get the full query string
+        const params = new URLSearchParams(window.location.search);
+
+        // Example: get value of 'page', 'location', etc.
+        const pageNumber = params.get('page');
+        const locationParams = params.get('location');
+        const department = params.get('department');
+        const jobTitleParams = params.get('job_title');
+        const action = params.get('action');
+        const search = params.get('search');
+
+        console.log('Page:', page);
+        console.log('Location:', location);
+        
+        // Set the action URL for the form based on the selected resume ID
+        $('#editResumeForm').attr('action', '/Open_position/edit_resume/' + resumeId + ResumeSource + PageNumber +'/');
+
+        // Fetch resume details via AJAX
+        $.ajax({
+            url: '/Open_position/get_resume_details/' + resumeId + ResumeSource + PageNumber + '/',
+            method: 'GET',
+            success: function (data) {
+                // Populate the modal fields with fetched resume data
+                $('#firstName').val(data.first_name);
+                $('#lastName').val(data.last_name);
+                $('#phone').val(data.phone);
+                $('#jobTitle').val(data.job_title);
+                $('#location').val(data.location);
+                $('#email').val(data.email);
+
+                // Set the resume URL for the iframe for preview
+                var resumePreviewUrl = '/Open_position/view_Resume/?ID=' + resumeId; // Construct the URL for resume preview
+                $('#resumeSrc').attr('src', resumePreviewUrl); // Set the iframe source to the resume preview URL
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching resume details:', error);
+            }
+        });
+    });
+</script>
+
+    
+
+
+    
+    
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function () {
+    $('.dropdown-item').click(function (event) {
+        event.preventDefault();
+
+        var action = $(this).data('action');
+        var resumeId = $(this).data('resume-id');
+        var ResumeSource = button.data('resume-source'); 
+
+
+        if (!action) return;
+
+        var csrfToken = '{{ csrf_token }}';
+
+        $.ajax({
+            url: '{% url "perform_action" %}',
+            type: 'POST',
+            data: {
+                'action': action,
+                'resume_id': resumeId,
+                'ResumeSource': ResumeSource,
+                'csrfmiddlewaretoken': csrfToken
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'Action "' + response.action + '" performed successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Remove the selected action from the dropdown
+                    $('.dropdown-item[data-action="' + action + '"][data-resume-id="' + resumeId + '"][data-resume-source="' + ResumeSource + '"]').remove();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.message,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An unexpected error occurred.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+});
+
+</script>
+
+
+
+
+<script>
+    var showEduDetails = function(obj) {
+        var hurl = $(obj).attr('data-href');
+        $("#filePreview").attr('src', hurl); // Set the iframe source
+        $(".modalPr").modal('show'); // Show the modal
+    };
+
+    // Optional: Bind the close event to ensure it works with other close triggers
+    $(document).on('click', '.close, .btn-secondary', function () {
+        $(".modalPr").modal('hide'); // Hide the modal
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "pageLength": 10, // Default number of rows per page
+        });
+    });
+</script>
+
+  
+{% endblock content %}

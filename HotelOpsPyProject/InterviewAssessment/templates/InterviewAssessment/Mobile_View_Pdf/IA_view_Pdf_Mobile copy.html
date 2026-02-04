@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Interview Assessment Report</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            padding: 20px;
+            font-size: 12px;
+            color: #333;
+        }
+        h1, h2 {
+            color: #1a75ff;
+            border-bottom: 2px solid #1a75ff;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .label {
+            font-weight: bold;
+            width: 200px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        .value {
+            display: inline-block;
+            width: 400px;
+        }
+        .row {
+            margin-bottom: 6px;
+        }
+        .approved {
+            color: green;
+        }
+        .pending {
+            color: orange;
+        }
+        .rejected {
+            color: red;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table td, table th {
+            border: 1px solid #777;
+            padding: 4px;
+        }
+        .header-table td {
+            border: none;
+            padding: 2px 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interview Assessment Summary</h1>
+
+    <div class="section">
+        <div class="row"><span class="label">Candidate Name:</span> <span class="value">{{ data.Prefix }} {{ data.Name }}</span></div>
+        <div class="row"><span class="label">Email:</span> <span class="value">{{ data.Email }}</span></div>
+        <div class="row"><span class="label">Contact Number:</span> <span class="value">{{ data.ContactNumber }}</span></div>
+        <div class="row"><span class="label">Interview Date:</span> <span class="value">{{ data.InterviewDate }}</span></div>
+        <div class="row"><span class="label">Proposed DOJ:</span> <span class="value">{{ data.ProposedDOJ }}</span></div>
+    </div>
+
+    <h2>Position & Department</h2>
+    <div class="section">
+        <div class="row"><span class="label">Applied For:</span> <span class="value">{{ data.AppliedFor }}</span></div>
+        <div class="row"><span class="label">Department:</span> <span class="value">{{ data.Department }}</span></div>
+        <div class="row"><span class="label">Position:</span> <span class="value">{{ data.position }}</span></div>
+        <div class="row"><span class="label">Hire For:</span> <span class="value">{{ data.HireFor }}</span></div>
+        <div class="row"><span class="label">Level:</span> <span class="value">{{ data.Level }}</span></div>
+    </div>
+
+    <h2>Background Information</h2>
+    <div class="section">
+        <div class="row"><span class="label">Experience:</span> <span class="value">{{ data.workexperience }}</span></div>
+        <div class="row"><span class="label">Reference:</span> <span class="value">{{ data.reference }}</span></div>
+        <div class="row"><span class="label">Family Background:</span> <span class="value">{{ data.familybackground }}</span></div>
+    </div>
+
+    <h2>Salary Details</h2>
+    <div class="section">
+        <div class="row"><span class="label">Previous Salary:</span> <span class="value">₹{{ data.pre_salary }}</span></div>
+        <div class="row"><span class="label">Expected Salary:</span> <span class="value">₹{{ data.exp_salary }}</span></div>
+        <div class="row"><span class="label">Current Designation:</span> <span class="value">{{ data.Presentdesignation }}</span></div>
+        <div class="row"><span class="label">Expected Designation:</span> <span class="value">{{ data.Expecteddesignation }}</span></div>
+    </div>
+
+    <h2>Approval Status</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Stage</th>
+                <th>Status</th>
+                <th>Remarks</th>
+                <th>Action Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>HR</td>
+                <td>{{ data.hr_as }}</td>
+                <td>{{ data.hr_as_remarks }}</td>
+                <td>{{ data.hr_actionOn|default:"—" }}</td>
+            </tr>
+            <tr>
+                <td>HOD</td>
+                <td>{{ data.hod_as }}</td>
+                <td>{{ data.hod_as_remarks|default:"—" }}</td>
+                <td>{{ data.hod_actionOn|default:"—" }}</td>
+            </tr>
+            <tr>
+                <td>RD</td>
+                <td>{{ data.rd_as }}</td>
+                <td>{{ data.rd_as_remarks|default:"—" }}</td>
+                <td>{{ data.rd_actionOn|default:"—" }}</td>
+            </tr>
+            <tr>
+                <td>GM</td>
+                <td>{{ data.gm_as }}</td>
+                <td>{{ data.gm_as_remarks|default:"—" }}</td>
+                <td>{{ data.gm_actionOn|default:"—" }}</td>
+            </tr>
+            <tr>
+                <td>CEO</td>
+                <td>{{ data.ceo_as }}</td>
+                <td>{{ data.ceo_as_remarks|default:"—" }}</td>
+                <td>{{ data.ceo_actionOn|default:"—" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Other Info</h2>
+    <div class="section">
+        <div class="row"><span class="label">LOI Status:</span> <span class="value">{{ data.LOIStatus }}</span></div>
+        <div class="row"><span class="label">Resignation Status:</span> <span class="value">{{ data.ResignationStatus }}</span></div>
+        <div class="row"><span class="label">DOJ Status:</span> <span class="value">{{ data.DOJStatus }}</span></div>
+        <div class="row"><span class="label">Last Approval Status:</span> <span class="value">{{ data.LastApporvalStatus }}</span></div>
+    </div>
+
+    <p style="text-align:center; margin-top: 40px; font-style: italic;">Generated by Interview Assessment Portal</p>
+</body>
+</html>

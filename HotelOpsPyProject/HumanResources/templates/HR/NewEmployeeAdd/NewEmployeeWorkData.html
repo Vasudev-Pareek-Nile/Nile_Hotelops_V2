@@ -1,0 +1,371 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<style>
+    .strike{
+        color: red;
+    }
+    label{
+        margin-bottom: 5px;
+    }
+</style>
+<div class="card-header">
+    <h4 class="text-uppercase fw-bold">Work Details</h4>
+</div>
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+       
+        <div class="row m-3 g-3">
+            <div class="col-md-5">
+                <label for="Designation">Designation</label>
+               
+                <select id="Designation" name="Designation" class="form-control" required>
+                    <option value="">Select Position</option>
+                   
+
+                    {% for Designation in MergedDesignations %}
+                    <option value="{{ Designation.designations }}" 
+                            {% if Workobj.Designation == Designation.designations %}selected{% endif %}
+                            data-level="{{ Designation.Lavel }}"
+                            
+                            {% if Designation.OnRollDivisionMaster %}
+                                data-division="{{ Designation.OnRollDivisionMaster.DivisionName }}"
+                            {% elif Designation.CorporateDivisionMaster %}
+                                data-division="{{ Designation.CorporateDivisionMaster.DivisionName }}"
+                            {% endif %}
+                
+                            {% if Designation.OnRollDepartmentMaster %}
+                                data-department="{{ Designation.OnRollDepartmentMaster.DepartmentName }}"
+                            {% elif Designation.CorporateDepartmentMaster %}
+                                data-department="{{ Designation.CorporateDepartmentMaster.DepartmentName }}"
+                            {% endif %}>
+                        {{ Designation.designations }}  
+                        
+                        {% if Designation.OnRollDepartmentMaster %}
+                            ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                        {% elif Designation.CorporateDepartmentMaster %}
+                            ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                        {% endif %}
+                    </option>
+               
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Division <span class="strike">*</span></label>
+                    <input id="Division" name="Division" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Department <span class="strike">*</span></label>
+                    <input id="Department" name="Department" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label>Level <span class="strike">*</span></label>
+                    <input id="Level" name="Level" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label>Reporting to Designation <span class="strike">*</span></label>
+                    <select id="ReportingToDesignation" name="ReportingToDesignation" class="form-control" required>
+                        <option value="">Select Position</option>
+                       
+
+                        {% for Designation in MergedReportingtoDesignation %}
+                        <option value="{{ Designation.designations }}" 
+                                {% if Workobj.ReportingtoDesignation == Designation.designations %}selected{% endif %}
+                                data-ReportingToDesignationLevel="{{ Designation.Lavel }}"
+                    
+                                {% if Designation.OnRollDivisionMaster %}
+                                    data-ReportingtoDivision="{{ Designation.OnRollDivisionMaster.DivisionName }}"
+                                {% elif Designation.CorporateDivisionMaster %}
+                                    data-ReportingtoDivision="{{ Designation.CorporateDivisionMaster.DivisionName }}"
+                                {% endif %}
+                    
+                                {% if Designation.OnRollDepartmentMaster %}
+                                    data-ReportingToDesignationLeveldepartment="{{ Designation.OnRollDepartmentMaster.DepartmentName }}"
+                                {% elif Designation.CorporateDepartmentMaster %}
+                                    data-ReportingToDesignationLeveldepartment="{{ Designation.CorporateDepartmentMaster.DepartmentName }}"
+                                {% endif %}>
+                            {{ Designation.designations }}  
+                            
+                            {% if Designation.OnRollDepartmentMaster %}
+                                ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                            {% elif Designation.CorporateDepartmentMaster %}
+                                ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                            {% endif %}
+                        </option>
+                   
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Division <span class="strike">*</span></label>
+                    <input id="ReportingtoDivision" name="ReportingtoDivision" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Department <span class="strike">*</span></label>
+                    <input id="ReportingToDesignationDepartment" name="ReportingToDesignationDepartment" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class="form-group">
+                    <label>Level <span class="strike">*</span></label>
+                    <input id="ReportingToDesignationLevel" name="ReportingToDesignationLevel" type="text" class="form-control" readonly required>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <label for="DottedLine">Dotted Line - <strong><span>If Dotted Line is not present then Reporting to Designation will be  dotted line.</span></strong> </label>
+                              
+                <select id="DottedLine" name="DottedLine" class="form-control" required>
+                    <option value="">Select Dotted Line</option>
+                    {% for Designation in MergedDottedLineDesignations %}
+                        <option value="{{ Designation.designations }}" 
+                            {% if Workobj.DottedLine == Designation.designations %}selected{% endif %}>
+                            {{ Designation.designations }}
+                            {% if Designation.OnRollDepartmentMaster %}
+                                ({{ Designation.OnRollDepartmentMaster.DepartmentName }})
+                            {% elif Designation.CorporateDepartmentMaster %}
+                                ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Official Email Address </label>
+                    <input id="OfficialEmailAddress" name="OfficialEmailAddress" value="{{Workobj.OfficialEmailAddress }}" type="email" class="form-control" >
+                    <span id="emailError" style="color:red;"></span>
+
+                    <script>
+                        document.getElementById('OfficialEmailAddress').addEventListener('input', function () {
+                            const email = this.value;
+                            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            const emailError = document.getElementById('emailError');
+
+                            if (!regex.test(email)) {
+                                emailError.textContent = "Invalid email format";
+                            } else {
+                                emailError.textContent = "";
+                            }
+                        });
+                    </script>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Official Mobile No </label>
+                    <input id="OfficialMobileNo" name="OfficialMobileNo" type="text" value="{{Workobj.OfficialMobileNo }}" class="form-control">
+                    <span id="mobileError" style="color:red;"></span>
+
+                    <script>
+                        document.getElementById('OfficialMobileNo').addEventListener('input', function () {
+                            const mobile = this.value;
+                            // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+                            const regex = /^[6-9]\d{9}$/;
+                            const mobileError = document.getElementById('mobileError');
+
+                            if (!regex.test(mobile)) {
+                                mobileError.textContent = "Invalid mobile number";
+                            } else {
+                                mobileError.textContent = "";
+                            }
+                        });
+                    </script>    
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Date of Joining <span class="strike">*</span></label>
+                    <input id="DateOfJoining" name="DateOfJoining" type="date" value="{% if Workobj %}{{Workobj.DateofJoining|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control" required>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            function updateDesignationDetails() {
+                var selectElement = document.getElementById('Designation');
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var department = selectedOption.getAttribute('data-department');
+                var division = selectedOption.getAttribute('data-division');
+                var level = selectedOption.getAttribute('data-level');
+                
+                document.getElementById('Department').value = department || '';
+                document.getElementById('Division').value = division || '';
+                document.getElementById('Level').value = level || '';
+            }
+        
+            function ReportingupdateDesignationDetails() {
+                var selectElement = document.getElementById('ReportingToDesignation');
+                var selectedOption = selectElement.options[selectElement.selectedIndex];
+                var department = selectedOption.getAttribute('data-ReportingToDesignationLeveldepartment');
+                var division = selectedOption.getAttribute('data-ReportingtoDivision');
+                var level = selectedOption.getAttribute('data-ReportingToDesignationLevel');
+                
+                document.getElementById('ReportingtoDivision').value = division || '';
+                document.getElementById('ReportingToDesignationDepartment').value = department || '';
+                document.getElementById('ReportingToDesignationLevel').value = level || '';
+            }
+        
+            // Combine the two onload functions
+            window.onload = function() {
+                updateDesignationDetails();
+                ReportingupdateDesignationDetails();
+            };
+        
+            document.getElementById('Designation').addEventListener('change', updateDesignationDetails);
+            document.getElementById('ReportingToDesignation').addEventListener('change', ReportingupdateDesignationDetails);
+        </script>
+        
+
+        
+       <div class="row m-3">
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Company Accommodation <span class="strike">*</span></label>
+                    <select id="CompanyAccommodation" name="CompanyAccommodation" class="form-control" required>
+                        <option  value="Yes" {% if Workobj.CompanyAccommodation  == "Yes" %}selected{% endif %} > Yes</option>
+                        <option  value="No"  {% if Workobj.CompanyAccommodation  == "No" %}selected{% endif %} >No</option>
+                    </select>
+                </div>
+            </div>
+            <div id="AccommodationFlatNumber" class="col-md-2">
+                <div class="form-group">
+                    <label>Flat Number</label>
+                    <input  name="AccommodationFlatNumber" type="text" value = "{{Workobj.AccommodationFlatNumber}}" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Locker <span class="strike">*</span></label>
+                    <select id="Locker" name="Locker" class="form-control" required >
+                        <option  value="Yes" {% if Workobj.Locker  == "Yes" %}selected{% endif %}  >Yes</option>
+                        <option  value="No"  {% if Workobj.Locker  == "No" %}selected{%  endif %}>No</option>
+                    </select>
+                </div>
+            </div>
+            <div id="LockerType" class="col-md-2 d-none">
+                <div class="form-group">
+                    <label>Locker Type <span class="strike">*</span></label>
+                
+                    <select name="LockerType" id="" class="form-control" required>
+                        <option value="">Select</option>
+                        
+                        <option value="Shared" {% if Workobj.LockerType  == "Shared" %}selected{% endif %} >Shared</option>
+                        <option value="Individual" {% if Workobj.LockerType  == "Individual" %}selected{% endif %}  >Individual</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div id="LockerNumber" class="col-md-2 d-none">
+                <div class="form-group">
+                    <label>Locker Number <span class="strike">*</span></label>
+                    <input  name="LockerNumber" type="text" value = "{{Workobj.LockerNumber}}" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Employment Type  <span class="strike">*</span></label>
+                    <select id="EmploymentType"  name="EmploymentType" name="OnRoll" class="form-control" required>
+                        <option value="On Roll" {% if Workobj.EmploymentType == "On Roll"  %}selected{% endif %} >On Roll</option>
+                        <option value="Contract" {% if Workobj.EmploymentType == "Contract"  %}selected{% endif %} >Contract</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="ContractStartDate" class="col-md-2 d-none mt-2">
+                <div class="form-group">
+                    <label>Contract Start Date</label>
+                    <input id="ContractStartDate" name="ContractStartDate" type="date" value="{% if Workobj %}{{Workobj.ContractStartDate|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                </div>
+            </div>
+            <div id="ContractEndDate" class="col-md-2 d-none mt-2">
+                <div class="form-group">
+                    <label>Contract End Date</label>
+                    <input name="ContractEndDate" type="date"  value="{% if Workobj %}{{Workobj.ContractEndDate|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}"  class="form-control">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="CustomFooter">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EmpID={{ EmpID }}" class="btn btn-primary">Previous</a>
+        <input type="submit" name="" class="btn btn-primary ms-2" id="" value="Next">
+
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        function updateLockerFields() {
+            var selectedValue = $('#Locker').val();
+            
+            if (selectedValue === 'Yes') {
+                $('#LockerType').removeClass('d-none');
+                $('#LockerType select').attr('required', true); 
+                
+                $('#LockerNumber').removeClass('d-none');
+                $('#LockerNumber input').attr('required', true); 
+            } else if (selectedValue === 'No') {
+                $('#LockerType').addClass('d-none');
+                $('#LockerType select').removeAttr('required'); 
+                
+                $('#LockerNumber').addClass('d-none');
+                $('#LockerNumber input').removeAttr('required'); 
+            }
+        }
+
+        updateLockerFields(); 
+
+        $('#Locker').change(updateLockerFields); 
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function() {
+        function updateEmploymentType() {
+            var selectedValue = $('#EmploymentType').val();
+            
+            if (selectedValue === 'Contract') {
+                $('#ContractStartDate').removeClass('d-none');
+                $('#ContractEndDate').removeClass('d-none');
+            } else {
+                $('#ContractStartDate').addClass('d-none');
+                $('#ContractEndDate').addClass('d-none');
+            }
+        }
+        
+        updateEmploymentType();
+        
+        $('#EmploymentType').change(updateEmploymentType);
+    });
+</script>
+
+{% endblock main %}
+
+
+
+

@@ -1,0 +1,163 @@
+{% extends "KRA/homebase.html" %}
+{% load kracustom_filters %}
+{% block content %}
+<style>
+    .card-header{
+        margin-bottom: -28px;
+    }
+
+    
+    .delete:hover{
+        background-color: white;
+        border-color: red;
+    }
+
+    .delete:hover i{
+        color: red;
+    }
+
+    .delete i{
+        color: white;
+        transition: all 0.5s ease-in-out;
+    }
+    
+    .EditButton:hover{
+        background-color: white;
+        border-color: #3a4a93;
+    }
+
+    .EditButton:hover i{
+        color: #3a4a93;
+    }
+</style>
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="m-0 text-uppercase fw-bold">Target Assign List</h5>
+        <a href="{% url 'TargetAssign' %}?I={{ I }}&year={{ year }}" class="btn btn-primary btn-sm" id="taskAssignLink">New Task Assign</a>
+    </div>
+    
+    <div class="card-body">
+
+        <form action="" method="get" id="filterForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <select class="form-control select2" id="I" name="I" onchange="submitForm()">
+                            {% for org in orgs %}
+                                <option value="{{ org.OrganizationID }}" {% if org.OrganizationID == I %}selected{% endif %}>{{ org.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control" id="year" name="year" onchange="Emporg(); submitForm();">
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2" id="filterButton" style="display: none;">
+                    <div class="form-group">
+                        <button class="btn btn-primary btn-sm" id="FilterForm" type="submit">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Assign Date</th>
+                    <th>Assign Year</th>
+                    <th>DOJ</th>
+                    <th>Assign To</th>
+                    <th>Assign By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for target in TargetList %}
+                    <tr>
+                        <td>{{ target.AssignDate }}</td>
+                        <td>
+                            {{ target.AssignMonth|month_name }}-{{ target.AssignYear }} to {{ target.AssignToMonth|month_name }}-{{ target.AssignToYear }}
+                        </td>
+
+                        <td>{{ target.AssignToDoj|default:"" }}</td>
+                        <td>{{ target.AssignToName }} ({{ target.AssignToDesignation }})</td>
+                        <td>{{ target.AssignByName }} ({{ target.AssignByDesignation }})</td>
+                        <td>
+                            <a class="btn btn-primary EditButton btn-sm" href="{% url 'TargetAssign' %}?KID={{target.id}}&I={{target.OrganizationID}}&year={{ target.AssignMonth|pad_month }}-{{target.AssignYear}}&employee={{target.AssignToEmployeeCode}}" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+
+                            <button class="btn btn-danger btn-sm text-white delete-native btn-sm delete Delete-Entry""
+                                data-url="{% url 'Delete_Targeted_Assign' %}?KID={{target.id}}&I={{target.OrganizationID}}&year={{ target.AssignMonth|pad_month }}-{{target.AssignYear}}&employee={{target.AssignToEmployeeCode}}&selectedYear={{selected_year}}">
+                                <i class="fas fa-trash-alt"></i> 
+                            </button>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center">No target assignments found</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>        
+      
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.delete-native').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');
+                const confirmDelete = confirm("Are you sure you want to delete this item?");
+                if (confirmDelete) {
+                    // Redirect to Django delete view
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+
+    function Emporg() {
+        var OrganizationID = document.getElementById("I").value;
+        var Year = document.getElementById("year").value;
+
+        // Update the link with the selected values
+        var newUrl = "{% url 'TargetAssign' %}?I=" + OrganizationID + "&year=" + Year;
+        document.getElementById("taskAssignLink").href = newUrl;
+    }
+
+function submitForm() {
+    document.getElementById("filterButton").style.display = 'none';
+    
+    document.getElementById("filterForm").submit();
+}
+
+
+
+$(document).ready(function () {
+    var selectedOrganization = "{{ I }}";
+    var selectedYear = "{{ selected_year }}";
+    $("select[name='I']").val(selectedOrganization);
+    $("select[name='year']").val(selectedYear);
+    
+    Emporg();
+
+    $('.select2').select2();
+}); 
+
+  </script>
+
+
+
+{% endblock content %}

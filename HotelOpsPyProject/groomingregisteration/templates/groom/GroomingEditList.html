@@ -1,0 +1,100 @@
+{% extends 'groom/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'GroomingUpdateData' %}" enctype="multipart/form-data">
+    {{ Grooming_Registeration }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Grooming Registeration Form</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+              {% render_field GroomingRegisterationForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Audit Type</label>
+                {% render_field GroomingRegisterationForm.Audit_Type class="form-control" placeholder="Audit_Type" value=Ed.Audit_Type %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field GroomingRegisterationForm.Name class="form-control" placeholder="Name" value=Ed.Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Shoes</label>
+                {% render_field GroomingRegisterationForm.Shoes class="form-control" placeholder="Shoes" value=Ed.Shoes %}
+              </div>
+              <div class="col-sm-3">
+                <label>Shocks</label>
+                {% render_field GroomingRegisterationForm.Shocks class="form-control" placeholder="Shocks" value=Ed.Shocks %}
+              </div>
+              <div class="col-sm-3">
+                <label>Nails</label>
+                {% render_field GroomingRegisterationForm.Nails class="form-control" placeholder="Nails" value=Ed.Nails %}
+              </div>
+              <div class="col-sm-3">
+                <label>Hair</label>
+                {% render_field GroomingRegisterationForm.Hair class="form-control" placeholder="Hair" value=Ed.Hair %}
+              </div>
+              <div class="col-sm-3">
+                <label>Uniform</label>
+                {% render_field GroomingRegisterationForm.Uniform class="form-control" placeholder="Uniform" value=Ed.Uniform %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name Badge</label>
+                {% render_field GroomingRegisterationForm.Name_Badge class="form-control" placeholder="Name_Badge" value=Ed.Name_Badge %}
+              </div>
+              <div class="col-sm-3">
+                <label>Brand Pin</label>
+                {% render_field GroomingRegisterationForm.Brand_Pin class="form-control" placeholder="Brand_Pin" value=Ed.Brand_Pin %}
+              </div>
+
+           </div>
+
+           <br/>
+           <div class="row">
+               <div class="col-sm-12">
+                   <label>Remarks</label>
+                    {% comment %} {% render_field GroomingRegisterationForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks"  value=Ed.Serial_No %} {% endcomment %}
+                    <textarea name="Remarks" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Remarks}}</textarea>
+                </div>
+ 
+             </div>
+   
+        </div>
+        
+     </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+   <script>
+    $(function(){
+            $("select").each(function(){
+                var v=$(this).attr('value');
+                if(v!=undefined){
+                    $(this).val(v);
+                }
+            })
+
+    })
+   </script>
+  {% endblock content %}

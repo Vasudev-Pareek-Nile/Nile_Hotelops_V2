@@ -1,0 +1,231 @@
+{% extends 'check/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'UpdateReferenceForm' %}  enctype="multipart/form-data">
+    {{ Reference_Registration_Form }}
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Reference Form </p>
+        </div>
+
+        <div class="card-body">
+
+         <input type="hidden" name="ID" value="{{Ed.id}}">
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Applicant Name</label>
+                {% render_field ReferenceCkeckForm.Applicant_Name class="form-control" placeholder="Applicant Name" value=Ed.Applicant_Name %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>From</label>
+                {% render_field ReferenceCkeckForm.From class="form-control" placeholder="From" value=Ed.From %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>To</label>
+                {% render_field ReferenceCkeckForm.To class="form-control" placeholder="To" value=Ed.To %}
+              </div>
+            </div> 
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Referee Company Name</label>
+                {% render_field ReferenceCkeckForm.Referee_Company_Name class="form-control" placeholder="Referee Company Name" value=Ed.Referee_Company_Name %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Final Position</label>
+                {% render_field ReferenceCkeckForm.Final_Position class="form-control" placeholder="Final Position" value=Ed.Final_Position %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Refeere Name</label>
+                {% render_field ReferenceCkeckForm.Refeere_Name class="form-control" placeholder="Refeere Name" value=Ed.Refeere_Name %}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Did You Directly Supervise</label>
+                {% render_field ReferenceCkeckForm.Did_You_Directly_Supervise class="form-control"  value=Ed.Did_You_Directly_Supervise %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Refeere Position</label>
+                {% render_field ReferenceCkeckForm.Refeere_Position class="form-control" placeholder="Refeere Position" value=Ed.Refeere_Position%}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Refeere Phone No</label>
+                {% render_field ReferenceCkeckForm.Refeere_Phone_No class="form-control" placeholder="Refeere Phone No" value=Ed.Refeere_Phone_No %}
+              </div>
+
+          </div>
+        </table>
+        <div class='row'>
+            <div class="col-sm-12">
+                <br>
+                <b>On The Job Performance</b>
+            </br>
+            </div>
+        </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                      <tr>
+                        <td>Please Describe his/her Overall Work Performance and Attitude</td>
+                        <td class="rb">
+                          <textarea name="Overall_Performance" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Overall_Performance}}</textarea>
+                             {% comment %} {% render_field ReferenceCkeckForm.Overall_Performance  rows=2  value=Ed.Overall_Performance %} {% endcomment %}
+                        </td>
+                    </tr>
+                     </div>
+                        <tr>
+                            <td>Strenghts Example of a work activity Displaying Strengths</td>
+                            <td class="rb">
+                              <textarea name="Strenght" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Strenght}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.Strenght  rows=2  value=Ed.Strenght %} {% endcomment %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Weaknesses Example where weekness became apprant 
+                              where the candidate aware of this weakness</td>
+                            <td class="rb">
+                              <textarea name="Weaknesses" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Weaknesses}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.Weaknesses  rows=2  value=Ed.Weaknesses %} {% endcomment %}
+                            </td>
+                        </tr>
+                      </table>
+
+                      <table class="table table-bordered">
+                      
+
+                        {% for i in DbItemMaster %}
+                              <tr>
+                                <td>{{i.Job_Preference_Master.Preference_Name}}</td>
+                                <td class="rb">
+                                  <input type="hidden"  rows=2 value="{{i.Job_Preference_Master.id}}" name="ItemID_{{ forloop.counter0 }}" >
+                                  <input type="hidden"  rows=2 value="{{i.id}}" name="ID_{{ forloop.counter0 }}" >
+                                  <select type="text"  rows=2  value="{{i.Habits}}" name="Habits_{{ forloop.counter0 }}">
+                                    <option>select</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                  </select>
+                                </td>
+                             
+                                <td>
+                                 
+                                  {% if forloop.last %}
+                                  <input type="hidden"  rows=2 value="{{forloop.counter }}" name="TotalItem" >
+                                  {% endif %}
+                                </td>
+                              </tr>
+                             
+                        {% endfor %}
+                      </table> 
+
+                      <table class="table table-bordered">
+                        <tr>
+                            <td>What is Best Way To Manage This Candidate</td>
+                            <td class="rb">
+                              <textarea name="What_is_Best_Way_To_Manage_This_Candidate" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.What_is_Best_Way_To_Manage_This_Candidate}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.What_is_Best_Way_To_Manage_This_Candidate  rows=2  %} {% endcomment %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>What Would His Supervisor Say About Him</td>
+                            <td class="rb">
+                              <textarea name="What_Would_His_Supervisor_Say_About_Him" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.What_Would_His_Supervisor_Say_About_Him}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.What_Would_His_Supervisor_Say_About_Him  rows=2  %} {% endcomment %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>What Would His Peers Say About Him</td>
+                            <td class="rb">
+                              <textarea name="What_Would_His_Peers_Say_About_Him" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.What_Would_His_Peers_Say_About_Him}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.What_Would_His_Peers_Say_About_Him  rows=2  %} {% endcomment %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Development Areas</td>
+                            <td class="rb">
+                              <textarea name="Development_Areas" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Development_Areas}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.Development_Areas  rows=2  %} {% endcomment %}
+                            </td>
+                        </tr>
+                        <tr>
+                           <td>Reason For Leaving</td>
+                             <td class="rb">
+                              <textarea name="Reason_For_Leaving" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Reason_For_Leaving}}</textarea>
+                                {% comment %} {% render_field ReferenceCkeckForm.Reason_For_Leaving  rows=2  %} {% endcomment %}
+                             </td>
+                         </tr>
+
+                    </table>
+
+                    
+              
+
+                    <table class="table table-bordered">
+                      <tr>
+                          <td>Would You ReHire This Person</td>
+                          <td class="rb">
+                              {% render_field ReferenceCkeckForm.Would_You_ReHire_This_Person  rows=2 value=Ed.Would_You_ReHire_This_Person %}
+                          </td>
+                      </tr>
+                      <tr>
+                        <td>Checked By</td>
+                        <td class="rb">
+                            {% render_field ReferenceCkeckForm.Checked_By  rows=2 placeholder="Checked By" value=Ed.Checked_By %}
+                        </td>
+                    </tr>
+                    <tr>
+                      <td>Date</td>
+                      <td class="rb">
+                          {% render_field ReferenceCkeckForm.Date  rows=2 placeholder="Date" value=Ed.Date %}
+                      </td>
+                  </tr>
+                </table>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+  <script>
+    $(function(){
+            $("select").each(function(){
+                var v=$(this).attr('value');
+                if(v!=undefined){
+                    $(this).val(v);
+                }
+            })
+
+    })
+   </script>
+
+
+
+  {% endblock content %}

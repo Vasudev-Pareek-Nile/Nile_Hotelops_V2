@@ -1,0 +1,131 @@
+{% extends 'EmpResigantionTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+<form method="post" action="{% url 'EmpResigantionEdit' %}" enctype="multipart/form-data">
+  
+  {% csrf_token %}
+  <div class="container register-form">
+    <div class="card card-primary">
+      <div class="card-header">
+        <p>Update Employee Resignation Details</p>
+      </div>
+     
+      <div class="card-body">
+       
+      
+        <input type="hidden" name="ID" value="{{Ed.id}}"> 
+        {% render_field EmpResigantionForm.OrganizationID class="form-control" %}
+        {% render_field EmpResigantionForm.CreatedBy class="form-control" %}
+        <div class="">
+          <div class="row">
+             <div class="col-sm-3">
+              <label>Employee Code</label>
+              {% render_field EmpResigantionForm.Emp_Code class="form-control" %}
+            </div>
+            <div class="col-sm-3">
+              <label>Name</label>
+              {% render_field EmpResigantionForm.Name  class="form-control"  %}
+            </div>
+           
+            <div class="col-sm-3">
+              <label>Date Of Joining</label>
+              {% render_field EmpResigantionForm.DOJ class="form-control" %}
+            </div>
+           
+            <div class="col-sm-3">
+              <label>Department</label>
+              {% render_field EmpResigantionForm.Dept class="form-control" %}
+            </div>
+          
+            <div class="col-sm-3">
+              <label>Designation</label>
+              {% render_field EmpResigantionForm.Designation  class="form-control" %}
+            </div>
+           
+          </div>
+      </div>
+
+            <br>
+
+        
+          <div class="">
+              <h4 class="text-centre">
+                Resignation Details
+
+              </h4>
+              <div class="row" >
+             
+                <div class="col-sm-3">
+                  <label>Notice Period</label>
+                    {% render_field EmpResigantionForm.NoticePeriod  class="form-control"   %}
+                  </div> 
+                   <div class="col-sm-3">
+                     <label>Date of Resignation</label>
+                       {% render_field EmpResigantionForm.Date_Of_res  class="form-control"   %}
+                     </div> 
+                     <div class="col-sm-3">
+                      <label>Type of Resignation</label>
+                        {% render_field EmpResigantionForm.TypeofRes  class="form-control"   %}
+                      </div> 
+                      <div class="col-sm-3">
+                        <label>Reason of Resignation</label>
+                          {% render_field EmpResigantionForm.Res_Reason  class="form-control"   %}
+                        </div> 
+                        
+               
+              
+              </div>
+              <div class="row">
+                <div class="col-sm-3">
+                  <label>Resignation Submited To</label>
+                    {% render_field EmpResigantionForm.Ressubmittedto  class="form-control"   %}
+                  </div> 
+                  <div class="col-sm-3">
+                    <label>Last working day</label>
+                      {% render_field EmpResigantionForm.LastWorkingDays  class="form-control"   %}
+                    </div> 
+                    <div class="col-sm-3">
+                      <label>Resignation acceptance date</label>
+                        {% render_field EmpResigantionForm.Res_acceptance_Date  class="form-control"   %}
+                      </div> 
+                      <div class="col-sm-3">
+                        <label>Resignation acceptance by</label>
+                          {% render_field EmpResigantionForm.Res_acceptance_By  class="form-control"   %}
+                        </div> 
+              </div>
+            
+          </div>
+
+          <br>
+
+          <!-- Repeat the above pattern for other form fields -->
+      
+     
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <script>
+        $(function(){
+                $("select").each(function(){
+                    var v=$(this).attr('value');
+                    if(v!=undefined){
+                        $(this).val(v);
+                    }
+                })
+    
+        })
+       </script>
+
+
+  {% endblock content %}

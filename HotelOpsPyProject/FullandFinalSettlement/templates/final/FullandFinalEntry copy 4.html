@@ -1,0 +1,879 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 14px;
+    }
+    th, td {
+        border: 1px solid rgba(0, 0, 0, 0.295);
+        padding: 4px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .section-title {
+        background-color: #edf0fb !important;
+        padding: 8px;
+        font-weight: bold;
+        text-align: center;
+        text-transform:uppercase;
+    }
+    .no-border {
+        border: none !important;
+    }
+
+
+/* HeaderReplaced*/
+    .input-small {
+        /* height: 30px; */
+        height: 40px;
+        /* text-align: center; */
+    }
+    .fixedwidth{
+        width: 120px !important;
+    }
+
+    .Select-Input{
+        /* height: 30px; */
+        height: 40px;
+        padding-inline: 10px;
+        padding-block: 0px;
+    }
+    
+    .Period{
+        height: 40px;
+    }
+    .PeriodTd{
+        width: 250px;
+    }
+    .Input-Type1{
+        height: 40px;
+    }
+    .Input-Type1-TD{
+        width: 200px;
+    }
+
+    .PLPAYMENT tr td{
+        width: 300px;
+    }
+
+    .PLPAYMENT tr td input, .Section-7 input, .Section-8 input{
+       height: 40px;
+    }
+
+    .PARTICULAR{
+        width: 400px !important;
+    } 
+
+    .AMOUNT{
+        width: 250px !important;
+    } 
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title fw-bold text-center">FULL AND FINAL SETTLEMENT OF DUES STATEMENT</h4> 
+                </div>
+                <div class="card-body">
+                    {% comment %} <form action="{% url 'FullandFinalEntrySave' %}" method="post" id="FullandFinalSettlement"> {% endcomment %}
+                    <form action="" method="post" id="FullandFinalSettlement">
+                        {% csrf_token %}
+                        <!-- <h2 style="text-align:center;">HOWARD JOHNSON BY WYNDHAM UDAIPUR</h2>-->
+
+                        <table class="custom-table table-striped">
+                            <tr>
+                                <td colspan="1"><label for="employeeName">Employee Name</label> </td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control input-small" style="width: 250px;" name="employeeName" id="employeeName"  value="{% if Fobj %}{{ Fobj.Name }}{% else %}{{ EmpDetailsObj.Name }}{% endif %}"  readonly> 
+                                </td>
+                                {% comment %} <td colspan="1"><label for="employeeName">Employee Name</label></td><td colspan="3"><input type="text" class="form-control input-small" style="width: 250px;" name="employeeName" id="employeeName"  value="{% if Fobj %}{{ Fobj.Name }}{% else %}{{ EmpDetailsObj.Name }}{% endif %}"  readonly> </td> {% endcomment %}
+                                <td  colspan="1"><label for="employeeCode">Employee Code</label></td>
+                                <td  colspan="3">
+                                    <input type="text" class="form-control input-small" style="width: 250px;" name="employeeCode" id="employeeCode"  value="{% if Fobj %}{{ Fobj.Emp_Code }}{% else %}{{ EmpDetailsObj.Emp_Code }}{% endif %}"  readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="joiningDate">Date of Joining</label></td>
+                                <td colspan="3">
+                                    <input type="date" class="form-control input-small" name="joiningDate" id="joiningDate" style="width: 250px;" value="{% if Fobj and Fobj.Leave_PL_From_Date %}{{ Fobj.Leave_PL_From_Date|date:'Y-m-d' }}{% elif DateOfJoining %}{{ EmpDetailsObj.DOJ|date:'Y-m-d' }}{% else %}{% endif %}"  readonly>
+                                    {% comment %} <input type="date" class="form-control input-small" name="joiningDate" id="joiningDate" style="width: 250px;" value="{% if Fobj %}{{ Fobj.DOJ }}{% else %}{{ EmpDetailsObj.DOJ|date:'Y-m-d' }}{% endif %}"  readonly> {% endcomment %}
+                                </td>
+                                <td colspan="1"><label for="LeavingDate">Date of Leaving</label></td>
+                                <td colspan="3">
+                                    <input type="date" class="form-control input-small" name="LeavingDate" id="LeavingDate" style="width: 250px;" value="{% if Fobj and Fobj.Leave_PL_To_Date %}{{ Fobj.Leave_PL_To_Date|date:'Y-m-d' }}{% elif LastWorkingDaysDate %}{{ LastWorkingDaysDate|date:'Y-m-d' }}{% else %}{% endif %}"> 
+                                    {% comment %} <input type="date" class="form-control input-small" name="LeavingDate" id="LeavingDate" style="width: 250px;" value="{% if Fobj %}{{ Fobj.Date_Of_Leaving }}{% else %}{{ LastWorkingDaysDate|date:'Y-m-d' }}{% endif %}" >  {% endcomment %}
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="department">Department</label></td><td colspan="3"><input type="text" class="form-control input-small" name="Department" id="department" style="width: 250px;" value="{% if Fobj %}{{ Fobj.Dept }}{% else %}{{ EmpDetailsObj.Dept }}{% endif %}"  readonly> </td>
+                                <td colspan="1"><label for="designation">Designation</label></td><td colspan="3"><input type="text" class="form-control  input-small" name="Designation" style="width: 250px;" id="designation" value="{% if Fobj %}{{ Fobj.Designation }}{% else %}{{ EmpDetailsObj.Designation }}{% endif %}"  readonly> </td>
+                            </tr>
+                            <tr>
+                                <td><label for="absconding">Absconding</label></td><td> 
+                                    <select name="Absconding" id="absconding" class="form-control Select-Input" >
+                                        <option value="No" {% if Fobj.Absconding == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Absconding == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                                <td><label for="resignation">Resignation</label></td>
+                                <td>
+                                    <select name="Resignation" id="resignation" class="form-control  Select-Input" >
+                                        <option value="No" {% if Fobj.Resignation == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Resignation == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                                <td><label for="NoticeDaysServed">Notice Days Served</label></td>
+                                <td>
+                                    <select name="Notice_Days_Served" id="NoticeDaysServed" class="form-control  Select-Input" >
+                                        <option value="No" {% if Fobj.Notice_Days_Served == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Notice_Days_Served == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                                <td><label for="confirmed">Confirmed</label></td>
+                                <td>
+                                    <select name="Confirmed" id="confirmed" class="form-control Select-Input" style="width: 150px;"  >
+                                        <option value="No" {% if Fobj.Confirmed == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Confirmed == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <!-- try -->
+                            <tr>
+                                <td><label for="terminated">Terminated</label></td><td> 
+                                    <select name="Terminated" id="terminated" class="form-control Select-Input" >
+                                        <option value="No" {% if Fobj.Terminated == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Terminated == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                                <td><label for="laidOff">Laid Off</label></td>
+                                <td>
+                                    <select name="Laid_Off" id="laidOff" class="form-control  Select-Input" >
+                                        <option value="No" {% if Fobj.Laid_Off == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Laid_Off == "Yes" %}selected{% endif %}>Yes</option>
+                                        <option value="Na" {% if Fobj.Laid_Off == "Na" %}selected{% endif %}>NA</option>
+                                        <option value="Transfer" {% if Fobj.Laid_Off == "Transfer" %}selected{% endif %}>Transfer</option>
+                                    </select>
+                                </td>
+                                <td><label for="deductionFromSalary">Deduction from salary PL</label></td>
+                                <td>
+                                    <select name="Deduction_from_salary_PL" id="deductionFromSalary" class="form-control" >
+                                        <option value="No" {% if Fobj.Deduction_from_salary_PL_Boolean == "No" %}selected{% endif %}>No</option>
+                                        <option value="Yes" {% if Fobj.Deduction_from_salary_PL_Boolean == "Yes" %}selected{% endif %}>Yes</option>
+                                    </select>
+                                </td>
+                                <td><label for="currentSalary">Current Salary</label></td>
+                                <td>
+                                    <input type="number" class="form-control input-small"  style="width: 150px;" name="Current_Salary" id="currentSalary" value="{{ Fobj.Current_Salary|default:"0" }}" >
+                                </td>
+                            </tr>
+
+                            <!-- try 2-->
+                            <tr>
+                                <td><label for="BasicSalary">Basic Salary</label></td>
+                                <td colspan="3">
+                                    {% comment %} <input type="number" class="form-control input-small" style="width: 200px;" value="{{ BasicSalary }}" readonly> {% endcomment %}
+                                    <input type="number" class="form-control input-small" style="width: 200px;" name="PL_Basic_Salary" id="BasicSalary" value="{% if Fobj %}{{ Fobj.PL_Basic_Salary }}{% else %}{{ BasicSalary }}{% endif %}" readonly>
+                                </td>
+                                <td><label for="Gross">Gross Salary</label></td>
+                                <td colspan="3">
+                                    {% comment %} <input type="number" class="form-control input-small" style="width: 200px;"  value="{{ GrossSalary }}" readonly> {% endcomment %}
+                                    <input type="number" class="form-control input-small" name="NPP_Gross" style="width: 200px;"  id="GrossSalary" value="{% if Fobj %}{{ Fobj.NPP_Gross }}{% else %}{{ GrossSalary }}{% endif %}" readonly> 
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Section: 2 LEAVE SUMMARY -->
+                        <br><div class="section-title HeaderWithColor">LEAVE SUMMARY</div>
+                        <table class="custom-table table-striped">
+                            <tr>
+                                <td class="PeriodTd"><label for="FromDate">From</label></td>
+                                <td class="PeriodTd"><label for="To_Date">To</label></td>
+                                <td class="Input-Type1-TD"><label for="OpeningBalance">Opening Balance</label></td>
+                                <td class="Input-Type1-TD"><label for="leaveEarned">Leave Earned</label></td>
+                                <td class="Input-Type1-TD"><label for="leaveAvailed">Leave Availed</label></td>
+                                <td class="Input-Type1-TD"><label for="plBal">PL Balance</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="date" class="form-control Period" name="From_Date" id="FromDate"  value="{% if Fobj and Fobj.Leave_PL_From_Date %}{{ Fobj.Leave_PL_From_Date|date:'Y-m-d' }}{% elif DateOfJoining %}{{ DateOfJoining|date:'Y-m-d' }}{% else %}{% endif %}"></td>
+                                <td><input type="date" class="form-control Period" name="To_Date" id="ToDate" value="{% if Fobj and Fobj.Leave_PL_To_Date %}{{ Fobj.Leave_PL_To_Date|date:'Y-m-d' }}{% elif LastWorkingDaysDate %}{{ LastWorkingDaysDate|date:'Y-m-d' }}{% else %}{% endif %}"></td>
+                                {% comment %} <td><input type="date" class="form-control Period" name="From_Date" id="FromDate" value="{% if Fobj %}{{ Fobj.Leave_PL_From_Date}}{% else %}{{ DateOfJoining|date:'Y-m-d' }}{% endif %}" ></td> {% endcomment %}
+                                 {% comment %} <td><input type="date" class="form-control Period" name="To_Date" id="ToDate" value="{{ LastWorkingDaysDate|date:'Y-m-d' }}"></td> {% endcomment %}
+                                <td><input type="number" class="form-control Input-Type1" name="LS_Opening_Balance" id="OpeningBalance" value="{% if Fobj %}{{ Fobj.LS_Opening_Balance }}{% else %}{{ LeaveBalance }}{% endif %}" ></td>
+                                <td><input type="text" class="form-control" name="LS_Leaved_Earned" id="leaveEarned" value="{% if Fobj %}{{ Fobj.LS_Leaved_Earned }}{% else %}0{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="LS_Leaved_Availed" id="leaveAvailed"  step="0.01" min="0" value="{% if Fobj %}{{ Fobj.LS_Leaved_Availed }}{% else %}{{ total_credit }}{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="LS_PL_Bal" id="plBal" value="{% if Fobj %}{{ Fobj.LS_PL_Bal }}{% else %}0{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!-- Section: 3 -- PL PAYMENT  -->
+                        <br><div class="section-title">PL PAYMENT</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="TotalPL">Total PL</label></td>
+                                <td><label for="BasicSalary">Basic Salary</label></td>
+                                <td><label for="PlRate">Rate</label></td>
+                                <td><label for="PLAmount">Amount</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="number" class="form-control" name="PL_Total_PL" id="TotalPL" value="{% if Fobj %}{{ Fobj.PL_Total_PL }}{% else %}0{% endif %}" readonly></td>
+                                <td><input type="number" class="form-control" value="{% if Fobj %}{{ Fobj.PL_Basic_Salary }}{% else %}{{ BasicSalary }}{% endif %}" readonly></td>
+                                {% comment %} <td><input type="number" class="form-control" name="PL_Basic_Salary" id="BasicSalary" value="{{ BasicSalary }}" readonly></td> {% endcomment %}
+                                <td><input type="number" class="form-control" name="PL_Rate" id="PlRate" value="{% if Fobj %}{{ Fobj.PL_Rate }}{% else %}0{% endif %}" readonly></td>
+                                <td><input type="number" class="form-control" name="PL_Amount" id="PLAmount" value="{% if Fobj %}{{ Fobj.PL_Amount }}{% else %}0{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!-- Section: 4 -- NOTICE PERIOD PAY -->
+                        <br><div class="section-title">NOTICE PERIOD PAY</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="TotalNoticeServed">Total Notice served</label></td>
+                                <td><label for="TotalNoticePayDays">Total Notice Pay Days</label></td>
+                                <td><label for="Gross">Gross Salary</label></td>
+                                <td><label for="NPPRate">Rate</label></td>
+                                <td><label for="NPPAmount">Net Amount Paid</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="number" class="form-control" name="TotalNoticeServed" id="TotalNoticeServed" value="{% if Fobj %}{{ Fobj.Total_Notice_Days_Served }}{% else %}{{ NoticePeriodDays }}{% endif %}" readonly></td> 
+                                <td><input type="number" class="form-control" name="NPP_Total_Notice_Pay_Days" id="TotalNoticePayDays" value="{% if Fobj %}{{ Fobj.NPP_Total_Notice_Pay_Days }}{% else %}0{% endif %}"></td>
+                                <td><input type="number" class="form-control" value="{% if Fobj %}{{ Fobj.NPP_Gross }}{% else %}{{ GrossSalary }}{% endif %}" readonly></td>
+                                {% comment %} <td><input type="number" class="form-control"  name="NPP_Gross" id="GrossSalary" value="{{ GrossSalary }}" readonly></td> {% endcomment %}
+                                <td><input type="number" class="form-control" name="NPP_Rate" id="NPPRate" value="{% if Fobj %}{{ Fobj.NPP_Rate }}{% else %}0{% endif %}" readonly></td>
+                                <td><input type="number" class="form-control" name="NPP_Net_Amount_Paid" id="NPPAmount" value="{% if Fobj %}{{ Fobj.NPP_Net_Amount_Paid }}{% else %}0{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!--  Section: 5 -- LEAVE TRAVEL ENTITLEMENT -->
+                        <br><div class="section-title">LEAVE TRAVEL ENTITLEMENT</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="TOTALMONTHSWORKED">TOTAL MONTHS WORKED</label></td>
+                                <td><label for="LTARATE">LTA RATE</label></td>
+                                <td><label for="TOTALDAYSWORKED">TOTAL DAYS WORKED</label></td>
+                                <td><label for="PRORATABASISPAYMENT">PRO RATA BASIS PAYMENT (LTA Amount)</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="number" class="form-control" name="TOTALMONTHSWORKED" id="TOTALMONTHSWORKED" value="{% if Fobj %}{{ Fobj.Total_Months_Worked }}{% else %}0{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="LTARATE" id="LTARATE" value="{% if Fobj %}{{ Fobj.LTA_Rate }}{% else %}0{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="TOTALDAYSWORKED" id="TOTALDAYSWORKED" value="{% if Fobj %}{{ Fobj.Total_Days_Worked }}{% else %}0{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="PRORATABASISPAYMENT" id="PRORATABASISPAYMENT" value="{% if Fobj %}{{ Fobj.Pro_Rata_Basis_Payment }}{% else %}0{% endif %}"></td>
+                            </tr>
+                        </table>
+
+                        <!--  Section: 6 -- GRATUITY PAYMENT -->
+                        <br><div class="section-title">GRATUITY PAYMENT</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="NoOfYears">No Of Years</label></td>
+                                <td><label for="LastBasics">Last Basics</label></td>
+                                <td><label for="GraturityDaysPeryear">Graturity Days / Per year</label></td>
+                                <td><label for="GraturityPayments">Graturity Payments</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="number" class="form-control" name="GP_No_Of_Years" id="NoOfYears" value="{% if Fobj %}{{ Fobj.GP_No_Of_Years }}{% else %}{{ TenureYears }}{% endif %}"></td>
+                                <td><input type="number" class="form-control" name="GP_Last_Basics" id="LastBasics" value="{% if Fobj %}{{ Fobj.GP_Last_Basics }}{% else %}{{ BasicSalary }}{% endif %}" readonly></td>
+                                <td><input type="number" class="form-control" name="GraturityDaysPeryear" id="GraturityDaysPeryear" value="{% if Fobj %}{{ Fobj.GP_Graturity_Days }}{% else %}15{% endif %}" readonly></td>
+                                <td><input type="number" class="form-control" name="GP_Graturity_Payments" id="GraturityPayments" value="{% if Fobj %}{{ Fobj.GP_Graturity_Payments }}{% else %}0{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!--  Section: 7 -- GRATUITY PAYMENT -->
+                        <br><div class="section-title">Advance Salary</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="TotalAdvanceTaken">Total Advance Taken</label></td>
+                                <td><label for="TotalAdvancePaid">Total Advance Paid</label></td>
+                                <td><label for="RemainingAmount">Remaining Amount</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="form-control" name="TotalAdvanceTaken" id="TotalAdvanceTaken" value="{% if Fobj %}{{ Fobj.Total_Advance_Taken }}{% else %}{{TotalAdvancePayment}}{% endif %}"></td>
+                                <td><input type="text" class="form-control" name="TotalAdvancePaid" id="TotalAdvancePaid" value="{% if Fobj %}{{ Fobj.Total_Advance_Paid }}{% else %}{{TotalAmountPaid}}{% endif %}"></td>
+                                <td><input type="text" class="form-control" name="RemainingAmount" id="RemainingAmount" value="{% if Fobj %}{{ Fobj.Remaining_Amount }}{% else %}0{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!--  Section: 7 -- GRATUITY PAYMENT -->
+                        <br><div class="section-title">Bank Details</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="BankName">Bank Name</label></td>
+                                <td><label for="BranchName">Branch Name</label></td>
+                                <td><label for="AccountsNumber">Accounts Number</label></td>
+                                <td><label for="IFSCCode">IFSC Code</label></td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="form-control" name="BankName" id="BankName" value="{% if Fobj %}{{ Fobj.Bank_Name }}{% else %}{{BankName}}{% endif %}" readonly></td>
+                                <td><input type="text" class="form-control" name="BranchName" id="BranchName" value="{% if Fobj %}{{ Fobj.Branch_Name }}{% else %}{{BankBranch}}{% endif %}" readonly></td>
+                                <td><input type="text" class="form-control" name="AccountsNumber" id="AccountsNumber" value="{% if Fobj %}{{ Fobj.Accounts_Number }}{% else %}{{BankAccountNumber}}{% endif %}" readonly></td>
+                                <td><input type="text" class="form-control" name="IFSCCode" id="IFSCCode" value="{% if Fobj %}{{ Fobj.IFSCCode }}{% else %}{{BankIFSCCode}}{% endif %}" readonly></td>
+                            </tr>
+                        </table>
+
+                        <!--  Section: 8 -- FULL AND FINAL PAYMENT SUMMARY -->
+                        <br><div class="section-title">FULL AND FINAL PAYMENT SUMMARY</div>
+                        <table class="custom-table table-striped">
+                            <tr>
+                                <td colspan="1" class="text-center PARTICULAR"><b>PARTICULAR</b></td>
+                                <td colspan="1" class="text-center AMOUNT"><b>AMOUNT</b></td>
+                                <td colspan="3" class="text-center"><b>REMARKS</b></td>
+                            </tr>
+
+                            <!-- Earnings -->
+                            <tr>
+                                <td colspan="1" class="fw-bolder text-center">Earnings</td>
+                                <td colspan="1">&nbsp;</td>
+                                <td colspan="3">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="LTAAmount">LTA Amount</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="LTAAmount" id="LTAAmount" value="{% if Fobj %}{{ Fobj.LTA_Amount }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="LTARemarks" id="LTARemarks" title="Remarks For LTA" value="{% if Fobj %}{{ Fobj.LTA_Remarks }}{% else %}{% endif %}"  placeholder="Enter Remarks For LTA"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="FinalPLPaymentAmount">PL Payment</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="FinalPLPaymentAmount" id="FinalPLPaymentAmount" value="{% if Fobj %}{{ Fobj.FFPS_PL }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="PLPaymentRemarks" id="PLPaymentRemarks" value="{% if Fobj %}{{ Fobj.Final_PL_Payment_Remarks }}{% else %}{% endif %}" placeholder="Remarks For PL Payment"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="GraturityPaymentsEarning">Graturity Payments</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="FinalGraturityPayments" id="GraturityPaymentsEarning" value="{% if Fobj %}{{ Fobj.FFPS_Gratuity }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="GraturityPaymentsEarningRemarks" id="GraturityPaymentsEarningRemarks" value="{% if Fobj %}{{ Fobj.Graturity_Payments_Earning_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Graturity Payments"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="OtherEarnings">Other Earnings</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="OtherEarnings" id="OtherEarnings" value="{% if Fobj %}{{ Fobj.Other_Earnings }}{% else %}0{% endif %}"></td>
+                                <td colspan="3"><input type="text" class="form-control" name="OtherEarningsRemarks" id="OtherEarningsRemarks" value="{% if Fobj %}{{ Fobj.Other_Earnings_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Other Earnings"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="PendingSalary">Pending Salary</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="PendingSalary" id="PendingSalary" value="{% if Fobj %}{{ Fobj.FFPS_Pending_Salary }}{% else %}0{% endif %}"> </td>
+                                <td colspan="3"><input type="text" class="form-control" name="PendingSalaryRemarks" id="PendingSalaryRemarks" value="{% if Fobj %}{{ Fobj.Pending_Salary_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Pending Salary"> </td>
+                            </tr>                            
+                            <tr>
+                                <td colspan="1" class="fw-bold fst-italic"><label for="TOTALEARNING">TOTAL EARNING</label></td>
+                                <td colspan="1" class="fw-bold"><input type="number" class="form-control" name="TOTALEARNING" id="TOTALEARNING" value="{% if Fobj %}{{ Fobj.Total_Earning }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="TOTALEARNINGRemarks" id="TOTALEARNINGRemarks" value="{% if Fobj %}{{ Fobj.Total_Earning_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Total Earning"></td>
+                            </tr>
+
+                            <!-- DEDUCTION -->
+                            <tr>
+                                <td colspan="1" class="fw-bolder text-center">DEDUCTION</td>
+                                <td colspan="1">&nbsp;</td>
+                                <td colspan="3">&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="UniformDeductions">Uniform Deductions</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="FinalUniformDeductions" id="UniformDeductions" value="{% if Fobj %}{{ Fobj.FFPS_Uniform_Deductions|default_if_none:'0' }}{% else %}{% if UniformDeductions %}{{ UniformDeductions }}{% else %}0{% endif %}{% endif %}"></td>
+                                {% comment %} <td colspan="1"><input type="number" class="form-control" name="FinalUniformDeductions" id="UniformDeductions" value="{% if UniformDeductions %}{{ UniformDeductions }}{% else %}0{% endif %}"></td> {% endcomment %}
+                                {% comment %} <td colspan="1"><input type="number" class="form-control" name="FFPS_Uniform_Deductions" id="FinalUniformDeductions" value="{{ UniformDeductions }}"></td> {% endcomment %}
+                                <td colspan="2"><input type="text" class="form-control" name="UniformDeductionsRemarks" id="UniformDeductionsRemarks" value="{% if Fobj %}{{ Fobj.Uniform_Deductions_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Uniform Deductions"> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="OtherDeductions">Other Deductions</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="OtherDeductions" id="OtherDeductions" value="{% if Fobj %}{{ Fobj.OtherDeductions }}{% else %}0{% endif %}"></td>
+                                <td colspan="2"><input type="text" class="form-control" name="OtherDeductionsRemarks" id="OtherDeductionsRemarks" value="{% if Fobj %}{{ Fobj.Other_Deductions_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Other Deductions"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="NOTICEPERIODDeductions">Notice Period</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="NOTICEPERIODDeductions" id="NOTICEPERIODDeductions" value="{% if Fobj %}{{ Fobj.Notice_Period_Deductions }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="NOTICEPERIODDeductionsRemarks" id="NOTICEPERIODDeductionsRemarks" value="{% if Fobj %}{{ Fobj.Notice_Period_Deductions_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Notice Period"> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1"><label for="AdvanceSalary">Advance Salary</label></td>
+                                <td colspan="1"><input type="number" class="form-control" name="AdvanceSalary" id="AdvanceSalary" value="{% if Fobj %}{{ Fobj.Advance_Salary }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="AdvanceSalaryRemarks" id="AdvanceSalaryRemarks" value="{% if Fobj %}{{ Fobj.Advance_Salary_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Advance Salary"> </td>
+                            </tr>
+                            <tr>
+                                <td colspan="1" class="fw-bold fst-italic"><label for="TotalDeductionsRemarks">TOTAL DEDUCTION</label></td>
+                                <td colspan="1" class="fw-bold"><input type="number" class="form-control" name="TotalDeductions" id="TotalDeductions" value="{% if Fobj %}{{ Fobj.FFPS_Deductions }}{% else %}0{% endif %}" readonly></td>
+                                <td colspan="3"><input type="text" class="form-control" name="TotalDeductionsRemarks" id="TotalDeductionsRemarks" value="{% if Fobj %}{{ Fobj.Total_Deductions_Remarks }}{% else %}{% endif %}" placeholder="Remarks For Total Deductions"></td>
+                            </tr>
+                            <!-- <tr>
+                                <td colspan="1" class="fw-bold fst-italic"><label for="PayableAmount">Payable Amount</label></td>
+                                <td colspan="1" class="fw-bold"><input type="number" class="form-control" name="FFPS_Payable_Amount" id="PayableAmount" value="0"></td>
+                                <td colspan="3"><input type="text" class="form-control" name="PayableAmountRemarks" id="PayableAmountRemarks" placeholder="Remarks For Payable Amount"> </td>
+                            </tr> -->
+                        </table>
+
+                        <br>
+                        <!--  Section: 9 -- Final Payable Amount -->
+                        <table class="custom-table table-striped">
+                            <tr>
+                                <td colspan="1" class="text-center PARTICULAR fs-5"><b><label for="PayableAmount">Final Payable Amount</label></b></td>
+                                <td colspan="1" class="text-center AMOUNT"><b><input type="number" class="form-control" name="FFPS_Payable_Amount" id="PayableAmount" value="{% if Fobj %}{{ Fobj.FFPS_Grand_Total }}{% else %}0{% endif %}" readonly></b></td>
+                                <td colspan="1" class="text-end"></td>
+                            </tr>
+                        </table>
+
+                        
+                        <!-- Section: 9 -- APPROVAL INFORMATION -->
+                        <br>
+                        <br>
+                        <div class="section-title">APPROVAL INFORMATION</div>
+                        <table class="PLPAYMENT custom-table table-striped">
+                            <tr>
+                                <td><label for="AuditedByHR">Audited By HR</label></td>
+                                <td><label for="AuditedByFinance">Audited By Finance</label></td>
+                                <td><label for="AuditedByGM">Audited By GM</label></td>
+                                <td><label for="AuditedByGM">Auditor</label></td>
+                                <td><label for="FinalStatus">F and F Status</label></td>
+                                <td><label for="PaymentStatus">Payment Status</label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {% if request.session.Department_Name|lower == "hr" %}
+                                        <select name="AuditedByHR" id="AuditedByHR" class="form-control Select-Input">
+                                            <option value="No" {% if Fobj.AuditedByHR == "No" %}selected{% endif %}>No</option>
+                                            <option value="Yes" {% if Fobj.AuditedByHR == "Yes" %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.AuditedByHR|default:"No" as audit_value %}
+                                            <input type="text" class="form-control Select-Input" value="{{ audit_value }}" readonly>
+                                            <input type="hidden" name="AuditedByHR" value="{{ audit_value }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+                                <td>
+                                    {% comment %} <p>Department: {{request.session.Department_Name}}</p> {% endcomment %}
+                                    {% if request.session.Department_Name|lower == "finance" %}
+                                        <select name="AuditedByFinance" id="AuditedByFinance" class="form-control Select-Input">
+                                            <option value="No" {% if Fobj.AuditedByFinance == "No" %}selected{% endif %}>No</option>
+                                            <option value="Yes" {% if Fobj.AuditedByFinance == "Yes" %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.AuditedByFinance|default:"No" as Finance_audit_value %}
+                                            <input type="text" class="form-control Select-Input" value="{{ Finance_audit_value }}" readonly>
+                                            <input type="hidden" name="AuditedByFinance" value="{{ Finance_audit_value }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+                                <td>
+                                    {% if request.session.Department_Name|lower == "gm" %}
+                                        <select name="AuditedByGM" id="AuditedByGM" class="form-control Select-Input" >
+                                            <option value="No" {% if Fobj.AuditedByGM == "No" %}selected{% endif %}>No</option>
+                                            <option value="Yes" {% if Fobj.AuditedByGM == "Yes" %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.AuditedByGM|default:"No" as GM_audit_value %}
+                                            <input type="text" class="form-control Select-Input" value="{{ GM_audit_value }}" readonly>
+                                            <input type="hidden" name="AuditedByGM" value="{{ GM_audit_value }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+
+                                <td>
+                                    {% comment %} <p>Department: {{request.session.Department_Name}}</p> {% endcomment %}
+                                    {% if request.session.Department_Name|lower == "finance" %}
+                                        <select name="Auditor" id="Auditor" class="form-control Select-Input">
+                                            <option value="No" {% if Fobj.Auditor == "No" %}selected{% endif %}>No</option>
+                                            <option value="Yes" {% if Fobj.Auditor == "Yes" %}selected{% endif %}>Yes</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.Auditor|default:"No" as Auditor_audit_value %}
+                                            <input type="text" class="form-control Select-Input" value="{{ Auditor_audit_value }}" readonly>
+                                            <input type="hidden" name="Auditor" value="{{ Auditor_audit_value }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+                                <td>
+                                    <select name="FinalStatus" id="FinalStatus" class="form-control Select-Input" >
+                                        <option value="Pending" {% if Fobj.FinalStatus == "Pending" %}selected{% endif %}>Pending</option>
+                                        <option value="Approved" {% if Fobj.FinalStatus == "Approved" %}selected{% endif %}>Approved</option>
+                                    </select>
+                                </td> 
+                                <td>
+                                    <select name="PaymentStatus" id="PaymentStatus" class="form-control Select-Input" >
+                                        <option value="Pending" {% if Fobj.PaymentStatus == "Pending" %}selected{% endif %}>Pending</option>
+                                        <option value="Paid" {% if Fobj.PaymentStatus == "Paid" %}selected{% endif %}>Paid</option>
+                                        <option value="Received" {% if Fobj.PaymentStatus == "Received" %}selected{% endif %}>Received</option>
+                                        <option value="Not Received" {% if Fobj.PaymentStatus == "Not Received" %}selected{% endif %}>Not Received</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <br>
+                        <br>
+                        <table class="custom-table table-striped">
+                            <tr>
+                                <td colspan="3" class="text-end"><input type="submit" class="btn btn-primary"></td>
+                            </tr>
+                        </table>
+                    </form> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dropdown Disabled and Enable Control -->
+<script>
+    $(document).ready(function(){
+    $('input[type="text"]').on('blur', function(){
+      let text = $(this).val();
+      if (text.length > 0) {
+        let updated = text.charAt(0).toUpperCase() + text.slice(1);
+        $(this).val(updated);
+      }
+    });
+  });
+    const absconding = document.getElementById("absconding");
+    const resignation = document.getElementById("resignation");
+    const terminated = document.getElementById("terminated");
+    const NoticeDaysServed = document.getElementById("NoticeDaysServed");
+    const form = document.getElementById("FullandFinalSettlement");
+
+    function toggleFormFieldsBasedOnAbsconding() {
+
+        if (absconding.value === "Yes") {
+            // Disable all inputs except absconding itself
+            Array.from(form.elements).forEach(el => {
+                if (el.id !== "absconding") {
+                    el.disabled = true;
+                }
+            });
+        } else {
+            // Re-enable inputs if not Yes
+            Array.from(form.elements).forEach(el => {
+                el.disabled = false;
+            });
+        }
+    }
+
+    function toggleFormFieldsBasedOnResignation() {
+        if (resignation.value === "Yes" || terminated.value === "Yes") {
+            // Disable all inputs except absconding itself
+            absconding.disabled = true
+        } else {
+            // Re-enable inputs if not Yes
+            absconding.disabled = false
+        }
+    }
+
+    // Run on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        toggleFormFieldsBasedOnAbsconding();
+        toggleFormFieldsBasedOnResignation();
+    });
+
+    // Run when absconding value changes
+    document.getElementById("absconding").addEventListener("change", toggleFormFieldsBasedOnAbsconding);
+    document.getElementById("resignation").addEventListener("change", toggleFormFieldsBasedOnResignation);
+    document.getElementById("terminated").addEventListener("change", toggleFormFieldsBasedOnResignation);
+</script>
+
+
+<!-- <script>
+    var ParseFloatCustom = function (obj) {
+        try {
+            var a = $(obj).val();
+            a = parseFloat(a);
+            return isNaN(a) ? 0 : a;
+        } catch (e) {}
+        return 0;
+    }
+
+    var EntryCalculations = function () {
+        // First, calculate leave earned
+        calculateLeaveEarned();
+
+        // Fetch values
+        var OpeningBalanceInput = ParseFloatCustom("#OpeningBalance");
+        var LeaveEarnedInput = ParseFloatCustom("#leaveEarned");
+        var LeaveAvailedInput = ParseFloatCustom("#leaveAvailed");
+
+        var BasicSalaryInput = ParseFloatCustom("#BasicSalary");
+        var GrossSalaryInput = ParseFloatCustom("#GrossSalary");
+        var TotalNoticePayDaysInput = ParseFloatCustom("#TotalNoticePayDays");
+
+        // Gratuity Section
+        var NoOfYearsinput = ParseFloatCustom("#NoOfYears");
+        var LastBasicsInput = ParseFloatCustom("#LastBasics");
+        var GraturityDaysPeryearInput = ParseFloatCustom("#GraturityDaysPeryear");
+
+        var GraturityDivideDays = 26;
+        var GraturityTotalPayments = 0;
+
+        if (NoOfYearsinput >= 5) {
+            var GraturityPayments = (GraturityDaysPeryearInput * LastBasicsInput * NoOfYearsinput) / GraturityDivideDays;
+            GraturityTotalPayments = parseFloat(GraturityPayments.toFixed(2));
+        }
+
+        // PL Balance & Payment
+        var PLBalance = (OpeningBalanceInput + LeaveEarnedInput) - LeaveAvailedInput;
+        var PLPaymentRate = parseFloat(((BasicSalaryInput * 12) / 365).toFixed(2));
+        var PLPaymentAmount = parseFloat((PLPaymentRate * PLBalance).toFixed(2));
+
+        // Notice Pay
+        var TotalNoticeRate = parseFloat(((BasicSalaryInput * 12) / 365).toFixed(2));
+        var TotalNoticeAmount = parseFloat((TotalNoticePayDaysInput * TotalNoticeRate).toFixed(2));
+
+        // Deductions
+        debugger
+        // var UniformDeductionsInput = 10;
+        var UniformDeductionsInput = ParseFloatCustom("#UniformDeductions");
+        // console.log("the value of float UniformDeductionsInput", UniformDeductionsInput)
+        // console.log("the type value of float UniformDeductionsInput", typeof(UniformDeductionsInput))
+        var OtherDeductionsInput = ParseFloatCustom("#OtherDeductions");
+        var NOTICEPERIODDeductionsInput = ParseFloatCustom("#NOTICEPERIODDeductions");
+        var PendingSalaryInput = ParseFloatCustom("#PendingSalary");
+        var AdvanceSalaryInput = ParseFloatCustom("#AdvanceSalary");
+
+        
+        var AdvanceSalaryInput = TotalRemainingAmount;
+        var TotalDeductions = parseFloat((UniformDeductionsInput + OtherDeductionsInput + NOTICEPERIODDeductionsInput + AdvanceSalaryInput).toFixed(2));
+       debugger
+        // Earnings
+        var LTAAmount = ParseFloatCustom("#PRORATABASISPAYMENT");
+        var OtherEarningsValue = ParseFloatCustom("#OtherEarnings");
+
+        var TOTALEARNINGValue = parseFloat((
+            LTAAmount +
+            PLPaymentAmount +
+            OtherEarningsValue +
+            PendingSalaryInput +
+            GraturityTotalPayments
+        ).toFixed(2));
+
+        // Payable Amount
+        var TotalPayableAmount = parseFloat((TOTALEARNINGValue - TotalDeductions).toFixed(2));
+
+        // Advance
+        var TotalAdvanceTaken = ParseFloatCustom("#TotalAdvanceTaken");
+        var TotalAdvancePaid = ParseFloatCustom("#TotalAdvancePaid");
+        var TotalRemainingAmount = parseFloat((TotalAdvanceTaken - TotalAdvancePaid).toFixed(2));
+
+        $("#RemainingAmount").val(TotalRemainingAmount);
+        $("#AdvanceSalary").val(TotalRemainingAmount); // set value for next read
+
+
+        // Set values to fields
+        $("#leaveEarned").val(LeaveEarnedInput.toFixed(2));
+        $("#plBal").val(PLBalance.toFixed(2));
+        $("#TotalPL").val(PLBalance.toFixed(2));
+        $("#PlRate").val(PLPaymentRate);
+        $("#PLAmount").val(PLPaymentAmount);
+        $("#FinalPLPaymentAmount").val(PLPaymentAmount);
+
+        $("#NPPRate").val(TotalNoticeRate);
+        $("#NPPAmount").val(TotalNoticeAmount);
+        $("#NOTICEPERIODDeductions").val(TotalNoticeAmount);
+
+        $("#GraturityPayments").val(GraturityTotalPayments);
+        $("#GraturityPaymentsEarning").val(GraturityTotalPayments);
+
+        $("#LTAAmount").val(LTAAmount.toFixed(2));
+        $("#TOTALEARNING").val(TOTALEARNINGValue);
+        $("#TotalDeductions").val(TotalDeductions);
+
+        $("#RemainingAmount").val(TotalRemainingAmount);
+        $("#AdvanceSalary").val(TotalRemainingAmount);
+
+        $("#PayableAmount").val(TotalPayableAmount);
+
+        console.log("TotalDeductions:", TotalDeductions);
+        console.log("TOTALEARNINGValue:", TOTALEARNINGValue);
+        console.log("PayableAmount:", TotalPayableAmount);
+
+    };
+
+    function calculateLeaveEarned() {
+        var fromDateValue = $("#FromDate").val();
+        var toDateValue = $("#ToDate").val();
+
+        if (fromDateValue && toDateValue) {
+            var fromDate = new Date(fromDateValue);
+            var toDate = new Date(toDateValue);
+
+            var yearDiff = toDate.getFullYear() - fromDate.getFullYear();
+            var monthDiff = toDate.getMonth() - fromDate.getMonth();
+            var totalMonths = yearDiff * 12 + monthDiff;
+
+            if (toDate.getDate() >= fromDate.getDate()) {
+                totalMonths += 1;
+            }
+
+            totalMonths = Math.max(0, totalMonths);
+            var leaveEarned = (totalMonths * 1.75).toFixed(2);
+            $("#leaveEarned").val(leaveEarned);
+        }
+    }
+
+    $(document).ready(function () {
+        // Bind inputs that trigger recalculation
+       console.log("The value of Uniform deductions::", $("#UniformDeductions").val())
+
+        console.log("The type of Uniform deductions::", typeof $("#UniformDeductions").val())
+        // console.log(typeof myVar);
+
+        $("#FromDate, #ToDate, #OpeningBalance, #leaveEarned, #leaveAvailed, #GrossSalary, #BasicSalary, #plBal, #OtherEarnings, #TOTALEARNING, #LTAAmount, #UniformDeductions, #OtherDeductions, #NOTICEPERIODDeductions, #PendingSalary, #TotalNoticePayDays, #NoOfYears, #LastBasics, #GraturityDaysPeryear, #PRORATABASISPAYMENT, #TotalAdvanceTaken, #TotalAdvancePaid")
+            .on("change input", function () {
+                EntryCalculations();
+            });
+
+        // Initial run
+        EntryCalculations();
+    });
+    // debugger
+</script> -->
+
+<script>
+    var ParseFloatCustom = function (obj) {
+        try {
+            var a = $(obj).val();
+            a = parseFloat(a);
+            return isNaN(a) ? 0 : a;
+        } catch (e) {}
+        return 0;
+    }
+
+    var EntryCalculations = function () {
+        // Step 1: Calculate Leave Earned
+        calculateLeaveEarned();
+
+        // Step 2: Get values from form inputs
+        var OpeningBalanceInput = ParseFloatCustom("#OpeningBalance");
+        var LeaveEarnedInput = ParseFloatCustom("#leaveEarned");
+        var LeaveAvailedInput = ParseFloatCustom("#leaveAvailed");
+        var BasicSalaryInput = ParseFloatCustom("#BasicSalary");
+        var GrossSalaryInput = ParseFloatCustom("#GrossSalary");
+        var TotalNoticePayDaysInput = ParseFloatCustom("#TotalNoticePayDays");
+
+        // Step 3: Gratuity Calculation
+        var NoOfYearsinput = ParseFloatCustom("#NoOfYears");
+        var LastBasicsInput = ParseFloatCustom("#LastBasics");
+        var GraturityDaysPeryearInput = ParseFloatCustom("#GraturityDaysPeryear");
+        var GraturityDivideDays = 26;
+        var GraturityTotalPayments = 0;
+
+        if (NoOfYearsinput >= 5) {
+            var GraturityPayments = (GraturityDaysPeryearInput * LastBasicsInput * NoOfYearsinput) / GraturityDivideDays;
+            GraturityTotalPayments = parseFloat(GraturityPayments.toFixed(2));
+        }
+
+        // Step 4: PL Payment Calculation
+        var PLBalance = (OpeningBalanceInput + LeaveEarnedInput) - LeaveAvailedInput;
+        var PLPaymentRate = parseFloat(((BasicSalaryInput * 12) / 365).toFixed(2));
+        var PLPaymentAmount = parseFloat((PLPaymentRate * PLBalance).toFixed(2));
+
+        // Step 5: Notice Pay
+        var TotalNoticeRate = parseFloat(((BasicSalaryInput * 12) / 365).toFixed(2));
+        var TotalNoticeAmount = parseFloat((TotalNoticePayDaysInput * TotalNoticeRate).toFixed(2));
+
+        // Step 6: Get deduction values
+        var UniformDeductionsInput = ParseFloatCustom("#UniformDeductions");
+        var OtherDeductionsInput = ParseFloatCustom("#OtherDeductions");
+
+        // Step 7: Pending Salary
+        var PendingSalaryInput = ParseFloatCustom("#PendingSalary");
+
+        // debugger
+        // Step 8: Advance Calculation (we'll not fetch from DOM again after setting below)
+        var TotalAdvanceTaken = ParseFloatCustom("#TotalAdvanceTaken");
+        var TotalAdvancePaid = ParseFloatCustom("#TotalAdvancePaid");
+        var TotalRemainingAmount = parseFloat((TotalAdvanceTaken - TotalAdvancePaid).toFixed(2));
+
+        // Set Advance Salary value for DOM use and assign directly
+        $("#RemainingAmount").val(TotalRemainingAmount);
+        $("#AdvanceSalary").val(TotalRemainingAmount);
+        var AdvanceSalaryInput = TotalRemainingAmount; // Use directly instead of re-parsing
+
+        // Step 9: Final Deduction Calculation
+        $("#NOTICEPERIODDeductions").val(TotalNoticeAmount); // ensure this is set before use
+        var NOTICEPERIODDeductionsInput = TotalNoticeAmount;
+
+        var TotalDeductions = parseFloat((
+            UniformDeductionsInput +
+            OtherDeductionsInput +
+            NOTICEPERIODDeductionsInput +
+            AdvanceSalaryInput
+        ).toFixed(2));
+
+        // Step 10: Earnings
+        var LTAAmount = ParseFloatCustom("#PRORATABASISPAYMENT");
+        var OtherEarningsValue = ParseFloatCustom("#OtherEarnings");
+
+        var TOTALEARNINGValue = parseFloat((
+            LTAAmount +
+            PLPaymentAmount +
+            OtherEarningsValue +
+            PendingSalaryInput +
+            GraturityTotalPayments
+        ).toFixed(2));
+
+        // Step 11: Payable Amount
+        var TotalPayableAmount = parseFloat((TOTALEARNINGValue - TotalDeductions).toFixed(2));
+
+        // debugger
+
+        // Step 12: Set calculated values to fields
+        $("#leaveEarned").val(LeaveEarnedInput.toFixed(2));
+        $("#plBal").val(PLBalance.toFixed(2));
+        $("#TotalPL").val(PLBalance.toFixed(2));
+        $("#PlRate").val(PLPaymentRate);
+        $("#PLAmount").val(PLPaymentAmount);
+        $("#FinalPLPaymentAmount").val(PLPaymentAmount);
+
+        $("#NPPRate").val(TotalNoticeRate);
+        $("#NPPAmount").val(TotalNoticeAmount);
+
+        $("#GraturityPayments").val(GraturityTotalPayments);
+        $("#GraturityPaymentsEarning").val(GraturityTotalPayments);
+
+        $("#LTAAmount").val(LTAAmount.toFixed(2));
+        $("#TOTALEARNING").val(TOTALEARNINGValue);
+        $("#TotalDeductions").val(TotalDeductions);
+        $("#PayableAmount").val(TotalPayableAmount);
+
+        console.log("UniformDeductionsInput:", UniformDeductionsInput);
+        console.log("AdvanceSalaryInput:", AdvanceSalaryInput);
+        console.log("TotalDeductions:", TotalDeductions);
+        console.log("TOTALEARNINGValue:", TOTALEARNINGValue);
+        console.log("PayableAmount:", TotalPayableAmount);
+    };
+
+    // Function to calculate leave earned based on joining and relieving dates
+    function calculateLeaveEarned() {
+        var fromDateValue = $("#FromDate").val();
+        var toDateValue = $("#ToDate").val();
+
+        if (fromDateValue && toDateValue) {
+            var fromDate = new Date(fromDateValue);
+            var toDate = new Date(toDateValue);
+
+            var yearDiff = toDate.getFullYear() - fromDate.getFullYear();
+            var monthDiff = toDate.getMonth() - fromDate.getMonth();
+            var totalMonths = yearDiff * 12 + monthDiff;
+
+            if (toDate.getDate() >= fromDate.getDate()) {
+                totalMonths += 1;
+            }
+
+            totalMonths = Math.max(0, totalMonths);
+            var leaveEarned = (totalMonths * 1.75).toFixed(2);
+            $("#leaveEarned").val(leaveEarned);
+        }
+    }
+
+    $(document).ready(function () {
+        // Trigger EntryCalculations on input change
+        $("#FromDate, #ToDate, #OpeningBalance, #leaveEarned, #leaveAvailed, #GrossSalary, #BasicSalary, #plBal, #OtherEarnings, #TOTALEARNING, #LTAAmount, #UniformDeductions, #OtherDeductions, #NOTICEPERIODDeductions, #PendingSalary, #TotalNoticePayDays, #NoOfYears, #LastBasics, #GraturityDaysPeryear, #PRORATABASISPAYMENT, #TotalAdvanceTaken, #TotalAdvancePaid")
+            .on("change input", function () {
+                EntryCalculations();
+            });
+
+        // Initial calculation on page load
+        EntryCalculations();
+    });
+</script>
+
+{% endblock content %}

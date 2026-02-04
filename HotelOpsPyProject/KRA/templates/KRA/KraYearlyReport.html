@@ -1,0 +1,733 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+<style>
+    .Yearly-First-box{
+        display: flex;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .employee-notification-icon{
+        padding: 5px;
+    }
+
+    .circle-button{
+        padding: 6px;
+        height: 45px;
+        width: 45px;
+    }
+
+    .card .card-header p{
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    #reportTable{
+        position: sticky;
+        top: 0px;
+        min-width: 100%;
+    }
+    #reportTable thead tr th{
+        font-size: 14px;
+    }
+
+    #reportTable tbody tr td{
+        font-size: 12px;
+    }
+
+    .standard-row {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        padding: 4px 0;
+        font-weight: bold;
+    }
+
+    #reportTable {
+        width: max-content;
+      /*  border-collapse: collapse;*/
+        border-collapse: separate;
+    }
+
+    #reportTable th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa; 
+        z-index: 10; 
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #TableCaptionBtn{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    } 
+
+    .TextRed{
+        color: red !important;
+    }
+</style>
+<style>
+        /* Scrollable container */
+    #reportTableContainer {
+        max-height: 490px;
+        overflow: auto; /* both X and Y scroll */
+        position: relative;
+        margin-top: 20px;
+        border-radius: 4px !important;
+        border-top-right-radius: 4px !important;
+    }
+
+    /* Freeze header row */
+    #reportTable thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #f8f9fa;
+        /* border-top: 2px solid #ccc !important; */
+    }
+
+
+    /* Freeze first column */
+    #reportTable th:first-child,
+    #reportTable td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 9; /* behind header if overlapping */
+        background-color: #fff; /* match body background */
+        min-width: 190px;
+        max-width: 300px;
+        white-space: nowrap;
+    }
+    /* Freeze first column */
+    #reportTable th:last-child,
+    #reportTable td:last-child{
+        position: sticky;
+        right: 0;
+        z-index: 9; /* behind header if overlapping */
+        background-color: #fff; /* match body background */
+        min-width: 110px;
+        max-width: 120px;
+        /* min-width: 173px;
+        max-width: 175px; */
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    /* Ensure top-left cell (Title) appears above all */
+    #reportTable thead th:first-child, #reportTable thead th:last-child  {
+        z-index: 11;
+        /* border-radius: 4px !important; */
+        /* border-top-left-radius: 25px !important; */
+
+    }
+    /* #reportTable thead th:last-child {
+        z-index: 11;
+    } */
+
+
+    /* Optional: Improve border and spacing */
+    #reportTable th,
+    #reportTable td {
+        border: 1px solid #dee2e6 !important;
+        white-space: nowrap;
+    }
+
+    .card-header{
+        margin-bottom: -28px;
+    }
+
+    .text-success {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #28a745bf;
+    }
+
+    .TextRed {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #dc3545d1;
+    }
+
+    .text-info {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #007bffba;
+    }
+    /* .hint{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    } */
+
+    .TableTitle{
+        width: 150px !important;
+        /* width: 190px !important; */
+    }
+
+    /* .TitleContiner{
+        display: flex;
+    } */
+    .TableTitle{
+        width: 75%;
+        border-right: 1px solid #2222;
+    }
+    .TitleContiner{
+        display: flex;
+        gap: 10px;
+    }
+    .hint{
+        display: flex;
+        flex-direction: column;
+        /* gap: 20px; */
+        width: 18%;
+        text-transform: uppercase;
+        /* border-left: 1px solid #2222; */
+        /* font-weight: bold; */
+    }
+
+    hr {
+        margin: 13px 0 !important;
+    }
+    .first-half{
+        max-width: 130px !important;
+        min-width: 130px !important;
+        /* width: 150px !important; */
+    }
+
+    .btn, .CustomRound, .form-control{
+        border-radius: 4px !important;
+    }
+
+    select.form-control {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+</style>
+
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span class="text-uppercase fw-bold">KRA Yearly Report</span>
+        <!-- <button class="btn btn-primary btn-sm" id="Exporttoexecel">Export</button> -->
+        <!-- <button class="btn btn-primary btn-sm" id="Exportt">Pdf</button> -->
+        <!-- {% comment %} <a href="{% url "Yearly_Report_Generate_Pdf" %}?I={{I}}&employee={{selected_employee}}&FromYear={{from_year}}&ToYear={{to_year}}">PDF</a> {% endcomment %} -->
+        <button id="downloadPdfBtn" class="btn btn-sm btn-primary mb-3">Download as PDF</button>
+    </div>
+
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row align-items-center">
+                
+                <!-- Organization Field -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <!-- <label for="I">Organization</label> -->
+                        <select class="form-control select2" id="I" name="I" onchange="submitForm('org')">
+                            {% for org in orgs %}
+                                <option value="{{ org.OrganizationID }}" {% if org.OrganizationID == I %}selected{% endif %}>{{ org.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Employee Field -->
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <!-- <label for="employee">Employee</label> -->
+                        <select class="form-control select2" name="employee" id="employee" onchange="submitForm()">
+                            <option value="">Select</option>
+                            {% for Emp in Emps %}
+                                <option value="{{ Emp.EmployeeCode }}" data-doj="{{ Emp.date_of_joining }}" {% if Emp.EmployeeCode == selected_employee %}selected{% endif %}>
+                                    {{ Emp.full_name }} - {{ Emp.date_of_joining }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- From Year -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <!-- <label for="FromYear">From</label> -->
+                        <select class="form-control select2" name="FromYear" id="FromYear" onchange="submitForm()">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- To Year -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <!-- <label for="ToYear">To</label> -->
+                        <select class="form-control select2" name="ToYear" id="ToYear" onchange="submitForm()">
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Filter and Refresh Buttons -->
+                <div class="col-md-1 ">
+                    <!-- <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter" title="Filter"></i>
+                    </button> -->
+                    <a href="{% url 'KraYearlyReport' %}" class="btn btn-danger btn-block" id="clear">
+                        Clear
+                    </a>
+                </div>
+
+            </div>
+        </form>
+
+
+
+<div id="reportTableContainer">
+    <!-- Loader Code -->
+    <div class="card-loader">
+        <div>
+            <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+            <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+        </div>
+    </div>
+    <!-- // Loader Code -->
+
+    <table class="table table-bordered" cellspacing="0" id="reportTable">
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<!-- <script>
+    $('#downloadPdfBtn').on('click', function () {
+    const element = document.getElementById('reportTableContainer');  // The part you want to export
+    const opt = {
+        margin:       0.5,
+        filename:     'KRA_Yearly_Report.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'a3', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+});
+</script> -->
+
+<script>
+$('#downloadPdfBtn').on('click', function () {
+    const container = document.getElementById('reportTableContainer');
+
+    // Temporarily remove scroll limits
+    const originalStyle = {
+        overflow: container.style.overflow,
+        maxHeight: container.style.maxHeight,
+        maxWidth: container.style.maxWidth,
+        width: container.style.width
+    };
+
+    container.style.overflow = 'visible';
+    container.style.maxHeight = 'none';
+    container.style.maxWidth = 'none';
+    container.style.width = 'fit-content';  // Allow wide table to expand naturally
+
+    const opt = {
+        margin:       [20, 160, 20, 10],  // top, left, bottom, right in px
+        filename:     'KRA_Yearly_Report.pdf',
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  {
+            scale: 3,
+            useCORS: true,
+            scrollY: 0,
+            scrollX: 0,
+            windowWidth: container.scrollWidth,
+        },
+        jsPDF: {
+            unit: 'px',
+            format: [container.scrollWidth + 100, container.scrollHeight + 100],
+            orientation: 'landscape'
+        }
+    };
+
+    html2pdf().set(opt).from(container).save().then(() => {
+        // Restore styles
+        Object.assign(container.style, originalStyle);
+    });
+});
+
+</script>
+
+<!-- export to excel -->
+<script>
+    document.getElementById("Exporttoexecel").addEventListener("click", function () {
+    var table = document.getElementById("reportTable");
+
+    var selectedOrgText = $("select[name='I'] option:selected").text();  
+    var selectedEmpText = $("select[name='employee'] option:selected").text();  
+
+    var headers = [
+        ["Organization Name", selectedOrgText],  
+        ["Employee Name", selectedEmpText],  
+        [],  
+        ["Title", "Standard", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Overall Rating"]  
+    ];
+
+    var headerStyle = {
+        fill: { 
+            fgColor: { rgb: "FFFF00" } 
+        },
+        font: { bold: true }
+    };
+
+    var tableData = [];
+    var rows = table.querySelectorAll("tr");  
+    for (var i = 1; i < rows.length; i++) {   
+        var rowData = [];
+        var cells = rows[i].querySelectorAll("td");  
+        cells.forEach(function(cell) {
+            rowData.push(cell.innerText.trim());  
+        });
+        tableData.push(rowData);  
+    }
+
+    var fullData = headers.concat(tableData);  
+
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(fullData); 
+
+  
+    for (var col = 0; col < headers[3].length; col++) {
+        var cell = ws[XLSX.utils.encode_cell({r: 3, c: col})];  
+        if (!cell) {
+            cell = ws[XLSX.utils.encode_cell({r: 3, c: col})] = {};  
+        }
+        cell.s = headerStyle; 
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, "KRA Report");
+
+    var fileName = `KRA_Yearly_Report_${selectedEmpText}_${selectedOrgText}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+});
+</script> 
+
+
+
+
+
+<!-- months and birthday data -->
+<script>
+    function submitForm(org) {
+        if (org == 'org') {
+            $("select[name='employee']").val('');
+        }
+        // document.getElementById("filterForm").
+        $("#filterForm").submit();
+    }
+
+
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedyear = "{{ selected_year }}";
+        $("select[name='year']").val(selectedyear);
+        var selectedemployee = "{{ selected_employee }}";
+        $("select[name='employee']").val(selectedemployee);
+    });
+
+    function BindUserYear() {
+        const dojString = $("#employee option:selected").data("doj");
+        $("#DOJ").val(dojString);
+        if (!dojString) return;
+
+        const dojDate = new Date(dojString);
+        // dojDate.setMonth(dojDate.getMonth() - 1);
+
+        const fromSelect = document.getElementById("FromYear");
+        const toSelect = document.getElementById("ToYear");
+
+        fromSelect.innerHTML = "";
+        toSelect.innerHTML = "";
+
+        const monthNamesList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+        const current = new Date(dojDate.getFullYear(), dojDate.getMonth(), 1); 
+        const futureLimit = new Date(); 
+        futureLimit.setFullYear(futureLimit.getFullYear() + 2);
+        futureLimit.setMonth(11); 
+
+        const options = [];
+
+        while (current <= futureLimit) {
+            const month = current.getMonth();
+            const year = current.getFullYear();
+            const value = `${String(month + 1).padStart(2, '0')}-${year}`;
+            const text = `${monthNamesList[month]}-${year}`;
+            options.push({ value, text });
+
+            current.setMonth(current.getMonth() + 1); 
+        }
+
+
+        // Populate both dropdowns with the same options
+        options.forEach(opt => {
+            const optFrom = document.createElement("option");
+            optFrom.value = opt.value;
+            optFrom.text = opt.text;
+            fromSelect.appendChild(optFrom);
+
+            const optTo = document.createElement("option");
+            optTo.value = opt.value;
+            optTo.text = opt.text;
+            toSelect.appendChild(optTo);
+        });
+
+        // Optional: Set default selected values
+        const urlFromYear = "{{ from_year }}";
+        const urlToYear = "{{ to_year }}";
+        
+        // if (urlFromYear && urlToYear) {
+        if (urlFromYear !== "None" && urlToYear !== "None") {
+            fromSelect.value = urlFromYear;
+            toSelect.value = urlToYear;
+        } else if (fromSelect.options.length > 0) {
+            const dojMonth = dojDate.getMonth() + 1;
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth() + 1;
+            const currentYear = currentDate.getFullYear();
+
+            let fromYearFinal;
+            if (dojMonth < currentMonth) {
+                fromYearFinal = currentYear - 1;
+            } else {
+                fromYearFinal = currentYear;
+            }
+
+            // Construct FromYear value
+            const fromValue = `${String(dojMonth).padStart(2, '0')}-${fromYearFinal}`;
+
+            const matchOption = Array.from(fromSelect.options).find(opt => opt.value === fromValue);
+            if (matchOption) {
+                fromSelect.value = fromValue;
+            } else {
+                fromSelect.options[0].selected = true; 
+            }
+
+            // et ToYear = FromYear + 11 months
+            const fromDateObj = new Date(fromYearFinal, dojMonth - 1); 
+            fromDateObj.setMonth(fromDateObj.getMonth() + 11);
+
+            const toMonth = String(fromDateObj.getMonth() + 1).padStart(2, '0');
+            const toYear = fromDateObj.getFullYear();
+            const toFormattedValue = `${toMonth}-${toYear}`;
+
+            const matchToOption = Array.from(toSelect.options).find(opt => opt.value === toFormattedValue);
+            if (matchToOption) {
+                toSelect.value = toFormattedValue;
+            } else {
+                const tempval = document.getElementById("FromYear").value;
+
+                if (tempval) {
+                    const [month, year] = tempval.split("-").map(Number); 
+
+                    const fromDateObj = new Date(year, month - 1); 
+                    fromDateObj.setMonth(fromDateObj.getMonth() + 11);
+
+                    const toMonth = String(fromDateObj.getMonth() + 1).padStart(2, '0');
+                    const toYear = fromDateObj.getFullYear();
+                    const toFormattedValue = `${toMonth}-${toYear}`;
+
+                    document.getElementById("ToYear").value = toFormattedValue;
+                }
+            }
+
+            $("#filterForm").submit();        
+        }
+    }
+
+    $(function () {
+        BindUserYear();
+        $("#employee").on("change", BindUserYear);
+        $('.select2').select2();
+
+        // Automatically set ToYear based on FromYear (11 months)
+        $("#FromYear").on("change", function () {
+            const selectedFromValue = $(this).val(); 
+            if (!selectedFromValue) return;
+
+            const [fromMonth, fromYear] = selectedFromValue.split("-");
+            const fromDate = new Date(parseInt(fromYear), parseInt(fromMonth) - 1);
+            fromDate.setMonth(fromDate.getMonth() + 11);
+
+            const toMonth = String(fromDate.getMonth() + 1).padStart(2, '0');
+            const toYear = fromDate.getFullYear();
+            const newToValue = `${toMonth}-${toYear}`;
+
+            const toSelect = document.getElementById("ToYear");
+
+            const matchOption = Array.from(toSelect.options).find(opt => opt.value === newToValue);
+            if (matchOption) {
+                toSelect.value = newToValue;
+            }
+            
+            // document.getElementById("filterForm").submit();
+            // document.getElementById("filterForm").submit();
+            // submitForm()
+        });
+
+    });
+</script>
+
+
+
+<!-- Api call and all data showing -->
+<script>
+    $(document).ready(function () {
+        const OrganizationID = "{{ I }}";
+        const selected_employee = "{{ selected_employee }}";
+        // const selected_year = "{{ selected_year }}";
+        const FromDate = "{{ from_year }}";
+        const ToDate = "{{ to_year }}";
+
+        const apiUrl = `/KRA/api/kra-yearly-report/${OrganizationID}/${selected_employee}/${FromDate}/${ToDate}/`;
+
+        $('.card-loader').show();
+
+        $.getJSON(apiUrl, function (data) {
+            console.log("data is here::", data);
+
+            const tbody = $("#reportTable tbody");
+            const thead = $("#reportTable thead");
+
+            tbody.empty();
+            thead.empty();
+
+            // 🔹 Get all unique month keys (across all rows)
+            let allMonthKeys = new Set();
+            data.forEach(row => {
+                Object.keys(row).forEach(k => {
+                    if (k.match(/^\w{3}-\d{4}$/)) {
+                        allMonthKeys.add(k);
+                    }
+                });
+            });
+            allMonthKeys = Array.from(allMonthKeys);
+
+            allMonthKeys.sort((a, b) => {
+                const [m1, y1] = a.split('-');
+                const [m2, y2] = b.split('-');
+                const monthOrder = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
+                return (parseInt(y1) * 12 + monthOrder[m1]) - (parseInt(y2) * 12 + monthOrder[m2]);
+            });
+
+            let headerRow = `<tr><th class="TableTitle">Title</th>`;
+
+            allMonthKeys.forEach(monthKey => {
+                const [month, year] = monthKey.split('-');
+                const shortYear = year.slice(-2); 
+                headerRow += `<th>${month}-${shortYear}</th>`;
+            });
+            headerRow += `<th>Overall</th></tr>`;
+            thead.append(headerRow);
+
+            // 🔹 Now build body rows for each row
+            $.each(data, function (index, row) {
+                let tr = `<tr><td style="background-color:#f9f9f9;">
+                        <div class="TitleContiner">
+                            <div class="TableTitle"><span>${row.Title}</span></div>
+                            <div class="hint"><span>Act</span><hr><span>Std</span></div>
+                        </div>
+                    </td>`;
+
+                allMonthKeys.forEach(function (monthKey) {
+                    // let rating = row[`${monthKey}_x`] || '';
+                    // let actual = row[`${monthKey}_y`] || '';
+                    // let MonthStn = row[monthKey] || '';
+
+                    let rating = row[`${monthKey}_Standard`] || '';
+                    let actual  = row[`${monthKey}_Actual`] || '';
+                    let MonthStn = row[monthKey] || '';
+
+                    if (MonthStn === "Exceeds Expectation") MonthStn = "Exceed";
+                    else if (MonthStn === "Not Met") MonthStn = "Not&nbsp;Met";
+
+                    const badgeClass = getBadgeClass(MonthStn);
+
+                    tr += `<td class="first-half" data-s="${rating}">
+                        <div class="Yearly-Container">
+                            <div class="Yearly-First-box">
+                                <span>${String(actual).split('.')[0]}</span>
+                                <div class="employee-notification-icon">
+                                    <span class="${badgeClass} CustomRound">${MonthStn}</span>
+                                </div>
+                            </div>
+                            <div>${rating}</div>
+                        </div>
+                    </td>`;
+                });
+
+                let overall = row.OverallRating || '';
+                if (overall === "Exceeds Expectation") overall = "Exceed";
+
+                const overallClass = getTextColorClassExceed(overall);
+                tr += `<td data-s="${overall}" style="background-color: #f9f9f9;">
+                    <span class="${overallClass} CustomRound">${overall}</span>
+                </td></tr>`;
+
+                tbody.append(tr);
+            });
+        })
+
+        .fail(function () {
+            $('#reportTable tbody').html('<tr><td colspan="12">No Records Found..</td></tr>');
+        })
+        .always(function () {
+            // Hide loader after success or failure
+            $('.card-loader').hide();
+        });
+
+        // Helper functions
+        function getBadgeClass(status) {
+            if (status === "Exceed") return "text-success text-white";
+            if (status === "Not&nbsp;Met") return "TextRed text-white";
+            // if (status === "Not Met") return "badge-danger text-white rounded-1";
+            if (status === "Met") return "text-info text-white";
+            if (status === "N/A") return "text-warning text-white";
+            return "";
+        }
+
+        function getTextColorClass(status) {
+            if (status === "Exceed") return "text-success";
+            if (status === "Not Met") return "text-danger";
+            if (status === "Met") return "text-success";
+            if (status === "N/A") return "text-warning";
+            return "";
+        }
+        function getTextColorClassExceed(status) {
+            if (status === "Exceed") return "text-success";
+            if (status === "Not Met") return "TextRed";
+            if (status === "Met") return "text-info";
+            if (status === "N/A") return "text-warning";
+            return "";
+        }
+    });
+</script> 
+
+
+
+{% endblock content %}

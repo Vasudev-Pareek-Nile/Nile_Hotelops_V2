@@ -1,0 +1,91 @@
+{% extends "Reporting/homebase.html" %} {% block content %}
+
+<style>
+  table th{
+    text-transform: uppercase;
+    
+  }
+  
+  
+</style>
+<div class="card-header"  >
+      <div class="row">
+          <div class="col-md-6">Hiring, Reporting & Performance Review Guidelines List</div>
+          <div class="col-md-6 text-right"><a href="{% url 'report_pdf' %}" class="btn btn-primary"> Download</a></div> 
+      </div>  </div>
+      <br>
+      
+
+    <table id="example" class="table table-bordered">
+      <thead  class="thead">
+        <tr class="table-success">
+          <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Title</th>
+          <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Positions</th>
+          <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reporting</th>
+          <th>Contribution to Performance appraisal </th>
+          <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hiring</th>
+           <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Firing</th>
+          <th> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Transfer</th>
+          
+           
+        </tr>
+      </thead>
+       <tbody>
+         {% for hiring in hiring  %} 
+        <tr>
+          <td>{{ hiring.department_division}}</td>
+          <td><ul>
+          {% if hiring.positions1 %}<li> {{ hiring.positions1}}</li>{% endif %}
+          {% if hiring.positions2 %}<li>{{ hiring.positions2}}</li>{% endif %}
+           {% if hiring.positions3 %}<li> {{ hiring.positions3}}</li>{% endif %}
+          {% if hiring.positions4 %}<li> {{ hiring.positions4}}</li>{% endif %}
+          </ul> </td>
+          <td>{{ hiring.reporting }}</td>
+          <td><ul>
+   {% if hiring.Feedback_percent1 and hiring.Feedback_position1 %} <li>{{ hiring.Feedback_percent1}}% {{ hiring.Feedback_position1}}</li>{% endif %}
+   {%if hiring.Feedback_percent2 and hiring.Feedback_position2 %} <li>{{ hiring.Feedback_percent2}}% {{ hiring.Feedback_position2}}</li>{% endif %}
+   {% if hiring.Feedback_percent3 and hiring.Feedback_position3 %} <li>{{ hiring.Feedback_percent3}}% {{ hiring.Feedback_position3}}</li>{% endif %}
+   {%if hiring.Feedback_percent4 and hiring.Feedback_position4 %} <li>{{ hiring.Feedback_percent4}}% {{ hiring.Feedback_position4}}</li>{% endif %}
+    <!-- Add more lines if needed -->
+  </ul>
+           </td>
+          <td>{{ hiring.hiring}}</td>
+          <td>{{hiring.fairing}}</td>
+          <td>{{ hiring.property_transfer}}</td>
+          {% comment %} <td>
+            <a href="{% url 'HiringAdd' %}?ID={{hiring.id}}" class="fa fa-edit" style="color: blue"></a>
+           
+            <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'Reporting_delet'  %}?ID={{hiring.id}}">
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+
+          </td> {% endcomment %}
+               
+     
+        </tr>
+        {% endfor %}
+      </tbody> 
+    </table>
+  </div>
+</div>
+
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+/>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+ 
+<script>
+  $(document).ready(function () {
+    var table = $("#example").DataTable({
+      paging: true,
+      searching: true,
+      order: [],
+    });
+  });
+</script> 
+{% endblock content%}

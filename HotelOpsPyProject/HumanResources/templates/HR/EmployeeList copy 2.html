@@ -1,0 +1,391 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+
+<style>
+    table
+    {
+        font-size: 12px;
+        border:1px solid #E9E9EA;
+    }
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 8px;
+    }
+
+    .filter-container select,
+    .filter-container input {
+        min-width: 120px;
+    }
+
+    .filter-container button {
+        min-width: 80px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+    }
+
+    .button-spacing button {
+        margin-right: 10px; /* Adjust spacing as needed */
+    }
+
+    .button-spacing button:last-child {
+        margin-right: 0; /* Remove spacing for the last button */
+    }
+
+    #employeeTable tr th{
+        font-size: 15px;
+        text-transform: uppercase;
+        /* text-align: center; */
+        border:1px solid black;
+    }
+
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 42px !important;
+        right:11px !important;
+    }
+
+    .select2-container, .dropdown-menu {
+        z-index: 1000 !important; /* Less than navbar */
+    }
+
+    .btn{
+        border-radius: 5px;
+    }
+
+    .vscomp-wrapper.has-clear-button .vscomp-toggle-button {
+        border-radius: 5px !important;
+    }
+    
+    .form-control{
+        border-radius: 5px !important;
+    }
+
+
+	#ClearBtnBox{
+		padding-block: 8px;
+	}
+
+
+    .page-wrapper .content {
+        padding: 10px !important;
+    }
+
+    .card .card-body {
+        padding: 15px !important;
+    }
+</style>
+  <!-- DataTables CSS -->
+
+<div class="card">
+    <div class="card-header">
+        <div class="mb-2">
+            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST</h3>
+        </div>
+    </div>
+
+    <div class="card-body ">
+        <form method="GET" class="row g-2" id="filterForm">
+            <div class="col-md-3">
+                <div id="Organizations"></div>
+                <input type="hidden" name="Organizations" id="Organizations_input">
+            </div>
+
+            <div class="col-md-1"  id="CodeInputBox">
+                <input 
+                    type="text" 
+                    name="employee_code" 
+                    id="employee_code"
+                    class="form-control" 
+                    placeholder="Code" 
+                    value="{{ request.GET.employee_code }}"
+                >
+            </div>
+
+            <!-- Divisions of Reference -->
+            <div class="col-md-2">
+                <div id="Divisions"></div>
+                <input type="hidden" name="Divisions" id="Divisions_input">
+            </div>
+
+            <!-- Department of Reference -->
+            <div class="col-md-2">
+                <div id="Departments"></div>
+                <input type="hidden" name="Departments" id="Departments_input">
+            </div>
+
+            <div class="col-md-2">
+                <div id="Status"></div>
+                <input type="hidden" name="Status" id="Status_input">
+            </div>
+
+            <div class="col-md-1">
+                <!-- <label class="form-label" for="Levels">Levels</label> -->
+                <div id="Levels"></div>
+                <input type="hidden" name="Levels" id="Levels_input">
+            </div>
+
+
+            <div class="col-md-1">
+                <a href="{% url "EmployeeList" %}" class="btn btn-danger" id="ClearBtnBox">
+                    Clear
+                </a>
+            </div>
+        </form>  
+
+        <table id="employeeTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Code</th>
+                    
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th style="width: 70px;">DOJ</th>
+                    <th >Status</th>
+                    <th class="text-center" >Level</th> 
+                    <th class="text-center" >Completion</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for employee in Empobjs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ employee.EmployeeCode }}</td>
+                    
+                
+                    <td class="d-flex align-items-center gap-2">
+                        
+                        <span>
+                            
+                        
+                                
+                            {% if  employee.ProfileImageFileName %}
+                            <img id="ProfileImagePreview" src="{% url 'Humanview_file' %}?ID={{ employee.EmpID }}&model=EmployeePersonalDetails" alt="Profile Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" >
+                            <!-- <img id="ProfileImagePreview" 
+                                src="{% if employee.profile_image %}{{ employee.profile_image.url }}{% else %}{% static 'assets/img/avatar/avatarimg.jpg' %}{% endif %}" 
+                                alt="Profile Preview" 
+                                style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"> -->
+                            {% else %}
+                            
+                            <img id="ProfileImagePreview" src="{% static 'assets/img/avatar/avatarimg.jpg' %}" alt="Profile Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            {% endif %}
+                        </span>
+                        <span>
+                            {{ employee.FirstName|default:"" }} {{ employee.MiddleName|default:"" }} {{ employee.LastName|default:"" }}
+                        </span>
+                    </td>
+
+                    <td>{{ employee.Department }}</td>
+                    <td>{{ employee.Designation }}</td>
+                    <td>{{ employee.DateofJoining|date:'j M Y' }}</td>
+                
+                    <td>{{ employee.EmpStatus }}</td>
+                    <td class="text-center">{{ employee.Level }}</td>
+                    <td class="text-center">{{ employee.ProfileCompletion }} %</td>
+                    <td>
+                        <div class="btn btn-group ">
+
+                            
+                            <a href="{% url 'EditEmployee' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" title="Edit" aria-label="Edit" class="btn btn-primary btn-sm">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            &nbsp;
+                            <a href="{% url 'EmpView' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" target="_blank" class="btn btn-primary btn-sm text-center" title="View" aria-label="View">
+                                <i class="fa fa-eye" alt="view"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+  
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        Promise.all([
+            // fetch("{% url 'OrganizationList_Api' 3 %}").then(res => res.json()),
+            fetch("{% url 'OrganizationList_Api' Session_OrganizationID %}").then(res => res.json()),
+            fetch("{% url 'Show_Division_Api' %}").then(res => res.json()),
+            fetch("{% url 'Show_Department_By_DivisionName_Api' selected_division|default:'all' %}").then(res => res.json()),
+            fetch("{% url 'EmployeeStatusList_Api' %}").then(res => res.json()),
+            fetch("{% url 'Lavel_Show_Data_Api' %}").then(res => res.json())
+        ])
+        .then(([orgData, diviData, deptData, statusList, levelData]) => {
+
+
+        // console.log("diviData is here:", diviData)
+        console.log("levelData is here:", levelData)
+        // console.log("diviData is here:", diviData)
+            // Organizations
+         var ViD = VirtualSelect.init({
+                ele: '#Organizations',
+                options: orgData.map(org => ({
+                    label: org.OrganizationName,
+                    value: org.OrganizationID
+                })),
+                multiple: false,
+                placeholder: 'Select Organizations',
+                search: true,
+                selectedValue: "{{ selected_org_id|default:'' }}",
+                dropboxWidth: '100%',
+                dropboxWrapperMaxHeight: '250px',
+            });
+
+            // Divisions
+            VirtualSelect.init({
+                ele: '#Divisions',
+                options: diviData.map(divi => ({
+                    label: divi.DivisionName,
+                    value: divi.DivisionName
+                })),
+                multiple: false,
+                placeholder: 'Select Divisions',
+                search: true,
+                selectedValue: "{{ selected_division|default:'' }}",
+                dropboxWidth: '100%',
+                dropboxWrapperMaxHeight: '200px',
+            })
+
+            // Departments
+            VirtualSelect.init({
+                ele: '#Departments',
+                options: deptData.map(dept => ({
+                    label: dept.DepartmentName,
+                    value: dept.DepartmentName
+                })),
+                multiple: true,
+                placeholder: 'Select Department',
+                search: true,
+                selectedValue: {{ selected_Department_list|safe }},
+                dropboxWidth: '100%',
+                dropboxWrapperMaxHeight: '200px',
+            })
+
+            // Status
+            VirtualSelect.init({
+                ele: '#Status',
+                options: statusList.map(Status => ({
+                    label: Status.name,
+                    value: Status.id
+                })),
+                multiple: true,
+                placeholder: 'Select Status',
+                search: true,
+                selectedValue: {{ Status_list|safe }},
+                dropboxWidth: '100%',
+                dropboxWrapperMaxHeight: '250px'
+            });
+
+            const levelData_obj = levelData.Levels; 
+            console.log("the level data is here::", levelData_obj)
+
+            // Levels
+            VirtualSelect.init({
+                ele: '#Levels',
+                options: levelData_obj.map(level => ({
+                    label: level,
+                    value: level
+                })),
+                multiple: true,
+                placeholder: 'Select Level',
+                search: true,
+                selectedValue: {{ Levels_List|safe }},
+                dropboxWidth: '100%',
+                dropboxWrapperMaxHeight: '250px'
+            });
+
+            // Sync selected values before submit
+            document.querySelector('#Organizations').addEventListener('change', function() {
+                // debugger;
+                $('#Organizations_input').val( `${this.value}`);
+            });
+
+            document.querySelector('#Divisions').addEventListener('change', function() {
+                // debugger;
+                $('#Divisions_input').val( `${this.value}`);
+            });
+
+            document.querySelector('#Departments').addEventListener('change', function() {
+                // debugger;
+                $('#Departments_input').val( `${this.value}`);
+            });
+
+            document.querySelector('#Status').addEventListener('change', function() {
+                // debugger;
+                $('#Status_input').val( `${this.value}`);
+            });
+
+            document.querySelector('#Levels').addEventListener('change', function() {
+                // debugger;
+                $('#Levels_input').val( `${this.value}`);
+            });
+
+            document.querySelector('#Organizations').addEventListener('beforeClose', function () {
+                let deptSelect = document.querySelector('#Organizations').virtualSelect;
+                document.getElementById("Organizations_input").value = deptSelect.selectedValues.join(",");
+                document.getElementById("filterForm").submit();
+            });
+
+            document.querySelector('#Divisions').addEventListener('beforeClose', function () {
+                let deptSelect = document.querySelector('#Divisions').virtualSelect;
+                document.getElementById("Divisions_input").value = deptSelect.selectedValues.join(",");
+                document.getElementById("filterForm").submit();
+            });
+
+            document.querySelector('#Departments').addEventListener('beforeClose', function () {
+                let deptSelect = document.querySelector('#Departments').virtualSelect;
+                document.getElementById("Departments_input").value = deptSelect.selectedValues.join(",");
+                document.getElementById("filterForm").submit();
+            });
+
+            document.querySelector('#Status').addEventListener('beforeClose', function () {
+                let deptSelect = document.querySelector('#Status').virtualSelect;
+                document.getElementById("Status_input").value = deptSelect.selectedValues.join(",");
+                document.getElementById("filterForm").submit();
+            });
+
+            document.querySelector('#Levels').addEventListener('beforeClose', function () {
+                let deptSelect = document.querySelector('#Levels').virtualSelect;
+                document.getElementById("Levels_input").value = deptSelect.selectedValues.join(",");
+                document.getElementById("filterForm").submit();
+            });
+        })
+        .catch(error => {
+            console.error("Dropdown load failed:", error);
+        });
+    });
+
+    document.querySelector('#employee_code').addEventListener('input', function () {
+        // Optional: wait a bit to avoid too many submits while typing
+        clearTimeout(this.submitTimer);
+        this.submitTimer = setTimeout(() => {
+            document.getElementById("filterForm").submit();
+        }, 600); // 600ms debounce
+    });
+</script>
+
+
+<script>
+    function exportData() {
+        alert('Export functionality to be implemented.');
+    }
+</script>
+{% endblock content %}

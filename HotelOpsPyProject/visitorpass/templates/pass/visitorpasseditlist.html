@@ -1,0 +1,65 @@
+{% extends 'pass/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'VisitorPassUpdateData' %}" enctype="multipart/form-data">
+    {{ Visitor_Pass }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In VisitorPass</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+              {% render_field VisitorPassForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>In Time</label>
+                {% render_field VisitorPassForm.In_Time class="form-control" placeholder="In_Time" value=Ed.In_Time %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field VisitorPassForm.Name class="form-control" placeholder="Name" value=Ed.Name %}
+              </div>
+              {% comment %} <div class="col-sm-3">
+                <label>Purpose Of Visite</label>
+                {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" placeholder="Purpose_Of_Visite" value=Ed.Purpose_Of_Visite %}
+              </div> {% endcomment %}
+             
+            </div>
+          </div>
+
+          <br/>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Purpose Of Visite</label>
+              {% comment %} {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite" %} {% endcomment %}
+              <textarea name="Purpose_Of_Visite" class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite">{{Ed.Purpose_Of_Visite}}</textarea>
+            </div>
+          </div>
+         
+       
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+   
+  {% endblock content %}

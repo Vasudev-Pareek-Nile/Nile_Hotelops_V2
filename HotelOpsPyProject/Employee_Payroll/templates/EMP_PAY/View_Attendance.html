@@ -1,0 +1,60 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container">
+    <div class="card-header col-md-12 mb-3 ">Attendance Details of {{ current_month|date:"F Y" }}</div>
+    
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>DATE</th>
+                        <th>IN</th>
+                        <th>OUT</th>
+                        <th>Duty Hours</th>
+
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_data %}
+                    <tr>
+                        <td>{{ record.Date|date:"j F, Y" }}</td>
+                        <td> {% if record.In_Time %}{{ record.In_Time }}{% else %}Missing{% endif %}</td>
+                        <td> {% if record.Out_Time %}{{ record.Out_Time }}{% else %}Missing{% endif %} </td>
+                        <td>{{ record.Duty_Hour }}</td>
+                        <td>{{ record.Status }}</td>
+                        <td>
+                            {% if not record.update_request_exists and  record.Status == 'Present' or record.Status == 'Absent' or record.Status == 'Week Off' %}
+                                <a href="{% url 'UpdateRequest' %}?ID={{record.id}}" class="btn btn-primary btn-sm">Request</a>
+                            
+                            {% elif record.update_request_exists %}
+                            <span class="btn btn-warning btn-sm">Applied</span> 
+                            {% else %}
+                            <span class="btn btn-danger btn-sm">Not Allowed</span>
+                            {% endif %}
+                        </td>
+                        
+                        
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No Data Available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+ 

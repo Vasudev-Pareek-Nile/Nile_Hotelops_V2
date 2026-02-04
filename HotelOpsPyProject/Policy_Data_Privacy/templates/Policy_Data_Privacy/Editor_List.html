@@ -1,0 +1,82 @@
+{% extends 'Policy_Data_Privacy/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    #clear, #filter{
+        padding-block: 8px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span class="text-uppercase fw-bold">Available Policies</span>
+        <a href="{% url 'editor_create' %}" class="btn btn-primary btn-sm">Create New Entry</a>
+    </div>
+    <!-- <br> -->
+     <div class="card-body">
+                <div class="col-md-12">
+                    <form method="GET" class="row g-4">
+
+                        <!-- Organization -->
+                        <div class="col-md-3">
+                            <select name="OID" class="form-control">
+                                {% for itm in memOrg %}
+                                <option value="{{ itm.OrganizationID }}" 
+                                    {% if SelectedOrg|stringformat:"s" == itm.OrganizationID|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+                                    {{ itm.OrganizationName }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Policy Item -->
+                        <div class="col-md-3">
+                            <select name="PolicyID" class="form-control">
+                                <option value="">All Policies</option>
+                                {% for itm in Item_Master %}
+                                <option value="{{ itm.id }}"
+                                    {% if SelectedPolicyID|stringformat:"s" == itm.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+                                    {{ itm.ItemName }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 d-flex gap-2 align-items-center">
+                            <button type="submit" class="btn btn-primary" id="filter">Filter</button>
+                            <a href="{% url 'editor_list' %}" class="btn btn-danger" id="clear">Clear</a>
+                        </div>
+
+                    </form>
+ 
+                </div>
+
+                <table border="1" width="100%" cellpadding="8" class="table table-striped">
+                    <tr>
+                        <th>ID</th>
+                        <th>Policy Name</th>
+                        <th>Action</th>
+                    </tr>
+
+                    {% for p in policies %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ p.Letter_Data_Item_Master.ItemName }}</td>
+                        <td>
+                            <a href="{% url 'editor_edit' p.id %}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+    </div>
+</div>
+
+
+{% endblock content %}

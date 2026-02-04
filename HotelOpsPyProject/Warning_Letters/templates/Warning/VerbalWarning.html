@@ -1,0 +1,220 @@
+{% extends 'Warning/homebase.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .submit-btn {
+        {% comment %} width: 100px; {% endcomment %}
+        {% comment %} background-color: #20c997; {% endcomment %}
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .submit-btn:hover {
+        background-color: #17a589;
+    }
+    .text-danger {
+        color: red;
+    }
+    .ibox-content {
+       
+        
+        border-style: none; 
+       
+    }
+</style>
+
+<main class="container" id="ibox1">
+    <div class="ibox-content">
+        <div class="sk-spinner sk-spinner-wave">
+            <div class="sk-rect1"></div>
+            <div class="sk-rect2"></div>
+            <div class="sk-rect3"></div>
+            <div class="sk-rect4"></div>
+            <div class="sk-rect5"></div>
+        </div>
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header" style="color: #1ab394">
+                    <h3>Verbal Warning</h3>
+                </div>
+
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="emp_code" class="form-label">Employee Code: <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="emp_code" name="emp_code" value="{{ warning.emp_code }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="emp_name" class="form-label">Name:</label>
+                                <input type="text" class="form-control" id="emp_name" name="emp_name" value="{{ warning.emp_name }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="department" class="form-label">Department:</label>
+                                <input type="text" class="form-control" id="department" name="department" value="{{ warning.department }}" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="designation" class="form-label">Designation:</label>
+                                <input type="text" class="form-control" id="designation" name="designation" value="{{ warning.designation }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="problems" class="form-label">Employee's problems: <span class="text-danger">*</span></label>
+                            <textarea id="problems" name="problems" class="form-control" rows="2" required>{{ warning.problems|default:'' }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="improvements" class="form-label">Standard of improvements expected:</label>
+                            <textarea id="improvements" name="improvements" class="form-control" rows="2">{{ warning.improvements|default:'' }}</textarea>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="from_date" class="form-label">Period given for improvement (From):</label>
+                                <input type="date" id="from_date" name="from_date" 
+                                       value="{{ warning.from_date|default:today|date:'Y-m-d' }}" 
+                                       class="form-control" 
+                                       min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="to_date" class="form-label">To:</label>
+                                <input type="date" id="to_date" name="to_date" 
+                                       value="{{ warning.to_date|default:today|date:'Y-m-d' }}" 
+                                       class="form-control" 
+                                       min="{{ today|date:'Y-m-d' }}">
+                            </div>
+                            
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="time" class="form-label">Time:</label>
+                                <input type="time" id="time" name="time" class="form-control" value="{{ warning.time|default_if_none:''|time:'H:i' }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="venue" class="form-label">Venue: <span class="text-danger">*</span></label>
+                                <input type="text" id="venue" name="venue" class="form-control" value="{{ warning.venue|default:'' }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="verbally_warned" class="form-label">Employee verbally warned on:</label>
+                            <input type="date" id="verbally_warned" name="verbally_warned" value="{{ warning.verbally_warned|default:today|date:'Y-m-d' }}" class="form-control">
+                        </div>
+
+                        <h4>Note to Supervisor</h4>
+                        <p>Associate has a right to appeal against a verbal warning if dissatisfied:</p>
+
+                        <div class="mb-3">
+                            <input type="hidden" name="appeal_explained" value="no">
+                            <label>
+                                <input type="checkbox" name="appeal_explained" value="yes" {% if warning and warning.appeal_explained == 'yes' %}checked{% endif %}>
+                            </label>
+                            <label>Have you explained to the Associate their rights to appeal?</label>
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="hidden" name="appeal" value="no">
+                            <label>
+                                <input type="checkbox" name="appeal" value="yes" {% if warning and warning.appeal == 'yes' %}checked{% endif %}>
+                            </label>
+                            <label>Is the Associate going to appeal?</label>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="reviewed_by" class="form-label">Reviewed By: <span class="text-danger">*</span></label>
+                                <!-- <input type="text" id="reviewed_by" name="reviewed_by" class="form-control" value="{{ warning.reviewed_by|default:'' }}" required> -->
+                                <select name="reviewed_by" class="form-control" id="reviewed_by" required>
+                                    <option value="">Select</option>
+                                    
+                                    {% for names in EmployeeNames%}
+                                    <option value="{{names.EmployeeName}}" {% if warning.reviewed_by == names.EmployeeName %}selected{% endif %}>{{names.EmployeeName}}</option>
+                                    {% endfor %}
+                                </select>
+                           
+                            </div>
+                            <div class="col-md-4">
+                                <label for="associate_signature_date" class="form-label">Associate Signature Date:</label>
+                                <input type="date" id="associate_signature_date" name="associate_signature_date" value="{{ warning.associate_signature_date|default:today|date:'Y-m-d' }}" class="form-control">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="manager_signature_date" class="form-label">Manager Signature Date:</label>
+                                <input type="date" id="manager_signature_date" name="manager_signature_date" value="{{ warning.manager_signature_date|default:today|date:'Y-m-d' }}" class="form-control">
+                            </div>
+                        </div>
+
+                       
+                </div>
+                <div class="card-footer text-right">
+                    <button type="submit" id="toggleSpinners" class="btn btn-primary">
+                        {% if warning.id %}
+                            Update
+                        {% else %}
+                            Submit
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script>
+    $(function(){
+        $('#toggleSpinners').on('click', function(e){
+            var form = document.querySelector('form');
+
+            if (form.checkValidity()) {
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            } else {
+                e.preventDefault(); 
+                form.reportValidity(); 
+            }
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var timeInput = document.getElementById('time');
+        // If there's no value from the server (i.e., for a new record), set the current time
+        if (timeInput.value === '') {
+            var currentTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            timeInput.value = currentTime;
+        }
+    });
+</script>
+{% comment %} <script>
+    
+    function getTodayDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); 
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Set today's date as the default value for date inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('from').value = getTodayDate();
+        document.getElementById('to').value = getTodayDate();
+        document.getElementById('verbally_warned').value = getTodayDate();
+        document.getElementById('associate_signature_date').value = getTodayDate();
+        document.getElementById('manager_signature_date').value = getTodayDate();
+    });
+</script> {% endcomment %}
+
+{% endblock content %}

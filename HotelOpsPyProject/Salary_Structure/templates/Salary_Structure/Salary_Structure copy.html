@@ -1,0 +1,280 @@
+{% extends "Salary_Structure/homebase.html" %}
+
+{% block content %}
+
+<!-- <a href=""></a> -->
+
+=
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="mb-3">
+            <label class="mb-2">Select Hotel:</label>
+            <select class="form-select select2" id="organizationDropdown">
+                <option value="">-- Select Hotel --</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div id="SalaryStructureContainer" class="mt-4">
+    <form action="{% url "Handle_SalaryStructure" %}" id="SalaryStructureForm" method="post">
+        {% csrf_token %}
+        <table class="table table-bordered" id="Salary_StructureTable">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Type</th>
+                    <th>Calculation_Basis_Type</th>
+                    <th>Category</th>
+                    <th>Formula_Expression</th>
+                    <!-- <th>Salary_Code</th> -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in SalaryTitles %}
+            <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>
+                        <input type="text" class="form-control" name="DisplayName[]" value="{{item.Title}}"  placeholder="" title="">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="SalaryType[]" value="{{item.Type}}"  placeholder="" title="">
+                    </td>
+                    <td>
+                        <!-- <input type="hidden" class="kra-id" value="1"> -->
+                        <input type="text" class="form-control" name="Calculation_Basis_Type[]" id=""  value="{{item.Calculation_Basis_Type}}"  placeholder="" title="">
+                    </td>
+                    <td>
+                        <!-- <input type="hidden" class="kra-id" value="1"> -->
+                        <input type="text" class="form-control" name="Category[]" id=""  value="{{item.Category}}"  placeholder="" title="">
+                    </td>
+                    <td>
+                        <!-- <input type="hidden" class="kra-id" value="1"> -->
+                        <input type="text" class="form-control" name="Formula_Expression[]" id=""  value="{{item.Formula_Expression}}" placeholder="" title="">
+                    </td>
+
+                    <input type="hidden" name="RowID[]" value="{{item.id}}">
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-3">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="reset" class="btn btn-secondary ms-2">Reset</button>
+        </div>
+    </form>
+</div>
+
+<!-- <a class="btn btn-primary btn-sm" id="LockAll">Lock All</a> -->
+
+{% comment %} <a href="#" class="btn btn-sm btn-primary open-lock-modal" data-bs-toggle="modal" data-bs-target="#LockModal">Lock</a>
+ {% endcomment %}
+
+<button class="btn btn-sm btn-primary EditButton" onclick="editKRA(${kra.id})" data-bs-toggle="modal" data-bs-target="#kraModal"><i class="fas fa-edit"></i></button>
+
+<!-- 
+<a href="#" class="btn btn-sm btn-primary open-lock-modal" data-emp="451000395" data-islock="false" data-lockid="0" data-empname="Naveen Singh" data-year="2025" data-month_no="8" data-bs-toggle="modal" data-bs-target="#LockModal">Lock</a> -->
+
+
+<!-- Modal -->
+{% comment %} <div class="modal fade" id="LockModal" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLgLabel">
+          PT Configration
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Main Modal Body -->
+      <div class="modal-body p-0 d-flex flex-column" style="height: 680px;">
+
+
+          <!-- Scrollable Table Section -->
+          <div id="LockModalFormTable" class="flex-grow-1 overflow-auto p-3">
+            <table class="table table-striped table-bordered" id="LockTable">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <!-- Data inserted by JS -->
+              <input type="hidden" id="modal-emp-code">
+              <input type="hidden" id="modal-lockid">
+              <input type="hidden" id="modal-year">
+              <input type="hidden" id="modal-month">
+              <input type="hidden" id="modal-empname">
+              <input type="hidden" id="modal-islock" value="">
+
+              <thead>
+                <tr>
+                  <th width="50">Type</th>
+                  <th width="90">State</th>
+                  <th width="90">Gender</th>
+                  <th width="90">Salary_From</th>
+                  <th width="70">Salary_To</th>
+                  <th width="10">PT_Amount</th>
+                  <th width="10">Last_Month</th>
+                  <th width="10">Last_Month_Value</th>
+                </tr>
+                <tr>
+                  <td width="50">Type</td>
+                  <td width="90">State</td>
+                  <td width="90">Gender</td>
+                  <td width="90">Salary_From</td>
+                  <td width="70">Salary_To</td>
+                  <td width="10">PT_Amount</td>
+                  <td width="10">Last_Month</td>
+                  <td width="10">Last_Month_Value</td>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+
+        <!-- Fixed Footer Buttons (outside scrollable area) -->
+        <div id="Footer-buttons" class="border-top bg-white p-3 d-flex justify-content-between">
+          <div id="lock-buttons">
+            <button type="button" class="btn btn-primary" id="btn-lock" data-type="Lock">Lock</button>
+            <button type="button" class="btn btn-primary" id="btn-save" data-type="Save">Save</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}
+<!-- /Modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="kraModal" tabindex="-1" aria-labelledby="kraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="kraForm">
+            <div class="modal-header">
+                <h5 class="modal-title" id="kraModalLabel">Add / Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="kraId">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label>Type</label>
+                            <input type="text" class="form-control" id="Type" required>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <label>State</label>
+                            <input type="text" class="form-control" id="State" value="">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Gender</label>
+                            <select type="text" class="form-control" id="Gender" required>
+                                <option value="A">All</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Last Month</label>
+                            <input type="number" class="form-control" id="Last_Month" value="">
+
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Last Month Value</label>
+                            <input type="number" class="form-control" id="Last_Month_Value" value="">
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Salary From</label>
+                            <input type="number" class="form-control" id="Salary_From" value="">
+
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Salary To</label>
+                            <input type="number" class="form-control" id="Salary_To" value="">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>PT Amount</label>
+                            <input type="number" class="form-control" id="PT_Amount" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="submit">Save</button>
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+
+
+{% comment %} <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userOrgId = "{{ request.user.profile.OrganizationID }}";
+    const sessionOrgId = "{{ request.session.OrganizationID }}";
+
+    // fetch(`api/organization-list/${userOrgId}/${sessionOrgId}/`)
+    fetch(`api/organization-list/1701/3/`)
+        .then(response => response.json())
+        .then(data => {
+            const ul = document.getElementById("org-list");
+            console.error("Organizations fetched:", data);
+            if (data.length > 0) {
+                data.forEach(org => {
+                    const li = document.createElement("li");
+                    li.textContent = `${org.OrganizationName} (ID: ${org.OrganizationID})`;
+                    ul.appendChild(li);
+                });
+            } else {
+                ul.innerHTML = "<li>No organizations found</li>";
+            }
+        })
+        .catch(error => console.error("Error fetching organizations:", error));
+});
+</script> {% endcomment %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userOrgId = "3";
+    const sessionOrgId = "3";
+    // const userOrgId = "{{ request.user.profile.OrganizationID }}";
+    // const sessionOrgId = "{{ request.session.OrganizationID }}";
+
+    // API call
+    fetch(`/Salary_Structure/api/organization-list/${userOrgId}/${sessionOrgId}/`)
+        .then(response => response.json())
+        .then(data => {
+            console.log("Organizations fetched:", data);
+            const dropdown = document.getElementById("organizationDropdown");
+
+            if (data.length > 0) {
+                data.forEach(org => {
+                    const option = document.createElement("option");
+                    option.value = org.OrganizationID;   // backend ID
+                    option.textContent = org.OrganizationName; // display name
+                    dropdown.appendChild(option);
+                });
+            } else {
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "No organizations found";
+                dropdown.appendChild(option);
+            }
+        })
+        .catch(error => console.error("Error fetching organizations:", error));
+});
+</script>
+
+{% endblock content %}

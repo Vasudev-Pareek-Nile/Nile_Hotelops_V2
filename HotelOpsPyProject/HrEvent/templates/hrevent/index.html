@@ -1,0 +1,416 @@
+{% extends 'hrevent/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script> -->
+<style>
+    #calendar button {
+    text-transform: capitalize ;
+}
+.fc-view-container *, .fc-view-container *:before, .fc-view-container *:after {
+    text-transform: CAPITALIZE;
+}
+
+body{
+    font-family: Arial,nova;
+}
+.popper,
+.tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: #FFC107;
+  color: black;
+  width: 150px;
+  border-radius: 3px;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+  padding: 10px;
+  text-align: center;
+}
+.style5 .tooltip {
+  background: #1E252B;
+  color: #FFFFFF;
+  max-width: 200px;
+  width: auto;
+  font-size: .8rem;
+  padding: .5em 1em;
+}
+.popper .popper__arrow,
+.tooltip .tooltip-arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  position: absolute;
+  margin: 5px;
+}
+
+.tooltip .tooltip-arrow,
+.popper .popper__arrow {
+  border-color: #FFC107;
+}
+.style5 .tooltip .tooltip-arrow {
+  border-color: #1E252B;
+}
+.popper[x-placement^="top"],
+.tooltip[x-placement^="top"] {
+  margin-bottom: 5px;
+}
+.popper[x-placement^="top"] .popper__arrow,
+.tooltip[x-placement^="top"] .tooltip-arrow {
+  border-width: 5px 5px 0 5px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  bottom: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.popper[x-placement^="bottom"],
+.tooltip[x-placement^="bottom"] {
+  margin-top: 5px;
+}
+.tooltip[x-placement^="bottom"] .tooltip-arrow,
+.popper[x-placement^="bottom"] .popper__arrow {
+  border-width: 0 5px 5px 5px;
+  border-left-color: transparent;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  top: -5px;
+  left: calc(50% - 5px);
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.tooltip[x-placement^="right"],
+.popper[x-placement^="right"] {
+  margin-left: 5px;
+}
+.popper[x-placement^="right"] .popper__arrow,
+.tooltip[x-placement^="right"] .tooltip-arrow {
+  border-width: 5px 5px 5px 0;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  left: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+.popper[x-placement^="left"],
+.tooltip[x-placement^="left"] {
+  margin-right: 5px;
+}
+.popper[x-placement^="left"] .popper__arrow,
+.tooltip[x-placement^="left"] .tooltip-arrow {
+  border-width: 5px 0 5px 5px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  right: -5px;
+  top: calc(50% - 5px);
+  margin-left: 0;
+  margin-right: 0;
+}
+
+</style>
+<form method="get">
+  <div class="row">
+    <div class="col">
+      <select name="I" class="form-control">
+        {% for itm in memOrg %}
+          <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+            {{ itm.Organization_name }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+</form>
+<br>
+
+    <div class="row" style="font-family: Arial, Helvetica, sans-serif;">
+        <div class="col-md-9"> <span onclick="ShowAddNew()" class="btn btn-primary">Add New Hr Event</span>
+            <span class="btn btn-success" onclick="javascript:window.print()"><i class="fa fa-print"></i></span>
+            <br>
+            <br>  
+              <div id='calendar'>
+                </div> </div>
+                <div class="col-md-3" style="margin-top: 130px;">
+          
+                  <div class="card"  >
+                      <div class="card-header">
+                     Events
+                      </div>
+                      <ul  class="list-group list-group-flush" id="event-listing">
+                         
+                          
+                  
+                      </ul>
+                    </div>
+
+                            
+        </div>
+    </div>
+    
+
+<div class="modal" id="addNewEvntModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Event</h5>
+          <button id="closeButton" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        
+        </div>
+        <div class="modal-body">
+         <div class="row">
+          <label class="col-sm-4 control-label">Organization Name:</label>
+          <div class="col-sm-8">
+            <select id="organizationSelect" class="form-control">
+              {% for itm in memOrg %}
+              <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+              {% endfor %}
+           </select>
+           
+          
+          </div>
+          <br>
+            <label class="col-sm-4 control-label">Event Title :</label>
+            <div class="col-sm-8">
+                <textarea id="title" class="form-control"  maxlength="250"></textarea>
+                <input id="id" value="0" type="hidden" class="form-control" />
+            </div>
+            <br>
+            <br><br>            
+            <label class="col-sm-4 control-label">Start Date :</label>
+            <div class="col-sm-8">
+                <input type="text" id="start" value="" class="form-control datepicker">
+                
+            </div>
+            <br><br>
+            <label class="col-sm-4 control-label">End Date :</label>
+            <div class="col-sm-8">
+                <input type="text" id="end" value="" class="form-control datepicker">
+                
+            </div>
+            
+            
+           
+             
+        
+            </div>
+         </div>
+       
+        <div class="modal-footer">
+          <button type="button" onclick="DeleteEvent()" class="btn btn-danger float-left">Delete</button>
+          <button type="button" onclick="AddNewEvent()" class="btn btn-primary">Submit</button>
+          <button id="closeBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+</div>  
+</div>
+  </div>
+
+        
+<script>
+  var calendar;
+  var eventListing = $('#event-listing');
+  var data; // Store the event data
+
+function loadAndDisplayEvents(selectedValue, initialLoad = false) {
+  // Make an AJAX request to fetch events based on the selected value
+  $.ajax({
+    type: 'GET',
+    url: 'all_events',
+    data: { I: selectedValue },
+    success: function (eventsData) {
+      data = eventsData; // Store the event data
+     
+      calendar.fullCalendar('removeEvents');
+      calendar.fullCalendar('addEventSource', eventsData);
+      updateEventListing(eventsData, moment());
+     
+    },
+    error: function () {  
+      alert('Error loading data.');
+    }
+  });
+}
+
+
+function updateEventListing(data, startDate) {
+  eventListing.empty();
+
+  var eventsForSelectedMonth = data.filter(function (event) {
+    var eventMonth = moment(event.start).format('MM');
+    var eventYear = moment(event.start).format('YYYY');
+
+    return (
+      startDate === undefined ||
+      (eventMonth === startDate.format('MM') && eventYear === startDate.format('YYYY'))
+    );
+  });
+
+  if (eventsForSelectedMonth.length === 0) {
+    eventListing.append('<li class="list-group-item">No Events for this month</li>');
+  } else {
+    eventsForSelectedMonth.forEach(function (event) {
+      var formattedStartDate = moment(event.start).format('DD-MM-YYYY');
+      var formattedEndDate = moment(event.end).format('DD-MM-YYYY');
+
+      eventListing.append(
+        '<li class="list-group-item lst" style="text-transform: capitalize;">' +
+        'Event Name: ' + event.title + '<br>' +
+        'Start Date: ' + formattedStartDate + '<br>' +  'End Date: ' + formattedEndDate + '</li>'
+      );
+    });
+  }
+}
+  function DeleteEvent() {
+    var id = $("#addNewEvntModal #id").val();
+    if (confirm("Are you sure you want to remove it?")) {
+      $.ajax({
+        type: "GET",
+        url: 'remove',
+        data: { 'id': id },
+        dataType: "json",
+        success: function (responseData) {
+          location.reload();
+          alert('Event Removed');
+          $("#addNewEvntModal").modal('hide');
+        },
+        error: function (responseData) {
+          alert('There is a problem!!!');
+        }
+      });
+    }
+  }
+
+  function ShowAddNew() {
+    $("#addNewEvntModal").modal('show');
+    $("#organizationSelect").val($('select[name="I"]').val());
+    $('.datepicker').datepicker({ dateFormat: "dd-mm-yy", changeMonth: true, changeYear: true });
+  }
+
+  function AddNewEvent() {
+    var title = $("#addNewEvntModal #title").val();
+    var start = $("#addNewEvntModal #start").val();
+    var end = $("#addNewEvntModal #end").val();
+
+    var id = $("#addNewEvntModal #id").val();
+    var orgid = $("#addNewEvntModal #organizationSelect").val();
+
+    $.ajax({
+      type: "GET",
+      url: 'add_event',
+      data: {
+        'title': title,
+        'start': start,
+        'end':end,
+        'id': id,
+        'orgid': orgid
+      },
+      dataType: "json",
+      success: function (responseData) {
+        if ('error' in responseData) {
+          alert(responseData.error);
+        } else {
+          location.reload();
+          if (id == 0) {
+            $("#addNewEvntModal").modal('hide');
+            alert("Added Successfully");
+          } else {
+            $("#addNewEvntModal").modal('hide');
+            alert("Edit Successfully");
+          }
+        }
+      },
+      error: function (responseData) {
+        alert('There is a problem!!!');
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    calendar = $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      firstDay: 1,
+      events: 'all_events',
+      eventClick: function (event) {
+        $("#addNewEvntModal").modal('show');
+        $("#addNewEvntModal #title").val(event.title);
+        var start = event.start;
+        if (event.end==undefined || event.end==null)
+        {
+          event.end=event.start;
+        }
+        var end = event.end;
+
+        var OrganizationID = event.OrganizationID;
+        start = moment(start).format('DD-MM-YYYY');
+        end = moment(end).format('DD-MM-YYYY');
+        $("#addNewEvntModal #start").val(start);
+        $("#addNewEvntModal #end").val(end);
+
+        $("#addNewEvntModal #id").val(event.id);
+
+        var organizationSelect = $("#addNewEvntModal #organizationSelect");
+        organizationSelect.val(OrganizationID);
+
+        organizationSelect.find('option[value="' + OrganizationID + '"]').prop('selected', true);
+        organizationSelect.prop('disabled', true);
+
+        $('.datepicker').datepicker({ dateFormat: "dd-mm-yy", changeMonth: true, changeYear: true });
+      },
+      eventDidMount: function (info) {
+        var tooltip = tippy('.fc-title', {
+          content: event,
+          placement: 'top',
+          interactive: true,
+        });
+      },
+      viewSkeletonRender: function (info) {
+        updateEventListing(data, info.view.currentStart);
+      }
+    });
+
+    $('#closeBtn, #closeButton').click(function () {
+      location.reload();
+    });
+
+    $('select[name="I"]').on('change', function () {
+      loadAndDisplayEvents($(this).val());calendar.fullCalendar('today');
+    });
+
+    loadAndDisplayEvents($('select[name="I"]').val(), true); // Set initialLoad to true
+  
+
+    $("#calendar .fc-button-group button").click(function () {
+      var selectedMonth = calendar.fullCalendar('getDate').format('MM');
+      var selectedYear = calendar.fullCalendar('getDate').format('YYYY');
+      var startDate = moment(calendar.fullCalendar('getDate').startOf('month'));
+    
+      updateEventListing(data, startDate);
+    });
+  });
+</script>
+
+{% endblock content %}
+
+
+
+

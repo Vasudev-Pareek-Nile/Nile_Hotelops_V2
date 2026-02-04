@@ -1,0 +1,585 @@
+{% extends 'letter/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<style>
+    .trTotal {
+        font-weight: bold;
+        background-color: #f7f7f7;
+    }
+
+    
+    form p {
+        display: inline-block;
+        width: 30%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+  {
+      visibility: hidden;
+  }
+ </style>
+
+ <form action="" method="post">
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">New Employee Letter of Intent</div>
+    <div class="card-body">
+        <div class="col-md-12">
+            <div class="row mt-2">
+                <!-- Employee Name -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                      
+                        <label for="prefix">Prefix</label>
+                        <input type="text" class="form-control" name="prefix" id="prefix" value="{{ IntentObj.prefix }}" readonly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="emp_name">Employee Name</label>
+                        <input type="text" class="form-control" name="emp_name" id="emp_name" value="{{ IntentObj.emp_name }}" required readonly>
+                    </div>
+                </div>
+        
+                <!-- Date of Intent -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="date_of_intent">Date of Issuse</label>
+                        <input type="date" class="form-control" name="date_of_intent" id="date_of_intent" value="{% if IntentObj.date_of_intent %}{{ IntentObj.date_of_intent|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" required>
+                    </div>
+                </div>
+        
+                <!-- Date of Joining -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="date_of_joining">Date of Joining</label>
+                        <input type="date" class="form-control" name="date_of_joining" id="date_of_joining" value="{{ IntentObj.date_of_joining|date:'Y-m-d' }}" required>
+                    </div>
+                </div>
+        
+                <!-- Department -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" class="form-control" name="department" id="department" value="{{ IntentObj.department }}" required readonly>
+                    </div>
+                </div>
+        
+                <!-- Designation -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="designation">Designation</label>
+                        <input type="text" class="form-control" name="designation" id="designation" value="{{ IntentObj.designation }}" required readonly>
+                    </div>
+                </div>
+        
+                <!-- CTC -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="ctc">CTC</label>
+                        <input type="number" class="form-control" name="ctc" id="ctc" value="{{ IntentObj.ctc }}" required>
+                    </div>
+                </div>
+        
+                <!-- Address -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" name="address" id="address" rows="1" required>{{ IntentObj.address }}</textarea>
+                    </div>
+                </div>
+        
+                <!-- Visible Salary Breakup -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="visible_salary_breakup">Visible Salary Breakup</label>
+                        <select class="form-control" name="visible_salary_breakup" id="visible_salary_breakup" required>
+                            <option value="Yes" {% if IntentObj.visible_salary_breakup == "Yes" %} selected {% endif %}>Yes</option>
+                            <option value="No" {% if IntentObj.visible_salary_breakup == "No" %} selected {% endif %}>No</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="visible_ctc">Visible CTC</label>
+                        <select class="form-control" name="visible_ctc" id="visible_ctc" required>
+                            <option value="Yes" {% if IntentObj.visible_ctc == "Yes" %} selected {% endif %}>Yes</option>
+                            <option value="No" {% if IntentObj.visible_ctc == "No" %} selected {% endif %}>No</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Issuing Manager Name -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Issuing_designation">Issuing Designation</label>
+                        <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                            <option value="">Select</option>
+                            {% for ManagerName in ManagerNames %}
+                                <option value="{{ ManagerName.designations }}" {% if IntentObj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                    {{ ManagerName.designations }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+        
+                <!-- Issuing Manager Name -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Issuing_manager_name">Issuing Manager Name</label>
+                        <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ IntentObj.Issuing_manager_name }}" required readonly>
+                    </div>
+                </div>
+
+                <!-- Reporting To designation -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Issuing_designation">Reporting Manager</label>
+                        <select class="form-control" name="Reporting_Manager" id="Reporting_Manager" required>
+                            <option value="">Select</option>
+                            {% for ManagerName in ManagerNames %}
+                                <option value="{{ ManagerName.designations }}" {% if IntentObj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                    {{ ManagerName.designations }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+            
+<div class="card"> 
+    <div class="card-body"> 
+                <table class="table table-bordered m-3">
+                    <thead>
+                        <tr>
+                            <th>Components</th>
+                            <th>Per Month</th>
+                            <th>Per Annum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="salaryTable">
+                        {% for SalaryTitle in SalaryTitles %}
+                        <tr>
+                            <td>
+                                {% if SalaryTitle.IsBold %}
+                                <span style="font-weight: bold;">
+                                    {{SalaryTitle.Title}}
+                                </span>
+                                {% else %}
+                                <span>
+                                    {{SalaryTitle.Title}} 
+                                </span>
+                                {% endif %}
+                                <input type="hidden" name="TitleID_{{forloop.counter0}}" value="{{SalaryTitle.id}}">
+                            </td>
+                            <td>
+                                <!-- or SalaryTitle.Title == "Employee PF @12% (Basic)"  or SalaryTitle.Title == "ESIC @ 0.75%"  or SalaryTitle.Title == "Company Contribution to ESIC @ 3.25%"
+                                  -->
+                                {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)"  or SalaryTitle.Title == "CTC (A+C)"     %}
+                                <input type="number" name="Permonth_{{forloop.counter0}}" 
+                                value="{{SalaryTitle.Permonth}}" 
+                                class="form-control perm-month"
+                                data-index="{{forloop.counter0}}"
+                                data-Title-Permonth ="{{SalaryTitle.Title}}_Permonth" 
+                              
+                             
+                                readonly>
+                                {% else %}
+                                <input type="number" name="Permonth_{{forloop.counter0}}" 
+                                value="{{SalaryTitle.Permonth}}" 
+                                class="form-control perm-month"
+                                data-index="{{forloop.counter0}}"
+                                data-type="{{SalaryTitle.Type}}"
+                                data-Title-Permonth = "{{SalaryTitle.Title}}_Permonth"
+        
+                              
+        
+                                >
+                                {% endif %}
+                            </td>
+                            <td>
+                                <input type="number" name="Perannum_{{forloop.counter0}}" 
+                                       value="{{SalaryTitle.Perannum}}" 
+                                       class="form-control per-annum"
+                                       data-Title-Perannum="{{SalaryTitle.Title}}_Perannum"  
+                                     
+                                       readonly>
+                            </td>
+                        </tr>
+                        {% if forloop.last %}
+                        <input type="hidden" name="Total_Title" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+              
+                {% comment %} <div class="col-md-4">
+                    <div class="form-group">
+                       <label style="font-weight: bold;" for="Reissue">Re-Issue Letter</label>
+            <input type="checkbox"  name="Reissue" id="Reissue" value="Yes"   {% if IntentObj.Reissue %}checked {% endif %} >
+       
+                    </div>
+                </div>  {% endcomment %}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label style="font-weight: bold;" for="Reissue">Re-Issue Letter</label>
+                        <input
+                            type="checkbox"
+                            name="Reissue"
+                            id="Reissue"
+                            value="Yes"
+                            {% if IntentObj.Reissue %}checked{% endif %}
+                        >
+                    </div>
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const reissueCheckbox = document.getElementById('Reissue');
+                        const dateInput = document.getElementById('date_of_intent');
+                
+                        reissueCheckbox.addEventListener('change', function () {
+                            if (this.checked) {
+                                const today = new Date();
+                                const yyyy = today.getFullYear();
+                                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                                const dd = String(today.getDate()).padStart(2, '0');
+                                dateInput.value = `${yyyy}-${mm}-${dd}`;
+                            }
+                        });
+                    });
+                </script>
+              
+        
+                    
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        function updatePerAnnum() {
+                            let grossPerMonth = 0;
+                            let grossPerAnnum = 0;
+                            let deductionsPerMonth = 0;
+                            let deductionsPerAnnum = 0;
+                            let contributionPerMonth = 0;
+                            let contributionPerAnnum = 0;
+                
+                            document.querySelectorAll('.perm-month').forEach(function(element) {
+                                let index = element.getAttribute('data-index');
+                                let type = element.getAttribute('data-type');
+                                let permMonth = parseFloat(element.value) || 0;
+                                let perAnnum = permMonth * 12;
+                                document.querySelector(`input[name="Perannum_${index}"]`).value = perAnnum.toFixed(2);
+                
+                                if (type === 'A') {
+                                    grossPerMonth += permMonth;
+                                    grossPerAnnum += perAnnum;
+                                } else if (type === 'B') {
+                                    deductionsPerMonth += permMonth;
+                                    deductionsPerAnnum += perAnnum;
+                                } else if (type === 'C') {
+                                    contributionPerMonth += permMonth;
+                                    contributionPerAnnum += perAnnum;
+                                }
+                            });
+                
+                            // Update Gross
+                            document.querySelector('input[data-title-permonth="Gross (A)_Permonth"]').value = grossPerMonth.toFixed(2);
+                            document.querySelector('input[data-title-perannum="Gross (A)_Perannum"]').value = grossPerAnnum.toFixed(2);
+                
+                            // Update Employee Deductions
+                            document.querySelector('input[data-title-permonth="Total Employee Deduction (B)_Permonth"]').value = deductionsPerMonth.toFixed(2);
+                            document.querySelector('input[data-title-perannum="Total Employee Deduction (B)_Perannum"]').value = deductionsPerAnnum.toFixed(2);
+                
+                            // Update Company Contributions
+                            document.querySelector('input[data-title-permonth="Total Company Contribution (C)_Permonth"]').value = contributionPerMonth.toFixed(2);
+                            document.querySelector('input[data-title-perannum="Total Company Contribution (C)_Perannum"]').value = contributionPerAnnum.toFixed(2);
+                
+                         
+                            // Update CTC
+                          
+                            let ctcPerMonth = grossPerMonth + contributionPerMonth;
+                            let ctcPerAnnum = grossPerAnnum + contributionPerAnnum;
+                            document.querySelector('input[data-title-permonth="CTC (A+C)_Permonth"]').value = ctcPerMonth.toFixed(2);
+                            document.querySelector('input[data-title-perannum="CTC (A+C)_Perannum"]').value = ctcPerAnnum.toFixed(2);
+
+                            
+
+                        }
+                
+                        // Add event listeners for the input elements
+                        document.querySelectorAll('.perm-month').forEach(function(element) {
+                            element.addEventListener('input', updatePerAnnum);
+                        });
+                
+                        // Initial calculation on page load
+                        updatePerAnnum();
+                    });
+                </script>
+
+
+            <div class="card-footer text-right">
+                <input type="submit" name="BtnValue" class="btn btn-primary btn-sm" value="Save">
+                <input type="submit" name="BtnValue" class="btn btn-primary btn-sm"  value="Save and Send Email">
+                {%  csrf_token %}
+            </div>
+    </div>
+</div>
+
+{% comment %} 
+<div class="modal" id="approveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #1ab394;color: white; border-radius: 0;">
+                <h5 class="modal-title">Send Letter of Intent To Candidate</h5>
+                <button type="button" class="close" id="closeApprove">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="userDetailsForm">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input type="text" class="form-control" id="userName" placeholder="Enter name" >
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="Enter email" >
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="userPhone" placeholder="Enter phone number" >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- Preview button dynamically gets the PreviewID from the modal data -->
+                <a href="" id="previewButton" class="btn btn-primary btn-sm">Preview</a>
+                <button type="button" class="btn btn-secondary btn-sm" id="closeApproveFooter">Close</button>
+                <button type="button" class="btn btn-success btn-sm" id="submitUserDetails">send</button>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+<!-- Modal Content -->
+<div class="modal" id="approveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #1ab394;color: white; border-radius: 0;">
+                <h5 class="modal-title">Send Letter of Intent To Candidate</h5>
+               
+            </div>
+            <div class="modal-body">
+                <form id="userDetailsForm">
+                    <div class="form-group">
+                        <label for="userName">Name</label>
+                        <input type="text" class="form-control" id="userName" placeholder="Enter name" >
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="Enter email" >
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number</label>
+                        <input type="tel" class="form-control" id="userPhone" placeholder="Enter phone number" >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="" id="previewButton" target="_blank" class="btn btn-primary btn-sm">Preview</a>
+                
+                <a href="{% url 'InterviewAssessmentList' %}"  class="btn btn-secondary btn-sm">Close</a>
+
+               
+
+                <button type="submit" class="btn btn-success btn-sm" id="submitUserDetails">
+                    <span class="spinner-border spinner-border-sm d-none" id="sendLoader" role="status" aria-hidden="true"></span>
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery Script -->
+<script>
+    $(document).ready(function() {
+        
+
+        $("#submitUserDetails").on("click", function() {
+            $("#sendLoader").removeClass("d-none");
+            $(this).prop("disabled", true);
+
+            setTimeout(function() {
+                $("#sendLoader").addClass("d-none");
+                $("#submitUserDetails").prop("disabled", false);
+            }, 2000);
+        });
+    });
+</script>
+
+
+<script>
+    function updateManagerName() {
+        const select = document.getElementById("Issuing_designation");
+        const selectedOption = select.options[select.selectedIndex];
+        const fullName = selectedOption.getAttribute("data-fullname");
+        document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateManagerName();
+    });
+
+    document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+
+{% comment %} 
+<script>
+    $(document).ready(function() {
+        let candidatedata = {{ candidatedata|default:"null" | safe }};
+
+        // Populate the modal fields if candidatedata is available
+        if (candidatedata) {
+            $('#userName').val(candidatedata.Name);
+            $('#userEmail').val(candidatedata.Email);
+            $('#userPhone').val(candidatedata.ContactNumber);
+
+            let previewId = candidatedata.PreviewID;
+            let LOID = candidatedata.LOID;
+
+            $('#previewButton').attr('href', "{% url 'generate_letter_of_intent' %}?InterviewID=" + previewId)+'&LOID='+LOID;
+
+            $('#approveModal').modal('show');
+        }
+
+        $('#approveModal').on('show.bs.modal', function() {
+            $('#date_of_intent').val("{{ IntentObj.date_of_intent|date:'Y-m-d' }}");
+            $('#date_of_joining').val("{{ IntentObj.date_of_joining|date:'Y-m-d' }}");
+        });
+
+        function resetModal() {
+            $('#approveModal').modal('hide');
+            $('#date_of_intent').val("{{ IntentObj.date_of_intent|date:'Y-m-d' }}");
+            $('#date_of_joining').val("{{ IntentObj.date_of_joining|date:'Y-m-d' }}");
+        }
+
+        $('#closeApprove, #closeApproveFooter').on('click', resetModal);
+
+        $('#submitUserDetails').on('click', function() {
+            let name = $('#userName').val().trim();
+            let email = $('#userEmail').val().trim();
+            let phone = $('#userPhone').val().trim();
+            let previewId = candidatedata ? candidatedata.PreviewID : null; 
+            let LOID = candidatedata ? candidatedata.LOID : null; 
+
+        
+            if (name && email && phone) {
+                $.ajax({
+                    url: "{% url 'SendMailToCandidate' %}", 
+                    type: 'POST',
+                    data: {
+                        'name': name,
+                        'email': email,
+                        'phone': phone,
+                        'previewId': previewId,
+                        'LOID': LOID,
+
+                        'csrfmiddlewaretoken': '{{ csrf_token }}' 
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'InterviewAssessmentList' %}"; 
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred: " + (xhr.responseJSON?.error || error));
+                    }
+                });
+            } else {
+                alert("Please fill all fields.");
+            }
+        });
+    });
+</script> {% endcomment %}
+<script>
+    $(document).ready(function() {
+        let candidatedata = {{ candidatedata|default:"null" | safe }};
+
+        // Populate the modal fields if candidatedata is available
+        if (candidatedata) {
+            $('#userName').val(candidatedata.Name);
+            $('#userEmail').val(candidatedata.Email);
+            $('#userPhone').val(candidatedata.ContactNumber);
+
+            let previewId = candidatedata.PreviewID;
+            let LOID = candidatedata.LOID;
+
+            // Properly construct the URL for the previewButton
+            $('#previewButton').attr('href', "{% url 'generate_letter_of_intent' %}?InterviewID=" + previewId + '&LOID=' + LOID);
+
+            $('#approveModal').modal('show');
+        }
+
+        $('#approveModal').on('show.bs.modal', function() {
+            $('#date_of_intent').val("{{ IntentObj.date_of_intent|date:'Y-m-d' }}");
+            $('#date_of_joining').val("{{ IntentObj.date_of_joining|date:'Y-m-d' }}");
+        });
+
+        function resetModal() {
+            $('#approveModal').modal('hide');
+            $('#date_of_intent').val("{{ IntentObj.date_of_intent|date:'Y-m-d' }}");
+            $('#date_of_joining').val("{{ IntentObj.date_of_joining|date:'Y-m-d' }}");
+        }
+
+        $('#closeApprove, #closeApproveFooter').on('click', resetModal);
+
+        $('#submitUserDetails').on('click', function() {
+            let name = $('#userName').val().trim();
+            let email = $('#userEmail').val().trim();
+            let phone = $('#userPhone').val().trim();
+            let previewId = candidatedata ? candidatedata.PreviewID : null; 
+            let LOID = candidatedata ? candidatedata.LOID : null; 
+
+            if (name && email && phone) {
+                $.ajax({
+                    url: "{% url 'SendMailToCandidate' %}", 
+                    type: 'POST',
+                    data: {
+                        'name': name,
+                        'email': email,
+                        'phone': phone,
+                        'previewId': previewId,
+                        'LOID': LOID,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}' 
+                    },
+                    success: function(response) {
+                        window.location.href = "{% url 'InterviewAssessmentList' %}"; 
+                    },
+                    error: function(xhr, status, error) {
+                        alert("An error occurred: " + (xhr.responseJSON?.error || error));
+                    }
+                });
+            } else {
+                alert("Please fill all fields.");
+            }
+        });
+    });
+</script>
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock content %}

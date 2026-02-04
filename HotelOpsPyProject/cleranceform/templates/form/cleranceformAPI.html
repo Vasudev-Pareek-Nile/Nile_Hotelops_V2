@@ -1,0 +1,223 @@
+{% extends 'form/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="http://127.0.0.1:8000//cleranceform/cleranceform"  enctype="multipart/form-data">
+    {{ clearnce_form }}
+    {% comment %} {% csrf_token %} {% endcomment %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In Clerance Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+          
+          <div class="">
+            <Div class="row">
+              <div class="col-sm-3">
+                <label>Employee Code</label>
+                {% render_field ClearanceForm.EmpCode class="form-control" placeholder="Code"  %}
+              </div> 
+            </Div>
+            <div class="row">
+             
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field ClearanceForm.Name class="form-control" placeholder="Name"  %}
+              </div>
+              <div class="col-sm-3">
+                <label>Separation Date</label>
+                {% render_field ClearanceForm.Separation_Date class="form-control" placeholder="Separation_Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Position</label>
+                {% render_field ClearanceForm.Position class="form-control" placeholder="Position" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Finishing Time</label>
+                {% render_field ClearanceForm.Finishing_Time class="form-control" placeholder="Finishing_Time" %}
+              </div>
+
+            </div>
+<br/>
+            <div class='row'>
+                <div class="col-sm-12">
+                    <br>
+                    <b>YOUR FINAL PAY CANNOT BE CLEARED WITHOUT THE FOLLOWING ITEMS HAVING BEEN
+                        RETURNED AND THIS FORM COMPLETED AND APPROVED</b>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Resignation letter</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Resignation_Letter  rows=2 placeholder="Resignation_Letter" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Acc Of Resign</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Acc_Of_Resign  rows=2 placeholder="Acc_Of_Resign" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Notice Period Served</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Notice_Period_Served  rows=2 placeholder="Notice_Period_Served" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Notice Period Waived Off</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Notice_Period_Waived_Off  rows=2 placeholder="Notice_Period_Waived_Off" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Exit Interview By Hr</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Exit_Interview_By_Hr  rows=2 placeholder="Exit_Interview_By_Hr" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Full And Final Settlement</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Full_And_Final_Settlement  rows=2 placeholder="Full_And_Final_Settlement" %}
+                            </td>
+                        </tr>
+
+                
+
+                    </table>
+                    <div class='row'>
+                        <div class="col-sm-12">
+                            <br>
+                            <b>Return of Hotel Property</b>
+                        </br>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                      
+
+                      {% for i in DbItemMaster %}
+                            <tr>
+                              <td>{{i.ItemTitle}}</td>
+                              <td class="rb">
+                                <input type="hidden"  rows=2 value="{{i.id}}" name="ItemID_{{ forloop.counter0 }}" >
+                                <input type="text"  rows=2 name="ReturnedTo_{{ forloop.counter0 }}" >
+                              </td>
+                              <td>{{i.Department}}</td>
+                              <td>
+                                <input type="text"  rows=2 name="ReceivedBy_{{ forloop.counter0 }}" >
+                                {% if forloop.last %}
+                                <input type="hidden"  rows=2 value="{{forloop.counter }}" name="TotalItem" >
+                                {% endif %}
+                              </td>
+                            </tr>
+                           
+                      {% endfor %}
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+
+  <script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = window.location.search.substring(1),
+          sURLVariables = sPageURL.split('&'),
+          sParameterName,
+          i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+              return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          }
+      }
+      return false;
+  };
+
+  var BindEmpDetails = function () {
+    debugger;
+            var EmpCode = $("[name='EmpCode']").val();
+    var O=$("[name='OrganizationID']").val();
+            $("[name='Name']").val('')
+            $("[name='Position']").val('')
+            $("[name='Department']").val('')
+            $("[name='DOJ']").val('')
+            $.ajax({
+                type: "GET",
+                url: "https://hotelops.in/API/UserAPI/HREmployeeDataEmpCodeSelect?EmpCode=" + EmpCode + "&O="+O+"",
+                //data: '{name: "' + $("#txtName").val() + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    try {
+                        var a = JSON.parse(response);
+                        if (a != undefined && a != name && a.length > 0) {
+                            $("[name='Name']").val(a[0].EmpName)
+                            $("[name='Position']").val(a[0].Designation)
+                            $("[name='Dept']").val(a[0].Department)
+    var now = new Date(a[0].DateofJoining);
+    
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    
+    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+    
+    
+    $("[name='DOJ']").val(today)
+                           
+                        }
+                        else {
+                            alert("No Employee Data found in HR Module.Make sure employee code match with HR Module data");
+                        }
+                    } catch { }
+                }
+            });
+        }
+    
+    $(function(){
+            $("input[type='radio']").each(function(){
+                    if($(this).val()==""){
+                            $(this).parent().remove()
+
+                    }
+
+            })
+            if(getUrlParameter("EC")!=undefined){
+              $("[name='EmpCode']").val(getUrlParameter("EC"))
+              BindEmpDetails();
+
+            }
+
+
+
+    })
+  </script>
+  {% comment %} {% include "apps/footer.html" %} {% endcomment %}
+  {% endblock content %}

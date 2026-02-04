@@ -1,0 +1,370 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+ <style>
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+  .actions {
+    margin-left: 10px;
+  }
+  .actions a {
+    margin-right: 5px;
+    text-decoration: none;
+    color: blue;
+  }
+  .actions a:hover {
+    text-decoration: underline;
+  }
+  .custom-card {
+    width: 98%;
+    margin: auto;
+  }
+  .modal-dialog {
+    width: 72%;
+    max-width: 72%;
+    min-width: 720px;
+  }
+  th, td {
+    font-size: 13px;
+    font-family: 'Arial Nova', Arial, sans-serif;
+    border: 1px solid #ddd;
+  }
+  
+  th {
+    text-align: center;
+    font-size: 13px;
+  }
+  tr th {
+    background: #fae0cc !important;
+    /* color: #fff !important; */
+    border-color: #bdac9f !important;
+    text-transform:uppercase !important;
+}
+</style> 
+
+<style>
+  body{
+    font-size: 14px  !important;
+    font-family: 'Arial Nova', Arial, sans-serif !important;
+}
+
+h4{
+  font-size:16px;
+}
+
+.btn{
+  border-radius:4px;
+}
+
+.card{
+  border-radius:10px;
+}
+.card .card-header {
+    padding: 20px;
+    padding-bottom:0px;
+    {% comment %} border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important; {% endcomment %}
+    background: transparent;
+}
+
+.settings-icon span {
+    float: right;
+  }
+
+    th, td {
+
+    border: 1px solid #ddd;
+  }
+tr th {
+    background-color: #edf0fb !important;
+    border-color: #D3D3D4 !important;
+    color: #fff !important;
+    font-weight: bold;
+    font-size:14px;
+    text-transform: uppercase;
+}
+th.sorting, th, th.sorting_asc {
+    background: #edf0fb !important;
+}
+
+  td {        
+      background-color: #f7f9fc !important;
+  }
+  
+        table thead th {
+            background: #edf0fb  !important;
+          }
+
+     table {
+       border-radius: 5px;
+       overflow: hidden;
+   }
+
+   table thead tr:first-child th:first-child {
+           border-top-left-radius: 4px;
+   }
+
+   table thead tr:first-child th:last-child {
+           border-top-right-radius: 4px;
+   }
+
+   table tbody tr:last-child td:first-child {
+           border-bottom-left-radius: 4px;
+   }
+
+   table tbody tr:last-child td:last-child {
+           border-bottom-right-radius: 4px;
+   }
+   
+
+div.dataTables_wrapper div.dataTables_length select {
+    border-radius: 4px !important;
+} 
+
+.select2-container--default .select2-selection--multiple {  
+    padding-bottom: 12px;
+}
+
+#myTable tr td:nth-child(6),#myTable tr td:nth-child(7),#myTable tr td:nth-child(8){
+  text-align:center;
+}
+.select2-dropdown {
+    z-index: 999;
+  }
+
+  .page-item:first-child .page-link {
+    padding: 10px;
+}
+.page-item:last-child .page-link {
+  padding: 10px;
+}
+
+.select2-container {
+    display: block ;
+   }
+.select2-container--default .select2-selection--multiple {
+    padding-bottom: 10px !important;
+}
+.filter-box{
+    margin-left: -16px;
+}
+    .table th {
+        padding: 0.5rem 0.25rem !important;
+        background-color: aliceblue !important;
+        color: #076e00 !important;
+    }
+    .table td {
+        padding: 5px 5px !important;
+        font-size: 13px !important;
+    }
+</style>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-header">
+          <span class="fw-bold text-uppercase">Level Wise Report</span>
+      </div>
+      <div class="card-body">
+        <form method="get_item" class="mb-0">
+            <div class="row ">
+                <div class="col-md-4">
+                  <div class="input-block">
+                    <select name="hotel_name" id="hotel_name" class="form-control select2">
+                      {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                          {{ itm.Organization_name }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-3 filter-box">
+                  <div class="input-block">
+                    {% comment %} <label for="department_select">Department</label> {% endcomment %}
+                    <select class="form-control select" multiple="multiple" id="department_select" name="Department">
+                      <option value="All_Department" {% if 'All_Department' in selected_departments %}selected{% endif %}>
+                          All Departments
+                      </option>
+                      {% for department in Departmentsfilter %}
+                          <option value="{{ department.DepartmentName }}" {% if department.DepartmentName in selected_departments %}selected{% endif %}>
+                              {{ department.DepartmentName }}
+                          </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col-md-3 filter-box">
+                  <div class="input-block">
+                    <select class="form-control select" multiple="multiple" id="level_select" name="Level">
+                      <option value="All_Level" {% if 'All_Level' in selected_levels %}selected{% endif %}>All Level</option>
+                      {% for levelfilter in levelfilters %}
+                        <option value="{{ levelfilter.lavelname }}" {% if levelfilter.lavelname in selected_levels %}selected{% endif %}>
+                          {{ levelfilter.lavelname }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              
+                <div class="col-md-2 filter-box">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a class="btn btn-secondary" id="exportBtn"  href="{% url 'LevelWisePdf' %}?hotel_name={{ selectedOrganizationID }}&Department={{ selected_departments|join:"," }}&Level={{ selected_levels|join:"," }}">Export</a>
+                </div>
+              </div>
+        </form>
+
+          {% comment %} <div class='table-responsive'> {% endcomment %}
+          <table class="table" id="myTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>LEVEL</th>
+                <th>DIVISION</th>
+                <th>DEPARTMENT</th>
+                <th>DESIGNATION</th>
+                <th>HC</th>
+                <th>AVG SAL</th>
+                <th>TOTAL SAL</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{ row.Level }}</td>
+                    <td>{{ row.Department }}</td>
+                    <td>{{ row.Department }}</td>
+                    <td>{{ row.Designation }}</td>
+                    <td>{{ row.num_employees }}</td>
+                    <td>{{ row.avg_salary|formatingdata }}</td>
+                    <td>{{ row.total_salary|formatingdata }}</td>
+                  </tr>
+                {% endfor %}
+                {% comment %} {% empty %}
+                  <tr><td colspan="7">No data available</td></tr>
+                {% endif %} {% endcomment %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+<div>
+
+<script>
+$(document).ready(function () {
+
+    $('#department_select').on('change', function () {
+        let selected = $(this).val() || [];
+
+        // If specific department selected, remove All_Department
+        if (selected.includes('All_Department') && selected.length > 1) {
+            selected = selected.filter(v => v !== 'All_Department');
+            $(this).val(selected).trigger('change.select2');
+        }
+    });
+
+    $('#level_select').on('change', function () {
+        let selected = $(this).val() || [];
+
+        // If specific department selected, remove All_Department
+        if (selected.includes('All_Level') && selected.length > 1) {
+            selected = selected.filter(v => v !== 'All_Level');
+            $(this).val(selected).trigger('change.select2');
+        }
+    });
+
+});
+</script>
+
+  
+
+<script>
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        try {
+            var wb = XLSX.utils.book_new(); // Create a new workbook
+
+            function applyStyles(ws, styles, numCols) {
+                for (let col = 0; col < numCols; col++) {
+                    const cellRef = XLSX.utils.encode_cell({ c: col, r: 0 });
+                    if (!ws[cellRef]) ws[cellRef] = {};
+                    ws[cellRef].s = styles.header;
+                }
+
+                let rowIndex = 1;
+                $('#myTable tr, #myTable2 tr, #myTable3 tr, #myTable4 tr, #myTable5 tr').each(function() {
+                    const divisionRow = $(this).find('strong').first();
+                    if (divisionRow.length) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.division;
+                        }
+                    } else if ($(this).find('td').first().text().includes('Total')) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.totalRow;
+                        }
+                    }
+                    rowIndex++;
+                });
+            }
+
+            // Example for one table only; ensure this works before expanding to other tables
+            var ws1 = XLSX.utils.table_to_sheet(document.getElementById('myTable'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws1, "Table1");
+
+            // Export file
+            XLSX.writeFile(wb, 'LavelWiseReport.xlsx');
+            console.log('Exported successfully!');
+        } catch (error) {
+            console.error('Error exporting file:', error);
+        }
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+        $('select').select2();
+    });
+</script>
+<script>
+  $(document).ready(function() {
+    $('.select2_demo_2').select2({
+      
+      allowClear: true
+    });
+  });
+</script>
+
+{% endblock %}

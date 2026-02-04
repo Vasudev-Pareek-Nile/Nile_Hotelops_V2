@@ -1,0 +1,166 @@
+{% extends 'EmpAbscondingTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  label{
+    padding-top: 14px;
+    margin-bottom:5px;
+  }
+</style>
+
+<div class="card">
+  <div class="card-header"><strong>Employee Show Cause Notice Form</strong></div>
+</div>
+
+<div class="card">
+  <form action="" method="post">
+    
+    <div class="card-body">
+      <div class="col-md-12">
+        <div class="row mt-2">
+          <!-- Employee Code -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="emp_code">Employee Code:</label>
+              <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ showcauseobj.Emp_Code|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+          
+          <!-- Employee Name -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="name">Employee Name:</label>
+              <input type="text" name="name" id="name" class="form-control" value="{{ showcauseobj.Name|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Date of Joining -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="doj">Date of Joining:</label>
+              <input type="date" name="doj" id="doj" class="form-control" value="{{ showcauseobj.DOJ|date:'Y-m-d' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Department -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="dept">Department:</label>
+              <input type="text" name="dept" id="dept" class="form-control" value="{{ showcauseobj.Dept|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Designation -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="designation">Designation:</label>
+              <input type="text" name="designation" id="designation" class="form-control" value="{{ showcauseobj.Designation|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+          
+          <!-- Date of Absconding -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="date_of_absconding">Date of Absence:</label>
+              <input type="date" name="Date_Of_absence" id="Date_Of_absence" class="form-control" value="{% if  showcauseobj.Date_Of_absence %}{{ showcauseobj.Date_Of_absence|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="date_of_absconding">Date of Issuing:</label>
+              <input type="date" name="NoticeIssuingdate" id="Date_Of_Issuing" class="form-control" value="{% if  showcauseobj.NoticeIssuingdate %}{{ showcauseobj.NoticeIssuingdate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}">
+            </div>
+          </div>
+                                   <!-- Issuing Manager Name -->
+                                   <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="Issuing_designation">Issuing Designation</label>
+                                        <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                                            <option value="">Select</option>
+                                            {% for ManagerName in ManagerNames %}
+                                                <option value="{{ ManagerName.designations }}" {% if showcauseobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                                    {{ ManagerName.designations }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <!-- Issuing Manager Name -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="Issuing_manager_name">Issuing Manager Name</label>
+                                        <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ showcauseobj.Issuing_manager_name }}" required readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label for="date_of_absconding">Date of Creation:</label>
+                                    <input type="date" name="NoticeCreateddate" id="Date_Of_Created" class="form-control" value="{% if  showcauseobj.NoticeCreateddate %}{{ showcauseobj.NoticeCreateddate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" readonly>
+                                  </div>
+                                </div>
+
+          <!-- Remarks -->
+          <!-- <div class="col-md-12">
+            <div class="form-group">
+              <label for="remarks">Remarks:</label>
+              <textarea name="remarks" id="remarks" class="form-control" rows="3">{{ showcauseobj.Remarks|default_if_none:'' }}</textarea>
+            </div>
+          </div> -->
+
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="remarks">Remarks:</label>
+              <textarea name="remarks" id="remarks" class="form-control" maxlength="1500" rows="3"
+                  placeholder="Enter remarks (max 1500 characters)"
+                  title="Enter Less Than 1500 characters">{{ showcauseobj.Remarks|default_if_none:'' }}</textarea>
+              <small id="charWarning" class="text-danger d-none">⚠️ Max limit of 1500 characters reached!</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% csrf_token %}
+    <div class="card-footer text-right">
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </div>
+  </form>
+</div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const textarea = document.getElementById("remarks");
+      const warning = document.getElementById("charWarning");
+
+      textarea.addEventListener("input", function () {
+          const remaining = 1500 - textarea.value.length;
+
+          if (remaining <= 0) {
+              warning.classList.remove("d-none");
+          } else {
+              warning.classList.add("d-none");
+          }
+      });
+  });
+</script>
+
+<script>
+  function updateManagerName() {
+      const select = document.getElementById("Issuing_designation");
+      const selectedOption = select.options[select.selectedIndex];
+      const fullName = selectedOption.getAttribute("data-fullname");
+      document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      updateManagerName();
+  });
+
+  document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+
+{% endblock %}

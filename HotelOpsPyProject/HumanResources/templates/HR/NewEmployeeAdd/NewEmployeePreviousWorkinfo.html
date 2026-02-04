@@ -1,0 +1,249 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadLink" class="btn btn-primary" href="#" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-header fw-bold text-uppercase">
+    Previous Work Information
+</div>
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+       
+        <div class="row m-3">
+            <table id="previousworkinformationsTable" class="table table-bordered" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Position</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Attachment</th>
+                        <th>Salary</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pre in previousworks %}
+                    <tr id="Prerow{{ pre.id }}">
+                        <td><input type="text" class="form-control" name="Company[]" value="{{ pre.Company }}" required></td>
+                        <td><input type="text" class="form-control" name="Position[]" value="{{ pre.Position }}" required></td>
+                        <td><input type="date" class="form-control" name="FromDate[]" value="{{ pre.FromDate|date:'Y-m-d' }}"></td>
+                        <td><input type="date" class="form-control" name="ToDate[]" value="{{ pre.ToDate|date:'Y-m-d' }}"></td>
+                        <td>
+                            <input type="file" class="form-control" name="AttachmentPreviousWork[]" >
+                            {% if PreviousPreview == "previousworks" %}
+                            Previous Document
+                            <a href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ pre.id }}&model=EmployeePreviousWorkData" 
+                               class="btn btn-primary btn-sm ml-2" onclick="showEduDetails(this)">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                            {% elif PreviousPreview == "prevobj" %}
+                            {% if pre.FileName %}
+                            Previous Document
+                            <a href="javascript:void(0)" data-href="{% url 'Humanview_file' %}?ID={{ pre.id }}&model=EmployeePreviousWorkInformationDetails" 
+                               class="btn btn-primary btn-sm ml-2" onclick="showEduDetails(this)">
+                                <span class="fa fa-eye"></span>
+                            </a>
+                            {% endif %}
+                            {% endif %}
+                        </td>
+                        <td><input type="text" class="form-control" name="Salary[]" value="{{ pre.Salary }}"></td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removePreviousRow('{{ pre.id }}')">REMOVE</button>
+                            <input type="hidden" name="Pre_ids[]" value="{{ pre.id }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7" class="text-right">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="addPreviousRow()">ADD</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <input type="hidden" id="removedPreIds" name="removed_Pre_ids[]">
+        </div>
+
+    </div>
+    <div class="CustomFooter d-flex gap-2">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EmpID={{ EmpID }}" class="btn btn-primary btn-sm">Previous</a>
+        <input type="submit" name="" class="btn btn-primary btn-sm" id="" value="Next">
+
+    </div>
+</form>
+
+
+
+<script>
+    var showEduDetails= function(obj)
+    {
+            var hurl = $(obj).attr('data-href');
+            $(".modalPr").modal('show')
+            $(".modalPr iframe").attr('src',hurl);
+
+    }
+   
+
+</script>
+{% comment %} 
+<script>
+    let newPreCount = 0;  
+    
+    function addPreviousRow() {
+        var table = document.getElementById('previousworkinformationsTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+        newPreCount++;
+        var newId = 'new_' + newPreCount;
+        var today = new Date().toISOString().split('T')[0]; 
+    
+        newRow.id = 'Prerow' + newId;
+        newRow.innerHTML = `
+            <td><input type="text" class="form-control" name="Company[]" required></td>
+            <td><input type="text" class="form-control" name="Position[]" required></td>
+            <td><input type="date" class="form-control" name="FromDate[]" required value="${today}"></td>
+                            <td>
+                               <div class="form-inline">
+                                <div class="form-group">
+                                    <input type="checkbox" class="form-check-input presentCheckbox" id="isPresent{{ pre.id }}" 
+                                        {% if pre.IsPresent == True %}checked{% endif %} onclick="toggleDateInput(this)">
+                                    <label class="form-check-label" for="isPresent{{ pre.id }}">Present</label>
+
+                                    <input type="date" class="form-control ml-2 toDateInput" name="ToDate[]" 
+                                        value="{% if pre.ToDate %}{{ pre.ToDate|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" 
+                                        {% if pre.IsPresent == True %}style="display:none"{% endif %}>
+
+                                    <input type="hidden" class="presentHiddenInput" name="IsPresentHidden[]" 
+                                        value="{% if pre.IsPresent == True %}On{% else %}Off{% endif %}">
+                                </div>
+                            </div>
+
+                                                        </td>
+            <td><input type="file" class="form-control" name="AttachmentPreviousWork[]" required ></td>
+            <td><input type="text" class="form-control" name="Salary[]" required></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removePreviousRow('${newId}')">REMOVE</button>
+                <input type="hidden" name="Pre_ids[]" value="${newId}">
+            </td>
+        `;
+    }
+    
+    function removePreviousRow(PreId) {
+        var row = document.getElementById('Prerow' + PreId);
+        
+        if (row) {
+            row.parentNode.removeChild(row);
+            addRemovedPreId(PreId);
+        }
+    }
+    
+    function addRemovedPreId(PreId) {
+        var removedPreIdsInput = document.getElementById('removedPreIds');
+        var removedPreIds = removedPreIdsInput.value.split(',').filter(id => id); 
+    
+        if (!removedPreIds.includes(PreId)) {
+            removedPreIds.push(PreId);
+            removedPreIdsInput.value = removedPreIds.join(',');
+        }
+    }
+</script> {% endcomment %}
+
+
+<script>
+    let newPreCount = 0;
+
+    function addPreviousRow() {
+        var table = document.getElementById('previousworkinformationsTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+        newPreCount++;
+        var newId = 'new_' + newPreCount;
+        var today = new Date().toISOString().split('T')[0];
+
+        newRow.id = 'Prerow' + newId;
+        newRow.innerHTML = `
+            <td><input type="text" class="form-control" name="Company[]" required></td>
+            <td><input type="text" class="form-control" name="Position[]" required></td>
+            <td><input type="date" class="form-control" name="FromDate[]" required value="${today}"></td>
+            <td><input type="date" class="form-control" name="ToDate[]" required value="${today}"></td>
+            <td><input type="file" class="form-control" name="AttachmentPreviousWork[]" ></td>
+            <td><input type="text" class="form-control" name="Salary[]" required></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removePreviousRow('${newId}')">REMOVE</button>
+                <input type="hidden" name="Pre_ids[]" value="${newId}">
+            </td>
+        `;
+    }
+
+    function removePreviousRow(PreId) {
+        var row = document.getElementById('Prerow' + PreId);
+
+        if (row) {
+            row.parentNode.removeChild(row);
+            addRemovedPreId(PreId);
+        }
+    }
+
+    function addRemovedPreId(PreId) {
+        var removedPreIdsInput = document.getElementById('removedPreIds');
+        var removedPreIds = removedPreIdsInput.value.split(',').filter(id => id);
+
+        if (!removedPreIds.includes(PreId)) {
+            removedPreIds.push(PreId);
+            removedPreIdsInput.value = removedPreIds.join(',');
+        }
+    }
+</script>
+
+<script>
+    function toggleDateInput(checkbox) {
+        const dateInput = checkbox.closest('.form-group').querySelector('.toDateInput');
+        const hiddenInput = checkbox.closest('.form-group').querySelector('.presentHiddenInput');
+
+        if (checkbox.checked) {
+            dateInput.style.display = 'none';  
+            hiddenInput.value = "On";  
+        } else {
+            dateInput.style.display = 'inline-block';  
+            hiddenInput.value = "Off"; 
+
+            if (!dateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.value = today;
+            }
+        }
+    }
+
+    document.querySelectorAll('.presentCheckbox').forEach(function (checkbox) {
+        toggleDateInput(checkbox); 
+    });
+</script>
+{% endblock main %}
+
+
+
+

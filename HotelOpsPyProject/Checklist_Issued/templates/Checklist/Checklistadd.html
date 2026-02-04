@@ -1,0 +1,217 @@
+{% extends 'CheckList/homebase.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .submit-btn {
+        width: 100px;
+        background-color: #20c997;
+        color: white;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .submit-btn:hover {
+        background-color: #17a589;
+    }
+    .larger-checkbox {
+        width: 25px; /* Increase size */
+        height: 25px; /* Increase size */
+      }
+</style>
+<style>
+    .switch {
+      position: relative;
+      display: block;
+      vertical-align: top;
+      width: 54px;
+      height: 22px;
+      padding: 2px; /* Adjusted padding for the new size */
+      margin: 0 10px 10px 0;
+      background: linear-gradient(to bottom, #eeeeee, #FFFFFF 25px);
+      background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF 25px);
+      border-radius: 11px; /* Adjusted border-radius for new size */
+      box-shadow: inset 0 -1px white, inset 0 1px 1px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+    }
+    .switch-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+    }
+    .switch-label {
+      position: relative;
+      display: block;
+      height: inherit;
+      font-size: 10px; /* Adjusted font size for the new size */
+      text-transform: uppercase;
+      background: #e1162a;
+      border-radius: inherit;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
+    }
+    .switch-label:before, .switch-label:after {
+      position: absolute;
+      top: 50%;
+      margin-top: -.5em;
+      line-height: 1;
+      -webkit-transition: inherit;
+      -moz-transition: inherit;
+      -o-transition: inherit;
+      transition: inherit;
+    }
+    .switch-label:before {
+      content: attr(data-off);
+      right: 8px; /* Adjusted position for the new size */
+      color: #FFFFFF;
+      text-shadow: 0 1px rgba(255, 255, 255, 0.5);
+    }
+    .switch-label:after {
+      content: attr(data-on);
+      left: 8px; /* Adjusted position for the new size */
+      color: #FFFFFF;
+      text-shadow: 0 1px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+    }
+    .switch-input:checked ~ .switch-label {
+   	  background: #38914d;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
+    }
+    .switch-input:checked ~ .switch-label:before {
+      opacity: 0;
+    }
+    .switch-input:checked ~ .switch-label:after {
+      opacity: 1;
+    }
+    .switch-handle {
+      position: absolute;
+      top: 4px; /* Adjusted position for the new size */
+      left: 2px; /* Adjusted position for the new size */
+      width: 17px; /* Adjusted width for the new size */
+      height: 17px; /* Adjusted height for the new size */
+      background: linear-gradient(to bottom, #FFFFFF 40%, #f0f0f0);
+      background-image: -webkit-linear-gradient(top, #FFFFFF 40%, #f0f0f0);
+      border-radius: 100%;
+      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+    .switch-handle:before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -6px 0 0 -6px;
+      width: 10px; /* Adjusted size for the new handle */
+      height: 10px; /* Adjusted size for the new handle */
+      background: linear-gradient(to bottom, #eeeeee, #FFFFFF);
+      background-image: -webkit-linear-gradient(top, #eeeeee, #FFFFFF);
+      border-radius: 5px; /* Adjusted border-radius for the new handle */
+      box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
+    }
+    .switch-input:checked ~ .switch-handle {
+      left: 34px; /* Adjusted position for the new size */
+      box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+    /* Transition
+        ========================== */
+    .switch-label, .switch-handle {
+      transition: All 0.3s ease;
+      -webkit-transition: All 0.3s ease;
+      -moz-transition: All 0.3s ease;
+      -o-transition: All 0.3s ease;
+    }
+    .ibox-content {
+       
+        
+        border-style: none; 
+       
+    }
+    
+</style>
+<div class="row">
+    <div class="col-md-12 ">
+        <div class="card">
+            <div class="card-header" style="color: #1ab394">
+                <h3>New CheckList Issued</h3>
+            </div>
+             
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="employee_no" class="form-label">Employee Code:<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="EmpCode" value="{{check_instance.EmployeeCode}}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Employee Name:<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="Name" value="{{check_instance.EmpName}}" readonly>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Designations:<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="Department" value="{{check_instance.Designation}}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="name" class="form-label">Department:<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="" name="Designtions" value="{{check_instance.Department}}" readonly>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12">
+                           
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        
+                                        <th scope="col">Checklist</th>
+                                        <th scope="col">Received</th>
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for checkemps in checkemps %}
+                                    <tr>
+                                       
+                                        <td>{{checkemps.Checklist}}
+                                            <input type="hidden" name="checkemps_ID_{{ forloop.counter0 }}" value="{{ checkemps.id }}" />
+                                        </td>
+                                        <td >
+                                            <!-- <label class="switch"> -->
+                                                
+                                                <!-- <input class="switch-input" type="checkbox" name="ReceivedStatus_{{ forloop.counter0 }}" value="1" {% if checkemps.ReceivedStatus == '1' %} checked {% endif %} />
+                                                <span class="switch-label" data-on="Yes" data-off="No"></span>
+                                                <span class="switch-handle"></span> -->
+                                                <select name="ReceivedStatus_{{ forloop.counter0 }}" id="" class="form-control">
+                                                    <option value="">Not Applicable</option>
+                                                    <option value="Received" {% if checkemps.ReceivedStatus == '1' %} selected {% endif %}>Received</option>
+                                                    <option value="Not Received" {% if checkemps.ReceivedStatus == '0' %} selected {% endif %}>Not Received</option>
+                                                </select>
+                                            <!-- </label> -->
+                                        </td>
+                                        
+                                    </tr>
+                                    {% if forloop.last %}
+                                    <input type="hidden" name="TotalChecklist" value="{{ forloop.counter0 }}" />
+                                    {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="CustomFooter m-3 mt-0">
+                <button type="submit" id="toggleSpinners" class="btn btn-primary">
+                    Submit
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

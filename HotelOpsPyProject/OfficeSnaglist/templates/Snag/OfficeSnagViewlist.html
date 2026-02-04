@@ -1,0 +1,72 @@
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+{% block content %}
+<style>
+
+    th {
+        text-align: center;
+        vertical-align:middle;
+    }
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  h4{
+    background-color:#F8C471;
+    color:#34495E;
+    padding:10px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#333;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        {% comment %} <div class="card-header">
+          <p>Your Full and Final Settlement </p>
+        </div> {% endcomment %}
+
+
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+          <h4>Office SnagList</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-bordered table-hover">
+                
+                  <tbody>
+                      <tr>
+                          <td>Area</td>
+                          <td>{{Ed.Area}}</td>
+                          <td>Date</td>
+                          <td>{{Ed.Date}}</td>
+                       </tr>
+                       <tr>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                        </tr>
+              
+              
+                                    
+                   </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+      </div>
+       
+    </div >
+
+
+
+    {% endblock content %}

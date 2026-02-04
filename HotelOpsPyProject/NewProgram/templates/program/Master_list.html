@@ -1,0 +1,60 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+<div class="card">
+  <div class="card-header">
+   
+    <div class="row">
+      <div class="col-md-6" >
+        <strong>AREA PROGRAM</strong>
+      </div>
+      <div class="col-md-6 text-right">
+        <a href="{% url 'Master_Add' %}" class="btn btn-primary"> Add Area</a>
+        <a href="{% url 'Master_location1' %}" class="btn btn-primary">
+          Add Location</a
+        >
+      </div>
+    </div>
+    </div>
+    <div class="card-body">
+    
+   
+
+    <br />
+    <table id="example" class="table table-bordered">
+      <thead class="thead-">
+        <tr class="table-success">
+          <th>Area name</th>
+          <th>Location</th>
+
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for arenns in arenn %}
+        <tr>
+          <td>{{ arenns.arean}}</td>
+          <td>{{ arenns.location_name}}</td>
+
+          <td>
+            <a
+              href="{% url 'Master_location1' %}?ID={{arenns.id}}"
+              class="fa fa-edit"
+              style="color: black"
+            ></a>
+
+            <a
+              onclick="return confirm('Are you sure you want to delete? ')  "
+              href="{% url 'Master_delet'  %}?ID={{arenns.id}}"
+            >
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock content %}

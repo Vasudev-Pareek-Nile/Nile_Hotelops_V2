@@ -1,0 +1,389 @@
+{% extends "agreement/homebase.html" %} {% block content %}
+<style>
+  body {
+    font-family: arial nova;
+  }
+  label {
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+  }
+</style>
+<div class="container">
+  <div class="col-md-12">
+    <form method="POST">
+      {%csrf_token%}
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>HOTEL MANAGEMENT AGREEMENT</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Company Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Company Name  "
+                  value="{{add.company_name}}"
+                  name="company_name"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Address</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Address  "
+                  value="{{add.address}}"
+                  name="address"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Pan Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Pan Number   "
+                  value="{{add.pan_number}}"
+                  name="pan_number"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Sum of INR </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Sum of INR "
+                  value="{{add.sum_of_inr}}"
+                  name="sum_of_inr"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Start Date </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  placeholder=" "
+                  value='{% now "Y-m-d" %}'
+                  value="{{add.start_date}}"
+                  name="start_date"
+                  id="date"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Owner's Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Owner's Name "
+                  value="{{add.Director_Name}}"
+                  name="Director_Name"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Near Location </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Near Location  "
+                  value="{{add.Near_Location}}"
+                  name="Near_Location"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Hotel Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Hotel Name "
+                  value="{{add.Name_of_Hotel}}"
+                  name="Name_of_Hotel"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">License fee </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter License fee "
+                  value="{{add.license_fee}}"
+                  name="license_fee"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">End Date </label>
+                <input
+                  type="date"
+                  class="form-control"
+                  placeholder=" "
+                  value="{{ add.end_date  |date:'Y-m-d' }}"
+                  name="end_date"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">No. of Rooms</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="  "
+                  value="{{add.Number_of_Room}}"
+                  name="Number_of_Room"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Years</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Years  "
+                  value="{{add.Years}}"
+                  name="Years"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Percentage</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Percentage  "
+                  value="{{add.percentage}}"
+                  name="percentage"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Management Services INR </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Management Services INR  "
+                  value="{{add.Management_Services_N_N}}"
+                  name="Management_Services_N_N"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-header" style="color: #1ab394">
+          <strong>HOTEL OWNER</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Title (Mr./Ms.)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="  "
+                  value="{{add.Owner_Attention}}"
+                  name="Owner_Attention"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Fax. No.</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Fax Number  "
+                  value="{{add.Owner_Fax_No}}"
+                  name="Owner_Fax_No"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Address</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter your address "
+                  value="{{add.Owner_Address}}"
+                  name="Owner_Address"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Email Id</label>
+                <input
+                  type="Email"
+                  class="form-control"
+                  placeholder="someone@example.com  "
+                  value="{{add.Owner_Email_Id}}"
+                  name="Owner_Email_Id"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Tel. No.</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="  Enter Your Telephone Number  "
+                  value="{{add.Owner_Tel_No}}"
+                  name="Owner_Tel_No"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-header" style="color: #1ab394">
+          <strong>HOTEL OPERATOR</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Title (Mr./Ms.)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="  "
+                  value="{{add.Operator_Attention}}"
+                  name="Operator_Attention"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Fax. No.</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Fax No  "
+                  value="{{add.Operator_Fax_No}}"
+                  name="Operator_Fax_No"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Address</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter your address"
+                  value="{{add.Operator_Address}}"
+                  name="Operator_Address"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Email Id</label>
+                <input
+                  type="Email"
+                  class="form-control"
+                  placeholder="someone@example.com  "
+                  value="{{add.Operator_Email_Id}}"
+                  name="Operator_Email_Id"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Tel. No.</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder=" Enter Your Telephone Number  "
+                  value="{{add.Operator_Tel_No}}"
+                  name="Operator_Tel_No"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-header" style="color: #1ab394">
+          <strong>SIGNED SEALED AND DELIVERED FOR AND ON BEHALF OF</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for=""> Authorized Signatory</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Name  "
+                  value="{{add.Authorized_Director}}"
+                  name="Authorized_Director"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Name of Witness (1)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Witness Name  "
+                  value="{{add.Name_Witness1}}"
+                  name="Name_Witness1"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Name of the Witness (2)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Witness Name  "
+                  value="{{add.Name_Witness2}}"
+                  name="Name_Witness2"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer text-right">
+          {% if add is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+  {% comment %}
+</div>
+<script>
+  var today = new Date();
+
+  var formattedDate = today.toISOString().split("T")[0];
+
+  document.getElementById("date").value = formattedDate;
+</script>
+{% endcomment %} {% endblock content %}

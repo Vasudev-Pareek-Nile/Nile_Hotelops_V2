@@ -1,0 +1,823 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+
+{% load custom_filters %}
+{% load encryption_filters %}
+{% load static %}
+
+<style>
+    h4, .h4 {
+        font-size: 15px !important;
+    }
+
+    hr {
+        margin: 6px 0 !important;
+    }
+
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #FC133D;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .table-fixed {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table-fixed thead {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .table-fixed tbody {
+        display: block;
+        max-height: 400px;   /* control height */
+        overflow-y: auto;
+        width: 100%;
+    }
+
+    .table-fixed tbody tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    .table-fixed th,
+    .table-fixed td {
+        {% comment %} padding: 8px; {% endcomment %}
+        {% comment %} text-align: left; {% endcomment %}
+    }
+
+</style>
+
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span class="text-uppercase fw-bold">Leave Management</span>
+        <div class="d-flex gap-2">
+            <a href="{% url 'Leave_Application' %}" class="btn btn-sm btn-primary add-btn" ><i class="fa-solid fa-plus"></i> Apply Leave</a>
+            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#example-modal-xl">
+                Leave Details
+            </button>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <form method="GET" class="row g-2">
+            <div class="col-md-3">
+                {% comment %} <label for="EmployeeCode" class="form-label">Employee Code </label> {% endcomment %}
+                <select class="form-control" name="EmployeeCode" id="EmployeeCodeDropdown">
+                
+                    {% if  request.session.Department_Name|lower == "hr" or request.session.Department_Name|lower == "gm" %}  
+                        {% for emp in employees %}
+                        <option value="{{ emp.EmployeeCode }}" {% if request.GET.EmployeeCode == emp.EmployeeCode %}selected{% endif %}>
+                            {{ emp.EmployeeCode }} - {{ emp.EmpName }}
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        {% for emp in employees %}
+                        <option value="{{ emp.EmployeeCode }}" {% if request.GET.EmployeeCode == emp.EmployeeCode %}selected{% endif %}>
+                            {{ emp.EmployeeCode }} - {{ emp.EmpName }}
+                        </option>
+                        {% endfor %}
+                    {% endif %}
+                </select> 
+            </div>
+
+
+            <div class="col-md-2">
+                {% comment %} <label for="month_select" class="form-label">Select Month</label> {% endcomment %}
+                <select name="month" id="month_select" class="form-control">
+                    <option value="">All</option>
+                    <option value="1" {% if request.GET.month == "1" %}selected{% endif %}>January</option>
+                    <option value="2" {% if request.GET.month == "2" %}selected{% endif %}>February</option>
+                    <option value="3" {% if request.GET.month == "3" %}selected{% endif %}>March</option>
+                    <option value="4" {% if request.GET.month == "4" %}selected{% endif %}>April</option>
+                    <option value="5" {% if request.GET.month == "5" %}selected{% endif %}>May</option>
+                    <option value="6" {% if request.GET.month == "6" %}selected{% endif %}>June</option>
+                    <option value="7" {% if request.GET.month == "7" %}selected{% endif %}>July</option>
+                    <option value="8" {% if request.GET.month == "8" %}selected{% endif %}>August</option>
+                    <option value="9" {% if request.GET.month == "9" %}selected{% endif %}>September</option>
+                    <option value="10" {% if request.GET.month == "10" %}selected{% endif %}>October</option>
+                    <option value="11" {% if request.GET.month == "11" %}selected{% endif %}>November</option>
+                    <option value="12" {% if request.GET.month == "12" %}selected{% endif %}>December</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                {% comment %} <label for="year_select" class="form-label">Select Year</label> {% endcomment %}
+                <select name="year" id="year_select" class="form-control">
+                    <option value="">All</option>
+                    {% for i in years_list %}
+                    <option value="{{ i }}" {% if request.GET.year == i|stringformat:"s" %}selected{% endif %}>
+                        {{ i }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
+            <div class="col-md-2 d-flex justify-items-start align-items-center gap-1">
+                <button type="submit" class="btn btn-primary" id="filter">
+                    Search 
+                </button>
+
+                <a href="{% url 'Employee_Dashboard' %}" class="btn btn-danger" id="clear">
+                    Clear
+                </a>
+            </div>
+        </form>  
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mb-1" style="text-align: right;">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="form-control"
+                        placeholder="Search ..."
+                        style="width: 200px; display: inline-block; height: 37px;"
+                        onkeyup="searchTable()"
+                    >
+              </div>
+                <div class="table-scroll">
+                    <table class="table table-striped  table-fixed">
+                        <thead>
+                            <tr>
+                                <th>Sr#</th>
+                                <th>Emp Code</th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            {% for emp_code, data in employee_data.items %}
+                            {% for attendance in data.Attendance %}
+                            <tr>
+                                
+                                  {% if attendance.type == "leave" %}
+                                    <td data-sort="{{ attendance.start|date:'Y-m-d' }}">
+                                       {{ forloop.counter }}
+                                    </td>
+                                {% else %}
+                                    <td data-sort="{{ attendance.Date|date:'Y-m-d' }}">{{ forloop.counter }}</td>
+                                {% endif %}
+                                <td>{{ data.EmployeeCode }}</td>
+                                <td>{{ data.EmployeeName }}</td>
+
+                                {% if attendance.type == "leave" %}
+                                    <td data-sort="{{ attendance.start|date:'Y-m-d' }}">
+                                        {{ attendance.start|date:'d-m-Y' }}
+                                        {{ attendance.start }} <strong>To</strong>
+                                        {{ attendance.end }}
+                                    </td>
+                                {% else %}
+                                    <td data-sort="{{ attendance.Date|date:'Y-m-d' }}">{{ attendance.Date }}</td>
+                                {% endif %}
+                                
+                                <td style="color: 
+                                    {% if attendance.status == 'Absent' %} red 
+                                    {% elif attendance.status == 'Present' or attendance.status == 'Half Day Present' or attendance.status == 'Week Off' %} green 
+                                    {% else %} #3498db {% endif %};">
+                                    {{ attendance.title }}
+                                </td>
+        
+
+                                <td>
+                                    {% if attendance.type == "leave" %}
+                                        - <br>
+                                    {% else %}
+                                        {% if attendance.in_time or attendance.s_in_time  %}
+                                            {{ attendance.in_time }} <br>
+                                            {{ attendance.s_in_time }}
+                                        {% else %}
+                                            - 
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                
+                                <td>
+                                    {% if attendance.type == "leave" %}
+                                        - <br>
+                                    {% else %}
+                                        {% if attendance.out_time or attendance.s_out_time  %}
+                                            {{ attendance.out_time }} <br>
+                                            {{ attendance.s_out_time }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            
+                                <td> 
+                                    <button class="btn btn-outline-success view-details-btn" 
+                                        {% if attendance.type == "leave" %}
+                                            data-reason="{{ attendance.Reason }}" 
+                                            data-total_credit="{{ attendance.Total_credit }}" 
+                                            data-reporting="{{ attendance.ReportingtoDesigantion }}" 
+                                            data-remark="{{ attendance.Remark }}" 
+                                            data-Start-Date="{{ attendance.start }}" 
+                                            data-End-Date="{{ attendance.end }}" 
+                                            data-title="{{ attendance.title }}" 
+                                            data-Leavestatus="{{ attendance.Leavestatus }}" 
+                                        {% else %}
+                                            data-in_time="{{ attendance.in_time }}" 
+                                            data-out_time="{{ attendance.out_time }}" 
+                                            data-s_in_time="{{ attendance.s_in_time }}" 
+                                            data-s_out_time="{{ attendance.s_out_time }}" 
+                                            data-duty_hours="{{ attendance.duty_hours }}" 
+                                            data-status="{{ attendance.title }}"
+                                        {% endif %}
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#add_leave">
+                                        View
+                                    </button>
+                                </td>   
+                            </tr>
+                            {% endfor %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">No attendance records found.</td>
+                        </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+        <span class="text-uppercase fw-bold">Reporting To Leave</span>
+        <div class="" style="text-align: right;">
+            <input
+                type="text"
+                id="searchInput_Reporting"
+                class="form-control"
+                placeholder="Search ..."
+                style="width: 200px; display: inline-block; height: 37px;"
+                onkeyup="searchTable_Reporting()"
+            >
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-scroll">
+            <table class="table table-striped table-fixed">
+                <thead>
+                    <tr>
+                        <th>Sr#</th>
+                        <th>Emp Code</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Leave Days</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody_Reporting">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="add_leave" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex flex-column gap-3">
+                <!-- Attendance Details -->
+                <div id="attendanceDetails">
+                    <div id="attendanceDetails" class="d-flex gap-5 mb-2">
+                        <div class="d-flex flex-column">
+                            <p><strong>In-Time:</strong> <span id="modalInTime"></span></p>
+                            <p><strong>S-In-Time:</strong> <span id="modalSecondInTime"></span></p>
+                            <p><strong>Duty Hours:</strong> <span id="modalDutyHours"></span></p>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <p><strong>Out-Time:</strong> <span id="modalOutTime"></span></p>
+                            <p><strong>S-Out-Time:</strong> <span id="modalSecondOutTime"></span></p>
+                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leave Details (Initially Hidden) -->
+                <div  id="leaveDetails" style="display: none;">
+                    <div class="d-flex flex-column">
+                        <div class="d-flex gap-5 mb-2">
+                            <div class="d-flex flex-column w-50">
+                                <p><strong>Status:</strong> <span id="modalLeavestatus"></span></p>
+                                <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+                                <p><strong>Total days:</strong> <span id="modalTotalCredit"></span></p>
+                                <!-- <p><strong>Reason:</strong> <span id="modalReason"></span></p> -->
+                                <!-- <p><strong>Leave Days:</strong> <span id="modalLeave_Days"></span></p> -->
+                            </div>
+                            <div class="d-flex flex-column">
+                                <p><strong>Leave:</strong> <span id="modalTitle" style="color:#3498db"></span></p>
+                                <p><strong>End Date:</strong> <span id="modalEndDate"></span></p>
+                                <!-- <p><strong>Reporting To:</strong> <span id="modalReporting"></span></p> -->
+                                <p><strong>Remark:</strong> <span id="modalRemark"></span></p>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column mt-2">
+                            <p><strong>Reporting To:</strong> <span id="modalReporting"></span></p>
+                            <p><strong>Reason:</strong> <span id="modalReason"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- Leave Details (Initially Hidden) -->
+<div  id="leaveDetails" style="display: none;">
+    <div class="d-flex mt-2 gap-5" style="display: none;">
+        <div class="d-flex flex-column w-50">
+            <p><strong>Status:</strong> <span id="modalLeavestatus"></span></p>
+            <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+            <p><strong>Total days:</strong> <span id="modalTotalCredit"></span></p>
+            <p><strong>Reason:</strong> <span id="modalReason"></span></p>
+            <!-- <p><strong>Leave Days:</strong> <span id="modalLeave_Days"></span></p> -->
+        </div>
+        <div class="d-flex flex-column">
+            <p><strong>Leave:</strong> <span id="modalTitle" style="color:#3498db"></span></p>
+            <p><strong>End Date:</strong> <span id="modalEndDate"></span></p>
+            <p><strong>Reporting To:</strong> <span id="modalReporting"></span></p>
+            <p><strong>Remark:</strong> <span id="modalRemark"></span></p>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="example-modal-xl" tabindex="-1"
+    aria-labelledby="exampleModalLgLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLgLabel">Leave Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card-body">
+                    <div class="" id="CardContainerFlex">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="ContainerThreeBox-main text-center">
+                                    <div class="ContainerThreeBox">
+                                        <div class="ContainerThreeBox-childs ContainerThreeBox-child">
+                                            <div class="card radius-10 border-start border-0 border-3 border-warning">
+                                                <div class="card-body p-3">
+                                                    <div class="">
+                                                        <div>
+                                                            <h4 class="mb-0" style="color: #1ba661;">Approved</h4>
+                                                            <p class="my-1">{{leave_requset_appr_count}}</p>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="">
+                                                            <div>
+                                                                <h4 class="mb-0"  style="color: #a6811b;">Pending</h4>
+                                                                <p class="my-1">{{leave_requset_Pending_count}}</p>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="">
+                                                            <div>
+                                                                <h4 class="mb-0" style="color: #a61b1b;">Rejected</h4>
+                                                                <p class="my-1">{{leave_requset_rejected_count}}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    {% for m in leave_balance  %}
+                                    <div class="col-md-2 text-center">
+                                        <div class="card radius-10 border-start border-0 border-3 border-info">
+                                        <div class="card-body" style="padding: 19px;">
+                                            <div class="">
+                                                <div>
+                                                    <h4 class="mb-0">{{m.Leave_Type_Master.Type}}</h4>
+                                                    <p class="my-1">{{m.Balance}}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div> 
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /Modal -->
+
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+<script>
+    function searchTable_Reporting() {
+        // Get the search input value
+        const input = document.getElementById("searchInput_Reporting").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody_Reporting");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // For the loader -------->
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+        let clearButton = document.querySelector("a.btn-danger"); // Select the "Clear" button
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    
+        if (clearButton) {
+            clearButton.addEventListener("click", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on clear button click
+            });
+        }
+
+
+        // For the Year and month
+
+        const yearSelect = document.getElementById("year_select");
+        const currentYear = new Date().getFullYear();
+        const startYear = 2024; // Change this to your desired starting year
+
+        // Get selected year from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedYear = urlParams.get("year") || "";  // Use currentYear if no selection
+
+        // Add "All" option
+        yearSelect.innerHTML = '<option value="">All</option>';
+
+        // Populate years from startYear to currentYear
+        for (let year = currentYear; year >= startYear; year--) {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            
+            // Retain the selected value
+            if (selectedYear === year.toString()) {
+                option.selected = true;
+            }
+
+            yearSelect.appendChild(option);
+        }
+    });
+    
+</script>
+    
+ <script>
+    function getLeaveStatusText(status) {
+        let statusText = "Unknown Status";
+        let color = "#000000"; // Default black color
+    
+        switch (parseInt(status)) {
+            case 0:
+                statusText = "Pending";
+                color = "#FFBC34"; // Orange
+                break;
+            case 1:
+                statusText = "Approved";
+                color = "#36ba45"; // Green
+                break;
+            case -1:
+                statusText = "Rejected";
+                color = "#FF3E3E"; // Red
+                break;
+            case -2:
+                statusText = "Revoked";
+                color = "#9368E9"; // Purple
+                break;
+        }
+    
+        return { text: statusText, color: color };
+    }
+    
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".view-details-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                // Clear previous data before setting new values
+                clearModalData();
+    
+                let isLeave = this.hasAttribute("data-reason");
+    
+                if (isLeave) {
+                    // Show leave details, hide attendance details
+                    document.getElementById("attendanceDetails").style.display = "none";
+                    document.getElementById("leaveDetails").style.display = "block";
+    
+                    // Set modal title
+                    document.querySelector(".modal-title").textContent = "Leave Details";
+    
+                    // Populate leave data
+                    let leaveStatus = this.getAttribute("data-Leavestatus") || "";
+                    let { text, color } = getLeaveStatusText(leaveStatus);
+
+                    let modalLeaveStatus = document.getElementById("modalLeavestatus");
+                    modalLeaveStatus.textContent = text;
+                    modalLeaveStatus.style.color = color; // Apply color dynamically
+
+
+                    // document.getElementById("modalLeave_Days").textContent = this.getAttribute("data-leave-days") || "";
+                    document.getElementById("modalTitle").textContent = this.getAttribute("data-title") || "";
+                    document.getElementById("modalReason").textContent = this.getAttribute("data-reason") || "";
+                    document.getElementById("modalTotalCredit").textContent = this.getAttribute("data-total_credit") || "";
+                    document.getElementById("modalReporting").textContent = this.getAttribute("data-reporting") || "";
+                    // document.getElementById("modalRemark").textContent = this.getAttribute("data-remark") || "";
+                    document.getElementById("modalStartDate").textContent = this.getAttribute("data-Start-Date") || "";
+                    document.getElementById("modalEndDate").textContent = this.getAttribute("data-End-Date") || "";
+
+                    // Handle Remark (Hide if None)
+                    let remarkValue = this.getAttribute("data-remark");
+                    let modalRemark = document.getElementById("modalRemark");
+                    let remarkContainer = modalRemark.closest("p"); // Get the <p> container
+
+                    if (!remarkValue || remarkValue.toLowerCase() === "none") {
+                        remarkContainer.style.display = "none"; // Hide <p> if remark is None or empty
+                    } else {
+                        modalRemark.textContent = remarkValue;
+                        remarkContainer.style.display = "block"; // Show <p> if remark has a valid value
+                    }
+    
+                } else {
+                    // Show attendance details, hide leave details
+                    document.getElementById("attendanceDetails").style.display = "flex";
+                    document.getElementById("leaveDetails").style.display = "none";
+    
+                    // Set modal title
+                    document.querySelector(".modal-title").textContent = "Attendance Details";
+    
+                    // Populate attendance data
+                    document.getElementById("modalInTime").textContent = this.getAttribute("data-in_time") || "";
+                    document.getElementById("modalOutTime").textContent = this.getAttribute("data-out_time") || "";
+                    document.getElementById("modalSecondInTime").textContent = this.getAttribute("data-s_in_time") || "";
+                    document.getElementById("modalSecondOutTime").textContent = this.getAttribute("data-s_out_time") || "";
+                    document.getElementById("modalDutyHours").textContent = formatDutyHours(this.getAttribute("data-duty_hours") || "");
+                    // document.getElementById("modalStatus").textContent = this.getAttribute("data-status") || "";
+                      // Handle Status color (Red for "Absent", Green for others)
+                    let statusValue = this.getAttribute("data-status") || "";
+                    let modalStatus = document.getElementById("modalStatus");
+
+                    modalStatus.textContent = statusValue;
+
+                    if (statusValue.toLowerCase() === "absent") {
+                        modalStatus.style.color = "red";  // Red for absent
+                    } else {
+                        modalStatus.style.color = "green"; // Green for others
+                    }
+                }
+            });
+        });
+    });
+    
+    // Function to clear previous modal data
+    function clearModalData() {
+        document.getElementById("modalReason").textContent = "";
+        document.getElementById("modalTotalCredit").textContent = "";
+        document.getElementById("modalReporting").textContent = "";
+        document.getElementById("modalRemark").textContent = "";
+        document.getElementById("modalStartDate").textContent = "";
+        document.getElementById("modalEndDate").textContent = "";
+        document.getElementById("modalInTime").textContent = "";
+        document.getElementById("modalOutTime").textContent = "";
+        document.getElementById("modalSecondInTime").textContent = "";
+        document.getElementById("modalSecondOutTime").textContent = "";
+        document.getElementById("modalDutyHours").textContent = "";
+        document.getElementById("modalStatus").textContent = "";
+    }
+    
+    // Function to format duty hours
+    function formatDutyHours(dutyStr) {
+        if (!dutyStr) return 'No data';
+        let parts = dutyStr.split(':');
+        if (parts.length < 2 || isNaN(parts[0]) || isNaN(parts[1])) return '';
+        let [hours, minutes] = parts.map(num => Number(num) || 0);
+        return `${hours} hours ${minutes} minutes`;
+    }
+</script>  
+
+{% comment %} <script>
+    async function loadReportingLeaveData() {
+
+        OID = "{{OrganizationID}}"
+        Desi = "{{Employee_Designation}}"
+
+        const url = `/Leave_Management_System/api/Employee_Dashboard_Leave_API/?OID=${OID}&Desi_Name=${Desi}`;
+        // const url = `http://127.0.0.1:8000/Leave_Management_System/api/Employee_Dashboard_Leave_API/?Desi_Name=Executive Housekeeper&OID=20180612060935&month=1&year=2025`;
+
+        try {
+            const response = await fetch(url);
+            const result = await response.json();
+
+            const tbody = document.getElementById("tableBody_Reporting");
+            tbody.innerHTML = "";
+
+            if (!result.status || !result.data.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">No leave records found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let srNo = 1;
+
+            result.data.forEach(emp => {
+                emp.LeaveData.forEach(leave => {
+
+                    const row = `
+                        <tr>
+                            <td>${srNo++}</td>
+                            <td>${emp.EmployeeCode}</td>
+                            <td>${emp.EmployeeName}</td>
+                            <td>${leave.start} To ${leave.end}</td>
+                            <td>${leave.title}</td>
+                            <td>${leave.leave_days}</td>
+                        </tr>
+                    `;
+
+                    tbody.insertAdjacentHTML("beforeend", row);
+                });
+            });
+
+        } catch (error) {
+            console.error("Error loading leave data:", error);
+        }
+    }
+
+    // Call on page load
+    document.addEventListener("DOMContentLoaded", loadReportingLeaveData);
+</script> {% endcomment %}
+
+
+<script>
+    async function loadReportingLeaveData() {
+
+        const OID = "{{OrganizationID}}";
+        const Desi = "{{Employee_Designation}}";
+
+        const TOKEN = "ujhj45ON8BKl!udLGPu!szcWtY!e9MTm4jpXSqD7wNM1HITpnbJhhp=aElxgkShcdaBhvgqLeOMjz9G?qliY6FK/AcJN0iTB3fIl5g55bllJHdrF-Yh-O4W-eEjKaPk/DBGqHU6XDhbG5m68RtVxZGH?B6n1F5u=F84npBeJIMS/SzrT7=dXuAj=8aqDyvRpIh=nswd!XPTMobzhw2jKxocrOYJkzo0osZFSMxK1hMqRbqGJIKR=bgRfS!cea11f";
+
+        const url = `/Leave_Management_System/api/Employee_Dashboard_Leave_API/?OID=${OID}&Desi_Name=${Desi}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": TOKEN,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            const tbody = document.getElementById("tableBody_Reporting");
+            tbody.innerHTML = "";
+
+            if (!result.status || !result.data.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center">No leave records found</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let srNo = 1;
+
+            result.data.forEach(emp => {
+                emp.LeaveData.forEach(leave => {
+                    const row = `
+                        <tr>
+                            <td>${srNo++}</td>
+                            <td>${emp.EmployeeCode}</td>
+                            <td>${emp.EmployeeName}</td>
+                            <td>${leave.start} To ${leave.end}</td>
+                            <td>${leave.title}</td>
+                            <td>${leave.leave_days}</td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML("beforeend", row);
+                });
+            });
+
+        } catch (error) {
+            console.error("Error loading leave data:", error);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", loadReportingLeaveData);
+</script>
+
+{% endblock content %}

@@ -1,0 +1,188 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<style>
+    table{
+        border: 1px solid #E9E9EA;
+    }
+    table, tr td, th{
+        border: 1px solid #afafb0;
+    }
+
+    #employeeTable thead tr th{
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+    .btn-warning, .btn-success{
+        border-radius: 5px !important;
+    }
+
+    table {
+        border: 1px solid #E9E9EA;
+        border-radius: 5px;
+        border-collapse: separate;   /* Important */
+        overflow: hidden;            /* Important */
+        border-spacing: 0px;
+    }
+
+    table th, table td {
+        border: 0.5px solid #afafb0;
+    }
+    .card .card-body {
+        padding: 16px !important;
+    }
+
+    .card .card-header {
+        margin-bottom: -20px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-header mb-2">
+        <span class="mb-0 fw-bold text-uppercase">Clearance</h3>
+    </div>
+
+    <div class="card-body ">
+        <table id="employeeTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Code</th>
+                    
+                    <th>Name</th>
+                    <th>Designation</th>
+                    <th>HOD</th> 
+                    <th>HK</th> 
+                    <th>IT</th>
+                    <th>HR</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for al in merged_qs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ al.Emp_Code }}</td>
+
+                    <td>{{ al.Name }}</td>
+
+                    <td>{{ al.Designation }}</td>
+
+                    <td>
+                        {% if al.IsDEPT %}
+                            <span class="btn btn-sm btn-success">Approved</span>
+                            <!-- <span class="badge bg-success p-2">Approved</span> -->
+                        {% else %}
+                            <a href="{% url 'Hod_Approve_Request_Clearance' %}?id={{ al.id }}" 
+                                class="btn btn-sm btn-primary">
+                                Approve
+                            </a>
+                            <a class="btn btn-sm btn-secondary disabled text-white">
+                                On Hold
+                            </a>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if not al.IsDEPT %}
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                        {% else %}
+                            {% if al.uniform_info_id %}
+                                {% if al.HK %}
+                                    <a href="{% url 'HouseKeepingReturnRequest' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&Hide=True" 
+                                        class="btn btn-sm btn-Secondary text-white" >
+                                            Cleared 
+                                        </a>
+                                    <a 
+                                        {% if request.session.UserID|stringformat:"s" != al.HKCreatedBy|stringformat:"s" %}href="#" class="btn btn-sm btn-secondary disabled text-white" tabindex="-1" aria-disabled="true"{% else %}
+                                            href="{% url 'HouseKeepingReturnRequest' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}" 
+                                            class="btn btn-sm btn-secondary text-white"
+                                            
+                                        {% endif %}
+                                            >
+                                        Edit  
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'HouseKeepingReturnRequest' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}" 
+                                        class="btn btn-sm btn-primary" >
+                                        Clearance 
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                    Not Issued
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not al.IsDEPT %}
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                        {% else %}
+                            {% if al.it_info_id %}
+                                {% if al.IT %}
+                                    <a href="{% url 'IT_Return_Request' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&ID={{al.it_info_id}}&Hide=True" 
+                                        class="btn btn-sm btn-Secondary text-white" >
+                                        Cleared 
+                                    </a>
+                                    <a 
+                                        {% if request.session.UserID|stringformat:"s" != al.ITCreatedBy|stringformat:"s" %}href="#" class="btn btn-sm btn-secondary disabled text-white" tabindex="-1" aria-disabled="true"{% else %}
+                                        href="{% url 'IT_Return_Request' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&ID={{al.it_info_id}}"
+                                        class="btn btn-sm btn-secondary text-white"
+                                        
+                                        {% endif %}
+                                        >
+                                        Edit  
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'IT_Return_Request' %}?EC={{al.Emp_Code}}&OID={{ al.OrganizationID }}&ID={{al.it_info_id}}" 
+                                        class="btn btn-sm btn-primary" >
+                                        Clearance 
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                    No Issued
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not al.IsDEPT %}
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                        {% else %}
+                            {% if al.hr_info_id %}
+                                {% if al.HR %}
+                                    <a href="{% url 'HR_Inventory_Return_Request' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.hr_info_id}}&Hide=True" 
+                                        class="btn btn-sm btn-Secondary text-white" >
+                                        Cleared
+                                    </a>
+                                    <a 
+                                        {% if request.session.UserID|stringformat:"s" != al.HRCreatedBy|stringformat:"s" %}href="#" class="btn btn-sm btn-secondary disabled text-white" tabindex="-1" aria-disabled="true"{% else %}
+                                        href="{% url 'HR_Inventory_Return_Request' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.hr_info_id}}"
+                                        class="btn btn-sm btn-secondary text-white"
+                                        
+                                        {% endif %}
+                                        >
+                                        Edit  
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'HR_Inventory_Return_Request' %}?EC={{ al.Emp_Code }}&OID={{ al.OrganizationID }}&ID={{al.hr_info_id}}" 
+                                        class="btn btn-sm btn-primary" >
+                                        Clearance
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                Not Issued
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+  
+
+{% endblock content %}

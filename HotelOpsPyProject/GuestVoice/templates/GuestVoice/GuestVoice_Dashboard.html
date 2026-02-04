@@ -1,0 +1,148 @@
+{% extends 'GuestVoice/GuestVoicehomebase.html' %}
+{% block content %} 
+{% load custom_filters %}
+
+
+<style>
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #FC133D;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .SofwareMessage{
+        color: red;
+    }
+</style>
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+<!-- Page Header -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between ">
+        <h3 class="card-title">Guest Voice</h3>
+        {% if Medallia == 'Show' %}
+            <a href="{% url "Medallia_Data_List" %}?OID={{selected_organization}}" class="btn btn-sm btn-primary">Medallia List</a>
+        {% elif ReviewPro == 'Show' %}
+            <a href="{% url "ReviewPro_Data_List" %}?OID={{selected_organization}}" class="btn btn-sm btn-primary">ReviewPro List</a>
+        {% elif MedalliaWyndham == 'Show' %}
+            <a href="{% url "Medallia_Data_List" %}?OID={{selected_organization}}&SW=MedalliaWyndham" class="btn btn-sm btn-primary">Medallia List</a>
+        {% else %}
+            <p class="SofwareMessage">{{Custom_messages}}</p>
+        {% endif %}
+    </div>
+    <!-- /Page Header -->
+
+    <div class="card-body">
+        <form method="GET" class="row g-4 mb-1">
+            <div class="col-md-4">
+                <label for="hotel_name" class="form-label">Organizations</label>
+                <select name="hotel_name" class="form-control">
+                    <option value="" selected>Select Organizations</option>
+                    {% for org in OrganizationNameDetail %}
+                        <option value="{{ org.OrganizationID }}" {% if org.OrganizationID == selected_organization %}selected{% endif %}>
+                            {{ org.OrganizationName }}
+                        </option>
+                    {% endfor %}
+                </select>      
+            </div>
+            
+            <div class="col-md-2">
+                <label for="start_date" class="form-label">Select Date</label>
+                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ selected_date|date:'Y-m-d' }}">
+            </div>
+
+            <div class="col-md-3 d-flex justify-items-start align-items-center gap-3" style="margin-top:3.5rem;">
+                <button type="submit" class="btn btn-primary" style="padding-inline:33px;">Search</button>
+                <a href="{% url 'GuestVoice_Dashboard' %}" class="btn btn-danger ml-2" style="padding-inline:40px;">Clear</a>
+            </div>
+        </form>
+
+
+        <form method="POST" id="InsertValueForm">
+            {% csrf_token %}
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped custom-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>TITLE</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                    <tr>
+                                        <td>
+                                            <input type="hidden" name="item_id" value="{{ item.id }}">
+                                            {{ item.Item }}
+                                            <input type="hidden" class="form-control w-50" value="{{ item.Item }}" readonly>
+                                        </td>
+                                        <td>
+                                            <input type="number" step="0.1" class="form-control w-50" name="value_{{ item.id }}" 
+                                                value="{{ existing_values|get_item:item.id }}">
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <button type="submit" class="btn btn-primary mt-3 float-end" name="submit_GuestValue">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form> 
+    </div>
+</div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+        let clearButton = document.querySelector("a.btn-danger"); // Select the "Clear" button
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    
+        if (clearButton) {
+            clearButton.addEventListener("click", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on clear button click
+            });
+        }
+
+        let InsertValueForm = document.querySelector("#InsertValueForm"); // Get the first form on the page
+    
+        if (InsertValueForm) {
+            InsertValueForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,107 @@
+{% extends 'FixedSignage/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+        font-size: 15px;
+    }
+    .title{
+        font-size: 40px;
+    }
+
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Fixed Signages Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'FixedSigEntry' %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-3">
+                    <select class="form-control "   data-val="{{CMonth}}" name="EntryMonth" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">February</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>                        
+                    </select>  
+                </div>
+            <lable align="right" class="col-sm-1"> Year</lable>
+            <div  class="col-sm-1">
+                <select class="form-control" name="EntryYear" value ="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>    
+                </div>
+
+            
+            
+        </div>
+               
+                <br/>
+                <br>
+
+               <div class="col-sm-6">
+
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                        <th></th>
+                        
+                    </thead>
+                    {% for x in mem%}
+                    <tr> 
+                        <td data-c="{{x.category}}">{{x.category}}</td>      
+
+                       <div class="title">
+                        <td>{{x.title}}</td> 
+                       </div>
+                         
+                    </tr>
+                                   
+                    {% endfor %} 
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    
+
+    <script>
+        $(function(){
+    
+            var c=""
+            $("#title tr").each(function(){
+                    var ct =$(this).find('td').eq(0).attr('data-c')
+                   if(c=="" || c !=ct){
+                    $(this).find('td').eq(0).addClass('bold')
+                   }else{
+                        $(this).find('td').eq(0).text('')
+                       
+                   }
+                c=ct            
+            })
+        })
+    
+       
+    </script>
+
+
+{% endblock content %}

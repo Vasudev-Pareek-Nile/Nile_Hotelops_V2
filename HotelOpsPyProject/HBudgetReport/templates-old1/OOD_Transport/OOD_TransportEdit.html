@@ -1,0 +1,285 @@
+{% extends 'OOD_Transport/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Latest compiled and minified CSS -->
+    <div class="container1">
+        <Div class="card card-primary ">
+
+
+        <div class = "card-header"> OOD Transport Edit </div>
+        <div class="card-body">
+
+        <form action="{%url 'HBOOD_TransportEdit' mem.id %}" method = "post">
+            {% csrf_token %}
+    
+            <div class="row">
+        
+                <lable  class="control-label col-sm-2">Month</lable>
+                <span class="col-sm-3">
+                    <select class="form-control calc"  name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">Jan</option>
+                        <option value ="2">Feb</option>
+                        <option value ="3">Mar</option>
+                        <option value ="4">Apr</option>
+                        <option value ="5">May</option>
+                        <option value ="6">Jun</option>
+                        <option value ="7">Jul</option>
+                        <option value ="8">Aug</option>
+                        <option value ="9">Sep</option>
+                        <option value ="10">Oct</option>
+                        <option value ="11">Nov</option>
+                        <option value ="12">Dec</option>
+                        
+                    </select>
+    
+            </span>
+            <lable  class="col-sm-1"> Year</lable>
+            <span  class="col-sm-3">
+                
+                   
+                <select class="form-control calc" name="EntryYear" data-val="{{mem.EntryYear}}" name="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+
+            </span>
+        </div>
+        <br>
+        
+        <div class="row">
+        
+            <lable  class="control-label col-sm-2">Mod - External Guest Transportation</lable>
+            <div class="col-sm-4">
+                <input type="text" class="form-control calc" name ="ExternalGuestTransportation" value ="{{mem.ExternalGuestTransportation}}" >
+            </div>
+        </div>
+    
+        <br>
+
+        <div class ="row">
+            <label class="control-label col-sm-2">Guest Transport Revenue</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name="GuestTransportRevenue" value="{{mem.GuestTransportRevenue}}">
+            </div>
+        </div>
+
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Cost Of Guest Transportation</label>
+            <div class ="col-sm-4">
+                <input type="text" class="form-control calc" name ="Cost_OfGuestTransportation" value="{{mem.Cost_OfGuestTransportation}}">
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+        
+            <lable  class="control-label col-sm-2">Total Cost of Sales </lable>
+            <div class="col-sm-4">
+                <input type="text" readonly  class="form-control calc" name="Total_CostOfSales" value="{{mem.Total_CostOfSales}}" >
+            </div>
+        </div>
+        <br>
+
+        <div class ="row">
+            <label class="control-label col-sm-2">Gross Profit (Loss)</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly  class="form-control calc" name ="Gross_Profit" value="{{mem.Gross_Profit}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Salary And Wages</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="SalaryAndWages" value="{{mem.SalaryAndWages}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Bonuses And Incentives</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="Bonuses_and_Incentives" value="{{mem.Bonuses_and_Incentives}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Salary Wages And Bonuses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly  class="form-control calc" name ="Salary_Wages_and_Bonuses" value="{{mem.Salary_Wages_and_Bonuses}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Employee Benefits</label>
+            <div class ="col-sm-4">
+                <input type="text" class="form-control calc" name ="EmployeeBenefits" value="{{mem.EmployeeBenefits}}">
+            </div>
+        </div>
+        <br>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Payroll Related Expenses</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="PayrollRelatedExpenses" value="{{mem.PayrollRelatedExpenses}}">
+            </div>
+        </div>
+        <br>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Payroll And Related Expenses</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="PayrollAndRelatedExpenses" value="{{mem.PayrollAndRelatedExpenses}}">
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+         
+
+            <table id="title" class="table table-bordered ">
+                <thead>
+
+                    <th>Utilities </th>
+                    <th>Amount</th>
+                    
+                </thead>
+
+                {% for x in mem1%}
+                <tr>    
+                    
+                    <td>{{x.OOD_TransportMaster.title}}</td> 
+                    <td><input type="text" class="form-control calc" value="{{x.Amount}}" name="Amount_{{ forloop.counter0 }}"/>
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.OOD_TransportMaster.id}}" type="text"/>
+                    </td>
+               
+                </tr>
+                {% if forloop.last %}
+                <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                {% endif %}
+                {% endfor %}
+            </table>
+            
+
+            <br></br>
+
+            <div class="row">
+                <label for="text" class="col-sm-2"> Total Other Expenses </label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="Total_Other_Expenses" value="{{mem.Total_Other_Expenses}}" >
+                 </div>
+             </div>
+             
+             <br>
+    
+             <div class="row">
+                <label for="text" class="col-sm-2">Total Expenses</label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="TotalExpenses" value="{{mem.TotalExpenses}}" >
+                 </div>
+             </div>
+             <br>
+             <br>
+    
+             <div class="row">
+                <label for="text" class="col-sm-2">Department Income (Loss) </label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="DepartmentIncome" value="{{mem.DepartmentIncome}}" >
+                 </div>
+             </div>
+             <br>
+             <br>
+         
+                <div class = "card-footer text-right">
+                <button class="btn btn-success" type="submit" id="new1">Edit</button>
+                </div>
+           </div>          
+        </form>
+    </div>
+</div>
+</div>
+
+<br>
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var a = $("input[name='ExternalGuestTransportation']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        $("input[name='GuestTransportRevenue']").val(a.toFixed(2));
+
+        var e = $("input[name='Cost_OfGuestTransportation']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+      
+        $("input[name='Total_CostOfSales']").val(e.toFixed(2));
+        var Total_CostOfSales = e;
+
+        $("input[name='Gross_Profit']").val((a-e).toFixed(2));
+
+
+        var c = $("input[name='SalaryAndWages']").val();
+        c = parseFloat(c);
+        c = isNaN(c)?0:c;
+               
+        var TotSalWag=0;
+        var d = $("input[name='Bonuses_and_Incentives']").val();
+        d = parseFloat(d);
+        d = isNaN(d)?0:d;
+        TotSalWag = c+d;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+
+        var f = $("input[name='EmployeeBenefits']").val();
+        f = parseFloat(f);
+        f = isNaN(f)?0:f;
+
+        
+        var g = $("input[name='PayrollRelatedExpenses']").val();
+        g = parseFloat(g);
+        g = isNaN(g)?0:g;
+        var PayrollRelatedExpenses = g;
+      
+        
+        var h = $("input[name='PayrollAndRelatedExpenses']").val();
+        h = parseFloat(h);
+        h = isNaN(h)?0:h;
+        
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+        $("input[name='Total_Other_Expenses']").val(TotalAmount.toFixed(2))
+
+       
+        $("input[name='TotalExpenses']").val((TotalAmount + PayrollRelatedExpenses+ Total_CostOfSales ).toFixed(2))
+
+        var TotalExpenses = (TotalAmount + PayrollRelatedExpenses+ Total_CostOfSales );
+
+        $("input[name='DepartmentIncome']").val((a-TotalExpenses).toFixed(2))
+        
+        
+
+
+
+      
+    }
+</script>
+ 
+{% endblock content %}

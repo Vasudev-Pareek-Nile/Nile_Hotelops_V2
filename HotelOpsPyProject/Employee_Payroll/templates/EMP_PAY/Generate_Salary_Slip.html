@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+
+        font-size: 11px;
+        font-weight: bold;
+    }
+    .tableborder{
+        border: 1px solid black;
+    }
+</style>
+<body>
+   <div class="container">
+<!--         
+    <table  class="tableborder" CELLPADDING="4" >
+        <thead>
+            <tr> 
+                    <td colspan="8">
+                        <table width="100%" >
+                            <tr>
+                 
+
+                                <th width="130" align="left" >
+                                    <img  src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{org_Details.OrganizationLogo}}"  height="100">
+                                     </th>
+                                     <th style="text-align: center;" >
+                                         {{org_Details.OrganizationName}}
+                                          <br>
+                                          {{org_Details.Address}}
+                                          <br>
+                                          Payslip For the month of {{month}} - {{year}}
+                                </th>
+                             
+                            </tr>
+                        </table>
+                    </td>
+            </tr>
+           
+        </thead>
+        <tbody>
+            <tr>
+                <td>Name</td>
+                <td colspan="2">{{salary.Emp_Name}}</td>
+                <td>DOB</td>
+                <td colspan="2">{{salary.DOB}}</td>
+                <td >UAN No.</td>
+                <td  >---------------</td>
+            </tr>
+            <tr>
+                <td>Emp. Code</td>
+                <td colspan="2">{{salary.EmployeeCode}}</td>
+                
+                <td>DOJ</td>
+                <td colspan="2">{{salary.DOJ}}</td>
+                <td>ESI</td>
+                <td>---------------</td>
+            </tr>
+            <tr>
+                <td>Designation</td>
+                <td colspan="2">{{salary.Designation}}</td>
+                <td >Total Paid Days</td>
+                <td colspan="2">{{salary.total_no_Days_in_month}}</td>
+                <td>Bank A/C No</td>
+                <td>---------------</td>
+            </tr>
+            <tr>
+                <td>Department</td>
+                <td colspan="2">{{salary.Department}}</td>
+                <td >Total no of Days</td>
+                <td colspan="2">{{salary.no_of_days}}</td>
+                <td>Pay Mode</td>
+                <td>---------------</td>
+            </tr>
+            <tr>
+                <td>Salary</td>
+                <td colspan="2">Fixed</td>
+                <td>Earnings</td>
+                <td colspan="2" >Earned</td>
+                <td>Deductions</td>
+                <td>Variable</td>
+            </tr>
+            <tr>
+                <td>Basic</td>
+                <td colspan="2">{{salary.fixed_basic}}</td>
+                <td>Basic</td>
+                <td colspan="2">{{salary.Earned_Basic}}</td>
+                
+                <td  rowspan="2" >
+                    PF
+                </td>
+                <td rowspan="2">00</td>
+            </tr>
+            <tr>
+                      
+                <td>HRA</td>
+                <td colspan="2">{{salary.fixed_HRA}}</td>
+                <td>HRA</td>
+                <td colspan="2">{{salary.Earned_HRA}}</td>
+            </tr>
+            <tr>
+
+        
+                <td>Gross Salary</td>
+                <td colspan="2">{{salary.gross_salary}}</td>
+                <td>Total Earnings</td>
+                <td colspan="2">{{salary.Total_Earning}}</td>
+                <td>Total Deductions</td>
+                <td>{{salary.Total_Deduction}}</td>
+                
+                
+            </tr>
+            <tr>
+                <td>ESIC</td>
+                <td>{{salary.ESIC}}</td>
+                <td>EPFO</td>
+                <td>{{salary.EPFO}}</td>
+                <td>Net Pay</td>
+                <td >{{salary.Net_salary}}</td>
+                <td >Employee Signature</td>
+                <td >-------------</td>
+            </tr>
+            <tr>
+                <td  style="text-align: center;" colspan="8">Amount In Word : Rupees {{salary.Net_salary_In_Words}}</td>
+               
+            </tr>
+            <tr>
+                <td colspan="8">
+                    Leave Balance-
+                    {% for leave in Leave_Balance  %}
+                           
+                    {{leave.Leave_Type_Master.Type}}:{{leave.Balance}},
+
+                
+                     {% endfor %}
+                </td>
+             <tr> 
+            <tr>
+                <td style="text-align: center;" colspan="8">*** THIS IS COMPUTER GENERATED PAYSLIP DOES NOT REQUIRE SIGNATURE ***</td>
+            </tr>
+        </tbody>
+    </table> -->
+
+
+
+
+     
+    <table  class="tableborder" CELLPADDING="4" >
+        <thead>
+            <tr> 
+                    <td colspan="8">
+                        <table width="100%" >
+                            <tr>
+                 
+
+                                <th width="130" align="left" >
+                               <img  src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{org_Details.OrganizationLogo}}"  height="100">
+                                </th>
+                                <th style="text-align: center;" >
+                                    {{org_Details.OrganizationName}}
+                                     <br>
+                                     {{org_Details.Address}}
+                                     <br>
+                                     Payslip For the month of {{month}} - {{year}}
+                                </th>
+                             
+                            </tr>
+                        </table>
+                    </td>
+            </tr>
+           
+        </thead>
+        <tbody>
+            <tr>
+                <td class="Bold">Name</td>
+                <td colspan="2">{{salary.Emp_Name  }}</td>
+                <td class="Bold">DOB</td>
+                <td colspan="2">{{salary.DOB}}</td>
+                <td class="Bold">PF No.</td>
+                <td >{{salary.ProvidentFundNumber}}</td>
+            </tr>
+            <tr>
+                <td class="Bold">Emp. Code</td>
+                <td colspan="2">{{salary.EmployeeCode}}</td>
+                
+                <td class="Bold">DOJ</td>
+                <td colspan="2">{{salary.DOJ}}</td>
+                <td class="Bold">ESI</td>
+                <td>{{salary.ESINumber}}</td>
+            </tr>
+            <tr>
+                <td class="Bold">Designation</td>
+                <td colspan="2">{{salary.Desingation}}</td>
+                <td class="Bold">Total Paid Days</td>
+                <td colspan="2">{{salary.total_no_Days_in_month}}</td>
+                <td class="Bold">Bank A/C No</td>
+                <td>{{salary.BankAccountNumber}}</td>
+            </tr>
+            <tr>
+                <td class="Bold">Department</td>
+                <td colspan="2">{{salary.Department}}</td>
+                <td class="Bold">Total no of Days</td>
+                <td colspan="2">{{salary.no_of_days}}</td>
+                <td class="Bold">Pay Mode</td>
+                <td>Bank Transfer</td>
+            </tr>
+          
+           </tr>
+            <tr class="Bold">
+                <td>Salary</td>
+                <td colspan="2">Fixed</td>
+                <td>Earnings</td>
+                <td colspan="2" >Earned</td>
+                <td>Deductions</td>
+                <td>Variable</td>
+                
+                
+            </tr>
+            <tr>
+                <td>Basic</td>
+                <td colspan="2">{{salary.fixed_basic}}</td>
+                <td>HRA</td>
+                <td colspan="2">{{salary.Earned_Basic}}</td>
+                <td>ESIC(0.75% of BE)</td>
+                <td>{{salary.ESIC}}</td>
+               
+            </tr>
+            <tr>
+                      
+                <td>HRA</td>
+                <td colspan="2">{{salary.fixed_HRA}}</td>
+                <td>HRA</td>
+                <td colspan="2">{{salary.Earned_HRA}}</td>
+                 <td>EPFO(12 % of BE)</td>
+                <td>{{salary.EPFO}}</td>
+               
+                
+            </tr>
+            <tr class="Bold">
+
+        
+                <td >Gross Salary</td>
+                <td colspan="2">{{salary.gross_salary}}</td>
+                <td>Total Earnings</td>
+                <td colspan="2">{{salary.Total_Earning}}</td>
+                <td >
+                    PF
+                </td>
+                <td >{{salary.Total_Deduction}}</td>
+               
+                
+                
+            </tr>
+            <tr class="Bold">
+               
+                <td >
+                    Employee Signature
+                </td>
+                <td colspan="2">______________</td>
+
+                </td>
+                <td class="Bold">Net Pay</td>
+                <td  colspan="2">{{salary.Net_salary}}</td>
+               
+                <td class="Bold">Total Deductions</td>
+                <td>{{salary.Total_Deduction}}</td>
+            </tr>
+            <tr>
+                <td class="Bold" colspan="8" style="text-align: center;">Amount In Words :- Rupees {{salary.Net_salary_In_Words}}.</td>
+               
+            </tr>
+            
+            <tr>
+                <td colspan="8">
+                    Leave Balance-
+                    {% for leave in Leave_Balance  %}
+                           
+                    {{leave.Leave_Type_Master.Type}}:{{leave.Balance}},
+
+                
+                     {% endfor %}
+                </td>
+             <tr> 
+            <tr>
+                <td style="text-align: center;" colspan="8">*** THIS IS COMPUTER GENERATED PAYSLIP DOES NOT REQUIRE SIGNATURE ***</td>
+            </tr>  
+        </tbody>
+    </table>
+   </div>
+</body>
+</html>
+
+
+
+
+

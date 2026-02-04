@@ -1,0 +1,53 @@
+{% extends "OpenPositions/homebase.html" %} 
+{% block content %}
+
+
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    .custom-label {
+        width: 200px; 
+        font-family: "Arial Nova",
+    }
+    .form-control {
+        flex-grow: 1;
+        font-family: "Arial Nova",
+    }
+    
+</style>   
+  
+
+    <div class="col-md-12">
+        <form method="POST">
+            {% csrf_token %}
+  
+            <div class="card">
+                <div class="card-header">
+                    <strong>QR Code</strong>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-1 d-flex align-items-center">
+                            <label class="from-label custom-label">Type</label>
+                            <input list="types" class="form-control" id="type" name="type" placeholder="Type here">
+                            <datalist id="types">
+                                <option value="linkedin">
+                                <option value="facebook">
+                                <option value="twitter">
+                                <option value="instagram">
+                                <option value="college">
+                                <option value="other">
+                            </datalist>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+{% endblock content %}

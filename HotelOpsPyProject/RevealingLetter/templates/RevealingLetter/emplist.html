@@ -1,0 +1,156 @@
+{% extends 'RevealingLetter/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    th,td{
+        font-size: 12px;
+    }
+</style>
+
+
+<div                                                   >
+    <div class="card-header">Employee Revealing Letter List</div>
+    <br>
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+      <div>
+        <form action="" method="get">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group m-3">
+                        <select name="I" id="organizationSelect" class="form-control">
+                            <option value="">Select Organization Name</option>
+                            {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                  
+                        
+                   
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Filter">
+                        <a href="{% url 'emplistloa' %}" class="btn btn-primary btn-sm" >Clear Filter</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>  
+
+    <table  id="example" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Emp Code</th>
+            
+            <th>Name</th>
+            
+            <th>Revealing Date</th>
+            <th>Joining Date</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Signed Documents</th>
+           
+           
+            <th width="180">Actions</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+       {% for empdetail in empdetails %}
+        <tr>
+            <td>{{empdetail.emp_code}}</td>
+            
+            <td>{{empdetail.first_name}}
+            {{empdetail.last_name}}</td> 
+           
+            <td>{{empdetail.date_of_Revealing}}</td>
+            <td>{{empdetail.date_of_joining}}</td>
+            <td>{{empdetail.department}}</td>
+            <td>{{empdetail.designation}}</td>
+            
+           
+           <td>
+            {% if empdetail.file_name is   null %}
+
+<a   class="btn btn-secondary btn-sm" href='{% url "upload_fileloa"  id=empdetail.id %}'>Upload File</a>
+
+{% endif %}
+
+{% if empdetail.file_name is  not   null %}
+<a  onclick="return confirm('Are you sure you want to delete this file?')"  class="btn btn-secondary btn-sm" href='{% url "repalce_fileloa"  id=empdetail.id %}'>Delete File</a>
+
+
+<a href="{% url "download_fileloa" id=empdetail.id %}" class="btn btn-primary btn-sm" >
+    Download File
+</a>
+
+{% endif%}
+           </td>
+                        <td>
+              <span style="position: relative; ">
+                <a  class="btn btn-primary btn-sm" href="{% url 'empupdateloa' empdetail.id %}">Edit</a>
+<a  onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger  btn-sm" href="/LETTEROFRevealing/empdeleteloa?id={{empdetail.id}}">Delete</a>
+
+
+<a    class="btn btn-info btn-sm" href= "/LETTEROFRevealing/generate_Revealing_letter?id={{empdetail.id}}" >View</a>
+
+
+
+
+
+
+</div>
+</span>   
+                
+              
+             </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    
+      <br>
+    
+    
+    <br>
+
+</div>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
+       
+       
+    });
+    
+    
+</script>
+
+{% endblock content %}

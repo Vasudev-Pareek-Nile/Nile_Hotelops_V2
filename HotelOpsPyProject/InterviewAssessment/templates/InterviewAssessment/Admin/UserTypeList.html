@@ -1,0 +1,97 @@
+
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+
+<div class="modal fade" id="userTypeModal" tabindex="-1" role="dialog" aria-labelledby="userTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="userTypeModalLabel">Add User Type</h5>
+                <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'UserTypeAddEdit' %}">
+                {% csrf_token %}
+                <input type="hidden" name="UID" id="modalUID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="userTypeInput" class="mb-1">User Type</label>
+                        <input type="text" class="form-control" id="userTypeInput" name="UserType" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="text-uppercase">
+                <strong>User Type List</strong>
+            </h4>
+            <button type="button" class="btn mr-4 btn-primary"  data-bs-toggle="modal" data-bs-target="#userTypeModal">
+                Add User Type
+            </button>
+        </div>
+    {% comment %} </div> {% endcomment %}
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th class="text-center">User Type</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for userobj in userobjs %}
+                <tr>
+                    <td class="text-center">{{ userobj.UserType }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-sm edit-user-type-btn"
+                                data-bs-toggle="modal" data-bs-target="#userTypeModal"
+                                data-uid="{{ userobj.id }}" data-usertype="{{ userobj.UserType }}">
+                            Edit
+                        </button>
+                        <a href="{% url 'UserTypeDelete' %}?UID={{ userobj.id }}" class="btn btn-danger text-white btn-sm" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    
+    $('#userTypeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); 
+        var uid = button.data('uid'); 
+        var modal = $(this);
+
+        if (uid) {
+            $.ajax({
+                url: "{% url 'UserTypeAddEdit' %}",
+                data: { UID: uid },
+                success: function (data) {
+                    modal.find('.modal-title').text('Edit User Type');
+                    modal.find('#modalUID').val(uid); 
+                    modal.find('#userTypeInput').val(data.UserType);
+                }
+            });
+        } else {
+            modal.find('.modal-title').text('Add User Type');
+            modal.find('#modalUID').val(''); 
+            modal.find('#userTypeInput').val('');
+        }
+    });
+</script>
+{% endblock content %}

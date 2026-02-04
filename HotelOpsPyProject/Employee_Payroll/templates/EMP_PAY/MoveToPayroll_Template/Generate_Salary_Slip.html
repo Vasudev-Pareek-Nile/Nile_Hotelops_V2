@@ -1,0 +1,604 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %} 
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            padding: 32px 16px;
+            color: #000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 32px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .salary-slip {
+            border: 2px solid #000;
+            margin-bottom: 24px;
+        }
+
+        /* Header Section */
+        .salary-slip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #000;
+        }
+
+        .company-info{
+            width:65%;
+        }
+
+        .company-info h1 {
+            font-size: 16px;
+            font-weight: normal;
+            margin-bottom: 4px;
+        }
+
+        .company-info p {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .logo-placeholder {
+            padding: 8px 16px;
+            font-size: 11px;
+        }
+
+        .pay-period {
+            text-align: center;
+            padding: 8px;
+            border-bottom: 1px solid #000;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* Employee Details */
+        .employee-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid #000;
+        }
+
+        .employee-cell {
+            padding: 8px;
+            font-size: 11px;
+            border-right: 1px solid #000;
+        }
+
+        .employee-cell:last-child {
+            border-right: none;
+        }
+
+        .employee-cell span.label {
+            display: inline-block;
+            width: 96px;
+        }
+
+        /* Three Column Section - Fixed Salary, Earnings and Deductions */
+        .three-column-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .fixed-salary-section {
+            border-right: 1px solid #000;
+        }
+
+        .earnings-section {
+            border-right: 1px solid #000;
+        }
+
+        .section-header {
+            background-color: #f3f4f6;
+            padding: 8px;
+            border-bottom: 1px solid #000;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .section-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .item-label {
+            padding: 8px;
+            font-size: 11px;
+            border-right: 1px solid #000;
+            border-bottom: 1px solid #000;
+            font-weight: bold;
+        }
+
+        .item-value {
+            padding: 8px;
+            font-size: 11px;
+            border-bottom: 1px solid #000;
+            text-align: right;
+        }
+
+        .item-label.highlighted,
+        .item-value.highlighted {
+            background-color: #f3f4f6;
+        }
+
+        .cell-label{
+            font-weight: bold;
+        }
+
+        /* Totals Section */
+        .totals-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid #000;
+        }
+
+        .total-section {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .total-section:not(:last-child) {
+            border-right: 1px solid #000;
+        }
+
+        .total-label {
+            padding: 8px;
+            font-size: 11px;
+            border-right: 1px solid #000;
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+
+        .total-value {
+            padding: 8px;
+            font-size: 11px;
+            text-align: right;
+            background-color: #f3f4f6;
+        }
+
+        .total-label.empty,
+        .total-value.empty {
+            background-color: transparent;
+        }
+
+        /* Net Pay Section */
+        .net-pay {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            border-top: 1px solid #000;
+            background-color: #e5e7eb;
+        }
+
+        .net-pay-label {
+            padding: 8px;
+            font-size: 11px;
+            border-right: 1px solid #000;
+            font-weight: bold;
+        }
+
+        .net-pay-value {
+            padding: 8px;
+            font-size: 11px;
+            text-align: right;
+        }
+
+        /* Leave Balance */
+        .leave-balance {
+            padding: 8px;
+            border-top: 1px solid #000;
+            font-size: 11px;
+        }
+
+        /* Footer */
+        .footer {
+            padding: 8px;
+            border-top: 1px solid #000;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        /* Formula */
+        .formula {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 11px;
+            color: #4b5563;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                padding: 16px;
+            }
+        }
+        .input-small {
+            height: 30px;
+            text-align: end;
+        }
+
+        .edit-btn{
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .edit-actions{
+            gap: 5px;
+            align-items: end;
+            justify-content: end;
+            margin-top: 5px;
+            border-radius: 5px;
+        }
+        .edit-actions button{
+            border-radius: 5px;
+        }
+    </style>
+    <a href="{% url "Generte_Salary_View" %}?year={{year}}&month_no={{Month}}" class="btn btn-primary mb-1">Back</a>
+    <div class="container">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="salary-slip">
+                <!-- Header -->
+                <div class="salary-slip-header">
+                    <div class="logo-placeholder">
+                        {% comment %} [COMPANY LOGO] {% endcomment %}
+                        <img  src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{org_Details.OrganizationLogo}}"  height="100" width="200">
+                    </div>
+                    <div class="company-info">
+                        <h1>{{org_Details.OrganizationName}}</h1>
+                        <p>{{org_Details.Address}}</p>
+
+                        {% comment %} Payslip For the month of {{month}} - {{year}} {% endcomment %}
+                    </div>
+                </div>
+
+                <!-- Pay Period -->
+                <div class="pay-period">
+                    Payslip for the month of {{month_name}}, {{year}}
+                </div>
+
+                <!-- Employee Details -->
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Employee ID</div>
+                    <div class="employee-cell">{{slip.EmployeeCode}}</div>
+
+                    <!-- <div class="employee-cell cell-label">Employee Name</div>
+                    <div class="employee-cell">{{slip.Emp_Name}}</div> -->
+                    <div class="employee-cell">
+                        <span class="label cell-label">PAN:</span>
+                        <span>{{slip.Pan_No}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Employee Name</div>
+                    <div class="employee-cell">{{slip.Emp_Name}}</div>
+
+                    <div class="employee-cell">
+                        <span class="label cell-label">Bank Name:</span>
+                        <span>{{slip.Bank_Name}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Designation</div>
+                    <div class="employee-cell">{{slip.Designation}}</div>
+                    <!-- <div class="employee-cell cell-label">Employee ID</div>
+                    <div class="employee-cell">{{slip.EmpID}}</div> -->
+                    <div class="employee-cell">
+                        <span class="label cell-label">Account Number:</span>
+                        <span>{{slip.Bank_Account_Number}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Department</div>
+                    <div class="employee-cell">{{slip.Department}}</div>
+
+                    <div class="employee-cell ">
+                        <span class="label cell-label">Bank Branch:</span>
+                        <span>{{slip.Bank_Branch}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Date of Joining (dd-mm-yyyy)</div>
+                    <div class="employee-cell">{{slip.DOJ}}</div>
+
+
+                    <div class="employee-cell ">
+                        <span class="label cell-label">Bank IFSC Code:</span>
+                        <span>{{slip.Bank_IFSC_Code}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Employee Status</div>
+                    <div class="employee-cell">{{slip.EmpStatus}}</div>
+
+                    <div class="employee-cell">
+                        <span class="label cell-label">PF Number:</span>
+                        <span>{{slip.Provident_Fund_Number}}</span>
+                    </div>
+                </div>
+
+                <div class="employee-row">
+                    <div class="employee-cell cell-label">Total Days:</div>
+                    <div class="employee-cell">{{slip.Total_No_Days_In_Month}}</div>
+                    <div class="employee-cell">
+                        <span class="label cell-label">Days Worked:</span>
+                        <span>{{slip.Present_Days}}</span>
+                    </div>
+                </div>
+
+                <!-- Fixed Salary, Earnings and Deductions -->
+                <div class="three-column-section">
+                    <!-- Fixed Salary Section -->
+                    <div class="fixed-salary-section">
+                        <div class="section-header">FIXED SALARY</div>
+                        <div class="section-content">
+                            {% for key, value in Fixed.items %}
+                                <div class="item-label">{{ key }}</div>
+                                <div class="item-value">{{ value }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Earnings Section -->
+                    <div class="earnings-section">
+                        <div class="section-header">EARNINGS</div>
+                        <div class="section-content">
+                            {% for key, value in Earning.items %}
+                                <div class="item-label">{{ key }}</div>
+                                <div class="item-value">{{ value }}</div>
+                            {% endfor %}
+
+                            <div class="item-label">Arrear</div>
+                            <div class="item-value Action-buttons-container">
+                                <input type="text" class="form-control input-small" name="arrear" value="{{slip.Arrers|default:"0"}}" readonly>
+                                <input type="hidden" name="slip_id" value="{{slip.id}}">
+
+                                <!-- Edit button -->
+                                <button type="button" class="btn border-black p-1 edit-btn"  style="{% if Action == 'View' %}display:none;{% endif %}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <!-- Submit & Cancel buttons (hidden by default) -->
+                                <div class="edit-actions" style="display:none;">
+                                    <button type="button" class="btn p-1 border-success text-success s-btn"><i class="fas fa-check"></i></button>
+                                    <button type="button" class="btn p-1 border-danger text-danger c-btn"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deductions Section -->
+                    <div class="deductions-section">
+                        <div class="section-header">DEDUCTIONS</div>
+                        <div class="section-content">
+                            {% for key, value in Deductions.items %}
+                                <div class="item-label">{{ key }}</div>
+                                <div class="item-value">{{ value }}</div>
+                            {% endfor %}
+
+
+                            <div class="item-label">Advance/Loan</div>
+                            <div class="item-value Action-buttons-container">
+                                <input type="text" class="form-control input-small" name="advance_loan" value="{{slip.Advance_Loan|default:"0"}}" readonly>
+                                <input type="hidden" name="slip_id" value="{{slip.id}}">
+
+                                <!-- Edit button -->
+                                <button type="button" class="btn p-1 edit-btn border-black"  style="{% if Action == 'View' %}display:none;{% endif %}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <!-- Submit & Cancel buttons (hidden by default) -->
+                                <div class="edit-actions" style="display:none;">
+                                    <button type="button" class="btn p-1 border-success text-success s-btn"><i class="fas fa-check"></i></button>
+                                    <button type="button" class="btn p-1 border-danger text-danger c-btn"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="item-label">Tax Deduction</div>
+                            <div class="item-value Action-buttons-container">
+                                <input type="text" class="form-control input-small" name="tax_deduction" value="{{slip.Tax_Deduction|default:"0"}}" readonly>
+                                <input type="hidden" name="slip_id" value="{{slip.id}}">
+
+                                <!-- Edit button -->
+                                <button type="button" class="btn p-1 border-black edit-btn"  style="{% if Action == 'View' %}display:none;{% endif %}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <!-- Submit & Cancel buttons (hidden by default) -->
+                                <div class="edit-actions" style="display:none;">
+                                    <button type="button" class="btn p-1 border-success text-success s-btn"><i class="fas fa-check"></i></button>
+                                    <button type="button" class="btn p-1 border-danger text-danger c-btn"><i class="fas fa-times"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="item-label">Other Deduction</div>
+                            <div class="item-value Action-buttons-container">
+                                <input type="text" class="form-control input-small" name="other_deduction" value="{{slip.Other_Deduction|default:"0"}}" readonly>
+                                <input type="hidden" name="slip_id" value="{{slip.id}}">
+
+                                <!-- Edit button -->
+                                <button type="button" class="btn p-1 border-black edit-btn"  style="{% if Action == 'View' %}display:none;{% endif %}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                
+                                <!-- Submit & Cancel buttons (hidden by default) -->
+                                <div class="edit-actions" style="display:none;">
+                                    <!-- <button type="button" class="btn btn-success s-btn"><i class="fas fa-check"></i></button>
+                                    <button type="button" class="btn btn-danger c-btn"><i class="fas fa-times"></i></button> -->
+
+                                    <button type="button" class="btn p-1 border-success text-success s-btn">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button type="button" class="btn p-1 border-danger text-danger c-btn">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Totals -->
+                <div class="totals-row">
+                    <div class="total-section">
+                        <div class="total-label">Total Fixed Salary</div>
+                        <div class="total-value">₹{{slip.Total_Fixed}}</div>
+                        <!-- <div class="total-value">₹{{total_fixed}}</div> -->
+                    </div>
+                    <div class="total-section">
+                        <div class="total-label">Total Earnings</div>
+                        <div class="total-value">₹{{slip.Total_Earning}}</div>
+                        <!-- <div class="total-value">₹{{total_earning}}</div> -->
+                    </div>
+                    <div class="total-section">
+                        <div class="total-label">Total Deductions</div>
+                        <div class="total-value">₹{{slip.Total_Deduction}}</div>
+                        <!-- <div class="total-value">₹{{total_deduction}}</div> -->
+                    </div>
+                </div>
+
+                <div class="totals-row">
+                    <div class="total-section">
+                        <div class="total-label empty"></div>
+                        <div class="total-value empty"></div>
+                    </div>
+                    <div class="total-section">
+                        <div class="total-label">Net Pay</div>
+                        <div class="total-value">₹{{slip.Net_Payable}}</div>
+                        <!-- <div class="total-value">₹{{net_pay}}</div> -->
+                    </div>
+                    <div class="total-section">
+                        <div class="total-label empty"></div>
+                        <div class="total-value empty"></div>
+                    </div>
+                </div>
+
+                <!-- Net Pay -->
+                <div class="net-pay">
+                    <div class="net-pay-label">Net Pay In Words</div>
+                    <div class="net-pay-value">{{slip.Net_Payable_In_Words}}</div>
+                </div>
+
+                <!-- Leave Balance -->
+                <div class="leave-balance">
+                    Leave Balance: NH:0.00, LWP:0.00, ML:0.00, AB:0.00, OP:0.00, Comp-off:0.00, SL:0.00, CL:0.00, PL:0.00
+                </div>
+
+                <!-- Footer -->
+                <div class="footer">
+                    *** THIS IS COMPUTER GENERATED PAYSLIP DOES NOT REQUIRE SIGNATURE ***
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const itemValues = document.querySelectorAll('.Action-buttons-container');
+
+        itemValues.forEach(container => {
+            const inputArrear = document.querySelector('input[name="arrear"]');
+            const inputAdvance = document.querySelector('input[name="advance_loan"]');
+            const inputTax = document.querySelector('input[name="tax_deduction"]');
+            const inputOther = document.querySelector('input[name="other_deduction"]');
+            const slipId = container.querySelector('input[name="slip_id"]').value;
+
+            const editBtn = container.querySelector('.edit-btn');
+            const actions = container.querySelector('.edit-actions');
+            const submitBtn = container.querySelector('.s-btn');
+            const cancelBtn = container.querySelector('.c-btn');
+
+            let arrearvalue = inputArrear.value;
+            let advancevalue = inputAdvance.value;
+            let taxvalue = inputTax.value;
+            let othervalue = inputOther.value;
+            console.log("Initial Values:", "Arrear Value:",arrearvalue, "Advance Value:", advancevalue, "Tax Value:", taxvalue, "Other Value:", othervalue, "Slip ID:", slipId);
+
+            // Edit button click
+            editBtn.addEventListener('click', () => {
+                container.querySelectorAll('input').forEach(i => i.removeAttribute('readonly'));
+                container.querySelector('input').focus();
+                editBtn.style.display = 'none';
+                actions.style.display = 'flex';
+            });
+
+            // Cancel button click
+            cancelBtn.addEventListener('click', () => {
+                container.querySelectorAll('input').forEach(i => i.setAttribute('readonly', true));
+                actions.style.display = 'none';
+                editBtn.style.display = 'inline-block';
+            });
+
+            // Submit button click - AJAX call
+            submitBtn.addEventListener('click', () => {
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch("/Employee_Payroll/update_salary_slip_manual_fields/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": csrfToken
+                    },
+                    body: new URLSearchParams({
+                        slip_id: slipId,
+                        arrear: inputArrear.value,
+                        advance_loan: inputAdvance.value,
+                        tax_deduction: inputTax.value,
+                        other_deduction: inputOther.value
+                    })
+                })
+                //.then(response => {
+                //    // Handle redirect (if any)
+                //    if (response.statusText == 'OK') {
+                //        alert("Salary Slip Updated Successfully!");
+                //        location.reload();
+                //    } else {
+                //        alert(`Error: ${response.message || "Failed to update salary slip"}`);
+                //    }
+                //})
+                //.catch(error => {
+                //    console.error("Error:", error);
+                //    alert("Something went wrong!");
+                //});
+
+                .then(async (response) => {
+                    let data = await response.json();  // get JSON message
+
+                    if (response.ok && data.status === "success") {
+                        alert("Salary Slip Updated Successfully!");
+                        location.reload();
+                    } else {
+                        alert("Error: " + data.message);   // show exact error
+                    }
+                })
+                .catch(error => {
+                    alert("Network Error: " + error);
+                });
+            });
+        });
+    });
+</script>
+
+{% endblock content %} 

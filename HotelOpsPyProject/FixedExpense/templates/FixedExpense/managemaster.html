@@ -1,0 +1,88 @@
+{% extends 'FixedExpense/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<link href="{% static '/css/plugins/jsTree/style.min.css' %}" rel="stylesheet">
+    <script src="{% static '/js/plugins/jsTree/jstree.min.js' %}"></script>
+
+                                                 
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Master List</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div id="jstree"></div>
+
+                    <script>
+                        
+                        var csrfToken = '{{ csrf_token }}';
+                        function updateOrder(newOrder) {
+                            var d =[];
+                            $(newOrder).each(function(ind,im){
+                                var a ={index:im.index,id:im.id};
+                                d.push(a);
+
+                            })
+                            debugger;
+                            $.ajax({
+                                type: 'POST',
+                                url: '/FixedExpense/update_order/',  // Replace with your actual URL
+                                data: {'order[]': d},
+                                beforeSend: function(xhr, settings) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+                                },
+                                success: function (data) {
+                                    debugger
+                                    if (data.success) {
+                                        // Handle success, maybe show a message
+                                    } else {
+                                        // Handle failure
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Attach the jsTree event handler for when items are reordered
+                        $('#jstree').on('move_node.jstree', function (e, data) {
+                            debugger;
+                            const newOrder = data.new_instance.get_json(null, {flat: true});
+                            updateOrder(newOrder);
+                        });
+                        
+                        $(document).ready(function () {
+                            $('#jstree').jstree({
+                                'core': {
+                                    'data': {{ tree_data|safe }},
+                                    'check_callback': true,  // Enable all interactions
+                                },
+                                'plugins': ["contextmenu", "dnd", "search",
+                                "state", "types", "wholerow"],  // Enable drag-and-drop and sorting plugins
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+        <br>
+
+        {% comment %} <script>
+            $(function () { $('#jstree_demo_div').jstree(); });
+        </script>
+     {% endcomment %}
+    {% endblock content %}

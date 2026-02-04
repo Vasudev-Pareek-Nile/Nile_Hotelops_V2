@@ -1,0 +1,496 @@
+{% load static %}
+<html lang="en" data-layout="horizontal" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-layout-mode="orange" data-layout-width="fluid" data-layout-position="fixed" data-layout-style="default">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Smarthr - Bootstrap Admin Template">
+		    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+        <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
+        <title>Absconding - Hotelops</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<!-- jQuery (Load only once) -->
+		<script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+		<!-- FontAwesome Icons -->
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+
+		<!-- LineAwesome & Material Icons -->
+		<link rel="stylesheet" href="{% static 'assets/css/line-awesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/material.css' %}">
+
+		<!-- Main Styles -->
+
+		<link rel="stylesheet" href="{% static 'assets/css/style.css' %}?v=13">
+
+
+		
+		<!-- Datatable CSS -->
+		<link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+
+		<link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap-datetimepicker.min.css' %}">
+
+		<!-- typeahead CSS -->
+		<script src="{% static '/js/plugins/typehead/bootstrap3-typeahead.min.js' %}"></script>
+		
+<Style>
+	div,a,h1,h2,h3,h4,h5,h6,span,p,td,th,tr,*{
+		font-family:"Arial Nova", sans-serif;
+	}
+
+	td{
+		text-wrap: auto !important;
+	}
+	[data-layout-width=boxed] body, [data-layout-width=boxed] .header {
+		max-width: 100% !important;
+		margin: auto;
+	}
+
+    .loader-container {
+        max-height: 700px;
+     
+    }.header .top-nav-search form{
+
+        width:280px;
+    }
+    .header .user-menu{
+
+        align-item:start;
+    }
+    .sidebar-vertical .typeahead.dropdown-menu{
+        top:0px !important
+    }
+
+
+    .dashboard-container {
+        padding: 20px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
+    .summary-header {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .summary-header .variance {
+        color: #e74c3c;
+        margin-left: 10px;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    
+    .card-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    
+    .card-box:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #555;
+    }
+    
+    .card-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+    
+    .card-data {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+    .green .card-icon {
+        color: #27ae60;
+    }
+    .red .card-icon {
+        color: #e74c3c;
+    }
+    .yellow .card-icon {
+        color: #f39c12;
+    }
+    .echarts-container {
+        max-width: 100%;
+        overflow: auto;
+    }
+	.hide-important {
+    	display: none !important;
+	}
+
+	ul.nav_l_h_s_m li:nth-child(1) {
+		width: 96% !important;
+		min-width: 73%;
+		margin: 0px 8px !important;
+	}
+
+	.sidebar-vertical ul.nav_l_h_s_m li:nth-child(1) {
+		width: 96%;
+		min-width: 73%;
+		margin: 0 auto;
+	}
+	.loader-container{
+		display: none;
+	}
+	.header .user-menu {
+		margin-top: 0px !important; 
+	}
+	.select2-container--default .select2-selection--single .select2-selection__rendered {
+		line-height: 44px !important;
+	}
+	.select2-container--default .select2-selection--single .select2-selection__arrow {
+		height: 42px !important;
+		right:11px !important;
+	}
+
+	.page-wrapper {
+		min-height: auto !important;
+	}
+
+
+	table {
+		border: 0.5px solid #b0afaf75;
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+	}
+
+	table th, table td {
+		border: 0.5px solid #b0afaf75;
+	}
+	.btn{
+		border-radius: 5px !important;
+	}
+
+	.form-control{
+		border-radius: 5px !important;
+	}
+
+	.btn-primary, .btn-danger, .btn-Warning{
+		border-radius: 5px;
+	}
+	
+
+    .card .card-body {
+        padding: 16px !important;
+    }
+
+    .card .card-header {
+        margin-bottom: -20px !important;
+    }
+    .CustomFooter{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white; /* optional */
+        padding: 10px;     /* optional */
+        text-align: center; /* optional */
+        z-index: 999; 
+        padding-right: 24px;
+        display: flex;
+        justify-content: end;
+        border-top: 1px solid #00000054;
+    }
+
+</Style>
+	{% block extra_css %}
+	{% endblock %}
+</head>
+
+<body id="{% block body_id %}default-body{% endblock %}">
+     
+	<!-- Main Wrapper -->
+	<div class="main-wrapper">
+		
+		<!-- Header -->
+		<div class="header ">
+		
+			<!-- Logo -->
+	  		<div class="header-left">
+				<a  href="{{request.session.HomeURL}}" class="logo">
+					<img alt="image" class="" src="{{ request.session.OrganizationLogo}}" style="max-width:60px;box-shadow: none !important;"/>
+				</a>
+				<a  href="{{request.session.HomeURL}}" class="logo collapse-logo">
+					<img src="{{ request.session.OrganizationLogo}}" alt="Logo">
+				</a>
+				<a  href="{{request.session.HomeURL}}" class="logo2">
+					<img src="{{ request.session.OrganizationLogo}}" width="40" height="40" alt="Logo">
+				</a> 
+			</div>
+			<!-- /Logo -->
+			
+			<a id="toggle_btn" href="javascript:void(0);" style="
+            margin-top: 15px;
+        	">
+				<span class="bar-icon">
+					<span></span>
+					<span></span>
+					<span></span>
+				</span>
+			</a>
+			
+			<!-- Header Title -->
+            <div class="page-title-box">
+                <div class="nav-element-container d-flex justify-content-between align-items-center">
+                    <ul class="nav-element-container d-flex gap-4">
+						{% include 'EmpAbscondingTemp/TopNavbarMenu.html' %}
+                    </ul>
+                </div>
+            </div>
+			<!-- /Header Title -->
+			
+			<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+
+           
+			<ul class="nav user-menu" >
+				<!-- Search -->
+				<!-- Flag -->
+				<!-- Notifications -->
+				<!-- Message Notifications -->
+
+				<li class="list-unstyled" style="margin-top: 10px;">
+					<div class="top-nav-search">
+						<a href="javascript:void(0);" class="responsive-search">
+							{% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+					   </a>
+						<form >
+							<input class="form-control top-search" id="" type="text" placeholder="Search here">
+						</form>
+					</div>
+				</li>
+				
+				<!-- /Profile Home Nav - Button -->
+				
+				<li class="list-unstyled"><a href="{{request.session.HomeURL}}" class="nav-link text-white">Home</a></li>
+
+				<li class="nav-item dropdown has-arrow main-drop">
+					<a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+
+					<span>{{ request.session.FullName }}</span>
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a>
+						<a class="dropdown-item" href="#">setting</a>
+						<a class="dropdown-item" href="{{request.session.Logout}}">Logout</a>
+					</div>
+				</li>
+			</ul>
+			<!-- /Header Menu -->
+			
+			<!-- Mobile Menu -->
+			<div class="dropdown mobile-user-menu">
+				<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item">My Profile</a>
+					<a class="dropdown-item" href="settings.html">Settings</a>
+					<a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a>
+					<a class="dropdown-item" href="{{request.session.Logout}}">Logout</a>
+					
+				</div>
+			</div>
+			<!-- /Mobile Menu -->
+			
+		</div>
+		<!-- /Header -->
+		
+		<!-- Sidebar -->
+		<div class="sidebar" id="sidebar">
+			<div class="sidebar-inner slimscroll">
+				<div id="sidebar-menu" class="sidebar-menu">
+					{% include 'apps/sidenavbar.html' %}
+                </div>
+            </div>
+        </div>
+		<!-- /Sidebar -->
+		
+		<!-- Page Wrapper -->
+		<div class="page-wrapper">
+            <div class="content container-fluid pb-0">
+				{% block content %}{% endblock %}
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+            </div>
+        </div>
+		<!-- /Page Wrapper -->
+		 
+		 <!-- /Modal For pdf Opening -->
+		 <div id="modalview" class="modal fade" role="dialog">
+			<div class="modal-dialog" style="max-width:90%;width:90%">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">View</h4>
+						<button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<iframe src="" style="width:100%;min-height:500px;overflow:auto"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Main Wrapper -->
+
+
+	
+	<!-- Bootstrap Core JS -->
+	<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+	<!-- Slimscroll (for scrollbars, if needed) -->
+	<script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
+
+	<!-- Select2 (for enhanced select dropdowns, if used) -->
+	<script src="{% static 'assets/js/select2.min.js' %}"></script>
+
+	<!-- DataTables (for tables, if needed) -->
+	<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+	<!-- Datetimepicker (for date/time pickers, if used) -->
+	<script src="{% static 'assets/js/moment.min.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+	<!-- Morris Charts (if using charts) -->
+	<script src="{% static 'assets/plugins/morris/morris.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/raphael/raphael.min.js' %}"></script>
+
+	<!-- Theme & Custom Scripts -->
+
+
+
+    {% block extra_js %}
+
+    {% endblock %}
+
+    <!-- Toast notification -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    
+
+    <!-- Mainly scripts -->
+    <script src="{% static '/js/popper.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.js' %}"></script>
+    <script src="{% static '/js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static '/js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Flot -->
+    <script src="{% static '/js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.pie.js' %}"></script>
+
+    <!-- Peity -->
+    <script src="{% static '/js/plugins/peity/jquery.peity.min.js' %}"></script>
+    <script src="{% static '/js/demo/peity-demo.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static '/js/inspinia.js' %}"></script>
+    <script src="{% static '/js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static '/js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- GITTER -->
+    <script src="{% static '/js/plugins/gritter/jquery.gritter.min.js' %}"></script>
+
+    <!-- Sparkline -->
+    <script src="{% static '/js/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
+
+    <!-- Sparkline demo data  -->
+    <script src="{% static '/js/demo/sparkline-demo.js' %}"></script>
+
+    <!-- ChartJS-->
+    <script src="{% static '/js/plugins/chartJs/Chart.min.js' %}"></script>
+
+    <!-- Toastr -->
+    <script src="{% static '/js/plugins/toastr/toastr.min.js' %}"></script>
+
+
+	
+	<script src="{% static 'assets/js/layout.js' %}"></script>
+	<script src="{% static 'assets/js/theme-settings.js' %}"></script>
+	<script src="{% static 'assets/js/greedynav.js' %}"></script>
+	<script src="{% static 'assets/js/app.js' %}"></script>
+
+
+	<script>
+		var showview = function (obj) {
+			$("#modalview").modal('show')
+			var url = $(obj).attr('data-href')
+			$("#modalview iframe").attr('src', url);
+		}
+	</script>
+	
+    <script>
+        $(document).ready(function () {
+
+            let toast = $('.toast');
+
+            setTimeout(function () {
+                toast.toast({
+                    delay: 5000,
+                    animation: true
+                });
+                toast.toast('show');
+
+            }, 2200);
+
+            
+			$(".collapse-link").off("click").on("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation(); // Stop bubbling if another click handler is up the DOM
+
+        const $ibox = $(this).closest(".ibox");
+        const $content = $ibox.find(".ibox-content");
+
+        // Toggle content visibility
+        $content.slideToggle(200);
+
+        // Toggle icon direction
+        $(this).find("i").toggleClass("fa-chevron-down fa-chevron-up");
+    });
+
+           
+
+        });
+
+        $(window).bind("scroll", function () {
+            let toast = $('.toast');
+            toast.css("top", window.pageYOffset + 20);
+
+        });
+    </script>
+</body>
+</html>

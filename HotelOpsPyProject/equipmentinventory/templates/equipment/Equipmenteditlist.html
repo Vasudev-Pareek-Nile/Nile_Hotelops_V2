@@ -1,0 +1,94 @@
+{% extends 'equipment/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'EquipmentUpdateData' %}" enctype="multipart/form-data">
+    {{ Equipment_Inventory }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Equipment Trolley Form</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+              {% render_field EquipmentInventoryForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Equipment Name</label>
+                {% render_field EquipmentInventoryForm.Equipment_Name class="form-control" placeholder="Equipment_Name" value=Ed.Equipment_Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Brand Name</label>
+                {% render_field EquipmentInventoryForm.Brand_Name class="form-control" placeholder="Brand_Name" value=Ed.Brand_Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Model No</label>
+                {% render_field EquipmentInventoryForm.Model_No class="form-control" placeholder="Model_No" value=Ed.Model_No %}
+              </div>
+              <div class="col-sm-3">
+                <label>In Working Condition</label>
+                {% render_field EquipmentInventoryForm.In_Working_Condition class="form-control" placeholder="In_Working_Condition" value=Ed.In_Working_Condition %}
+              </div>
+              <div class="col-sm-3">
+                <label>Last Servicing Date</label>
+                {% render_field EquipmentInventoryForm.Last_Servicing_Date class="form-control" placeholder="Last_Servicing_Date" value=Ed.Last_Servicing_Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>AMC Covered</label>
+                {% render_field EquipmentInventoryForm.AMC_Covered class="form-control" placeholder="AMC_Covered" value=Ed.AMC_Covered %}
+              </div>
+              <div class="col-sm-3">
+                <label>Serial No</label>
+                {% render_field EquipmentInventoryForm.Serial_No class="form-control" placeholder="Serial_No" value=Ed.Serial_No %}
+              </div>
+
+           </div>
+
+           <br/>
+           <div class="row">
+               <div class="col-sm-12">
+                   <label>Remarks</label>
+                    {% comment %} {% render_field EquipmentInventoryForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks"  value=Ed.Serial_No %} {% endcomment %}
+                    <textarea name="Remarks" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Remarks}}</textarea>
+                </div>
+ 
+             </div>
+   
+        </div>
+        
+     </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+    <script>
+      $(function(){
+              $("select").each(function(){
+                  var v=$(this).attr('value');
+                  if(v!=undefined){
+                      $(this).val(v);
+                  }
+              })
+  
+      })
+     </script>
+   
+  {% endblock content %}

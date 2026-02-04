@@ -1,0 +1,71 @@
+ {% extends 'plUtilities/homebase.html' %} 
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    .Ulmodule li {
+        flex:0;
+        margin: 10px;
+        background: #6789bd;
+        padding: 15px;
+        border-radius: 5px;
+        list-style: none;
+        min-width: 150px;
+        align-items: stretch;
+        
+    }
+    
+    ul.Ulmodule {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: flex-end;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        
+        align-items:  stretch ;
+        
+    }
+    .Ulmodule li a{
+      color: #fff;
+      font-size:25px;
+    }
+  
+</style>
+    <div>
+        <ul class="Ulmodule">
+                <li><a href="/HotelBudget/HPLUtilitiesList">P&L Utilities</a></li>
+                <li><a href="/HotelBudget/HEngList">P&L Engineering</a></li>
+                <li><a href="/HotelBudget/HSMList">P&L S&M</a></li>
+                <li><a href="/HotelBudget/HITList">IT</a></li>
+                <li><a href="/HotelBudget/HAG_SecurityList">A&G Security</a></li>
+                <li><a href="/HotelBudget/HAG_HRList">A&G HR</a></li>
+                <li><a href="/HotelBudget/HAG_AnalysisList">A&G A&G</a></li>
+                <li><a href="/HotelBudget/HTotal_AGList">Total A&G</a></li>
+                <li><a href="/HotelBudget/HRental_IncomeList">Rental Other Income</a></li>
+                <li><a href="/HotelBudget/MinorGuestList">Minor Guest Communication</a></li>
+                <li><a href="/HotelBudget/OODBusinessList">OOD Business Centre</a></li>
+                <li><a href="/HotelBudget/HOOD_LaundryList">OOD Guest Laundry </a></li>
+                <li><a href="/HotelBudget/HOOD_TransportList">OOD Transport </a></li>
+                <li><a href="/HotelBudget/HOOD_HealthList">OOD SPA & Health Club</a></li>
+                <li><a href="/HotelBudget/FB_ODCList">F&B ODC</a></li>
+                <li><a href="/HotelBudget/HFB_BanquetList">F&B Banquet</a></li>
+                <li><a href="/HotelBudget/FB_MiniBarList">F&B MiniBar</a></li>
+                <li><a href="/HotelBudget/HFB_IRDList">F&B IRD</a></li>
+                <li><a href="/HotelBudget/HOutlet1_List">Outlet 1</a></li>
+                <li><a href="/HotelBudget/RoomWorksheet_List">Room Worksheet</a></li>
+                <li><a href="/HotelBudget/HOutlet2_List">Outlet 2</a></li>
+                <li><a href="/HotelBudget/HOutlet3_List">Outlet 3</a></li>
+                <li><a href="/HotelBudget/HOutlet4_List">Outlet 4</a></li>
+                <li><a href="/HotelBudget/HOutlet5_List">Outlet 5</a></li>
+                <li><a href="/HotelBudget/PL_FB_Outlet_List">P&L F&B Outlets</a></li>
+                <li><a href="/HotelBudget/HTotalFB_List">Total F&B </a></li>
+                <li><a href="/HotelBudget/FB_WorksheetList"> F&B Worksheet </a></li>
+               
+        </ul>
+    </div>
+
+    {% endblock content %}

@@ -1,0 +1,143 @@
+{% extends 'FixedExpense/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ 
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Fixed Expense Edit</div>
+               
+        <div class="card-body">
+            <form action="{%url 'FixedExpenseEdit' mem.id %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-1">
+                    <select class="form-control " name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">Jan</option>
+                        <option value ="2">Feb</option>
+                        <option value ="3">Mar</option>
+                        <option value ="4">Apr</option>
+                        <option value ="5">May</option>
+                        <option value ="6">Jun</option>
+                        <option value ="7">Jul</option>
+                        <option value ="8">Aug</option>
+                        <option value ="9">Sep</option>
+                        <option value ="10">Oct</option>
+                        <option value ="11">Nov</option>
+                        <option value ="12">Dec</option>
+                        
+                    </select>
+    
+                </div>
+            <lable  class="col-sm-1" align="right"> Year</lable>
+            <div  class="col-sm-3">
+                <select class="form-control" name="EntryYear" data-val="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+    
+                </div>
+            
+        </div>
+               
+                <br/>
+                <br>
+                <div class="row">
+                    <div class="col-sm-10">
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th></th>
+                        <th width="200">Amount</th>
+                        <th>Applicable</th>
+                        <th>Remarks</th>
+                        
+                    </thead>
+                    {% for x in Res%}
+                    <tr>                
+                        <td>{{x.title}}</td> 
+                        <td><input type="number"  step="0.01" class="form-control" value="{{x.Amount}}" name="Amount_{{ forloop.counter0 }}"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                        </td>
+                        <td><select type="text"  class="form-control" name="Isapplicable_{{ forloop.counter0 }}" data-val="{{x.Isapplicable}}"><option value="Yes">Yes</option><option value="N/A">N/A</option> </select></td>
+                        <td><input type="text"   class="form-control" name="Remakrs_{{ forloop.counter0 }}" value="{{x.Remakrs}}"/>
+                        
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+    
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Total 
+                            </th>
+                            <td>
+                                <input type="text" readonly class="form-control" value="{{mem.Total}}" name="Total" >
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>                          
+                <br>
+               
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-success" type="submit" id="new1">Submit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+</div>
+<script>
+
+
+    $(function(){
+
+        $('select').each(function () {
+            var val = $(this).attr('data-val');
+            if (val != undefined && val != '') {
+               
+                if ($(this).find("option[value='" + val + "']") != undefined) { $(this).find("option[value='" + val + "']").prop('selected', 'selected');
+                $(this).val(val);
+            }
+                else {
+                    $(this).val(val);
+                }
+            }
+        })
+        DoCal();
+        
+        $("input[name*='Amount_']").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotalAmount=0;
+            $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+            $("input[name='Total']").val(TotalAmount.toFixed(2))
+    }
+</script>
+
+{% endblock content %}
+
+

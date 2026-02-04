@@ -1,0 +1,511 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+{% comment %} {% extends 'EMP_PAY/NewHomeBase.html' %}
+{% block NewHomeBase %} {% endcomment %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+<style>
+    .Yearly-First-box{
+        display: flex;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .employee-notification-icon{
+        padding: 5px;
+    }
+
+    .circle-button{
+        padding: 6px;
+        height: 45px;
+        width: 45px;
+    }
+
+    .card .card-header {
+        margin-bottom: -18px !important;
+        padding: 15px !important;
+    }
+    .card .card-header p{
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    #reportTable{
+        position: sticky;
+        top: 0px;
+        min-width: 100%;
+    }
+    #reportTable thead tr th{
+        font-size: 14px;
+    }
+
+    #reportTable tbody tr td{
+        font-size: 12px;
+    }
+
+    .standard-row {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        padding: 4px 0;
+        font-weight: bold;
+    }
+
+    #reportTable {
+        width: max-content;
+      /*  border-collapse: collapse;*/
+        border-collapse: separate;
+    }
+
+    #reportTable th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa; 
+        z-index: 10; 
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #TableCaptionBtn{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    } 
+
+    .TextRed{
+        color: red !important;
+    }
+</style>
+<style>
+        /* Scrollable container */
+    #reportTableContainer {
+        max-height: 490px;
+        overflow: auto; /* both X and Y scroll */
+        position: relative;
+        margin-top: 20px;
+        border-radius: 4px !important;
+        border-top-right-radius: 4px !important;
+    }
+
+    /* Freeze header row */
+    #reportTable thead th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #f8f9fa;
+        /* border-top: 2px solid #ccc !important; */
+    }
+
+
+    /* Freeze first column */
+    /* #reportTable th:first-child,
+    #reportTable td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 9; 
+        background-color: #fff; 
+        min-width: 190px;
+        max-width: 300px;
+        white-space: nowrap;
+    } */
+    #reportTable th:nth-child(1),
+    #reportTable td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        z-index: 9; 
+        background-color: #fff; 
+        min-width: 30px;
+        max-width: 30px;
+        white-space: nowrap;
+    }
+    #reportTable th:nth-child(2),
+    #reportTable td:nth-child(2) {
+        position: sticky;
+        left: 50px;
+        z-index: 9; 
+        background-color: #fff; 
+        min-width: 30px;
+        max-width: 30px;
+        white-space: nowrap;
+    }
+    #reportTable th:nth-child(3),
+    #reportTable td:nth-child(3) {
+        position: sticky;
+        left: 0;
+        z-index: 9; 
+        background-color: #fff; 
+        min-width: 30px;
+        max-width: 30px;
+        white-space: nowrap;
+    }
+    #reportTable th:nth-child(3),
+    #reportTable td:nth-child(3) {
+        position: sticky;
+        left: 0;
+        z-index: 9; 
+        background-color: #fff; 
+        min-width: 30px;
+        max-width: 30px;
+        white-space: nowrap;
+    }
+    /* Freeze first column */
+
+    /* Ensure top-left cell (Title) appears above all */
+    #reportTable thead th:first-child, #reportTable thead th:last-child  {
+        z-index: 11;
+        /* border-radius: 4px !important; */
+        /* border-top-left-radius: 25px !important; */
+
+    }
+    /* #reportTable thead th:last-child {
+        z-index: 11;
+    } */
+
+
+    /* Optional: Improve border and spacing */
+    #reportTable th,
+    #reportTable td {
+        border: 1px solid #dee2e6 !important;
+        white-space: nowrap;
+    }
+
+    .card-header{
+        margin-bottom: -28px;
+    }
+
+    .text-success {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #28a745bf;
+    }
+
+    .TextRed {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #dc3545d1;
+    }
+
+    .text-info {
+        color: #ffffff !important;
+        padding: 4px;
+        background: #007bffba;
+    }
+    /* .hint{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    } */
+
+    .TableTitle{
+        width: 150px !important;
+        /* width: 190px !important; */
+    }
+
+    /* .TitleContiner{
+        display: flex;
+    } */
+    .TableTitle{
+        width: 75%;
+        border-right: 1px solid #2222;
+    }
+    .TitleContiner{
+        display: flex;
+        gap: 10px;
+    }
+    .hint{
+        display: flex;
+        flex-direction: column;
+        /* gap: 20px; */
+        width: 18%;
+        text-transform: uppercase;
+        /* border-left: 1px solid #2222; */
+        /* font-weight: bold; */
+    }
+
+    hr {
+        margin: 13px 0 !important;
+    }
+    .first-half{
+        max-width: 130px !important;
+        min-width: 130px !important;
+        /* width: 150px !important; */
+    }
+
+    .btn, .CustomRound, .form-control{
+        border-radius: 4px !important;
+    }
+
+
+</style>
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body" id="CardBody">
+        <div  id="reportTableContainer">
+            <form method="post" id="GenerateSalaryTableForm">
+                {% csrf_token %}
+                <table class="table table-bordered mt-2" id="reportTable">
+                    <thead id="tableHead">
+                        <tr id="TableFirstTr">
+                            <!-- <th colspan="2"></th> -->
+                            <th colspan="4">Personal Details</th>
+                            <th colspan="6">work Details</th>
+                            <th colspan="6">Fixed Salary</th>
+                            <th colspan="5">Earning Salary</th>
+                            <th colspan="10">Deduction Salary</th>
+                            <th colspan="1">Net Salary</th>
+                            <th colspan="1">CTC</th>
+                            <th colspan="6">Other Details</th>
+                        </tr>
+                        <tr>
+                            <th>Sr</th>
+                            <th><input type="checkbox" name="check" class="checkBox selectAll"></th>
+                            <th>Code</th>
+                            <th>Emp Name</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+                            <th>EmpStatus</th>
+                            <th>DOJ</th>
+                            <th>Total Days</th>
+                            <th>Paid Days</th>
+
+                            <th>Gross Salary</th>
+                            <th>Basic</th>
+                            <th>HRA</th>
+                            <th>Conveyance Allowance</th>
+                            <th>Other Allowance</th>
+                            <th>Total Fixed</th>
+                            
+                            <th>Basic</th>
+                            <th>HRA</th>
+                            <th>Conveyance Allowance</th>
+                            <th>Other Allowance</th>
+                            <th>Total Earned</th>
+
+
+                            <th>PT</th>
+                            <th>Employee PF</th>
+                            <th>Esic</th>
+                            <th>Meals</th>
+                            <th>Accommodation</th>
+                            <th>Arrers</th>
+                            <th>Advance Loan</th>
+                            <th>Tax Deduction</th>
+                            <th>Other Deduction</th>
+                            <th>Total Deduction</th>
+
+                            <th>Net Salary</th>
+                            <th>CTC</th>
+
+                            <th>Bank_Name</th>
+                            <th>Bank Branch</th>
+                            <th>Account Number</th>
+                            <th>IFSC Code</th>
+
+                            <th>Esic Number</th>
+                            <th>PF Number</th>
+                        </tr>      
+                    </thead>
+                    <tbody id="tableBody">
+                        
+                    </tbody>
+                </table>
+
+                <div class="card-footer d-flex justify-content-between">
+                    <!-- <a href="#" class="btn btn-sm btn-primary open-lock-modal">Response</a> -->
+                    <!-- <a href="{% url 'Export_Salary_Slip_Excel' EmpID=2808 OID=1401 Year=2025 Month=10 %}"
+                    class="btn btn-success btn-sm" id="ExportExcelBtn">
+                    Download Excel
+                    </a> -->
+
+                    <button type="button" class="btn btn-sm btn-primary" id="ExportExcelBtn">Download Excel</button>
+
+
+                    <div class="text-end">
+                        <button type="button" class="btn btn-sm btn-primary" id="BulkGenerateAction">Bulk Generate</button>
+                        <a class="btn btn-sm btn-outline-secondary">Selected Employees : 
+                            <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                    </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
+<!-- List api for table -->
+<script>
+    //   function getUrlParam(key) {
+    //       const urlParams = new URLSearchParams(window.location.search);
+    //       return urlParams.get(key);
+    //   }
+
+    function loadPayrollList(year, month_no) {
+        let OID = '{{OrganizationID}}';
+        let Year = '{{Year}}';
+        let Month = '{{Month}}';
+
+        console.log("OID:",OID)
+        console.log("Year:",Year)
+        console.log("Month:",Month)
+
+        // let OID = 1401;
+        // let Year = 2025;
+        // let Month = 10;
+
+        $.ajax({
+            url: `/Employee_Payroll/api/Verify_Salary_Slip_API?OID=${OID}&Year=${Year}&Month=${Month}`,
+            success: function (response) {
+                let tbody = $('#tableBody');
+                tbody.empty();
+
+                console.log("Salary Slip Response:", response);
+
+                // Ensure Employees array exists
+                let employees = response.Employees || [];
+
+                // Loop through each employee
+                employees.forEach((emp, index) => {
+                    let slip = emp.Slip || {};
+                    let fixed = emp.Fixed || {};
+                    let earning = emp.Earning || {};
+                    let deduction = emp.Deductions || {};
+
+                    let row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><input type="checkbox" class="checkBox" value="${slip.EmployeeCode}" data-year="${slip.Year}" data-month_no="${slip.Month}"></td>
+                            <td>${slip.EmployeeCode || '-'}</td>
+                            <td>${slip.Emp_Name || '-'}</td>
+                            <td>${slip.Designation || '-'}</td>
+                            <td>${slip.Department || '-'}</td>
+                            <td>${slip.EmpStatus || '-'}</td>
+                            <td>${slip.DOJ || '-'}</td>
+                            <td>${slip.Total_No_Days_In_Month || '-'}</td>
+                            <td>${slip.Present_Days || '-'}</td>
+
+                            <td>${fixed["Gross (A)"] || 0}</td>
+                            <td>${fixed["Basic"] || 0}</td>
+                            <td>${fixed["HRA"] || 0}</td>
+                            <td>${fixed["Conveyance Allowance"] || 0}</td>
+                            <td>${fixed["Other Allowance"] || 0}</td>
+                            <td>${emp.TotalFixed || 0}</td>
+
+                            <td>${earning["Basic"] || 0}</td>
+                            <td>${earning["HRA"] || 0}</td>
+                            <td>${earning["Conveyance Allowance"] || 0}</td>
+                            <td>${earning["Other Allowance"] || 0}</td>
+                            <td>${emp.TotalEarning || 0}</td>
+
+                            <td>${deduction["PT"] || 0}</td>
+                            <td>${deduction["Employee PF @12% (Basic)"] || 0}</td>
+                            <td>${deduction["ESIC @ 0.75%"] || 0}</td>
+                            <td>${deduction["Meals"] || 0}</td>
+                            <td>${deduction["Accommodation"] || 0}</td>
+                            <td>${slip.Arrers || '-'}</td>
+                            <td>${slip.Advance_Loan || '-'}</td>
+                            <td>${slip.Tax_Deduction || '-'}</td>
+                            <td>${slip.Other_Deduction || '-'}</td>
+                            <td>${emp.TotalDeduction || 0}</td>
+
+                            <td>${emp.NetPay || 0}</td>
+                            <td>${slip.CTC || '-'}</td>
+
+                            <td>${slip.Bank_Name || '-'}</td>
+                            <td>${slip.Bank_Branch || '-'}</td>
+                            <td>${slip.Bank_Account_Number || '-'}</td>
+                            <td>${slip.Bank_IFSC_Code || '-'}</td>
+
+                            <td>${slip.ESIC_Number || '-'}</td>
+                            <td>${slip.Provident_Fund_Number || '-'}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                });
+            },
+            error: function (xhr) {
+                alert('Failed to load salary data.');
+                console.error(xhr);
+            }
+        });
+    }
+
+    // Example: Load current month
+    $(document).ready(function () {
+        //   const currentDate = new Date();
+
+        //   const year = getUrlParam('year') || currentDate.getFullYear();
+        //   const month = getUrlParam('month_no') || (currentDate.getMonth() + 1);
+
+            let EmpID = 2808;   // You can dynamically set these
+            let OID = 1401;
+            let Year = 2025;
+            let Month = 10;
+
+        loadPayrollList(EmpID,OID, Year, Month);
+    });
+</script>
+
+
+<script>
+    $('#ExportExcelBtn').click(function () {
+        // Clone the table (so we don’t modify the original DOM)
+        let table = document.getElementById("GenerateSalaryTable").cloneNode(true);
+
+        // 🧹 Remove 2nd column (index 1 = 2nd column)
+        for (let row of table.rows) {
+            if (row.cells.length > 1) {
+                row.deleteCell(1);
+            }
+        }
+
+        // Create workbook
+        let workbook = XLSX.utils.table_to_book(table, { sheet: "Salary Report" });
+        let ws = workbook.Sheets["Salary Report"];
+
+        // 🧾 Adjust these column letters based on your Excel structure
+        const accountCol = 'AI';  // Account Number
+        const pfCol = 'AL';       // PF Number
+
+        // Convert cells in those columns to text explicitly
+        for (let row = 3; row <= 1000; row++) { // assuming max 1000 rows
+            const accCell = ws[accountCol + row];
+            const pfCell = ws[pfCol + row];
+
+            if (accCell && accCell.v) {
+                accCell.t = 's'; // force text
+                accCell.v = String(accCell.v);
+            }
+            if (pfCell && pfCell.v) {
+                pfCell.t = 's';
+                pfCell.v = String(pfCell.v);
+            }
+        }
+
+        XLSX.writeFile(workbook, "Salary_Report.xlsx");
+    });
+</script>
+
+
+
+
+{% endblock content %} 

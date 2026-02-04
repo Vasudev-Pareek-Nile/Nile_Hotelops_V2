@@ -1,0 +1,73 @@
+{% extends 'hlp/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'DailyHlpRegistrationForm' %}  enctype="multipart/form-data">
+    {{ Dailyhlpreportform }}
+    
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register Daily Hlp Report Form </p>
+        </div>
+
+        <div class="card-body">
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-6">
+                <label>Date</label>
+                {% render_field DailyHlpReportForm.Date class="form-control" placeholder="Date"  %}
+              </div>
+            </div>
+<br/>
+                  
+
+                    <table class="table table-bordered">
+                      <tr>  
+                            <th width="300">Water</th>
+                            <th>Current Year</th>
+                            <th>Last Year</th>
+                            <th>Amount</th>
+                      </tr>
+
+                      {% for i in DbItemMaster %}
+                            <tr>
+                              <td>{{i.Category_Name}}</td>
+                              <td class="rb">
+                                <input type="hidden"  rows=2 value="{{i.id}}"  name="ItemID_{{ forloop.counter0 }}" >
+                                <input type="text"  rows=2 name="Current_Year_{{ forloop.counter0 }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text"  rows=2 name="Last_Year_{{ forloop.counter0 }}"class="form-control" ></td>
+                                <td>  <input type="text"  rows=2 name="Amount_{{ forloop.counter0 }}" class="form-control">
+                                {% if forloop.last %}
+                                <input type="hidden" row=2 value="{{forloop.counter }}" name="TotalItem">
+                                {% endif %}
+                              </td>
+                            </tr>
+                      {% endfor %}
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+    {% endblock content %}
+   

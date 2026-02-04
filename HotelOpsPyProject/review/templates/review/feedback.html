@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review and Reply System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(248,248,248);
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .review-container {
+            margin-bottom: 20px;
+        }
+
+        .review-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+
+        .review-item h3 {
+            margin: 0 0 10px 0;
+        }
+
+        .review-item p {
+            margin: 5px 0;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding-left: 0;
+            border-radius: .25rem;
+            margin-right: 900px !important;
+        }
+
+        .page-item {
+            margin: 0;
+            border-radius: .25rem;
+        }
+
+        .page-link {
+            display: block;
+            padding: .5rem .75rem;
+            margin: 0;
+            line-height: 1.25;
+            text-align: center;
+            text-decoration: none;
+            color: black !important;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: .25rem;
+            --bs-pagination-border-width: 0;
+        }
+
+        .page-item.active .page-link {
+            z-index: 1;
+            color: #0c0c0c;
+            background-color: rgb(252,236,222);
+            border-color: #ecb896;
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+
+        .page-item.disabled .page-link {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .review-text {
+            margin-top: 10px;
+            margin-left: 10px;
+            padding: 5px;
+        }
+
+        .review-response {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fafafa;
+            padding: 5px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+
+        .review-response h7 {
+            font-weight: 700;
+        }
+
+        .review-response p {
+            padding: 5px;
+            margin-left: 5px;
+        }
+
+        .review_date {
+            text-align: end;
+            margin-right: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .search_button {
+            background-color: rgb(239,159,89);
+            padding: 5px;
+            border-radius: 2px;
+        }
+
+        .search_button:hover {
+            background-color: rgb(239,159,89) !important;
+        }
+
+        input {
+            padding: 5px !important;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            width: 200px;
+            padding: 8px;
+            border-radius: 5px;
+            width: 150px;
+            margin: 5px !important;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        option[disabled] {
+            color: #888;
+            padding: 8px;
+            border-radius: 5px;
+            width: 150px;
+            margin: 5px !important;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        option {
+            color: #888;
+            padding: 8px;
+            border-radius: 5px !important;
+            width: 150px;
+            margin: 5px !important;
+            border: 1px solid #ddd !important;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'review/navbar.html' %}
+
+    <div class="container">
+        <form id="filters" method="GET" action="{% url 'feedback' %}">
+            <div class="search-container">
+                <input type="text" id="search_guest" name="search_guest" placeholder="Guest Name" style="width: 150px">
+                <select id="sentiment" name="sentiment" style="width: 150px;">
+                    <option value="">All Comments</option>
+                    <option value="Positive" {% if request.GET.sentiment == 'Positive' %}selected{% endif %}>Positive</option>
+                    <option value="Negative" {% if request.GET.sentiment == 'Negative' %}selected{% endif %}>Negative</option>
+                    <option value="Neutral" {% if request.GET.sentiment == 'Neutral' %}selected{% endif %}>Neutral</option>
+                </select>
+
+                <select id="source" name="source">
+                    <option value="">--Source--</option>
+                    <option value="Google" {% if request.GET.source == 'Google' %}selected{% endif %}>Google</option>
+                    <option value="Tripadvisor" {% if request.GET.source == 'Tripadvisor' %}selected{% endif %}>Tripadvisor</option>
+                    <option value="Agoda" {% if request.GET.source == 'Agoda' %}selected{% endif %}>Agoda</option>
+                    <option value="MakeMyTrip" {% if request.GET.source == 'MakeMyTrip' %}selected{% endif %}>MakeMyTrip</option>
+                </select>
+
+                <input type="text" id="search" name="search" placeholder="Search reviews..." value="{{ request.GET.search }}">
+                <label>From Date:</label>
+                <input type="date" id="from-date" name="from_date" value="{{ request.GET.from_date }}">
+                <label>To Date:</label>
+                <input type="date" id="to-date" name="to_date" value="{{ request.GET.to_date }}">
+                <button type="submit" class="search_button">Search</button>
+            </div>
+        </form>
+
+       
+
+        <div id="reviews" class="review-container">
+            {% for review in reviews %}
+                <div class="review-item">
+                    <div class="row">
+                        <div class="col-md-6 review-title"><i class="fa fa-circle" style="color: rgb(69,175,150);"></i></div>
+                        <div class="col-md-6 review-source" style="text-align: end; font-weight: 600;">{{ review.source }}</div>
+                    </div>
+                    <div class="review-text">
+                        <p>{{ review.review_text }}</p>
+                    </div>
+                    <div class="review-response">
+                        <h7>Reply:</h7>
+                        <p>{{review.management_response}}</p>
+                        <p class="review_date">-Replied On: {{ review.reply_date }}</p>
+                    </div>
+                    <hr>
+                </div>
+            {% empty %}
+                <p>No reviews available.</p>
+            {% endfor %}
+        </div>
+
+        <ul id="pagination" class="pagination"></ul>
+    </div>
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+    const reviewsPerPage = 5;
+    let currentPage = 1;
+
+    function displayReviews(reviews) {
+        const reviewsContainer = document.getElementById('reviews');
+        reviewsContainer.innerHTML = '';
+        reviews.forEach(review => {
+            const reviewElement = document.createElement('div');
+            reviewElement.className = 'review-item';
+            reviewElement.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6 review-title">
+                        <i class="fa fa-circle" style="color: rgb(69,175,150);"></i>
+                    </div>
+                    <div class="col-md-6 review-source" style="text-align: end; font-weight: 600;">
+                        ${review.source}
+                        <i class="fa fa-toggle-on" style="color: rgb(79,190,121);"></i>
+                    </div>
+                </div>
+                <div class="review-text">
+                    <p>${review.review_text}</p>
+                </div>
+                <div class="review-response">
+                    <h7>Reply:</h7>
+                    <p>${review.management_response || 'No response'}</p>
+                    <p class="review_date">-Replied On: ${review.reply_date}</p>
+                </div>
+                <hr>
+            `;
+            reviewsContainer.appendChild(reviewElement);
+        });
+    }
+
+    function setupPagination(totalPages) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = '';
+
+        // Add "Previous" button if not on the first page
+        if (currentPage > 1) {
+            const prevItem = document.createElement('li');
+            prevItem.className = 'page-item';
+            const prevLink = document.createElement('a');
+            prevLink.className = 'page-link';
+            prevLink.href = '#';
+            prevLink.setAttribute('aria-label', 'Previous');
+            prevLink.innerHTML = '<span aria-hidden="true">&laquo;</span>';
+            prevLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage--;
+                fetchReviews();
+            });
+            prevItem.appendChild(prevLink);
+            paginationContainer.appendChild(prevItem);
+        } else {
+            const prevItem = document.createElement('li');
+            prevItem.className = 'page-item disabled';
+            const prevLink = document.createElement('a');
+            prevLink.className = 'page-link';
+            prevLink.href = '#';
+            prevLink.setAttribute('aria-label', 'Previous');
+            prevLink.innerHTML = '<span aria-hidden="true">&laquo;</span>';
+            prevItem.appendChild(prevLink);
+            paginationContainer.appendChild(prevItem);
+        }
+
+        // Calculate page range
+        const pageRange = 5; // Number of page numbers to show
+        let startPage = Math.max(1, currentPage - Math.floor(pageRange / 2));
+        let endPage = Math.min(totalPages, currentPage + Math.floor(pageRange / 2));
+
+        // Adjust range if there are not enough pages before the start
+        if (currentPage - Math.floor(pageRange / 2) < 1) {
+            endPage = Math.min(totalPages, endPage + (1 - (currentPage - Math.floor(pageRange / 2))));
+        }
+
+        // Adjust range if there are not enough pages after the end
+        if (currentPage + Math.floor(pageRange / 2) > totalPages) {
+            startPage = Math.max(1, startPage - (currentPage + Math.floor(pageRange / 2) - totalPages));
+        }
+
+        // Add "1" page link if there are pages before the startPage
+        if (startPage > 1) {
+            const firstPageItem = document.createElement('li');
+            firstPageItem.className = 'page-item';
+            const firstPageLink = document.createElement('a');
+            firstPageLink.className = 'page-link';
+            firstPageLink.href = '#';
+            firstPageLink.textContent = '1';
+            firstPageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = 1;
+                fetchReviews();
+            });
+            firstPageItem.appendChild(firstPageLink);
+            paginationContainer.appendChild(firstPageItem);
+
+            if (startPage > 2) {
+                const ellipsisItem = document.createElement('li');
+                ellipsisItem.className = 'page-item disabled';
+                const ellipsisLink = document.createElement('a');
+                ellipsisLink.className = 'page-link';
+                ellipsisLink.href = '#';
+                ellipsisLink.innerHTML = '<span aria-hidden="true">...</span>';
+                ellipsisItem.appendChild(ellipsisLink);
+                paginationContainer.appendChild(ellipsisItem);
+            }
+        }
+
+        // Add page number links
+        for (let i = startPage; i <= endPage; i++) {
+            const pageItem = document.createElement('li');
+            pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
+            const pageLink = document.createElement('a');
+            pageLink.className = 'page-link';
+            pageLink.href = '#';
+            pageLink.textContent = i;
+            pageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = i;
+                fetchReviews();
+            });
+            pageItem.appendChild(pageLink);
+            paginationContainer.appendChild(pageItem);
+        }
+
+        // Add last page link if there are pages after endPage
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                const ellipsisItem = document.createElement('li');
+                ellipsisItem.className = 'page-item disabled';
+                const ellipsisLink = document.createElement('a');
+                ellipsisLink.className = 'page-link';
+                ellipsisLink.href = '#';
+                ellipsisLink.innerHTML = '<span aria-hidden="true">...</span>';
+                ellipsisItem.appendChild(ellipsisLink);
+                paginationContainer.appendChild(ellipsisItem);
+            }
+
+            const lastPageItem = document.createElement('li');
+            lastPageItem.className = 'page-item';
+            const lastPageLink = document.createElement('a');
+            lastPageLink.className = 'page-link';
+            lastPageLink.href = '#';
+            lastPageLink.textContent = totalPages;
+            lastPageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage = totalPages;
+                fetchReviews();
+            });
+            lastPageItem.appendChild(lastPageLink);
+            paginationContainer.appendChild(lastPageItem);
+        }
+
+        // Add "Next" button if not on the last page
+        if (currentPage < totalPages) {
+            const nextItem = document.createElement('li');
+            nextItem.className = 'page-item';
+            const nextLink = document.createElement('a');
+            nextLink.className = 'page-link';
+            nextLink.href = '#';
+            nextLink.setAttribute('aria-label', 'Next');
+            nextLink.innerHTML = '<span aria-hidden="true">&raquo;</span>';
+            nextLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentPage++;
+                fetchReviews();
+            });
+            nextItem.appendChild(nextLink);
+            paginationContainer.appendChild(nextItem);
+        } else {
+            const nextItem = document.createElement('li');
+            nextItem.className = 'page-item disabled';
+            const nextLink = document.createElement('a');
+            nextLink.className = 'page-link';
+            nextLink.href = '#';
+            nextLink.setAttribute('aria-label', 'Next');
+            nextLink.innerHTML = '<span aria-hidden="true">&raquo;</span>';
+            nextItem.appendChild(nextLink);
+            paginationContainer.appendChild(nextItem);
+        }
+    }
+
+    function fetchReviews() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('page', currentPage);
+        url.searchParams.set('search', document.getElementById('search').value);
+        url.searchParams.set('from_date', document.getElementById('from-date').value);
+        url.searchParams.set('to_date', document.getElementById('to-date').value);
+        url.searchParams.set('source', document.getElementById('source').value);
+        url.searchParams.set('search_guest', document.getElementById('search_guest').value);
+        url.searchParams.set('sentiment', document.getElementById('sentiment').value);
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayReviews(data.reviews);
+            setupPagination(data.total_pages);
+        })
+        .catch(error => console.error('Error fetching reviews:', error));
+    }
+
+    document.getElementById('search').addEventListener('input', fetchReviews);
+    document.getElementById('from-date').addEventListener('change', fetchReviews);
+    document.getElementById('to-date').addEventListener('change', fetchReviews);
+    document.getElementById('source').addEventListener('change', fetchReviews);
+    document.getElementById('search_guest').addEventListener('change', fetchReviews);
+    document.getElementById('sentiment').addEventListener('change', fetchReviews);
+
+    fetchReviews();
+});
+
+    </script>
+   
+</body>
+</html>

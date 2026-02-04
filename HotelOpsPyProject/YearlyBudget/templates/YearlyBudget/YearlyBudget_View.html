@@ -1,0 +1,400 @@
+{% extends 'YearlyBudget/homebase.html' %}
+{% load static %}
+{% block content %} 
+{% comment %} {% load YearlyBudget_custom_Tags %} {% endcomment %}
+<style>
+       th,td{
+        font-size: 12px;
+    }
+    .total
+    {
+        background-color:whitesmoke;
+        font-weight: bold;
+    }
+    tr td:first-child{
+        min-width: 220px;
+        max-width: 220px;
+
+    }
+
+    th {
+        text-align: center;
+      }
+      tr td:not(:first-child){
+        text-align: center
+        
+      }
+    
+</style>
+ 
+<div >
+   
+    <div class="row">  
+        <span  class="col-sm-3">
+        <p>Year : {{ entry_year }}</p>
+        </span>
+        <span  class="col-sm-9">
+           
+            {% for org in memOrg  %}
+                   {% if org.OrganizationID == organization_id %}
+                   <p>Organization Name : {{ org.Organization_name }}</p>
+                   {% endif %}
+                {%endfor  %}
+            </span>  
+
+    </div>
+            <div class="card-header">Yearly Budget Report </div>
+            <br>
+            <div class="card-header">Revenue</div>  
+            <br>
+            <div class="card-header">Finance</div>
+            <br>
+                    <table id="title" class="table table-bordered">
+                        
+
+                            <thead>
+                                <tr>
+                                    <th width="200">Category</th>
+                                    <th width="100">Jan</th>
+                                    <th width="100">Feb</th>
+                                    <th width="100">Mar</th>
+                                    <th width="100">April</th>
+                                    <th width="100">May</th>
+                                    <th width="100">Jun</th>
+                                    <th width="100">Jul</th>
+                                    <th width="100">Aug</th>
+                                    <th width="100">Sep</th>
+                                    <th width="100">Oct</th>
+                                    <th width="100">Nov</th>
+                                    <th width="100">Dec</th>
+                                    <th width="100">YTD</th>
+                                    
+                                  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in finance_details %}
+                                {% if row.Finance_Category_Name__Finance_category|striptags == "Occupancy" or row.Finance_Category_Name__Finance_category|striptags == "Rooms Profitability" or row.Finance_Category_Name__Finance_category|striptags == "F&B Profitability" or row.Finance_Category_Name__Finance_category|striptags == "GOP" %}
+                                    
+                                <tr>
+                                    <td>{{ row.Finance_Category_Name__Finance_category }} %</td>
+                                <td>{{ row.Sum_Month_1 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_2 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_3 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_4 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_5 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_6 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_7 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_8 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_9 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_10 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_11 | floatformat:0}} %</td>
+                                <td>{{ row.Sum_Month_12 | floatformat:0}} %</td>
+                                <td>{{ row.YTD | floatformat:0}} %</td>
+                               
+                                </tr>
+                               
+
+                                {% else %}
+                             <tr>   
+                                <td>{{ row.Finance_Category_Name__Finance_category }}</td>
+                                <td>{{ row.Sum_Month_1 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_2 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_3 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_4 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_5 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_6 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_7 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_8 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_9 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_10 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_11 | floatformat:0}}</td>
+                                <td>{{ row.Sum_Month_12 | floatformat:0}}</td>
+                                <td>{{ row.YTD | floatformat:0}}</td>
+
+                               
+                             </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                    </table>
+                    <br>
+                    <div class="card-header">Market Segment</div>
+                    <br>
+                            <table id="title" class="table table-bordered">
+                                
+        
+                                    <thead>
+                                        <tr>
+                                            <th width="200">Category</th>
+                                            <th width="100">Jan</th>
+                                            <th width="100">Feb</th>
+                                            <th width="100">Mar</th>
+                                            <th width="100">April</th>
+                                            <th width="100">May</th>
+                                            <th width="100">Jun</th>
+                                            <th width="100">Jul</th>
+                                            <th width="100">Aug</th>
+                                            <th width="100">Sep</th>
+                                            <th width="100">Oct</th>
+                                            <th width="100">Nov</th>
+                                            <th width="100">Dec</th>
+                                            <th width="100">YTD</th>
+                                          
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for row in market_segment_category_details %}
+                                            <tr>
+                                                <td>{{ row.Market_Segment_Category_Name__market_segment_category }}</td>
+                                                <td>{{ row.Sum_Month_1 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_2 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_3 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_4 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_5 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_6 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_7 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_8 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_9 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_10 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_11 |floatformat:0}}</td>
+                                                <td>{{ row.Sum_Month_12 |floatformat:0}}</td>
+                                                <td>
+                                                    {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                    {{ total|default_if_none:"0"|floatformat:0 }}
+                                                    {% endwith %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                            </table>
+                            <br>
+                            <div class="card-header">Business Source</div>
+                            <br>
+                                    <table id="title" class="table table-bordered">
+                                        
+                
+                                            <thead>
+                                                <tr>
+                                                    <th width="200">Category</th>
+                                                    <th width="100">Jan</th>
+                                    <th width="100">Feb</th>
+                                    <th width="100">Mar</th>
+                                    <th width="100">April</th>
+                                    <th width="100">May</th>
+                                    <th width="100">Jun</th>
+                                    <th width="100">Jul</th>
+                                    <th width="100">Aug</th>
+                                    <th width="100">Sep</th>
+                                    <th width="100">Oct</th>
+                                    <th width="100">Nov</th>
+                                    <th width="100">Dec</th>
+                                    <th width="100">YTD</th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in business_source_category_details %}
+                                                    <tr>
+                                                        <td>{{ row.Business_Source_Category_Name__business_source_category }}</td>
+                                                        <td>{{ row.Sum_Month_1 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_2 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_3 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_4 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_5 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_6 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_7 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_8 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_9 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_10 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_11 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_12 |floatformat:0}}</td>
+                                                        <td>
+                                                            {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                            {{ total|default_if_none:"0"|floatformat:0 }}
+                                                            {% endwith %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+                                    <br>
+                                    <div class="card-header">Expenses Including Payroll</div>
+                                    <br>
+                                            <table id="title" class="table table-bordered">
+                                                
+                        
+                                                    <thead>
+                                                        <tr>
+                                                            <th width="200">Category</th>
+                                                            <th width="100">Jan</th>
+                                            <th width="100">Feb</th>
+                                            <th width="100">Mar</th>
+                                            <th width="100">April</th>
+                                            <th width="100">May</th>
+                                            <th width="100">Jun</th>
+                                            <th width="100">Jul</th>
+                                            <th width="100">Aug</th>
+                                            <th width="100">Sep</th>
+                                            <th width="100">Oct</th>
+                                            <th width="100">Nov</th>
+                                            <th width="100">Dec</th>
+                                            <th width="100">YTD</th>
+                                                          
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for row in Expenes %}
+                                                            <tr>
+                                                                <td>{{ row.ExpensesIncludingPayroll__Title }}</td>
+                                                                <td>{{ row.Sum_Month_1 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_2 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_3 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_4 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_5 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_6 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_7 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_8 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_9 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_10 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_11 |floatformat:0}}</td>
+                                                                <td>{{ row.Sum_Month_12 |floatformat:0}}</td>
+                                                                <td>
+                                                                    {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                                    {{ total|default_if_none:"0"|floatformat:0 }}
+                                                                    {% endwith %}
+                                                                </td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                            </table>
+                                            <br>
+                            <div class="card-header">Cost Per Cover</div>
+                            <br>
+                                    <table id="title" class="table table-bordered">
+                                        
+                
+                                            <thead>
+                                                <tr>
+                                                    <th width="200">Category</th>
+                                                    <th width="100">Jan</th>
+                                    <th width="100">Feb</th>
+                                    <th width="100">Mar</th>
+                                    <th width="100">April</th>
+                                    <th width="100">May</th>
+                                    <th width="100">Jun</th>
+                                    <th width="100">Jul</th>
+                                    <th width="100">Aug</th>
+                                    <th width="100">Sep</th>
+                                    <th width="100">Oct</th>
+                                    <th width="100">Nov</th>
+                                    <th width="100">Dec</th>
+                                    <th width="100">YTD</th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in CostPer %}
+                                                {% if row.CostPerCover__Title|striptags == "Beverage Cost (%)" or row.CostPerCover__Title|striptags == "Food Cost (%)" %}
+                                
+                                                    <tr>
+                                                        <td>{{ row.CostPerCover__Title }}</td>
+                                                        <td>{{ row.Sum_Month_1 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_2 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_3 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_4 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_5 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_6 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_7 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_8 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_9 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_10 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_11 |floatformat:0}}%</td>
+                                                        <td>{{ row.Sum_Month_12 |floatformat:0}}%</td>
+                                                        <td>
+                                                            {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                            {{ total|default_if_none:"0"|floatformat:0 }}%
+                                                            {% endwith %}
+                                                        </td>
+                                                    </tr>
+                                                {% else %} 
+                                                <tr>
+                                                    <td>{{ row.CostPerCover__Title }}</td>
+                                                    <td>{{ row.Sum_Month_1 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_2 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_3 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_4 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_5 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_6 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_7 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_8 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_9 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_10 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_11 |floatformat:0}}</td>
+                                                    <td>{{ row.Sum_Month_12 |floatformat:0}}</td>
+                                                    <td>
+                                                        {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                        {{ total|default_if_none:"0"|floatformat:0 }}
+                                                        {% endwith %}
+                                                    </td>
+                                                </tr>
+                                                {% endif %}    
+                                                {% endfor %}
+                                            
+                                            </tbody>
+                                    </table>
+                                    <br>
+                            <div class="card-header">Cost Per Occupied Room Night</div>
+                            <br>
+                                    <table id="title" class="table table-bordered">
+                                        
+                
+                                            <thead>
+                                                <tr>
+                                                    <th width="200">Category</th>
+                                                    <th width="100">Jan</th>
+                                    <th width="100">Feb</th>
+                                    <th width="100">Mar</th>
+                                    <th width="100">April</th>
+                                    <th width="100">May</th>
+                                    <th width="100">Jun</th>
+                                    <th width="100">Jul</th>
+                                    <th width="100">Aug</th>
+                                    <th width="100">Sep</th>
+                                    <th width="100">Oct</th>
+                                    <th width="100">Nov</th>
+                                    <th width="100">Dec</th>
+                                    <th width="100">YTD</th>
+                                                  
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for row in CostOccupied %}
+                                                    <tr>
+                                                        <td>{{ row.CostPerOccupiedRoomNight__Title }}</td>
+                                                        <td>{{ row.Sum_Month_1 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_2 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_3 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_4 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_5 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_6 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_7 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_8 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_9 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_10 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_11 |floatformat:0}}</td>
+                                                        <td>{{ row.Sum_Month_12 |floatformat:0}}</td>
+                                                        <td>
+                                                            {% with  row.Sum_Month_1|add:row.Sum_Month_2|add:row.Sum_Month_3|add:row.Sum_Month_4|add:row.Sum_Month_5|add:row.Sum_Month_6|add:row.Sum_Month_7|add:row.Sum_Month_8|add:row.Sum_Month_9|add:row.Sum_Month_10|add:row.Sum_Month_11|add:row.Sum_Month_12 as total %}
+                                                            {{ total|default_if_none:"0"|floatformat:0 }}
+                                                            {% endwith %}
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+
+
+</div>                    
+ 
+{% endblock content %}

@@ -1,0 +1,214 @@
+{% load custom_filters %}
+{% load encryption_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary List Report</title>
+    <style>
+        @page {
+            size: letter landscape;
+            margin: 5mm;
+        }
+        body {
+            font-family: 'Arial Nova',Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: 5.5px;
+        }
+        .header-table {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .header-table td {
+            vertical-align: middle;
+        }
+        .table-container {
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            /* border: 0.1px solid #000; */
+            padding: 2px 1px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        th {
+            /* background-color: #f0f0f0; */
+            font-weight: bold;
+        }
+        .footer {
+            border-top: 1px solid #3a4a93;
+            margin-top: 10px;
+            font-size: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+           <tr>
+                    <td>
+                        <p style="text-align: left; font-size:16px; margin-bottom:-20px;">{{organization_logo}}
+                       </p>
+                    </td>
+                    <td><p style="text-align: right; font-size:14px; margin-bottom:-20px;">Salary Report - {{month_name}} {{year}}</p></td>
+                  </tr>
+        </table>
+</header>
+
+    <!-- <hr style="background-color: #3a4a93;"> -->
+    <div class="table-container">
+         <span style="font-size: 10px;"><span>As per Biomatric - {{month_days}}</span></span>
+<table class="" style="border: 0.01px solid rgb(123, 124, 126); width: 100%; border-collapse: collapse;">
+    
+    <thead>
+        
+        <tr style="font-weight: bold;background-color: #f0ecec;">
+            <th style="width: 50px;">SR</th>
+            <th style="text-align: left; width: 100px;">Emp Code</th>
+            <th style="text-align: left; width: 150px;">Emp Name</th>
+            <th style="width: 80px;">DOJ</th>
+            <th style="width: 150px;">Department</th>
+            <th style="width: 200px;">Designation</th>
+            <th style="width: 60px;">Paid Days</th>
+            <th style="width: 70px;">Gross Salary</th>
+            <th style="width: 80px;">Basic Salary</th>
+
+            <th style="width: 80px;"> HRA</th>
+            <th style="width: 100px;">Conveyance<br>Allowance</th>
+            <th style="width: 90px;">Other<br>Allowance</th>
+
+            <!-- <th style="width: 60px;">CCA</th> -->
+            <!-- <th style="width: 80px;">Salary <br> Package</th> -->
+
+            <th style="width: 80px;">Basic Salary</th>
+            <th style="width: 80px;">HRA</th>
+            <th style="width: 80px;">Allowance</th>
+            <!-- <th style="width: 80px;">Earning Gross Salary</th> -->
+
+
+            <th style="width: 80px;">Employe'r PF</th>
+            <th style="width: 80px;">ESIC Amt</th>
+            <th style="width: 80px;">Advances</th>
+            <th style="width: 80px;">Other Deduction</th>
+            <th style="width: 80px;">Arrears</th>
+            <th style="width: 80px;">TDS</th>
+            <th style="width: 80px;">Total Deduction</th>
+            <th style="width: 80px;">Net Payble</th>
+            <th style="width: 80px;">Employee PF</th>
+            <th style="width: 80px;">Company Contribution to ESIC</th>
+            <th style="width: 80px;">Total Company Contribution</th>
+            <th style="width: 80px;">CTC</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for sal in sal_list %}
+         {% if sal.EmployeeCode|lower == "total" %}
+                    <tr style="font-weight: bold;background-color: #ebe8e8;">
+                        <td colspan="6" style="text-align: left;">{{ sal.EmployeeCode }}</td>
+                    
+                    <td>{{ sal.no_of_days }}</td>
+                    <td>{{ sal.gross_salary }}</td>
+                    <td>{{ sal.fixed_basic }}</td>
+                    <td>{{ sal.fixed_HRA }}</td>
+                    <td>{{ sal.ConveyanceAllowance }}</td>
+                    <td>{{ sal.OtherAllowance }}</td>
+                    <!-- <td>{{ sal.Total_A_Salary_Package }}</td> -->
+
+                    <td>{{ sal.Earned_Basic|floatformat:0 }}</td>
+                    <td>{{ sal.Earned_HRA|floatformat:0  }}</td>
+                    <td>{{ sal.Earned_Total_Allowance }}</td>
+                    <!-- <td>{{ sal.gross_salary }}</td> -->
+
+                    <td>{{ sal.EmployeePF }}</td>
+                    <td>{{ sal.ESIC }}</td>
+                    <td>{{ sal.AdvanceLoan }}</td>
+                    <td>{{ sal.OtherDeduction }}</td>
+                    <td>{{ sal.Arrear }}</td>
+                    <td>{{ sal.TaxDeduction }}</td>
+                    <td>{{ sal.Total_Deduction }}</td>
+                    <td>{{ sal.Net_salary }}</td>
+                    <td>{{ sal.EPFO }}</td>
+                    <td>{{ sal.CompanyContributionToESIC }}</td>
+                    <td>{{ sal.TotalCompanyContribution }}</td>
+                    <td>{{ sal.CTC }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td style="text-align: left;">{{ sal.EmployeeCode }}</td>
+                    <td style="text-align: left;">{{ sal.Emp_Name }}</td>
+                    <td>{{ sal.DOJ_display }}</td>
+                    <td style="text-align: left;">{{ sal.Department }}</td>
+                    <td style="text-align: left;">{{ sal.Desingation }}</td>
+                    <td>{{ sal.no_of_days }}</td>
+                    <td>{{ sal.gross_salary }}</td>
+                    <td>{{ sal.fixed_basic }}</td>
+                    <td>{{ sal.fixed_HRA }}</td>
+                    <td>{{ sal.ConveyanceAllowance }}</td>
+                    <td>{{ sal.OtherAllowance }}</td>
+                    <!-- <td>{{ sal.Total_A_Salary_Package }}</td> -->
+
+                    <td>{{ sal.Earned_Basic }}</td>
+                    <td>{{ sal.Earned_HRA }}</td>
+                    <td>{{ sal.Earned_Total_Allowance }}</td>
+                    <!-- <td>{{ sal.Earning_Gross_Salary }}</td> -->
+
+                    <td>{{ sal.EmployeePF }}</td>
+                    <td>{{ sal.ESIC }}</td>
+                    <td>{{ sal.AdvanceLoan }}</td>
+                    <td>{{ sal.OtherDeduction }}</td>
+                    <td>{{ sal.Arrear }}</td>
+                    <td>{{ sal.TaxDeduction }}</td>
+                    <td>{{ sal.Total_Deduction }}</td>
+                    <td>{{ sal.Net_salary }}</td>
+                    <td>{{ sal.EPFO }}</td>
+                    <td>{{ sal.CompanyContributionToESIC }}</td>
+                    <td>{{ sal.TotalCompanyContribution }}</td>
+                    <td>{{ sal.CTC }}</td>
+                </tr>
+            {% endif %}
+        {% endfor %} 
+
+    </tbody>
+</table>
+
+    </div> 
+
+<br>
+    <!-- <hr style="background-color: #3a4a93;"> -->
+    <footer style="border-top: 1px solid #3a4a93;">
+        <table style="width: 100%; font-size: 8px;">
+          <tr>
+              <td id="datetime" style="text-align: left;">
+                {{ current_datetime }}
+              </td>
+              <td style="text-align: center;">
+                  <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                      <tbody>
+                          <tr>
+                              <td>
+                                  <p style="font-size: 10px;"></p>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </td>
+              <td style="text-align: right;">
+                  <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+              </td>
+          </tr>
+        </table>
+      </footer>
+</body>
+</html>

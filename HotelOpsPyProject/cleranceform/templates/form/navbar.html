@@ -1,0 +1,70 @@
+{% comment %} <!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <style type="text/css">
+    .bs-example {
+      margin: 0px;
+
+    }
+.navbar-dark{
+  background: #013574 !important;
+
+}
+
+.navbar-dark a{
+  color: #ffff !important;
+
+}
+    .navbar-brand {
+      font-size: 20px;
+      font-family: sans-serif;
+
+    }
+
+    .container {
+      width: 100%;
+      min-width: 100%;
+  }
+  </style>
+</head>
+
+<body>
+
+  <div class="bs-example">
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top" style="background:#337AB7;">
+      <a href="/" class="navbar-brand">Hotel Management</a>
+      <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+        <div class="navbar-nav">
+
+          <a href="/cleranceform/cleranceform" class="nav-item nav-link"> New Clearance Form </a>
+          <a href="/cleranceform/cleranceformlist" class="nav-item nav-link"> Clerance List</a>
+          <a href="/cleranceform/cleranceitemmasterlist" class="nav-item nav-link"> Manage Master </a>
+
+          {% comment %} <a href="/patientclick" class="nav-item nav-link">Patient</a>  {% endcomment %}
+
+
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <br>
+  <br>
+  <br>
+
+</body>
+
+</html> {% endcomment %}

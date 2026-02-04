@@ -1,0 +1,6 @@
+from django.contrib import admin
+from .models import Raw_Attendance_Data,Attendance_Data,Update_Attendance_Request,Update_Attendance_Request_V1, SalarySlip,Organization_Details,Raw_Attendance_Data_File,SalaryEmails,WeekOffDetails
+list_Dispaly = [Raw_Attendance_Data,Attendance_Data,Update_Attendance_Request,Update_Attendance_Request_V1, SalarySlip,Organization_Details,Raw_Attendance_Data_File,SalaryEmails,WeekOffDetails]
+admin.site.register(list_Dispaly)
+
+# Register your models here.

@@ -1,0 +1,171 @@
+{% load custom_filters %}
+{% load encryption_filters %}
+{% load IT_Inventory_Filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Report</title>
+    {% comment %} <style>
+        @page {
+            margin: 10mm;
+        }
+        .table-container {
+            width: 100%;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            padding: 2px 3px;
+            text-align: left;
+        }
+        .bold-text {
+             font-weight: bold; 
+        }
+
+        .table-container table thead tr th, .table-container table tbody tr td{
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
+        }
+
+
+    </style> {% endcomment %}
+    <style>
+    @page {
+        size: A4 landscape;
+        margin: 10mm;
+    }
+    body {
+        font-size: 10px;
+    }
+    .table-container {
+        width: 100%;
+    }
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        font-size: 10px;
+    }
+    .table-container th,
+    .table-container td {
+        padding: 2px 3px;
+        text-align: left;
+        word-wrap: break-word;
+        word-break: break-word;
+        white-space: normal;
+        overflow-wrap: break-word;
+        word-break: break-all !important;
+    }
+    tr {
+        page-break-inside: avoid;
+    }
+</style>
+
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+          <tr>
+              
+            <td style="text-align: center;width:1000px">
+              <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                  <tr>
+                    <td><p style="text-align: center; font-size:18px; margin-bottom:-20px;">{{organization_logo}}</p>
+                        <p style="text-align: center; margin-top:-3px;">Software & Hardware Report</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style="text-align: right;">
+              {% if organization_logos %}
+              <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 80px; height: auto;">
+          {% else %}
+              <p>No logo available</p>
+          {% endif %}
+            </td>
+          </tr>
+        </table>
+</header>
+<br>
+    <hr style="background-color: #3a4a93;">
+    {% if Inventory_Type == 'Hardware' %}
+        <div class="table-container">
+            <table id="example" class="table table-bordered" style="border: 0.6px solid rgb(172, 174, 179);">
+                <thead class="thead">
+                    <tr class="">
+                        <th  style="width:90;">Hardware Type</th>
+                        <th  style="width:90;">Description</th>
+                        <th style="width:130;">SerialNo</th>
+                        <th  style="width:70;">MAKE |<br> MODEL |<br> COMM. DATE</th>
+                        <th  style="width:60;">Warranty PERIOD</th>
+                        <th  style="width:80;">WARRANTY STATUS</th>
+                        <th  style="width:80;">AMC Type <br>AMC STATUS </th>
+                        <th  style="width:50;">AMC Period</th>
+                        <th style="width:60;">AMC Quantity <br> Per Unit Price <br> Yearly Expense</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for itInventorys in inventory_data %}
+                    <tr>
+                    
+                        <td  style="width:90;">{{itInventorys.inventory.type}}</td> 
+                        <td  style="width:90;">{{itInventorys.inventory.Description}}</td> 
+                        <td style="width:130;">{{itInventorys.inventory.SerialNo}}</td> 
+                        <td  style="width:70;">{{itInventorys.inventory.Make}} <br> {{itInventorys.inventory.Model_No}} <br> {{itInventorys.inventory.Commissioning_Date }}</td> 
+                        <td  style="width:60;">{{itInventorys.inventory.Warrantiy_start|format_ymd_to_dmy }}<br>{{itInventorys.inventory.Warrantiy_end|format_ymd_to_dmy }}</td> 
+                        <td  style="width:80;">{{itInventorys.inventory.Warrantiy_Status}}</td> 
+                        <td   style="width:80;">
+                            {{itInventorys.inventory.amctype}} <br>
+                            {{itInventorys.inventory.AMC_Status}}
+                        </td> 
+                        <td style="width:50;">
+                            {{itInventorys.inventory.amcstart|format_ymd_to_dmy }} <br>
+                            {{itInventorys.inventory.amcend|format_ymd_to_dmy }}
+                        </td> 
+                        <td style="width:60;">
+                            {{itInventorys.inventory.hardware_quantity}} <br>
+                            {{itInventorys.inventory.hardware_AMC_Yearly_Expense}} <br>
+                            {{itInventorys.inventory.hardware_unit_price}}
+                        </td> 
+                    </tr>
+                    {% endfor %} 
+                </tbody> 
+            </table>
+        </div> 
+    {% endif %}
+
+    <hr style="background-color: #3a4a93;">
+
+    <footer style="border-top: 1px solid #3a4a93;">
+        <table style="width: 100%; font-size: 10px;">
+          <tr>
+              <td id="datetime" style="text-align: left;">
+                {{ current_datetime }}
+              </td>
+              <td style="text-align: center;">
+                  <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                      <tbody>
+                          <tr>
+                              <td>
+                                  <p style="font-size: 10px;"></p>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </td>
+              <td style="text-align: right;">
+                  <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+              </td>
+          </tr>
+        </table>
+      </footer>
+</body>
+</html>

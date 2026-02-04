@@ -1,0 +1,76 @@
+
+
+  {% include "apps/navbar.html" %}
+
+<style>
+  .container {
+    width: 100%;
+    min-width: 100%;
+}
+</style>
+<div class="container table-responsive">
+  <div class="card card-primary">
+    <div  class="card-header">
+        Cake Order List
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>To</th>
+            <th>Date</th>
+            <th>From</th>
+            <th>Time</th>
+            <th>Guest Name</th>
+            <th>To Be Prepared for</th>
+            <th>Size</th>
+            <th>Type of Cake</th>
+            <th>Required Date & Time</th>
+            <th>Packing</th>
+            <th>Selling Price</th>
+            <th>Message On Cake</th>
+            <th>Complimentory</th>
+            <th>Authorised By</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.To}}</td>
+            <td>{{i.Date|date:"d-M-Y"}}</td>
+            <td>{{i.From}}</td>
+            <td>{{i.Time|time:"h:i a"}}</td>
+            <td>{{i.Guest_Name}}</td>
+            <td>{{i.To_Be_Prepared_For}}</td>
+            <td>{{i.Size}}</td>
+            <td>{{i.Type_Of_Cake}}</td>
+            <td>{{i.Required_Date}} {{i.Required_Time|time:"h:i a"}}</td>
+            <td>{{i.Packing}}</td>
+            <td>{{i.Selling_Price}}</td>
+            <td>{{i.Message_On_Cake}}</td>
+            <td>{{i.Complimentory}}</td>
+            <td>{{i.Authorised_By}}</td>
+            <td>
+              
+            <div class="btn btn-group">
+                  <a href="/edit?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/delete?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+             </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  {% comment %} <button type="button" onclick="alert('Are You want to add New Order!')">Add New!</button> {% endcomment %}
+  {% comment %} <td><a href="/cakeorder.html?id={{i.id}}">Add New</button></td> {% endcomment %}
+
+  
+</div>

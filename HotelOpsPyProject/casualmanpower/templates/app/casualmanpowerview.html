@@ -1,0 +1,83 @@
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Casual Mampower Form View </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>Date</th>
+                    <td>{{Ed.Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Prepared By</th>
+                      <td>{{Ed.Prepared_By}}</td>
+                    </tr>
+                    <tr>
+                      <th>Department</th>
+                      <td>{{Ed.Department}}</td>
+                    </tr>
+                    <tr>
+                      <th>Numbers Required</th>
+                      <td>{{Ed.Numbers_Required}}</td>
+                    </tr>
+                    <tr>
+                      <th>Reason</th>
+                      <td>{{Ed.Reason}}</td>
+                    </tr>
+                    <tr>
+                      <th>Function</th>
+                      <td>{{Ed.Function}}</td>
+                    </tr>
+                    <tr>
+                      <th>Rate</th>
+                      <td>{{Ed.Rate}}</td>
+                    </tr>
+                    <tr>
+                      <th>No Of Pax</th>
+                      <td>{{Ed.No_Of_Pax}}</td>
+                    </tr>
+                    <tr>
+                      <th>Date Required</th>
+                      <td>{{Ed.Date_Required}}</td>
+                    </tr>
+                    <tr>
+                      <th>Est Sales Volume</th>
+                      <td>{{Ed.Est_Sales_Volume}}</td>
+                    </tr>
+                    <tr>
+                      <th>Reporting Time</th>
+                      <td>{{Ed.Reporting_Time}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %} 

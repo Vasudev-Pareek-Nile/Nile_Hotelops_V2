@@ -1,0 +1,338 @@
+{% comment %} <!DOCTYPE html>
+<html>
+<head>
+    <title>Written Warning</title>
+</head>
+<body>
+    <h1>Written Warning for {{ warning.name }}</h1>
+    <p>Employee Code: {{ warning.employee_no }}</p>
+    <p>Department: {{ warning.department }}</p>
+    <p>Designation: {{ warning.designation }}</p>
+    <p>Problems: {{ warning.problems }}</p>
+    <p>Written Warning: {{ warning.written_warning }}</p>
+    <p>Improvements: {{ warning.improvements }}</p>
+    <p>From: {{ warning.period_from }}</p>
+    <p>To: {{ warning.period_to }}</p>
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warning Letters</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 6px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        
+        font-size: 12px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+   
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+              {% if  IsRadisson == 'Show'  %}  
+                <h4><span style="font-size:15px;">Written Warning</span> <br/> {{ selectedOrganizationName }}</h4>
+              {% else %}
+                {% if organization_logo %}
+                      <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                  {% else %}
+                      <p>No logo available</p>
+                  {% endif %}
+              {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td>
+                    {% if  IsRadisson == 'Show'  %} 
+                      &nbsp;
+                    {% else %}
+                      <strong>Written Warning <br/> {{ selectedOrganizationName }}</strong>
+                    {% endif %}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      <div class="main-container">
+        <table class="table table-striped custom-table">
+          <tr>
+              <td style="width: 40%;"><strong>Employee no:</strong></td>
+              <td>{{ warning.employee_no|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Name:</strong></td>
+              <td>{{ warning.name|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Designation:</strong></td>
+              <td>{{ warning.designation|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Department:</strong></td>
+              <td>{{ warning.department|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Warning:</strong></td>
+              <td>{{ warning.warnings|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Employee’s problems:</strong></td>
+              <td>{{ warning.problems|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Written Warning:</strong></td>
+              <td>{{ warning.written_warning|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Standard of improvements expected:</strong></td>
+              <td>{{ warning.improvements|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Period given for improvement:</strong></td>
+              <td>
+                  <b>From:</b> {{ warning.period_from|date:"d M. Y"|default:"N/A" }}
+                  <b>To:</b> {{ warning.period_to|date:"d M. Y"|default:"N/A" }}
+              </td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Written warning communicated to Employee on:</strong></td>
+              <td>{{ warning.appeal|default:"N/A" }}</td>
+          </tr>
+          <tr>
+              <td style="width: 40%;"><strong>Witness(es) if any:</strong></td>
+              <td>{{ warning.witnesses|default:"N/A" }}</td>
+          </tr>
+      </table>
+      
+        
+        <table  class="table table-striped custom-table">
+            
+            <tr>
+                <td ><strong>Associate’s remark:<br>
+                    (Associate has a right to appeal against the written warning ifs/he feels unjustified). Please tick.</strong></td>
+                
+              
+            </tr>
+            <tr>
+                <td>My supervisor has explained to me that should I disagree with the written warning, I may appeal.&nbsp;<b>{{warning.appeal}}<b/></td>
+            </tr>
+           
+            <tr>
+                <td>I agree with the warning.<b>
+                  {% if warning.agree_with_warning %}
+                  Yes
+              {% else %}
+                  No
+              {% endif %}
+                </b></td>
+            </tr>
+            <tr>
+                <td>I do not agree with the written warning and would like to appeal against it. <b>
+                  {% if warning.disagree_with_warning %}
+                  Yes
+              {% else %}
+                  No
+              {% endif %} </b></td>
+            </tr>
+                
+        </table>
+        <table style="border-collapse: collapse; width: 100%; border: 1px solid #ddd;">
+           
+            <tr style="height: 60px;">
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp;<strong> Supervisor  Signature Date:</strong> {{warning.supervisor_signature_date|date:"d M. Y"}}</td>
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp; <strong>Associate Signature Date:</strong> {{warning.associate_signature_date|date:"d M. Y"}}</td>
+            </tr>
+            <tr style="height: 60px;">
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp;<strong> Reviewed By:</strong> {{warning.reviewed_by}}</td>
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp;<strong> Seen by:</strong> {{warning.seen_by}}</td>
+            </tr>
+            <tr style="height: 60px;">
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp;<strong> Department Manager Signature Date:</strong> {{warning.DepartmentManager|date:"d M. Y"}}</td>
+                <td style="border-top: none; border-bottom: 1px solid #ddd;">&nbsp; &nbsp;<strong> HR Manager Signature:</strong> _______________________</td>
+            </tr>
+        </table>
+              
+              
+                
+              
+                
+              
+       
+          
+       
+      
+       
+
+       
+                
+              
+              
+                
+              
+                
+              
+       
+          
+       
+      
+       
+
+       
+      </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

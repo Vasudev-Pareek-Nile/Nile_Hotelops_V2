@@ -1,0 +1,67 @@
+ {% extends 'ExPLUtilities/homebase.html' %} 
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    .Ulmodule li {
+        flex:0;
+        margin: 10px;
+        background: #6789bd;
+        padding: 15px;
+        border-radius: 5px;
+        list-style: none;
+        min-width: 150px;
+        align-items: stretch;
+        
+    }
+    
+    ul.Ulmodule {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: flex-end;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        
+        align-items:  stretch ;
+        
+    }
+    .Ulmodule li a{
+      color: #fff;
+      font-size:25px;
+    }
+  
+</style>
+    <div>
+        <ul class="Ulmodule">
+                <li><a href="/ExpenseReport/PLUtilitiesList">P&L Utilities</a></li>
+                <li><a href="/ExpenseReport/EngList">P&L Engineering</a></li>
+                <li><a href="/ExpenseReport/SMList">P&L S&M </a></li>   
+                <li><a href="/ExpenseReport/ITList"> IT</a></li>
+                <li><a href="/ExpenseReport/AG_SecurityList/">A&G Security</a></li>
+                <li><a href="/ExpenseReport/AG_HRList/"> A&G-HR </a></li>
+                <li><a href="/ExpenseReport/AG_AnalysisList/">A&G A&G</a></li>
+                <li><a href="/ExpenseReport/Total_AGList/">Total A&G</a></li>
+                <li><a href="/ExpenseReport/Rental_IncomeList/"> Rental Other Income </a></li>
+                <li><a href="/ExpenseReport/OOD_LaundryList/">OOD Guest Laundry</a></li>
+                <li><a href="/ExpenseReport/OOD_TransportList/">OOD Transport</a></li>
+                <li><a href="/ExpenseReport/OOD_HealthList/">OOD Health Club & SPA</a></li>
+                <li><a href="/ExpenseReport/Total_OODList/">Total OOD </a></li>
+                <li><a href="/ExpenseReport/FB_BanquetList/">F&B Banquet</a></li>
+                <li><a href="/ExpenseReport/FB_IRDList/"> F&B IRD </a></li>
+                <li><a href="/ExpenseReport/Outlet_1List/"> Outlet 1 </a></li>
+                <li><a href="/ExpenseReport/Outlet_2List/"> Outlet 2 </a></li>
+                <li><a href="/ExpenseReport/Outlet_3List/"> Outlet 3 </a></li>
+                <li><a href="/ExpenseReport/Outlet_4List/">Outlet 4</a></li>
+                <li><a href="/ExpenseReport/Outlet_5List/">Outlet 5</a></li>
+                <li><a href="/ExpenseReport/Total_FBList/">Total F&B</a></li>
+                <li><a href="/ExpenseReport/PL_RoomsList/">P&L Rooms</a></li>
+                <li><a href="/ExpenseReport/PL_SummaryList/">Summary P&L</a></li>
+               
+        </ul>
+    </div>
+
+    {% endblock content %}

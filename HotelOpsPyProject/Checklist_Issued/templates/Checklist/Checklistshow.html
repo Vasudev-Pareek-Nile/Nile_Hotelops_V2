@@ -1,0 +1,140 @@
+{% extends 'checklist/homebase.html' %}
+
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+  .dt-buttons .btn {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:focus, .dt-buttons .btn:active {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  }
+
+  table th {
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  td {
+    font-size: 12px;
+  }
+
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+
+  .dataTables_wrapper .dataTables_filter {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .dataTables_wrapper .dt-buttons {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .job-title {
+    text-align: left;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+</style>
+
+
+<body>
+  &nbsp; &nbsp; &nbsp; &nbsp;<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+          <strong>CheckList Issued</strong>
+        </div>
+        <div class="col-md-6 text-right">
+            <a  href="{% url 'Checklistadd' %}" class="btn btn-primary btn-sm text-white" >New CheckList</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+  
+  
+
+    <br>
+    <table class="table table-bordered" id="example">
+        <thead>
+            <tr>
+                <th>EmpCode</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Designations</th>
+                <th>Action</th>
+               
+                
+            </tr>
+        </thead>
+        <tbody>
+          {% for checkempdata  in checkempdata %}
+          <tr>
+            <td>{{ checkempdata.EmpCode }}</td>
+            <td>{{ checkempdata.Name }}</td>
+            <td>{{ checkempdata.Department }}</td>
+            <td>{{ checkempdata.Designtions }}</td>
+            <td style="width: 200px;">
+                <a href="{% url 'Checklistadd' %}?ID={{ checkempdata.id }}" class="btn btn-primary btn-sm edit-btn"  style="color: white; text-decoration: none; font-size: 12px;" title="Edit">Edit</a>
+                <a onclick="return confirm('Are you sure you want to delete?')"
+                href="{% url 'EmpChecklist' %}?ID={{ checkempdata.id }}"
+                class="btn btn-danger btn-sm"
+                style="font-size: 12px; margin-right: 1px;">
+                Delete
+             </a>
+             <a target="_blank" href="{% url 'ChecklistView' %}?ID={{ checkempdata.id }}" class="btn btn-primary btn-sm edit-btn"  style="color: white; text-decoration: none; font-size: 12px;" title="View">View</a>
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+    </table>
+    
+    
+    
+    
+    
+
+  </div>
+</div>
+</div>
+
+
+
+
+
+{% endblock content %}

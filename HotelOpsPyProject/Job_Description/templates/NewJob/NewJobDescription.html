@@ -1,0 +1,338 @@
+{% extends "NewJob/homebase.html" %} 
+{% block content %}
+
+<!-- Load CSS and JS libraries -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
+
+
+
+
+
+<style>
+  label {
+      font-family: 'Arial Nova', sans-serif;
+      font-weight: bold;
+      min-width:130px;
+  }
+  body {
+    font-family: 'Arial Nova', sans-serif;
+    font-size: 12px; /* Sets the base font size to 12px */
+  }
+  .editor-container {
+      margin-bottom: 20px;
+  }
+  .ck-editor__editable {
+      min-height: 150px; 
+  }
+  
+</style>
+
+<div >
+  <div class="row">
+    <div class="col-md-12">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="card">
+          <div class="card-header" style="color: #1ab394">
+            <strong>New Job Description</strong>
+          </div>
+          <div class="card-body">
+            <div class="row">
+             
+              <div class="col-md-12">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="JD_Title" class="mb-0">JD Title</label>
+                        <input type="text" class="form-control" id="JD_Title" name="JD_Title" value="{{ Description.JD_Title|default_if_none:'' }}" style="flex: 1;" />
+                </div>
+              </div>
+
+              
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="department_select" class="mb-0">Department(s)</label>
+                    <select class="multiselect form-control" id="department_select" name="Department" style="flex: 1;" required>
+                    <option value="General" {% if not Description.Department or 'General' in Description.Department|stringformat:'s' %}selected{% endif %}>All Department</option>
+                    {% for department in Departments %}
+                      <option value="{{ department.DepartmentName }}" {% if department.DepartmentName in Description.Department|stringformat:'s' %}selected{% endif %}>{{ department.DepartmentName }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Division -->
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="division">Division</label>
+                      <input type="text" class="form-control" id="division" name="Division" style="flex: 1;" value="{{ Description.Division|default_if_none:'' }}" required />
+                </div>
+              </div>
+              
+              
+
+                 <!-- Position(s) -->
+                 <div class="col-md-4">
+                  <div class="form-group m-2 d-flex align-items-center">
+                    <label for="designation_select">Position(s)</label>
+                     <select class="select2_demo_3 form-control" multiple="multiple" id="designation_select" style="flex: 1;" name="Position" required>
+                      <option value="All Position" {% if not Description.Position or 'All Position' in Description.Position|stringformat:'s' %}selected{% endif %}>All Position</option>
+                      {% for Designation in Designations %}
+                        <option value="{{ Designation.designations }}" {% if Designation.designations in Description.Position|stringformat:'s' %}selected{% endif %}>{{ Designation.designations }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+             
+
+              
+
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="report_to_select" class="mb-0">Reports To</label>
+                  <select name="Report_To" class="multiselect form-control" id="report_to_select" style="flex: 1;" multiple="multiple" required>
+                    <option value="All Report" {% if not Description.Report_To or 'All Report' in Description.Report_To|stringformat:'s' %}selected{% endif %}>All Report</option>
+                    {% for Designation in Designations %}
+                      <option value="{{ Designation.designations }}" {% if Designation.designations in Description.Report_To|stringformat:'s' %}selected{% endif %}>{{ Designation.designations }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="level">Level/Grade</label>
+                   <input type="text" class="form-control" id="level" name="Level" style="flex: 1;" value="{{ Description.Level|default_if_none:'' }}" required />
+                </div>
+              </div>
+             
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="signatory">Signatory</label>
+                    <select name="Signatory" class="multiselect form-control" multiple="multiple" style="flex: 1;" required>
+                    <option value="All Signatory" {% if not Description.Signatory or 'All Signatory' in Description.Signatory|stringformat:'s' %}selected{% endif %}>All Signatory</option>
+                    {% for Designation in Designations %}
+                      <option value="{{ Designation.designations }}" {% if Designation.designations in Description.Signatory|stringformat:'s' %}selected{% endif %}>{{ Designation.designations }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+             
+
+               <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="effective_date">Effective Date</label>
+                  <input type="date" id="effective_date" class="form-control" name="Effective_Date" value="{{ Description.Effective_Date|date:'Y-m-d' }}" style="flex: 1;" />
+                </div>
+              </div>
+             
+              
+              <div class="col-md-4">
+                <div class="form-group m-2 d-flex align-items-center">
+                  <label for="jd_approved_by">JD Approved By</label>
+                  <input type="text" class="form-control" id="jd_approved_by" style="flex: 1;" name="JD_Approved_By" value="{{ Description.JD_Approved_By|default_if_none:'' }}" required />
+                </div>
+              </div>
+
+           
+
+            
+              
+              
+           
+              
+              <div class="col-md-12">
+                <div class="form-group m-2">
+                  <label for="job_scope">Job Scope Summary</label>
+                  <textarea name="Job_Scope" id="editor1" class="form-control">{{ Description.Job_Scope|default_if_none:'' }}</textarea>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group m-2">
+                  <label for="duties_responsibilities">Duties & Responsibilities</label>
+                  <textarea name="Duties_Responsibilities" id="editor2" class="form-control">{{ Description.Duties_Responsibilities|default_if_none:'' }}</textarea>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="form-group m-2">
+                  <label for="job_knowledge_skills">Job Knowledge Skills & Abilities</label>
+                  <textarea name="Job_Knowledge_Skills" id="editor3" class="form-control">{{ Description.Job_Knowledge_Skills|default_if_none:'' }}</textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card-footer">
+            {% if Description %}
+              <input type="submit" value="Update" class="btn btn-primary btn-lg" />
+            {% else %}
+              <input type="submit" value="Submit" class="btn btn-primary btn-lg" />
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script type="importmap">
+  {
+      "imports": {
+          "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+          "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+      }
+  }
+</script>
+<script type="module">
+  import {
+      ClassicEditor,
+      Essentials,
+      Paragraph,
+      Bold,
+      Italic,
+      Font,
+      Heading,
+      List
+  } from 'ckeditor5';
+
+  ClassicEditor
+      .create(document.querySelector('#editor1'), {
+          plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+          toolbar: [
+              'undo', 'redo', '|', 'bold', 'italic', '|',
+              'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+              'numberedList', 'bulletedList'
+          ],
+          height: '150px'
+      })
+      .then(editor => {
+          window.editor1 = editor;
+      })
+      .catch(error => {
+          console.error(error);
+      });
+
+  ClassicEditor
+      .create(document.querySelector('#editor2'), {
+          plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+          toolbar: [
+              'undo', 'redo', '|', 'bold', 'italic', '|',
+              'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+              'numberedList', 'bulletedList'
+          ],
+          height: '300px'
+      })
+      .then(editor => {
+          window.editor2 = editor;
+      })
+      .catch(error => {
+          console.error(error);
+      });
+
+  ClassicEditor
+      .create(document.querySelector('#editor3'), {
+          plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+          toolbar: [
+              'undo', 'redo', '|', 'bold', 'italic', '|',
+              'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor',
+              'numberedList', 'bulletedList'
+          ],
+          height: '150px'
+      })
+      .then(editor => {
+          window.editor3 = editor;
+      })
+      .catch(error => {
+          console.error(error);
+      });
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.min.js"></script>
+
+<script>
+  $(function() {
+    var name = ['joe', 'foo', 'bar'];
+    $('select[name="Department"]').multiselect({
+        includeSelectAllOption: true,
+        selectAllText: 'Select All',
+        buttonWidth: '100%',
+        nonSelectedText: 'Select Department(s)',
+        numberDisplayed: 1,
+        maxHeight: 300,
+        enableCaseInsensitiveFiltering: true,
+        filterPlaceholder: 'Search'
+    });
+    $('select[name="Position"]').multiselect({
+        includeSelectAllOption: true,
+        selectAllText: 'Select All',
+        buttonWidth: '100%',
+        nonSelectedText: 'Select Position(s)',
+        numberDisplayed: 1,
+        maxHeight: 300,
+        enableCaseInsensitiveFiltering: true,
+        filterPlaceholder: 'Search'
+    });
+    $('select[name="Report_To"]').multiselect({
+        includeSelectAllOption: true,
+        selectAllText: 'Select All',
+        buttonWidth: '100%',
+        nonSelectedText: 'Select Report',
+        numberDisplayed: 1,
+        maxHeight: 300,
+        enableCaseInsensitiveFiltering: true,
+        filterPlaceholder: 'Search'
+    });
+    $('select[name="Signatory"]').multiselect({
+        includeSelectAllOption: true,
+        selectAllText: 'Select All',
+        buttonWidth: '100%',
+        nonSelectedText: 'Select Signatory',
+        numberDisplayed: 1,
+        maxHeight: 300,
+        enableCaseInsensitiveFiltering: true,
+        filterPlaceholder: 'Search'
+    });
+  });
+</script>
+
+<script>
+ 
+  function setDefaultDate() {
+    var dateInput = document.getElementById('effective_date');
+    if (!dateInput.value) { 
+      var today = new Date();
+  
+      
+      var formattedDate = today.toISOString().split('T')[0];
+  
+     
+      dateInput.value = formattedDate;
+    }
+  }
+
+ 
+  setDefaultDate();
+
+ 
+  setTimeout(function() {
+    var alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
+      alert.remove();
+    });
+  }, 1000);
+</script>
+
+
+{% endblock %}

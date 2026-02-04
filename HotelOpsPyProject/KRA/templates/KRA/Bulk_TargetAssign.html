@@ -1,0 +1,219 @@
+ {% extends "KRA/homebase.html" %}
+{% block content %}
+
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+
+    .path.line {
+        stroke-dasharray: 1000;
+    }
+</style>
+
+<style>
+    .listbox select {
+        min-height: 400px;
+    }
+
+    .card-header{
+        margin-bottom: -28px;
+    }
+</style>
+<div class="card">
+    <div class="card-header">
+        <h5 class="m-0 text-uppercase fw-bold">Target Assign</h5>
+    </div>
+    <div class="card-body">
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered"  id="TargetAssign">
+            <tr>
+                <th>Sr</th>
+                <th><input type="checkbox" name="check" class="checkBox selectAll"> Select All</th>
+                <th>Organization</th>
+                <th>Employee</th>
+                <th>Doj</th>
+                <th>From</th>
+                <th>To</th>
+            </tr>
+            {% for row in all_data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% comment %} <input type="checkbox" name="all_emp_OID"  class="checkBox" value="{{ row.OrganizationID }}" data-EmpCodes="{{ row.EmployeeCode }}"> {% endcomment %}
+                    <input type="checkbox"
+                        class="checkBox"
+                        name="rows"
+                        value="{{ forloop.counter }}">
+
+                    <input type="hidden"
+                        name="emp_code_{{ forloop.counter }}"
+                        value="{{ row.EmployeeCode }}">
+
+                    <input type="hidden"
+                        name="org_id_{{ forloop.counter }}"
+                        value="{{ row.OrganizationID }}">
+                </td>
+                <td>{{ row.Organization }}</td>
+                <td>{{ row.Employee }}</td>
+                <td>
+                    <input type="text" 
+                        name="DOJ_{{ forloop.counter }}" 
+                        id="DOJ_{{ forloop.counter }}" 
+                        value="{{ row.From }}" 
+                        class="form-control" readonly>
+                </td>
+                <td>
+                    <select class="form-control year-select" id="year_{{ forloop.counter }}" name="FromYear_{{ forloop.counter }}" data-doj="{{ row.From }}"></select>
+                </td>
+                <td>
+                    <input type="text" class="form-control toyear-input" name="ToYear_{{ forloop.counter }}" id="ToYear_{{ forloop.counter }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table> 
+        <div class="CustomFooter ">
+            <button type="submit" class="btn btn-sm btn-primary">Assign Selected</button>
+            <a class="btn btn-sm btn-outline-secondary">SE: 
+                <span id="selectedCount" class="fw-bold text-secondary">0</span>
+            </a>
+        </div>
+    </form>
+    </div>
+</div>
+
+
+
+<script>
+    function BindUserYear() {
+        const monthNamesList = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+        document.querySelectorAll('.year-select').forEach(select => {
+            const dojString = select.dataset.doj;
+            if (!dojString) return;
+
+            const dojDate = new Date(dojString);
+            dojDate.setMonth(dojDate.getMonth() - 1);
+
+            const options = [];
+            let current = new Date(); // current date
+            current = new Date(current.getFullYear(), current.getMonth(), 1);
+
+            while (current >= dojDate) {
+                const month = current.getMonth();
+                const year = current.getFullYear();
+                const value = `${String(month + 1).padStart(2, '0')}-${year}`;
+                const text = `${monthNamesList[month]}-${year}`;
+                options.push({ value, text });
+                current.setMonth(current.getMonth() - 1);
+            }
+
+            // clear and append options
+            select.innerHTML = "";
+            options.forEach(opt => {
+                const option = document.createElement("option");
+                option.value = opt.value;
+                option.text = opt.text;
+                select.appendChild(option);
+            });
+
+            // select latest month by default
+            select.selectedIndex = 0;
+
+            // calculate ToYear
+            const [selMonthStr, selYearStr] = select.value.split("-");
+            const selMonth = parseInt(selMonthStr) - 1;
+            const selYear = parseInt(selYearStr);
+            const futureDate = new Date(selYear, selMonth + 12, 1);
+            const toMonth = String(futureDate.getMonth() + 1).padStart(2, '0');
+            const toYear = futureDate.getFullYear();
+
+            // set ToYear input for this row
+            const counter = select.id.split("_")[1];
+            document.getElementById(`ToYear_${counter}`).value = `${toMonth}-${toYear}`;
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", BindUserYear);
+</script>
+
+     
+
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            // Select only visible checkboxes
+            $("#TargetAssign tbody tr:visible .checkBox")
+                .prop("checked", $(this).prop("checked"));
+            updateSelectedCount();
+        });
+    });
+
+    $(document).on("change", ".checkBox", function () {
+        let allVisible = $("#TargetAssign tbody tr:visible .checkBox").length;
+        let checkedVisible = $("#TargetAssign tbody tr:visible .checkBox:checked").length;
+
+        $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+        updateSelectedCount();
+    });
+
+    function updateSelectedCount() {
+        let count = $("#TargetAssign tbody tr:visible .checkBox:checked").length;
+        $("#selectedCount").text(count);
+    }
+</script>
+
+{% endblock content %}

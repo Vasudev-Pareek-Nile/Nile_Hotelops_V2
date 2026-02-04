@@ -1,0 +1,76 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div><div class="container">
+    <div class="card-header col-md-12 mb-3 "> Details of {{ current_month|date:"F Y" }}</div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row mb-3 ml-0">
+                <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+                <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm ml-2">Next Month</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id="example" class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Generated</th>
+                        <th>Payroll</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in emps %}
+                    <tr>
+                        <td>{{ emp.EmployeeCode }}</td>
+                        <td>{{ emp.FirstName }} {{ emp.MiddleName }} {{ emp.LastName }}</td>
+                        <td>{% if emp.generated %} Generated {% else %} Not Generated {% endif %}</td>
+                        <td>
+                            <a href="{% url 'View_Emmployee_Salary_Details'  %}?emp={{emp.EmployeeCode}}&year={{ year }}&month_no={{ month_no}}" class="btn btn-primary btn-sm">View </a>
+                           
+                            <a href="{% url 'Generate_Salary_Slip' %}?HR=Hr&Emp={{emp.EmployeeCode}}&year={{year}}&month_no={{month_no}}" class="btn btn-success btn-sm">Download</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    
+
+    <script>
+        $(document).ready(function() {
+            
+            var table = $("#example").DataTable({
+                "paging": true,
+                "searching": true,
+                "order": [],
+               
+            });
+    
+            
+           
+        });
+        
+        
+    </script>
+{% endblock content %}
+ 

@@ -1,0 +1,174 @@
+{% extends "OpenPositions/homebase.html" %} 
+{% block content %} 
+{% load static %}
+
+<div class="row justify-content-center">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-2">
+                <h5 class="mb-0 text-white">Resume Trainees</h5>
+            </div>
+            <div class="card-body">
+                <form action="{% url "add_trainee" %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row g-3">
+
+                        <!-- Candidate Photo -->
+                        <div class="col-md-3">
+                            <label class="form-label" for="CandidatePhoto">Candidate Photo</label>
+                            <input type="file" class="form-control" name="CandidatePhoto" id="CandidatePhoto" accept="image/*" required/>
+                        </div>
+
+                        <!-- Candidate Details -->
+                        <div class="col-md-3">
+                            <label class="form-label" for="Firstname">First Name</label>
+                            <input type="text" class="form-control" name="Firstname" id="Firstname" placeholder="Enter First Name" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="MiddleName">Middle Name</label>
+                            <input type="text" class="form-control" name="MiddleName" id="MiddleName" placeholder="Enter Middle Name">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="LastName">Last Name</label>
+                            <input type="text" class="form-control" name="LastName" id="LastName" placeholder="Enter Last Name" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="CandidateContact">Contact Number</label>
+                            <input type="tel" class="form-control" name="CandidateContact" id="CandidateContact" placeholder="Enter Contact Number" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="CandidateEmailAddress">Email Address</label>
+                            <input type="Email" class="form-control" name="CandidateEmailAddress" id="CandidateEmailAddress" placeholder="Enter Candidate Address" required>
+                        </div>
+
+                        <div class="col-md-5">
+                            <label class="form-label" for="CandidateAddress">Address</label>
+                            <input type="text" class="form-control" name="CandidateAddress" id="CandidateAddress" placeholder="Enter Candidate Address" required>
+                        </div>
+
+
+                        <!-- Education -->
+                        <div class="col-md-4">
+                            <label class="form-label" for="College">College</label>
+                            <input type="text" class="form-control" name="College" id="College" placeholder="Enter College Name">
+                        </div>
+
+
+                        <!-- Placement Coordinator -->
+                        <div class="col-md-4">
+                            <label class="form-label" for="CoordinatorName">Placement Coordinator Name</label>
+                            <input type="text" class="form-control" name="CoordinatorName" id="CoordinatorName" placeholder="Enter Name">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="CoordinatorEmail">Placement Coordinator Email</label>
+                            <input type="email" class="form-control" name="CoordinatorEmail" id="CoordinatorEmail" placeholder="Enter Email">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="CoordinatorPhone">Placement Coordinator Phone</label>
+                            <input type="tel" class="form-control" name="CoordinatorPhone" id="CoordinatorPhone" placeholder="Enter Phone">
+                        </div>
+
+                        <!-- Department of Reference -->
+                        <div class="col-md-4">
+                            <label class="form-label" for="DepartmentOfPreference">Department Of Preference</label>
+                            <select class="form-control" name="DepartmentOfPreference" id="DepartmentOfPreference" required>
+                                <option value="">-- Select Department --</option>
+                            </select>
+                        </div>
+
+                        <!-- Department of Reference -->
+                        <div class="col-md-4">
+                            <label class="form-label" for="Designations">Designations</label>
+                            <select class="form-control" name="Designations" id="Designations" required>
+                                <option value="">-- Select Designation --</option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="ResumeUpload">Upload Resume</label>
+                            <input type="file" class="form-control" name="ResumeUpload" id="ResumeUpload" required/>
+                        </div> 
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-primary px-4">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Load Departments
+        fetch("{% url 'Show_Department_Api' %}")
+            .then(response => response.json())
+            .then(data => {
+                let deptSelect = document.getElementById("DepartmentOfPreference");
+                data.forEach(dept => {
+                    let option = document.createElement("option");
+                    // option.value = dept.DepartmentName;  // use department ID
+                    option.value = dept.id;  // use department ID
+                    // console.log("Department fetched:", dept);  // Debugging line
+                    // console.log("Department fetched:", dept.id);  // Debugging line
+                    option.text = dept.DepartmentName;
+                    deptSelect.add(option);
+                });
+            });
+
+        // On department change → fetch designations
+        document.getElementById("DepartmentOfPreference").addEventListener("change", function () {
+            let deptId = this.value;
+
+            console.log("Selected Department ID:", deptId);  // Debugging line
+            let desigSelect = document.getElementById("Designations");
+
+            // Clear old options
+            desigSelect.innerHTML = '<option value="">-- Select Designation --</option>';
+
+            if (deptId) {
+                fetch(`{% url 'Show_Designations_Api' %}?department_id=${deptId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(desig => {
+                            let option = document.createElement("option");
+                            option.value = desig.id;
+                            option.text = desig.designations;
+                            desigSelect.add(option);
+                        });
+                    });
+            }
+        });
+
+        // Activate select2
+        // $('select').select2();
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    title: "{% if message.tags == 'error' %}Error!{% else %}Success!{% endif %}",
+                    text: "{{ message }}",
+                    icon: "{% if message.tags == 'error' %}error{% else %}success{% endif %}",
+                    confirmButtonText: "OK"
+                });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+
+
+{% endblock content %}

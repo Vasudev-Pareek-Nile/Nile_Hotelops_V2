@@ -1,0 +1,405 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<style>
+    #ProfileImagePreview {
+        max-height: 200px;
+        max-width: 200px;
+        width: 100%;
+        height: 100%;
+        object-fit: fit; 
+        border-radius: 5px; 
+    }
+    body{
+        background:white;
+    }
+
+    .strike{
+        color: red;
+    }
+    
+    label{
+        margin-bottom: 5px;
+        margin-top: 10px;
+    }
+
+    .card-header{
+        margin-bottom: -20px !important;
+    }
+</style>
+<div class="card-header">
+    <h4 class="text-uppercase fw-bold">Personal Information</h4>
+</div>
+<form action="" id = "personalInfoForm" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+        <div class="row m-2">
+            <div class="col-md-10">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Employee Code <span class="strike">*</span></label> 
+                            <input id="EmployeeCode" name="EmployeeCode" type="text" required class="form-control" value="{{Emobj.EmployeeCode}}" >
+                            <span id="EmployeeCodeerror" style="color:red;"></span>
+                            <input type="hidden" name="Pre_EmpID" value="{{Eduboj.id}}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Prefix <span class="strike">*</span></label>
+                            <select name="Prefix" id="Prefix" class="form-control" required>
+                                <option value="" {% if Emobj.Prefix == "" %}selected{% endif %}>Select</option>
+                                <option value="Mr." {% if Emobj.Prefix == "Mr." %}selected{% endif %}>Mr.</option>
+                                <option value="Ms." {% if Emobj.Prefix == "Ms." %}selected{% endif %}>Ms.</option>
+                                <option value="Mrs." {% if Emobj.Prefix == "Mrs." %}selected{% endif %}>Mrs.</option>
+                                <option value="Miss." {% if Emobj.Prefix == "Miss." %}selected{% endif %}>Miss.</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>First Name <span class="strike">*</span></label>
+                            <input id="FirstName" name="FirstName" type="text" value="{{Emobj.FirstName}}" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Middle Name</label>
+                            <input id="MiddleName" name="MiddleName" value="{{Emobj.MiddleName}}" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Last Name <span class="strike">*</span></label>
+                            <input id="LastName" name="LastName" value="{{Emobj.LastName}}" type="text" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Gender <span class="strike">*</span></label>
+                            <select id="Gender" name="Gender" class="form-control" required>
+                                <option value="" {% if Emobj.Gender == "" %}selected{% endif %}>Select</option>
+                                <option value="Male" {% if Emobj.Gender == "Male" %}selected{% endif %}>Male</option>
+                                <option value="Female" {% if Emobj.Gender == "Female" %}selected{% endif %}>Female</option>
+                                <option value="Other" {% if Emobj.Gender == "Other" %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Marital Status <span class="strike">*</span></label>
+                            <select id="MaritalStatus" name="MaritalStatus" class="form-control" required>
+                                <option value="" {% if Emobj.MaritalStatus == "" %}selected{% endif %}>Select</option>
+                                <option value="Unmarried" {% if Emobj.MaritalStatus == "Unmarried" %}selected{% endif %}>Unmarried</option>
+                                <option value="Married" {% if Emobj.MaritalStatus == "Married" %}selected{% endif %}>Married</option>
+                                <option value="Other" {% if Emobj.MaritalStatus == "Other" %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Date of Birth <span class="strike">*</span></label>
+                            <input id="DateOfBirth" name="DateofBirth" type="date" value="{% if Emobj.DateofBirth %}{{Emobj.DateofBirth|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Age <span class="strike">*</span></label>
+                            <input id="age" name="age" type="number" class="form-control" value="{{Emobj.age}}" readonly required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Mobile Number <span class="strike">*</span></label>
+                            <input id="MobileNumber" name="MobileNumber" type="text" value="{{Emobj.MobileNumber}}" class="form-control" required pattern="[6789][0-9]{9}" title="Enter a valid Indian mobile number">
+                            <span id="mobileError" style="color:red;"></span>
+
+                                <script>
+                                    document.getElementById('MobileNumber').addEventListener('input', function () {
+                                        const mobile = this.value;
+                                        // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+                                        const regex = /^[6-9]\d{9}$/;
+                                        const mobileError = document.getElementById('mobileError');
+
+                                        if (!regex.test(mobile)) {
+                                            mobileError.textContent = "Invalid mobile number";
+                                        } else {
+                                            mobileError.textContent = "";
+                                        }
+                                    });
+                                </script>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Email Address <span class="strike">*</span></label>
+                            <input id="EmailAddress" name="EmailAddress" type="email" class="form-control" value="{{Emobj.EmailAddress}}" required>
+                            <span id="emailError" style="color:red;"></span>
+
+                            <script>
+                                document.getElementById('EmailAddress').addEventListener('input', function () {
+                                    const email = this.value;
+                                    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                    const emailError = document.getElementById('emailError');
+
+                                    if (!regex.test(email)) {
+                                        emailError.textContent = "Invalid email format";
+                                    } else {
+                                        emailError.textContent = "";
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    {% comment %} <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Covid Vaccination <span class="strike">*</span></label>
+                            <select id="CovidVaccination" name="CovidVaccination"  class="form-control">
+                                <option value = "Yes" {% if Emobj.CovidVaccination == "Yes" %}selected{% endif %} >Yes</option>
+                                <option value = "No" {% if Emobj.CovidVaccination == "No" %}selected{% endif %} >No</option>
+                            </select>
+                        </div>
+                    </div> {% endcomment %}
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Details of Illness (if any)</label>
+                            <textarea id="IllnessDetails" rows="1" name="IllnessDetails"  class="form-control">{{Emobj.DetailsofIllness}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-2">
+                <div class="form-group">  
+                    {% if ProfileImagePreview == "Emobj" %}
+                        <img id="ProfileImagePreview" src="{% url 'view_file' %}?ID={{ Emobj.id }}&model=EmployeePersonalData" alt="Profile Image Preview">
+                    {% elif ProfileImagePreview == "HrEmobj" %}
+                        <img id="ProfileImagePreview" src="{% url 'Humanview_file' %}?ID={{ Emobj.id }}&model=EmployeePersonalDetails" alt="Profile Image Preview">
+                    {% else %}
+                        <img id="ProfileImagePreview" src="" alt="Profile Image Preview" required>
+                    {% endif %}
+                
+                    <input id="ProfileImage" name="ProfileImage" type="file" class="file-control mt-1" accept="image/*"
+                    {% if D == "NE" %}
+                        {% if  Emobj.ProfileImageFileName == '' or not Emobj  %}
+                        required
+                        {% endif %}
+                    {% endif %}>
+                
+                    <label for="ProfileImage">Profile Image<span class="strike">*</span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="CustomFooter">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary" id="submitbtn" style="padding-inline:24px; background:#FF902F; border-color:#FF902F;" value="Submit">
+            Submit 
+        </button>
+    </div>
+</form>
+
+
+
+<script>
+    $(document).ready(function() {
+
+        // Function to calculate age
+        function calculateAge(dobSelector, ageSelector) {
+            var dob = new Date($(dobSelector).val());
+            var today = new Date(); 
+            var age = today.getFullYear() - dob.getFullYear();
+            var monthDifference = today.getMonth() - dob.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            $(ageSelector).val(age);
+        }
+
+       
+        // Profile image preview
+        $('#ProfileImage').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#ProfileImagePreview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Event listeners for age calculation
+        $('#DateOfBirth').on('change', function() {
+            calculateAge(this, '#age');
+        });
+
+       
+        
+    });
+
+
+
+
+   
+    </script>
+
+{% comment %}     
+  <script>
+    document.getElementById('EmployeeCode').addEventListener('blur', function(event) {
+        const EmployeeCode = event.target.value;
+        const OrganizationID = '{{OrganizationID}}';
+
+        $.ajax({
+            url: `/HumanResources/CheckEmployeeCode/?EmployeeCode=${EmployeeCode}&OrganizationID=${OrganizationID}`,
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'hotel-api-token': '{{hotelapitoken}}'
+            },
+            success: function(data) {
+                const errorMessageSpan = document.getElementById('EmployeeCodeerror');
+                errorMessageSpan.textContent = ''; // Clear previous messages
+
+                if (data.error) {
+                    errorMessageSpan.textContent = data.error; 
+                } else {
+                    if (data.status === 'exists') {
+                        errorMessageSpan.textContent = data.message; // Display message if employee code exists
+                    } else if (data.status === 'not_found') {
+                        errorMessageSpan.textContent = ''; // Clear the message if not found
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error checking employee code:', error);
+               
+            }
+        });
+    });
+</script> {% endcomment %}
+{% comment %} 
+<script>
+    // Reusable validation function
+    function validateEmployeeCode() {
+        const EmployeeCode = document.getElementById('EmployeeCode').value;
+        const OrganizationID = '{{OrganizationID}}';
+        const errorMessageSpan = document.getElementById('EmployeeCodeerror');
+        const submitBtn = document.getElementById('submitbtn');
+
+        // Clear previous messages
+        errorMessageSpan.textContent = '';
+
+        // AJAX call to validate EmployeeCode
+        $.ajax({
+            url: `/HumanResources/CheckEmployeeCode/?EmployeeCode=${EmployeeCode}&OrganizationID=${OrganizationID}`,
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'hotel-api-token': '{{hotelapitoken}}'
+            },
+            success: function (data) {
+                submitBtn.disabled = false; // Enable the button by default
+
+                if (data.error) {
+                    errorMessageSpan.textContent = data.error;
+                    submitBtn.disabled = true; // Disable the button if there's an error
+                } else {
+                    if (data.status === 'exists') {
+                        errorMessageSpan.textContent = data.message; // Display message if employee code exists
+                        submitBtn.disabled = true; // Disable the button if employee code exists
+                    } else if (data.status === 'not_found') {
+                        errorMessageSpan.textContent = ''; // Clear the message if not found
+                        submitBtn.disabled = false; // Enable the button if no errors
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error checking employee code:', error);
+                submitBtn.disabled = true; // Disable the button if AJAX call fails
+            }
+        });
+    }
+
+    // Add event listeners
+    document.getElementById('EmployeeCode').addEventListener('keyup', function () {
+        validateEmployeeCode(); // Call validation function on keyup
+    });
+
+    document.getElementById('submitbtn').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent form submission initially
+        validateEmployeeCode(); // Call validation function on submit
+
+        // Optionally, check if button is enabled before submitting
+        if (!document.getElementById('submitbtn').disabled) {
+            document.getElementById('personalInfoForm').submit(); // Replace 'yourFormId' with the actual form ID
+        }
+    });
+</script> {% endcomment %}
+<script>
+    // Reusable validation function
+    function validateEmployeeCode() {
+        const EmployeeCode = document.getElementById('EmployeeCode').value;
+        const OrganizationID = '{{OrganizationID}}';
+        const errorMessageSpan = document.getElementById('EmployeeCodeerror');
+        const submitBtn = document.getElementById('submitbtn');
+
+        // Clear previous messages
+        errorMessageSpan.textContent = '';
+
+        // AJAX call to validate EmployeeCode
+        $.ajax({
+            url: `/HumanResources/CheckEmployeeCode/?EmployeeCode=${EmployeeCode}&OrganizationID=${OrganizationID}`,
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'hotel-api-token': '{{hotelapitoken}}'
+            },
+            success: function (data) {
+                submitBtn.disabled = false; // Enable the button by default
+
+                if (data.error) {
+                    errorMessageSpan.textContent = data.error;
+                    submitBtn.disabled = true; // Disable the button if there's an error
+                } else {
+                    if (data.status === 'exists') {
+                        errorMessageSpan.textContent = data.message; // Display message if employee code exists
+                        submitBtn.disabled = true; // Disable the button if employee code exists
+                    } else if (data.status === 'not_found') {
+                        errorMessageSpan.textContent = ''; // Clear the message if not found
+                        submitBtn.disabled = false; // Enable the button if no errors
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error checking employee code:', error);
+                submitBtn.disabled = true; // Disable the button if AJAX call fails
+            }
+        });
+    }
+
+    // Add event listeners
+    document.getElementById('EmployeeCode').addEventListener('keyup', function () {
+        validateEmployeeCode(); // Call validation function on keyup
+    });
+
+    document.getElementById('submitbtn').addEventListener('click', function (event) {
+        event.preventDefault(); // Prevent form submission initially
+        validateEmployeeCode(); // Call validation function on submit
+
+        // Optionally, check if button is enabled before submitting
+        if (!document.getElementById('submitbtn').disabled && document.getElementById('personalInfoForm').checkValidity()) {
+            document.getElementById('personalInfoForm').submit(); // Submit the form if validation is successful
+        } else {
+            // If form is not valid, show the default required validation message
+            document.getElementById('personalInfoForm').reportValidity();
+        }
+    });
+</script>
+
+{% endblock main %}
+
+
+
+

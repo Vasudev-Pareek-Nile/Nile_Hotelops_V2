@@ -1,0 +1,41 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+        font-size: 15px;
+    }
+    .title{
+        font-size: 40px;
+    }
+
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Division Master List</div>
+               
+        <div class="card-body">
+            <form action="{%url 'DivisionEntry' %}" method = "post">
+                {% csrf_token %}
+                
+                <br>
+                <div class="form-row">
+                    <label for="col-sm-1" style="padding-top: 4px;">Division</label>
+                    <div class="col-sm-4">
+                          <input class="form-control" name="Division"/>
+                    </div>             
+                    <div class="col-sm-1">
+                             <button class="btn btn-primary" type="submit">Add</button>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    {% endblock content %}

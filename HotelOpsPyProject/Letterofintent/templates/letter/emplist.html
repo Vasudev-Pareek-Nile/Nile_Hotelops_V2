@@ -1,0 +1,135 @@
+{% extends 'letter/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+        font-weight:bold !important;
+    }
+
+
+    #clear, #filter{
+		padding-block: 8px;
+	}
+
+</style>
+{% if message %}
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Employee Letter of Intent List</span></div>
+        </div>
+    </div>
+
+<div class="card-body">
+
+    <!-- <br> -->
+    <div class="col-md-12">
+        <form method="GET" class="row g-4">
+            <div class="col-md-5">
+                <select name="I" id="organizationSelect" class="form-control">
+                    <option value="">Select Organization Name</option>
+                    {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" {% if I|stringformat:"s" == itm.OrganizationID|stringformat:"s" %}selected{% endif %}>{{ itm.Organization_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="col-md-4 d-flex justify-items-start align-items-center gap-2">
+                <button type="submit" class="btn btn-primary" id="filter">
+                    <i class="fa fa-filter"></i> Filter
+                </button>
+            
+                <a href="{% url 'emplistloi' %}" class="btn btn-danger" id="clear">
+                    Clear
+                </a>
+            </div>
+        </form>  
+    </div>
+
+    <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+        <thead>
+            <tr>
+                <th>Emp Name</th>
+                <th>Letter of Intent Date</th>
+                <th>Joining Date</th>
+                <th>Designation</th>
+                <th>Department</th>
+                <th>CTC</th>
+                <th width="200  ">Actions</th>
+            </tr>
+        </thead>
+            <tbody>
+            {% for empdetail in empdetails %}
+                <tr>
+                    <td>{{empdetail.emp_name}}</td>
+                    <td>{{empdetail.date_of_intent}}</td>
+                    <td>{{empdetail.date_of_joining}}</td>
+                    <td>{{empdetail.designation}}</td>
+                    <td>{{empdetail.department}}</td>
+                    <td>{{empdetail.ctc}}</td>
+                    
+                    
+                                <td>
+                    <span style="position: relative; ">
+                        
+                        <a href="{% url 'generate_letter_of_intent' %}?InterviewID={{empdetail.InterviewID}}&LOID={{empdetail.id}}"  target="_blank"
+                        class="btn btn-primary btn-sm mt-1" 
+                        style="width: 55px; font-size: 10px;">
+                        View
+                    </a>
+                    <a href="{% url 'generate_letter_of_intent' %}?InterviewID={{empdetail.InterviewID}}&LOID={{empdetail.id}}&head=False"  target="_blank"
+                        class="btn btn-primary btn-sm mt-1" 
+                        style="width: 55px; font-size: 10px;">
+                        Print
+                    </a>
+                        </span>   
+                        
+                    
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+    </table>
+</div>
+</div>
+
+{% comment %} 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
+       
+       
+    });
+    
+    
+</script> {% endcomment %}
+{% endblock content %}

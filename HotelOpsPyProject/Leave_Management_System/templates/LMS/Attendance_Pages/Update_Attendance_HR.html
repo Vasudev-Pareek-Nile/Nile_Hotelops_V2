@@ -1,0 +1,93 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+<div class="container col-md-12" >
+    <div class="card">
+        <div class="card-header text-uppercase fw-bold">Update Attendance</div>
+       
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Date</label>
+                        <input type="date" readonly value={{obj.Date |date:'Y-m-d'}} class="form-control" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">In Time</label>
+                        <input type="time" readonly value={{obj.In_Time}} class="form-control" name="in" >
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Out Time</label>
+                        <input type="time"  readonly value={{obj.Out_Time}} class="form-control" name="Out" >
+                    </div>    
+                </div>
+               
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Current Status</label>
+                         <input type="text" readonly value="{{obj.Status}}" class="form-control" name="Status" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Status</label>
+                        <select name="Status" id="" class="form-control">
+                            <option value="">No Changes</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+
+                            <option value="Week Off">Week Off</option>
+
+                            {% for  leave in leave_type %}
+                            <option value="{{leave.Type}}">{{leave.Type}}</option>
+                            {% endfor %}
+                        </select> 
+                    </div>
+                </div>
+               
+               
+            </div>
+            <div class="card-footer text-right"> 
+            <input type="hidden" name="Page" id="pageInput">
+            <input type="hidden" name="emp" id="empInput">
+            <input type="hidden" name="year" id="yearInput">
+            <input type="hidden" name="month_no" id="month_noInput">
+
+           <input type="submit" class="btn btn-primary btn-sm">
+            
+             
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    window.onload = function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var pageValue = urlParams.get('Page');
+        document.getElementById('pageInput').value = pageValue;
+
+        var empValue = urlParams.get('emp');
+        document.getElementById('empInput').value = empValue;
+
+        var yearValue = urlParams.get('year');
+        document.getElementById('yearInput').value = yearValue;
+
+        var month_noValue = urlParams.get('month_no');
+        document.getElementById('month_noInput').value = month_noValue;
+    };
+</script>
+
+<script>
+    
+</script>
+
+
+{% endblock content %}

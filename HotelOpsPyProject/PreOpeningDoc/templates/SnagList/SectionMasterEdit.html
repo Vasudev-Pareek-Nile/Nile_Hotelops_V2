@@ -1,0 +1,164 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+        font-size: 15px;
+    }
+    .title{
+        font-size: 40px;
+    }
+
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Section Master Edit</div>
+               
+        <div class="card-body">
+            <form action="{%url 'SectionMasterEdit' form.id  %}" method = "post">
+                {% csrf_token %}
+
+                <br>
+                <div class="row">
+                    <label for="col-sm-1" style="padding-top: 4px;">Division</label>
+                    <div class="col-sm-4">
+                          <select class="form-control" name="Division" data-val="{{form.DivisionMaster.id}}">
+                            {% for itm in dl %}
+                              <option value="{{ itm.id }}">{{ itm.title }}</option>
+                            {% endfor %}
+                          </select>
+                    </div>
+
+                    <label for="col-sm-1" style="padding-top: 4px;">Section</label>
+                    <div class="col-sm-4">
+                          <input class="form-control" name="Section" value="{{form.title}}"/>
+                    </div>
+
+                </div>
+                <br/>
+                <br/>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-bordered" id="tblA">
+                                <thead>
+                                    <tr>
+                                        <th  width="100px">
+                                            Category
+                                        </th>
+                                        <th>
+                                            Title
+                                        </th>
+                                        <th  width="280px">
+                                            Type of Work
+                                        </th>
+                                        <th width="100px">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for itm in Snl %}
+                                    <tr>
+                                        <td>
+                                            <input name="Category_{{ forloop.counter0 }}" data-val="{{itm.category}}"  value="True"  type="checkbox">
+                                        </td>
+                                        <td>
+                                           <input type="hidden" name="id[{{ forloop.counter0 }}]" value="{{itm.pk}}" class="form-control"> 
+                                           <input name="Title[{{ forloop.counter0 }}]" value="{{itm.title}}" class="form-control"> 
+                                        </td>
+                                        
+                                        <td>
+                                           
+                                            <select type="text"  data-val="{{itm.worktype}}" class="form-control" name="WorkType_{{ forloop.counter0 }}">
+                                                <option value="">Select Type of Work</option>
+                                                <option>Electrical</option>
+                                                <option>Mechanical</option>
+                                                <option>Plumbing</option>
+                                                <option>Air conditioning and refrigeration</option>
+                                                <option>Kitchen equipment</option>
+                                                <option>Building</option>
+                                                <option>Fire and life safety</option>
+                                                <option>Sewage Treatment</option>
+                                                <option>Waste disposal</option>
+                                                <option>Repair&nbsp;&amp;&nbsp;Maintenance</option>
+                
+                                                <option>
+                                                    Horticulture
+                                                </option>
+                                                <option>
+                                                    Painting and Polishing
+                                                </option>
+                                                <option>
+                                                    Landscaping
+                                                </option>
+                                                <option>
+                                                    Carpentry
+                                                </option>
+                                                <option>
+                                                    Civil
+                                                </option>
+                                                <option>
+                                                    Interior Design
+                                                </option>
+                                                <option>Area Upkeep</option>
+                
+                                            </select>
+                                        
+                                    </td>
+                                        <td>
+                                            {% if forloop.last %}
+                                            <!-- Add the total loop count hidden field on the last iteration -->
+                                            <input type="hidden" name="TotalItem" id="TotalItem" value="{{ forloop.counter }}">
+                                        {% endif %}
+                                    
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" align="right">
+                                            <span class="btn btn-success" onclick="addMore()">Add More</span>
+                                        </td>   
+                                    </tr>
+                                </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-sm-1">
+                        <button class="btn btn-primary" type="submit">Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>   
+    <script>
+        var addMore=function(){
+            var i =$("#TotalItem").val();
+            i = parseInt(i);
+            i = isNaN(i)?0:i;
+            
+            $("#tblA tbody").append("<tr>  <td> <input type='hidden' name='id["+i+"]' value='0' class='form-control'>  <input name='Title["+i+"]' class='form-control'> </td><td>     <input name='Category_"+i+"' value='1' type='checkbox'></td></tr>")
+            i= i+1;
+            $("#TotalItem").val(i);
+        
+        }
+        $(function(){
+            $("input[type='checkbox']").each(function(){
+                if($(this).attr('data-val')!=undefined && $(this).attr('data-val')=="1"){
+                  $(this).prop('checked','true')
+              }
+                
+              })
+
+        })
+            </script>
+{% endblock content %}

@@ -1,0 +1,439 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+
+<style>
+    .card{
+        font-size:13px;
+    }
+    table
+    {
+        font-size: 13px !important;
+        border:1px solid #E9E9EA;
+    }
+    .table td {
+        font-size: 13px !important;
+    }
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 8px;
+    }
+
+    .filter-container select,
+    .filter-container input {
+        min-width: 120px;
+    }
+
+    .filter-container button {
+        min-width: 80px;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+    }
+
+    .button-spacing button {
+        margin-right: 10px; /* Adjust spacing as needed */
+    }
+
+    .button-spacing button:last-child {
+        margin-right: 0; /* Remove spacing for the last button */
+    }
+
+    #employeeTable tr th{
+        text-transform: uppercase;
+        /* text-align: center; */
+        border:1px solid black;
+    }
+
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 42px !important;
+        right:11px !important;
+    }
+
+    .select2-container, .dropdown-menu {
+        z-index: 1000 !important; /* Less than navbar */
+    }
+
+    .btn{
+        border-radius: 5px;
+    }
+
+    .vscomp-wrapper.has-clear-button .vscomp-toggle-button {
+        border-radius: 5px !important;
+    }
+    
+    .form-control{
+        border-radius: 5px !important;
+    }
+
+
+	#ClearBtnBox, #filterBtnBox{
+		padding-block: 12px;
+	}
+    .vscomp-wrapper {
+        font-size: 12px !important;
+    }
+
+    .page-wrapper .content {
+        padding: 10px !important;
+    }
+
+    .card .card-body {
+        padding: 15px !important;
+    }
+</style>
+
+<style>
+    .loading-box {
+        height: 41px;
+        background: #f0f0f0;
+        border-radius: 5px;
+        animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+        0% { opacity: 1 }
+        50% { opacity: 0.5 }
+        100% { opacity: 1 }
+    }
+    .no-loading {
+        animation: none !important;
+        opacity: 1 !important;
+    }
+  #employeeTable_previous a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
+
+  #employeeTable_next a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
+  /* border: 1px solid #D3D3D4; */
+
+</style>
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="mb-2">
+            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST</h3>
+        </div>
+    </div>
+
+    <div class="card-body ">
+        <form method="GET" class="row g-2" id="filterForm">
+            <div class="col-md-3">
+                <div id="Organizations" class="loading-box"></div>
+                <input type="hidden" name="Organizations" id="Organizations_input">
+            </div>
+
+            <!-- Divisions of Reference -->
+            <div class="col-md-2">
+                <div id="Divisions"  class="loading-box"></div>
+                <input type="hidden" name="Divisions" id="Divisions_input">
+            </div>
+
+            <!-- Department of Reference -->
+            <div class="col-md-2">
+                <div id="Departments"  class="loading-box"></div>
+                <input type="hidden" name="Departments" id="Departments_input">
+            </div>
+
+            <div class="col-md-2">
+                <div id="Status"  class="loading-box"></div>
+                <input type="hidden" name="Status" id="Status_input">
+            </div>
+
+            <div class="col-md-2">
+                <!-- <label class="form-label" for="Levels">Levels</label> -->
+                <div id="Levels"  class="loading-box"></div>
+                <input type="hidden" name="Levels" id="Levels_input">
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary" id="filterBtnBox" title="Apply Filter">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <a href="{% url "EmployeeList" %}" class="btn btn-danger" id="ClearBtnBox" title="Clear Filter">
+                    <i class="fa-regular fa-circle-xmark"></i>
+                </a>
+            </div>
+        </form>  
+
+        <div class="col-md-12">
+            <div class="mb-1" style="text-align: right;">
+                <input
+                    type="text"
+                    id="searchInput_Code"
+                    class="form-control"
+                    placeholder="Search By Name"
+                    style="width: 142px; display: inline-block; height: 32px;"
+                    onkeyup="searchTable()"
+                >
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Search By Code"
+                    style="width: 142px; display: inline-block; height: 32px;"
+                    onkeyup="searchTable()"
+                >
+            </div>
+        </div>
+
+        <table id="employeeTable" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th style="width: 100px;">DOJ</th>
+                    <th >Status</th>
+                    <th class="text-center" >Level</th> 
+                    <th class="text-center" >Completion</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for employee in Empobjs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ employee.EmployeeCode }}</td>
+                    
+                    <td>
+                        {% comment %} <span>
+                            {% if  employee.ProfileImageFileName %}
+                            
+                                <img 
+                                    class="profile-img"
+                                    data-emp="{{ employee.EmpID }}"
+                                    src="{% static 'assets/img/avatar/avatarimg.jpg' %}"
+                                    alt="Profile"
+                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
+                                >
+                            {% else %}
+                                <img id="ProfileImagePreview" src="{% static 'assets/img/avatar/avatarimg.jpg' %}" alt="Profile Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            {% endif %} 
+                        </span> {% endcomment %}
+                        <span>
+                            {{ employee.FirstName|default:"" }} {{ employee.MiddleName|default:"" }} {{ employee.LastName|default:"" }}
+                        </span>
+                    </td>
+
+                    <td>{{ employee.Department }}</td>
+                    <td>{{ employee.Designation }}</td>
+                    <td style="width: 100px;">{{ employee.DateofJoining|date:'j M Y' }}</td>
+                
+                    <td>{{ employee.EmpStatus }}</td>
+                    <td class="text-center">{{ employee.Level }}</td>
+                    <td class="text-center">{{ employee.ProfileCompletion }} %</td>
+                    <td>
+                        <div class="btn btn-group ">
+
+                            
+                            <a href="{% url 'EditEmployee' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" title="Edit" aria-label="Edit" class="btn btn-primary btn-sm">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            &nbsp;
+                            <a href="{% url 'EmpView' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" target="_blank" class="btn btn-primary btn-sm text-center" title="View" aria-label="View">
+                                <i class="fa fa-eye" alt="view"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+  
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", loadDropdownData);
+    
+    async function cachedFetch(key, url, expiryHours = 12) {
+        const cached = localStorage.getItem(key);
+        const cachedTime = localStorage.getItem(key + "_time");
+
+        // If cached & not expired → return data
+        if (cached && cachedTime) {
+            const age = (Date.now() - parseInt(cachedTime)) / 1000 / 3600;
+            if (age < expiryHours) {
+                return JSON.parse(cached);
+            }
+        }
+
+        // Otherwise fetch new data
+        const response = await fetch(url);
+        const data = await response.json();
+
+        localStorage.setItem(key, JSON.stringify(data));
+        localStorage.setItem(key + "_time", Date.now());
+
+        return data;
+    }
+
+    async function fetchJSON(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("API Failed: " + url);
+        return await response.json();
+    }
+
+    async function loadDropdownData() {
+        try {
+            // Call APIs one-by-one
+            const orgData    = await cachedFetch("orgData", "{% url 'OrganizationList_Api' Session_OrganizationID %}");
+            const diviData   = await cachedFetch("diviData", "{% url 'Show_Division_Api' %}");
+            const statusList = await cachedFetch("statusList", "{% url 'EmployeeStatusList_Api' %}");
+            const levelData  = await cachedFetch("levelData", "{% url 'Lavel_Show_Data_Api' %}");
+
+            // Department MUST be live (depends on division selection)
+            const deptData   = await fetchJSON("{% url 'Show_Department_By_DivisionName_Api' selected_division|default:'all' %}");
+            // Now initialize dropdowns
+            initializeDropdowns(orgData, diviData, deptData, statusList, levelData);
+
+        } catch (error) {
+            console.error("Error loading dropdowns:", error);
+        }
+    }
+
+    function initializeDropdowns(orgData, diviData, deptData, statusList, levelData) {
+
+        VirtualSelect.init({
+            ele: '#Organizations',
+            options: orgData.map(o => ({ label: o.OrganizationName, value: o.OrganizationID })),
+            multiple: false,
+            placeholder: 'Select Organizations',
+            search: true,
+            selectedValue: "{{ selected_org_id|default:'' }}"
+        });
+        const box1 = document.getElementById("Organizations");
+        box1.classList.remove("loading-box");
+        box1.classList.add("no-loading");
+
+
+        VirtualSelect.init({
+            ele: '#Divisions',
+            options: diviData.map(d => ({ label: d.DivisionName, value: d.DivisionName })),
+            multiple: false,
+            placeholder: 'Select Divisions',
+            search: true,
+            selectedValue: "{{ selected_division|default:'' }}"
+        });
+        const box2 = document.getElementById("Divisions");
+        box2.classList.remove("loading-box");
+        box2.classList.add("no-loading");
+
+
+        VirtualSelect.init({
+            ele: '#Departments',
+            options: deptData.map(dep => ({ label: dep.DepartmentName, value: dep.DepartmentName })),
+            multiple: true,
+            placeholder: 'Select Department',
+            search: true,
+            selectedValue: {{ selected_Department_list|safe }}
+        });
+        const box3 = document.getElementById("Departments");
+        box3.classList.remove("loading-box");
+        box3.classList.add("no-loading");
+
+
+        VirtualSelect.init({
+            ele: '#Status',
+            options: statusList.map(s => ({ label: s.name, value: s.id })),
+            multiple: true,
+            placeholder: 'Select Status',
+            search: true,
+            selectedValue: {{ Status_list|safe }}
+        });
+        const box4 = document.getElementById("Status");
+        box4.classList.remove("loading-box");
+        box4.classList.add("no-loading");
+
+        VirtualSelect.init({
+            ele: '#Levels',
+            options: levelData.Levels.map(l => ({ label: l, value: l })),
+            multiple: true,
+            placeholder: 'Select Level',
+            search: true,
+            selectedValue: {{ Levels_List|safe }}
+        });
+        const box5 = document.getElementById("Levels");
+        box5.classList.remove("loading-box");
+        box5.classList.add("no-loading");
+
+
+
+        // Sync selected values before submit
+        document.querySelector('#Organizations').addEventListener('change', function() {
+            // debugger;
+            $('#Organizations_input').val( `${this.value}`);
+        });
+
+        document.querySelector('#Divisions').addEventListener('change', function() {
+            // debugger;
+            $('#Divisions_input').val( `${this.value}`);
+        });
+
+        document.querySelector('#Departments').addEventListener('change', function() {
+            // debugger;
+            $('#Departments_input').val( `${this.value}`);
+        });
+
+        document.querySelector('#Status').addEventListener('change', function() {
+            // debugger;
+            $('#Status_input').val( `${this.value}`);
+        });
+
+        document.querySelector('#Levels').addEventListener('change', function() {
+            // debugger;
+            $('#Levels_input').val( `${this.value}`);
+        });
+
+    }
+</script>
+
+<script>
+    function searchTable() {
+        const codeInput = document.getElementById("searchInput").value.toLowerCase();
+        const nameInput = document.getElementById("searchInput_Code").value.toLowerCase();
+        const rows = document.getElementById("tableBody").getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            const codeCell = rows[i].getElementsByTagName("td")[1]; // Code
+            const nameCell = rows[i].getElementsByTagName("td")[2]; // Name
+
+            const codeText = codeCell ? codeCell.textContent.toLowerCase() : "";
+            const nameText = nameCell ? nameCell.textContent.toLowerCase() : "";
+
+            const codeMatch = codeText.includes(codeInput);
+            const nameMatch = nameText.includes(nameInput);
+
+            rows[i].style.display = (codeMatch && nameMatch) ? "" : "none";
+        }
+    }
+</script>
+
+
+{% endblock content %}

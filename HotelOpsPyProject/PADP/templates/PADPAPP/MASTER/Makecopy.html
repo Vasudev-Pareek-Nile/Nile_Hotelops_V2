@@ -1,0 +1,56 @@
+{% extends "PADPAPP/homebase.html" %}
+{% block content %}
+<div class="container">
+<div class="col-md-12">
+    
+
+        <div class="card">
+            <div class="card-header">Make Copy</div>
+            <div class="card-body">
+                <form action=""  method="post">
+                    {% csrf_token %}
+                   <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group m-3">
+                            <label for="">From Level:</label>
+                            <select name="Fromlevel" id="" class = "form-control">
+                              
+                                {% for Level in FromLevels %}
+                                <option value="{{Level.lavelname}}" {% if o_data.Level == Level.lavelname %}selected{% endif %}>{{Level.lavelname}}</option>
+                                {% endfor %}
+                            </select>      
+                        </div>
+                       
+                       
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group m-3">
+                            <label for="">To Level:</label>
+                            <select name="Tolevel" id="" class = "form-control">
+                              
+                                {% for Level in ToLevels %}
+                                <option value="{{Level.lavelname}}" {% if o_data.Level == Level.lavelname %}selected{% endif %}>{{Level.lavelname}}</option>
+                                {% endfor %}
+                            </select>      
+                        </div>
+                       
+                       
+                    </div>
+                   
+                   </div>
+                    
+                    
+        
+                   
+                </div>
+                <div class="card-footer text-right"> 
+                    
+                    <input type="submit"  value="Submit" class="btn btn-primary btn-sm">
+                    
+                </div>
+            </form>
+        </div>
+    
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,1153 @@
+{% load static %}
+{% load apadpfilter %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        .cstborder, .cstborder tr td, .cstborder tr th,
+   table, table tr td, table tr th {
+    border-color:#5ac7b1 !important;
+}
+        
+        .align-center
+        {
+
+            text-align: center;
+        }
+        .border {
+            border: 1px solid black;
+        }
+        .margintop
+        {
+            margin-top: 20px;
+        }
+    .body{
+        font-size: 11px;
+        font-family: Arial-nova;
+    }
+    .tablebordered
+    {
+        border: 1px solid #ccc; 
+    padding: 8px;
+    text-align: left;
+     
+    }
+    table td,th{
+        padding: 3px;
+        
+       
+        
+
+    }
+   .label
+   {
+    font-size: 11px;
+    font-weight:bolder;
+    text-align: center;
+    
+   }
+   .data{
+    text-align: center;
+   }
+   .widthobj
+   {
+    padding-top: 7px;
+    width: 170px;
+   font-weight: bold;
+   text-transform: uppercase;
+   
+   }
+   
+   .widthatt
+   {
+    padding-top:7px;
+    width: 180px;
+    background-color: #1ab394;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+   }
+   .widthRIMP{
+width: 40px;
+
+   }
+   .containereffinff {
+    width: 100%;
+    overflow: hidden; 
+}
+.marginappeeappor{
+    margin-top: 20px;
+}
+.headbg
+{
+    background-color: #1ab394;
+    text-align: center;
+    color: white;
+    padding: 5px;
+
+font-weight: bold;}
+.headbgspec{
+    background-color: #1ab394;
+    text-align: left;
+    color: white;
+    padding-top:7px ;
+
+font-weight: bold;
+}
+.capital{
+    text-transform: uppercase !important ;
+}
+    spans {
+    font-size: 11px;
+}
+
+.Bold {
+    font-weight: bold;
+}
+
+
+
+</style>
+    
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-12">
+        <!-- <table>
+            <tbody>
+                <tr>
+                    <td width="150">
+                        <table class="marginappeeappor">
+                            <tbody>
+                                <tr>
+                                    <td><img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" /></td>
+                
+                                
+                
+                                
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+
+                    <td width="300">
+                        <table class="marginappeeappor">
+                            <tbody>
+                                <tr>
+                                    
+                
+                                    <td class="headbg capital" style="text-transform: uppercase;">PERFORMANCE APPRAISAL AND DEVELOPMENT PLAN</td>
+                
+                                   
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                    <td width="150"></td>
+                </tr>
+            </tbody>
+        </table> -->
+        
+        <table style="width: 100%;">
+            <tr>
+                <td style="text-align: left;" width="100">
+                    {% if organization_logo %}
+                        <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                    {% else %}
+                        <p>No logo available</p>
+                    {% endif %} 
+
+                    {% comment %} <img src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/401Logo.png" alt="" style="width: 100px; height: auto;"> {% endcomment %}
+                </td>
+              <td style="text-align: center;" width="400" >
+                <table class="marginappeeappor">
+                  <tbody>
+                    <tr>
+                        <td class="headbg capital" style="text-transform: uppercase; font-size: 14px;" >PERFORMANCE APPRAISAL AND DEVELOPMENT PLAN</td>
+                
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td style="text-align: right;" width="100">
+                {% if organization_logos %}
+                <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+            {% else %}
+                <p>No logo available</p>
+            {% endif %}
+              </td>
+            </tr>
+          </table>
+    </div>
+</div>
+
+{% block content %}
+
+<div class="container">
+   
+    <table class=" tablebordered margintop">
+        <tbody>
+
+            <tr>
+                <td style="width: 300px;">
+                    <label class="label">Employee Code:&nbsp</label>
+                    <span class="data">{{padp.EmployeeCode}}</span>
+                </td>
+                <td colspan="2">
+                    <label class="label">Hotel Name:&nbsp</label>
+               {{OrganizationName}} 
+               {% comment %} Gift City Club, a member of Radisson Individuals {% endcomment %}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 300px;">
+                    <label class="label">Appraisee Name:&nbsp</label>
+                    <span class="data">{{padp.Appraisee_Name}}</span>
+                </td>
+                <td style="width: 300px;">
+                    <label class="label">Appraisee Position:&nbsp</label>
+                    <span class="data">{{padp.Aprraisee_position}}</span>
+                </td>
+                <td style="width: 300px;"><label class="label">Appraisee Level:&nbsp</label><span class="data">{{padp.Aprraise_Level}}</span></td>
+
+            </tr>
+            <tr>
+                <td>
+                    <label class="label">Appraiser Name:&nbsp</label>
+                    <span class="data">{{padp.Appraisor_Name}}</span>
+                </td>
+                <td>
+                    <label class="label">Appraiser Position:&nbsp</label>
+                    <span class="data">{{padp.Appraisor_Title}}</span>
+                </td>    
+                <td>
+                    <label class="label">Dotted Line:&nbsp</label>
+                    <span class="data">{{padp.DottedLine}}</span>
+                </td>
+                 
+            </tr>
+            <tr>
+                <td>
+                    <label class="label">Date Joining:&nbsp</label>
+                    <span class="data">{{padp.Date_Joined_Company|date:'j M Y'}}</span>
+                </td>
+                <td style="width: 270px;">
+                    <label class="label">From Review Date:&nbsp</label>
+                    <span class="data">{{padp.FromReviewDate|date:'j M Y'}}</span>
+                </td>
+                <td style="width: 270px;">
+                    <label class="label">To Review Date:&nbsp</label>
+                    <span class="data">{{padp.ToReviewDate|date:'j M Y'}}</span>
+                </td>
+            </tr>
+
+
+           
+
+           
+        </tbody>
+        
+    
+    </table>
+    
+    <table class="tablebordered marginappeeappor">
+        <thead>
+            <th class="headbg capital" style="text-transform: uppercase;">LEADERSHIP COMPETENCIES</th>
+        </thead>
+    </table>
+    
+    {%  for obj in objs %}
+                                
+    {% with obj_counter=forloop.counter0 %}
+ 
+                <table class="tablebordered" >
+                    <tbody>
+                        <tr>
+                            <td rowspan="3" class="widthobj align-center">{{ obj.Title }}</td>
+
+                            <input name="obj_ID_{{obj_counter }}" type="hidden" value="{{obj.id}}" type="text"/>
+                        </td>
+                            <td colspan="3"  class="align-center">Relative Importance</td>
+                            <td  colspan="5" class="align-center">Demonstrates</td>
+                        </tr>
+                        <tr>
+                            
+                            <td rowspan="2" style align="center">High</td>
+                            <td rowspan="2" style align="center">Medium</td>
+                            <td rowspan="2" style align="center">Low</td>
+                            <td align="center" >Does Not</td>
+                            <td align="center" >Rarely</td>
+                            <td align="center" >Sometimes</td>
+                            <td align="center" >Often</td>
+                            <td align="center" >Always</td>
+                            
+
+                        </tr>
+                        <tr>
+                            <td>App'ee &nbsp; App'er</td>
+                            <td>App'ee &nbsp; App'er</td>
+                            <td>App'ee &nbsp; App'er</td>
+                            <td>App'ee &nbsp; App'er</td>
+                            <td>App'ee &nbsp; App'er</td>
+                            
+                        </tr>
+                    
+                    {% for att in obj.Attibutes  %}
+                    
+                               
+                               
+                                <tr>
+                                    <td  class="capitalbga widthatt " >{{att.Title}}
+                                        <input name="obj_{{ obj_counter }}_Att_ID_{{ forloop.counter0 }}" type="hidden" value="{{att.id}}" type="text"/>
+
+                                    </td>
+                                    <td align="center" class="widthRIMP">
+                                   
+                                        {% if att.RL_H %}
+                                        <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                        {% else %}
+                                        <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                        {% endif %}
+                                        
+                                      
+                                    </td>
+                                    <td align="center" class="widthRIMP">
+                                         {% if att.RL_M   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                    </td>
+                                    <td align="center" class="widthRIMP">
+                                         {% if att.RL_L   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{%  else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}  
+                                    </td>
+                                    
+                                    <td>
+                                        {% if att.detailatt.0.Does_NOT_Appee   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                       {% if att.detailatt.0.Does_NOT_Appor   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                      </td>
+                                      <td>
+                                         {% if att.detailatt.0.Rarely_Appee   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                                         {% if att.detailatt.0.Rarely_Appor   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                      </td>
+                                      <td>
+                                          {% if att.detailatt.0.Sometiems_Appee   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                                          {% if att.detailatt.0.Sometiems_Appor   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                      </td>
+                                      <td>
+                                           {% if att.detailatt.0.Often_Appee   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                                           {% if att.detailatt.0.Often_Appor   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                      </td>
+                                      <td>
+                                         {% if att.detailatt.0.Always_Appee   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %} &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                                         {% if att.detailatt.0.Always_Appor   %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                      </td>
+                                
+                                    
+
+                                </tr>   
+                                                    
+                                 
+                               
+                                {% if forloop.last  %}
+                                <input type="hidden" name="obj_{{ obj_counter }}_Total_attribute" value="{{ forloop.counter0 }}" />
+                                {% endif %}
+                    
+                    {% endfor %} 
+                    </tbody>
+                </table>
+
+                <table class="tablebordered marginappeeappor"  >
+
+                    <tr style="font-size: 13px;"><td><strong>Definition:- &nbsp;</strong><p >{{obj.Definitions|linebreaksbr}}</p></td></tr>
+                </table>
+               
+                              
+             
+                <table class="tablebordered marginappeeappor" style="page-break-before: always;">
+                    <thead>
+                        <th class="headbg capital" style="text-transform: uppercase;">{{ obj.Title }}</th>
+                    </thead>
+                </table>
+                     
+                <table class="tablebordered
+                 marginappeeappor "  >
+                    <tr><th class="widthatt capital" style="text-align: left;"><strong>APPRAISEE DETAILS</strong></th></tr>
+                </table>
+           
+               <table >
+                        
+                        <tr>
+                            <td valign="top">
+                            <table  class="tablebordered ">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5" class="widthatt capital" >EFFECTIVE</th>
+
+                                    </tr>                           
+                                </thead>
+                                <tbody>
+                                    {% for Effective in obj.Effectives %}                                                        
+                                    <tr>
+                                        <td colspan="5"> 
+                                            {% if Effective.effdetail_Appee.0.Status == True %}<img src="static/Images/PADP/checkedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/uncheckedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}<span>&nbsp; {{Effective.Title}}</span>  
+                                            
+                                        </td>
+                                    </tr>
+                                    {% if forloop.last %}
+                                    <input type="hidden" name="obj_{{ obj_counter }}_Total_Effective_Appee" value="{{ forloop.counter0 }}" />
+                                    {% endif %} 
+                                                                    
+                                                                        
+                                                            
+                                {% endfor %}
+                                </tbody>
+                            </table></td>
+                            <td valign="top">
+                    
+                    
+                            <table class="tablebordered">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4" class="widthatt capital">INEFFECTIVE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for Ineffective in obj.Ineffectives %}
+                                    <tr>
+                                        <td colspan="4">
+                                        {% if Ineffective.inffdetailAppee.0.Status == True  %}<img src="static/Images/PADP/checkedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/uncheckedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}<span>&nbsp; {{Ineffective.Title}}</span>
+                                        </td>
+                                    
+                                    </tr>
+                                    {% if forloop.last %}
+                                    <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appee"  value="{{ forloop.counter0 }}"/>
+                                    {% endif %} 
+                                    {% endfor %} 
+                                </tbody>
+                            </table>
+                        </td>
+                        </tr>
+               </table>
+               
+               <table class="tablebordered marginappeeappor" >
+
+                <tbody>
+                    <tr>
+                        <td style="font-size: 13px;" ><label><strong class="capital"> Appraisee Comments:-&nbsp;</strong></label>{{obj.LD.0.Appraise_Comments}}</tr>
+                   
+                </tbody>
+            </table>
+           
+            <table class="tablebordered
+            marginappeeappor "  >
+               <tr><th class="widthatt capital" style="text-align: left;"><strong>APPRAISER DETAILS</strong></th></tr>
+           </table>
+          
+                  <table >
+                  
+                    <tr>
+                        <td valign="top">
+                            <table  class="tablebordered   ">
+                                <thead>
+                                    <tr>
+                                        <th colspan="5" class="widthatt capital">EFFECTIVE</th>
+        
+                                    </tr>                           
+                                </thead>
+                                <tbody>
+                                    {% for Effective in obj.Effectives %}                                                        
+                                    <tr>
+                                        <td colspan="5"> 
+                                            {% if Effective.effdetail_Appor.0.Status == True %}<img src="static/Images/PADP/checkedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/uncheckedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}<span>&nbsp; {{Effective.Title}}</span>  
+                                            
+                                        </td>
+                                    </tr>
+                                    {% if forloop.last %}
+                                    <input type="hidden" name="obj_{{ obj_counter }}_Total_Effective_Appee" value="{{ forloop.counter0 }}" />
+                                    {% endif %} 
+                                                                      
+                                                                        
+                                                              
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                           
+                        </td>
+                        <td valign="top"> 
+                            <table class="tablebordered  ">
+                            <thead>
+                                <tr>
+                                    <th  colspan="5" class="widthatt capital">INEFFECTIVE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for Ineffective in obj.Ineffectives %}
+                                <tr>
+                                    <td colspan="5">
+                                       {% if Ineffective.inffdetailAppor.0.Status == True  %}<img src="static/Images/PADP/checkedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/uncheckedbox.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}<span>&nbsp; {{Ineffective.Title}}</span>
+                                    </td>
+                                
+                                </tr>
+                                {% if forloop.last %}
+                                <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appee"  value="{{ forloop.counter0 }}"/>
+                                {% endif %} 
+                                {% endfor %} 
+                            </tbody>
+                        </table></td>
+                    </tr>
+                  </table>
+                  <table class="tablebordered marginappeeappor" style="page-break-after: always;">
+
+                    <tbody>
+                       
+                            <tr>
+                                <td style="font-size: 13px;"><label> <strong class="capital"> Appraiser Comments:-</strong></label> {{obj.LD.0.Appraisor_Comments}}
+                            </tr>
+                            
+                               
+                    </tbody>
+                </table>
+                   
+                
+                  
+               
+ 
+
+
+
+
+                    {% if forloop.last %}
+                    <input  type="hidden" name="Total_objective" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endwith %}
+                    
+                {% endfor %}
+                   
+                {% if Kra_Found == 'True' %}
+
+                        <table class="tablebordered marginappeeappor"  >
+                            <thead>
+                                <th class="headbg capital" style="text-transform: uppercase;">KRA YEARLY REPORT FOR EMPLOYEE</th>
+
+                            </thead>
+            </table>           
+                       
+                        <table class="tablebordered marginappeeappor" >
+                            <thead >
+                                <tr>
+                                    {% for column in columns %}
+                                        <th {% if forloop.first %} style="width: 200px;"{% else %}style="width: 72px;" {% endif %}>{{ column|getMonthHeader }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in rowslist %}
+                                <tr>
+                                    {% for column in columns %}
+                                        <td 
+                                            {% if forloop.last %} 
+                                                style="font-weight: bold; 
+                                                {% if row|get_item:column|safe == 'Not Met' %}
+                                                    color: red;
+                                                {% endif %}" 
+                                            {% elif row|get_item:column|safe == 'Not Met' %}
+                                                style="color: red;"
+                                            {% endif %}
+                                        >
+                                            {{ row|get_item:column|safe }}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+
+                        {% endif %} 
+                              
+<br>
+                        <table class="tablebordered"  >
+                            <thead>
+                                <th class="headbg capital">SPECIFIC MEASURABLE ACHIEVABLE RELEVANT TIME BOUND</th>
+                            </thead>
+            </table>
+                       
+               {% if Goal == 'True' %}         
+                        <table class="tablebordered marginappeeappor">
+
+                            <thead>
+                                <tr>
+                                    <th class="capital" style="width:150;">Objective Type</th>
+                                    <th class="capital" style="width:350;">Goal</th>
+                                    <th class="capital" style="width:350;">Steps</th>
+                                    <th class="capital" style="width:100;">Status</th>
+                                  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for spec in SPE_MEA_ACH_Detail %}
+                                <tr>
+                                    <td> {{ spec.SPECIFIC_MEASURABLE_ACHIEVABLE.Objective_Master.Title}} </td>
+
+                                    <td> {{ spec.SMART_GOAL}} </td>
+                                    <td> {{ spec.ACTION_STEPS}}</td>
+                                    <td valign="top" align="center">{{spec.COMPLETION_DATE}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                </table>
+
+                {% endif %} 
+                        
+
+                                <table class="tablebordered marginappeeappor" style="page-break-before: always;">
+                                    <thead>
+                                        <th class="headbg capital">SUMMARY AND ACKNOWLEDGEMENT</th>
+                                    </thead>
+                                </table>
+                                <table class="tablebordered marginappeeappor">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <label for=""><strong>APPRAISEE SUMMARY</strong></label>
+                                                
+                                             
+                                            </td>
+                                        </tr>
+                                        <tr><td>Summary comments and other information about the Appraisee's ambitions, personal development plans or other concerns.</td></tr>
+                                        <tr>
+                                            <td> {{sum_data.SUMMARY_APPRAISEE}}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table> 
+                                
+                               
+                                
+                                <table class="tablebordered marginappeeappor" >
+                                        <tr>
+                                        <td>
+
+                                            <label for=""><strong>APPRAISER SUMMARY</strong></label>
+                                            
+                                        
+                                        </td>
+                                    </tr>
+                                    <tr><td>Summary comments and other observations, including an overall assessment of the Appraisee's current performance.</td></tr>
+                                    <tr><td> {{sum_data.SUMMARY_APPRAISOR}}</td></tr>
+                               </table>
+                    <table class="tablebordered marginappeeappor" >
+                                <tr>
+                                <td colspan="3">
+
+                                    {% comment %} <label for=""><strong>Supervisor/General Manager's Rating (Contribution 75% of Supervisor/General Maneger)</strong></label>
+                                     {% endcomment %}
+                                     <label for=""><strong>{{padp.Appraisor_Title}} Rating  (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
+                                                           
+                                </td>
+                            </tr>
+                           
+                          
+                            <tr>
+                                <td align="center" >
+
+                                    {% if sum_data.SP_GM_Rating_Excellent == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                &nbsp; <label for="">EXCEEDS EXPECTATION</label>
+                                                          
+            
+                                </td>
+                              
+                                <td align="center" >
+                                    {% if sum_data.SP_GM_Rating_Average == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                    
+                                    &nbsp;   <label for="">MEETS EXPECTATION</label>
+                                </td>
+                              
+                                <td align="center" >
+                                    {% if sum_data.SP_GM_Rating_Poor == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                                    &nbsp;    <label for="">
+                                        BELOW EXPECTATION</label>
+                                </td>
+                              
+                               
+                            </tr>
+                            <tr>
+                           
+                                <td colspan="3"> <label for=""><strong>{{padp.Appraisor_Title}} Comments   (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
+                                </td> 
+                                                          
+                           
+                            </tr>
+                            
+                            <tr><td colspan="3"> {{sum_data.SP_GM_Comment}}</td></tr>
+                       </table>
+
+                       {% if SessionDottedLine == "Yes" and padp.DottedLine != padp.Appraisor_Title %}
+                                   
+                       <table class="tablebordered marginappeeappor" >
+                        <tr>
+                            <td colspan="4">
+                                <label for=""><strong>{{padp.DottedLine}} Rating  (Contribution 25% ).</strong></label>
+                            
+                            </td>
+                    </tr>
+                    
+                  
+                    <tr>
+                        <td align="center" >
+                        
+                            {% if sum_data.RD_Rating_Excellent == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                            
+                            &nbsp; <label for="">EXCEEDS EXPECTATION</label>                       
+                        </td>
+                        
+                        <td align="center" >
+                            {% if sum_data.RD_Rating_Average == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                           
+                            &nbsp;  <label for="">MEETS EXPECTATION</label>
+                        </td>
+                        <td align="center" >
+                            {% if sum_data.RD_Rating_Needs_Improvement == True  %}<img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% else %} <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">{% endif %}
+                            &nbsp;  <label for="">
+                                BELOW EXPECTATION</label>
+                        </td>
+                       
+                    </tr>
+                    <tr>
+                        
+                     <td colspan="3">   <label for=""><strong>{{padp.DottedLine}} Comments   (Contribution 25% ).</strong></label>
+                     </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                         {{sum_data.RD_Comment}}
+                        </td>
+                    </tr>
+                    </table>
+                    {% endif %} 
+                    <table class="tablebordered marginappeeappor" style="page-break-before: always;" >
+                        <thead>
+                            <th class="headbg capital">FINAL PERFORMANCE RATING</th>
+                        </thead>
+                  </table>
+
+
+                  <table class="tablebordered marginappeeappor"  >
+                    <thead>
+                        <tr>
+                            <th >EVALUATION KEY</th>
+                            <th >BELOW EXPECTATION</th>
+                            <th >MEETS EXPECTATION</th>
+                            <th >EXCEEDS EXPECTATION</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                            <td align="center">Parameters </td>
+                            <td align="center">
+                                {% if Sal_data.BELOW_STANDARD == True %}
+                              <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                              {% else %} 
+                              <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                              {% endif %}
+                                  
+                            </td>
+                            <td align="center">
+                                {% if Sal_data.MEETS_EXPECTATION == True %}
+                                <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                {% else %} 
+                                <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                {% endif %}
+                               
+                            </td>
+                            <td align="center">
+                                {% if Sal_data.OUTSTANDING == True %}
+                                <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                {% else %} 
+                                <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                {% endif %}
+                               
+
+
+                                
+                            </td>
+                        </tr>
+                     </tbody>
+                     </table>
+                     
+                     <table class="tablebordered marginappeeappor" >
+                        <thead>
+                            <tr>
+                                <th >SALARY INCREMENT</th>
+                                <th >NO CORRECTION</th>
+                                <th >3 %</th>
+                                <th >5 %</th>
+                                <th >8 %</th>
+                                <th >10 %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td align="center">Parameters </td>
+                                <td align="center">
+                                    {% if Sal_data.NO_CORRECTION == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}
+                              
+                                </td>
+                                <td align="center">
+                                    {% if Sal_data.per_3 == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}
+
+                                </td>
+                                <td align="center">
+                                    {% if Sal_data.per_5 == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}
+                                </td>
+                                <td align="center">
+                                    {% if Sal_data.per_8 == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}
+                                </td>
+                                <td align="center">
+                                    {% if Sal_data.per_10 == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                     </table>
+                     
+                     
+                    
+                     {% if Sal_data.SALARY_CORRECTION == True or  Sal_data.PROMOTION_WITH_INCREASE == True  or Sal_data.PROMOTION == True%}
+                          
+
+                   <table class="tablebordered marginappeeappor" >
+                    <thead>
+                        <tr>
+                            <th >SALARY INCREMENT</th>
+                            
+                            <th >SALARY CORRECTION</th>
+                            <th >PROMOTION</th>
+                            <th >PROMOTION WITH INCREASE</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                     <tr>
+                         <td align="center">Parameters </td>
+                         <td align="center">
+                        
+                            {% if Sal_data.SALARY_CORRECTION == True  %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}                            
+                            
+                        
+                        </td>
+                         <td align="center">
+                        
+                            {% if Sal_data.PROMOTION == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}                            
+                          
+                        
+                        </td>
+                         <td align="center">
+                        
+                            {% if Sal_data.PROMOTION_WITH_INCREASE == True %}
+                                    <img src="static/Images/PADP/chekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% else %} 
+                                    <img src="static/Images/PADP/unchekedradio.png" alt="Accept Image" style="width: 20px; height: 20px;">
+                                    {% endif %}                            
+                           
+                        </td>
+                     
+                         </tr>
+                </tbody>
+                </table> 
+
+               
+                {% endif %}    
+<!-- 
+                <table>
+                    <tr>
+                        <td>
+                            <table class="tablebordered marginappeeappor">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="width: 50%;">Salary Correction</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>From:</label> {{ Sal_data.FromSalary }}
+                                        </td>
+                                        <td>
+                                            <label>To:</label> {{ Sal_data.ToSalary }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                 <td>
+                               
+                <table class="tablebordered marginappeeappor">
+                    <thead>
+                        <tr>
+                            <th colspan="2" style="width: 50%;">Promotion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <label>From:</label> 
+                                {{ padp.Aprraisee_position }}
+                            </td>
+                            <td>
+                                <label>To:</label>
+                                {{ Sal_data.ToPosition }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                        </td>
+                    </tr>
+                </table> -->
+                {% if sal == 'True' %}
+                <table class="tablebordered marginappeeappor">
+                    <tr>
+                        {% if Sal_data.PROMOTION_WITH_INCREASE %}
+                        <td width="250">
+                            <table class="tablebordered marginappeeappor">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="width: 50%;">Salary Correction</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>From:</label> {{ Sal_data.FromSalary }}
+                                        </td>
+                                        <td>
+                                            <label>To:</label> {{ Sal_data.ToSalary }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        <td width="500">
+                            <table class="tablebordered marginappeeappor">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="width: 50%;">Promotion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>From:</label> 
+                                            {{ padp.Aprraisee_position }}
+                                        </td>
+                                        <td>
+                                            <label>To:</label>
+                                            {{ Sal_data.ToPosition }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        {% endif %}
+                        {% if Sal_data.SALARY_CORRECTION %}
+                        <td width="250">
+                            <table class="tablebordered marginappeeappor">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="width: 50%;">Salary Correction</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>From:</label> {{ Sal_data.FromSalary }}
+                                        </td>
+                                        <td>
+                                            <label>To:</label> {{ Sal_data.ToSalary }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        {% endif %}
+                        
+                        {% if Sal_data.PROMOTION %}
+                        <td width="500">
+                            <table class="tablebordered marginappeeappor">
+                                <thead>
+                                    <tr>
+                                        <th colspan="2" style="width: 50%;">Promotion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <label>From:</label> 
+                                            {{ padp.Aprraisee_position }}
+                                        </td>
+                                        <td>
+                                            <label>To:</label>
+                                            {{ Sal_data.ToPosition }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                        {% endif %}
+                    </tr>
+                </table>
+                
+                {% if Sal_data.SALARY_CORRECTION or Sal_data.PROMOTION or Sal_data.PROMOTION_WITH_INCREASE %}
+                <table class="tablebordered marginappeeappor">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Justification:</strong> <br>
+                                {{ Sal_data.JustificationComments }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% endif %}
+                {% endif %}
+               
+                
+
+                               <table class="tablebordered marginappeeappor" style="page-break-before: always;" >
+                                    <thead>
+                                        <th class="headbg capital">ACKNOWLEDGEMENT</th>
+                                    </thead>
+                              </table>
+                              <table class="marginappeeappor tablebordered">
+                                <tbody>
+                                    <tr>
+                                        <td>  <label class="label">Appraisee:</label><span class="data">{{sum_data.Appraisee}}</span></td>
+                                    
+                                        <td>  <label class="label">Appraiser:</label><span class="data">{{sum_data.Appraisor}}</span></td>
+                                    
+                                    </tr>
+                                    <tr>
+                                        <td  colspan="2">  <label class="label">HR Manager:</label><span class="data">{{sum_data.HR_Manager}}</span></td>
+                                    
+                                       
+                                    </tr>
+                                </tbody>
+                              </table>
+                              
+
+                           
+<table class="margintop" >
+    <tbody>
+        <tr>
+            <td>
+                <table  class="tablebordered margintop align-left" >
+                   <tbody>
+                       <tr>
+                           <td width="30"  style="padding: 10px; font-size: 11px;">Appraisee Signature:</td>
+                           <td width="30"  style="padding: 5px; font-size: 11px;"><span style="text-decoration: underline;"></span></td>
+                       </tr>
+                       <tr>   
+                           <td width="300"  style="padding: 10px; font-size: 11px;">Date:</td>
+                           <td width="300"  style="padding: 5px; font-size: 11px;"><u></u></td>    
+                           
+                       </tr>
+                   </tbody>
+
+                   
+               
+                </table>
+            </td>
+            <td>
+                 <table  class="tablebordered margintop align-left">
+                        <tbody>
+                            <tr>
+                                <td width="30"  style="padding: 10px; font-size: 11px;">Appraiser Signature:</td>
+                                <td width="30"  style="padding: 5px; font-size: 11px;"><span style="text-decoration: underline;"></span></td>
+                            </tr>
+                            <tr>   
+                                <td width="300"  style="padding: 10px; font-size: 11px;">Date:</td>
+                                <td width="300"  style="padding: 5px; font-size: 11px;"><u></u></td>    
+                                
+                            </tr>
+                        </tbody>
+
+    
+
+                 </table>
+            </td>
+            
+
+                   
+               
+        </tr>
+        <tr>
+            <td >
+                        <table  class="tablebordered margintop align-left">
+                        <tbody>
+                            <tr>
+                                <td width="30" style="padding: 10px; font-size: 11px;">HR Manager:</td>
+                                <td width="30" style="padding: 5px; font-size: 11px;"><span style="text-decoration: underline;"></span></td>
+                            </tr>
+                            <tr>   
+                                <td width="300"  style="padding: 10px; font-size: 11px;">Date:</td>
+                                <td width="300"  style="padding: 5px; font-size: 11px;"><u></u></td>    
+                                
+                            </tr>
+                        </tbody>
+
+                        
+                    
+                        </table>
+        
+        </td>
+        <td>
+
+        </td>
+    
+    </tr>
+    </tbody>
+ </table>
+
+
+
+                            
+
+                             
+
+</div>
+
+
+{% endblock content %}
+
+</body>
+</html>

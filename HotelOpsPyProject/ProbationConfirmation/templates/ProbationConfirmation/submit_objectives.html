@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objectives and Goals</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="card-header m-2">
+            <div class="row">
+                <div class="col-md-6">
+                    <strong style="font-size: 11px; text-transform: capitalize;">
+                        Objectives and their goals
+                    </strong>
+                </div>
+            </div>
+        </div>
+        <div id="objectivesContainer">
+            <!-- Objectives will be populated here by JavaScript -->
+        </div>
+        <div class="text-right">
+            <button type="button" class="btn btn-primary btn-sm m-2 mr-3" id="addObjectiveBtn">Add Objective</button>
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const addObjectiveBtn = document.getElementById('addObjectiveBtn');
+    const objectivesContainer = document.getElementById('objectivesContainer');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    let objectiveCount = {{ objectives|length }};  // Start with the number of existing objectives
+
+    function createObjectiveElement(objectiveId, objectiveName = '') {
+        return `
+            <div class="card m-2" id="objective-${objectiveId}">
+                <div class="card-header">
+                    <div class="input-group mb-2">
+                        <textarea class="form-control objective-input" placeholder="Objective Name" name="objective-${objectiveId}" rows="1">${objectiveName}</textarea>
+                        <input type="button" class="btn btn-danger btn-sm removeObjectiveBtn ml-1" value="Remove">
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong style="font-size: 11px; text-transform: capitalize;">
+                                    Goals
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                    <ul class="list-group mt-2" id="objective-${objectiveId}-goals"></ul>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-primary btn-sm addGoalBtn m-2">Add Goal</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function createGoalElement(goalId, goalName = '') {
+        return `
+            <li class="list-group-item d-flex align-items-center" id="${goalId}">
+                <textarea class="form-control mr-2" placeholder="Add Goal" name="${goalId}" rows="1">${goalName}</textarea>
+                <button type="button" class="btn btn-danger btn-sm removeGoalBtn">Remove</button>
+            </li>
+        `;
+    }
+
+    function addObjective(objectiveId, objectiveName = '', goals = []) {
+        const objectiveHtml = createObjectiveElement(objectiveId, objectiveName);
+        const objectiveElement = document.createElement('div');
+        objectiveElement.innerHTML = objectiveHtml;
+        objectivesContainer.appendChild(objectiveElement);
+
+        const objectiveCard = objectiveElement.querySelector('.card');
+
+        const removeObjectiveBtn = objectiveCard.querySelector('.removeObjectiveBtn');
+        removeObjectiveBtn.addEventListener('click', function() {
+            if (confirm('Are you sure you want to remove this objective?')) {
+                if (objectiveId) {  // Check if objectiveId is present
+                    fetch(`http://127.0.0.1:8000/ProbationConfirmation/delete-objective/${objectiveId}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            objectivesContainer.removeChild(objectiveElement);
+                        } else {
+                            alert('Failed to delete the objective.');
+                        }
+                    });
+                } else {
+                    objectivesContainer.removeChild(objectiveElement);
+                }
+            }
+        });
+
+        const addGoalBtn = objectiveCard.querySelector('.addGoalBtn');
+        addGoalBtn.addEventListener('click', function() {
+            const goalId = `objective-${objectiveId}-goal-${objectiveCard.querySelectorAll('li').length + 1}`;
+            const goalHtml = createGoalElement(goalId);
+            const goalsList = objectiveCard.querySelector('.list-group');
+            const goalItem = document.createElement('li');
+            goalItem.innerHTML = goalHtml;
+            goalsList.appendChild(goalItem);
+
+            const removeGoalBtn = goalItem.querySelector('.removeGoalBtn');
+            removeGoalBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to remove this goal?')) {
+                    const actualGoalId = goalItem.id.split('-').pop();
+                    if (actualGoalId) {  // Check if goalId is present
+                        fetch(`http://127.0.0.1:8000/ProbationConfirmation/delete-goal/${actualGoalId}/`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                goalsList.removeChild(goalItem);
+                            } else {
+                                alert('Failed to delete the goal.');
+                            }
+                        });
+                    } else {
+                        goalsList.removeChild(goalItem);
+                    }
+                }
+            });
+        });
+
+        // Add existing goals
+        goals.forEach(goal => {
+            const goalId = `objective-${objectiveId}-goal-${goal.id}`;
+            const goalHtml = createGoalElement(goalId, goal.name);
+            const goalsList = objectiveCard.querySelector('.list-group');
+            const goalItem = document.createElement('li');
+            goalItem.innerHTML = goalHtml;
+            goalsList.appendChild(goalItem);
+
+            const removeGoalBtn = goalItem.querySelector('.removeGoalBtn');
+            removeGoalBtn.addEventListener('click', function() {
+                if (confirm('Are you sure you want to remove this goal?')) {
+                    fetch(`http://127.0.0.1:8000/ProbationConfirmation/delete-goal/${goal.id}/`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken
+                        }
+                    }).then(response => {
+                        if (response.ok) {
+                            goalsList.removeChild(goalItem);
+                        } else {
+                            alert('Failed to delete the goal.');
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    // Clear the container before populating it
+    objectivesContainer.innerHTML = '';
+
+    // Populate existing objectives and goals
+    const existingObjectives = {{ objectives|safe }};
+    existingObjectives.forEach(obj => {
+        addObjective(obj.id, obj.name, obj.goals);
+    });
+
+    addObjectiveBtn.addEventListener('click', function() {
+        const objectiveId = ++objectiveCount;
+        addObjective(objectiveId);
+    });
+});
+</script>
+</body>
+</html>

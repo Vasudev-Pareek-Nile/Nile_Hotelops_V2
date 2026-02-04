@@ -1,0 +1,119 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+{% comment %} {% extends "EMP_PAY\homebase.html" %}
+{% block content %} {% endcomment %}
+{% load Payrollcustom_filters %}
+
+<style>
+    .text-primary {
+        color: #007bff;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-primary">
+                <div class="card-header text-uppercase fw-bold">Upload Attendance</div>
+                <div class="card-body">
+                    <div>
+                        <div>
+                            {% if messages %}
+                                <ul>
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                                <br>
+                                </ul>
+                            {% endif %}
+
+                            <form id="csvUploadForm" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label for="fileInput">Upload FIle</label>
+                                <br>
+                                <input type="file" name="excel_file" id="fileInput" required />
+                                <br>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </form>
+
+                            <!-- <div id="uploadResult" style="margin-top:20px;"></div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="spinner" style="display:none; margin-top:10px; text-align:center;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <p>Processing file... please wait ⏳</p>
+    </div>
+
+    <div id="uploadResult" style="margin-top:20px;"></div>
+</div>
+
+
+<script>
+    document.getElementById("csvUploadForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        let fileInput = document.getElementById("fileInput");
+        if (!fileInput.files.length) {
+            alert("Please select a file first");
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("excel_file", fileInput.files[0]);
+
+        const spinner = document.getElementById("spinner");
+        const uploadResult = document.getElementById("uploadResult");
+
+        spinner.style.display = "block";
+        uploadResult.innerHTML = "";
+
+        try {
+            let response = await fetch("{% url 'Excel_Attendance_Upload_CSV' %}", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            });
+
+            let result = await response.json();
+            spinner.style.display = "none";
+
+            uploadResult.innerHTML = `
+                <p><b>Status:</b> ${result.status}</p>
+                ${result.created_records !== undefined ? `<p><b>Created Records:</b> ${result.created_records}</p>` : ""}
+                ${result.updated_records !== undefined ? `<p><b>Updated Records:</b> ${result.updated_records}</p>` : ""}
+                ${result.message ? `<p style="color:red;"><b>Message:</b> ${result.message}</p>` : ""}
+                ${result.errors && result.errors.length
+                    ? `<p><b>Errors:</b><br>${result.errors.join("<br>")}</p>`
+                    : ""
+                }
+            `;
+
+            // Auto hide result
+            setTimeout(() => {
+                uploadResult.innerHTML = "";
+            }, 10000);
+
+        } catch (err) {
+            spinner.style.display = "none";
+            uploadResult.innerHTML = `
+                <p style="color:red;"><b>Upload failed:</b> ${err.message}</p>
+            `;
+
+            setTimeout(() => {
+                uploadResult.innerHTML = "";
+            }, 10000);
+        }
+    });
+</script>
+
+{% endblock content %}
+ 

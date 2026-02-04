@@ -1,0 +1,292 @@
+{% extends 'Warning/homebase.html' %}
+
+{% block content %}
+
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+
+
+<style>
+  
+	#clear, #filter{
+		padding-block: 8px;
+	}
+
+table th{
+  font-weight: bold;
+  text-transform: uppercase;
+}
+</style>
+
+
+
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between">
+          <span class="text-uppercase fw-bold">Warning Letters</span>
+          <a href="{% url "Warning_Employee_List" %}" class="btn btn-primary">New Warning</a>
+    </div>
+    
+    <div class="card-body">
+        <form method="GET">
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <select name="I" class="form-control">
+                          {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}" 
+                                {% if itm.OrganizationDomainCode == selected_location %}selected{% endif %}>
+                                {{ itm.OrganizationName }}
+                            </option>
+                          {% endfor %}
+                      </select>
+                  </div>
+              </div>
+
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <button type="submit" class="btn btn-primary" id="filter">
+                          <i class="fa fa-filter"></i> Filter
+                      </button>
+                      <a href="{% url 'WarningList' %}" class="btn btn-danger" id="clear">Clear</a>
+                  </div>
+              </div>
+          </div>
+        </form>
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Designation</th>
+              <th>Last Issue Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for detail in warning_details %}
+            <tr>
+              <td>{{ detail.Empcode }}</td>
+              <td>{{ detail.EmployeeName }}</td>
+              <td>{{ detail.Designation }}</td>
+              <td>{{ detail.Lastwarningtype }}</td>
+
+            
+              <td >
+                
+                <a href="{% url 'warning_detail' %}?EC={{detail.Empcode}}&OID={{detail.OrganizationID}}" class="btn btn-primary btn-sm" title="View">&nbsp;View</a>
+              </td>
+              
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="warningModalLabel">Select Warning Type</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <a href="{% url 'VerbalWarning' %}" class="btn btn-secondary mb-2" >Verbal Warning</a>
+        <a href="{% url 'Written_Warning' %}" class="btn btn-warning mb-2">Written Warning</a>
+        <a href="{% url 'FinalWarning' %}" class="btn btn-danger mb-2">Final Warning</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+ <script>
+    var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+</script>
+{% comment %} <script>
+  $(document).ready(function() {
+    $('#example').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ],
+      columnDefs: [
+        { targets: "_all" }
+      ]
+    });
+  });
+</script> {% endcomment %}
+
+
+{% comment %} Modal Show {% endcomment %}
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("Success"); // Note: 'Success' is capitalized in your URL
+        const message = urlParams.get("message");
+        // const action = urlParams.get("action");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+                }
+
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+
+            // ✅ Remove only specific params from URL
+            urlParams.delete("Success");
+            // urlParams.delete("success");  // optional, covers both cases
+            urlParams.delete("message");
+            // urlParams.delete("action");
+    
+            const newQuery = urlParams.toString();
+            const newUrl = window.location.pathname + (newQuery ? "?" + newQuery : "");
+            window.history.replaceState({}, document.title, newUrl); 
+        }
+    });
+</script>
+
+{% endblock content %}

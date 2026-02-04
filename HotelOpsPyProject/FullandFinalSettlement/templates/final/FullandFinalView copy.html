@@ -1,0 +1,343 @@
+{% load static %}
+
+
+{% block content %}
+<style>
+
+    th {
+        text-align: center;
+        vertical-align:middle;
+    }
+  table td,table th{
+    border:1px solid #dedede !important;
+    padding:5px;
+  }
+  h4{
+    background-color:#17649a;
+    color:#fff;
+    padding:10px;
+  }
+  table th{
+    text-align:left;
+    background-color:#fbfbfb;
+    color:#333;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+  <header>
+    <table style="width: 100%;">
+      <tr>
+          <td style="text-align: left;">
+              {% if organization_logo %}
+                  <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+              {% else %}
+                  <p>No logo available</p>
+              {% endif %}
+          </td>
+        <td style="text-align: center;">
+          <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+            <tbody>
+              <tr>
+                <td><strong>FULL AND FINAL SETTLEMENT</strong></td>
+                
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td style="text-align: right;">
+          {% if organization_logos %}
+          <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+      {% else %}
+          <p>No logo available</p>
+      {% endif %}
+        </td>
+      </tr>
+    </table>
+  </header>
+    <div class="container register-form">
+      <div class="card card-primary">
+        {% comment %} <div class="card-header">
+          <p>Your Full and Final Settlement </p>
+        </div> {% endcomment %}
+
+
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+          <h4>FULL AND FINAL SETTLEMENT OF DUES STATEMENT</h4>
+        <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                
+                <tbody>
+                    <tr>
+                      
+                      <td>Employee Code</td>
+                      <th>{{Ed.Emp_Code}}</th>
+                   
+                      <td>Name</td>
+                      <th>{{Ed.Name}}</th>
+                      
+                      
+                      
+                      
+                      
+                      
+                    </tr> 
+                    <tr>
+                      <td>Date Of Joining</td>
+                      <th>{{Ed.DOJ}}</th>
+                      <td>Date Of Leaving</td>
+                      <th>{{Ed.Date_Of_Leaving}}</th>
+                      
+                    </tr> 
+                    <tr>
+                      <td>Department</td>
+                      <th>{{Ed.Dept}}</th>
+                      <td>Designation</td>
+                      <th>{{Ed.Designation}}</th>
+                      
+                    </tr> 
+                    <tr>
+                      
+                      
+                      <td>Absconding</td>
+                      <th>{{Ed.Absconding}}</th>
+                      
+                    </tr> 
+                    <tr>
+                      <td>Notice Days Served</td>
+                      <th>{{Ed.Notice_Days_Served}}</th>
+                      <td>Resignation</td>
+                      <th>{{Ed.Resignation}}</th>
+                      
+                    </tr> 
+                    <tr>
+                      <td>Deduction From Salary PL</td>
+                      <th>{{Ed.Deduction_from_salary_PL}}</th>
+                      <td>Confirmed</td>
+                      <th>{{Ed.Confirmed}}</th>
+                      
+                    </tr> 
+                    <tr>
+                      <td>Current Salary</td>
+                      <th>{{Ed.Current_Salary}}</th>
+                      <td>Terminated</td>
+                      <th>{{Ed.Terminated}}</th>
+                      
+                    </tr> 
+                    
+                    
+                    <td>Laid Off</td>
+                    <th>{{Ed.Laid_Off}}</th>
+                    
+                  </tr> 
+               
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+      </div>
+       
+        <div >
+          
+      <div class="row">
+            <div class="col-sm-12">
+              <h4>LEAVE SUMMARY</h4>
+              <table class="table table-striped table-bordered table-hover">
+                
+                <tbody>
+                    <tr>
+                    <th>LS Period</th>
+                    <th>LS Opening Balance</th>
+                    <th>LS Leaved Earned</th>
+                    <th>LS Leaved Availed</th>
+                    <th>LS PL Bal</th>
+                    </tr>
+                    <tr>
+                      <th>{{Ed.LS_Period}}</th>
+                      <th>{{Ed.LS_Opening_Balance}}</th>
+                      <th>{{Ed.LS_Leaved_Earned}}</th>
+                      <th>{{Ed.LS_Leaved_Availed}}</th>
+                      <th>{{Ed.LS_PL_Bal}}</th>
+                    </tr>
+               
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+   
+    <div class="card-body">
+        <input  type="hidden" name="ID" value="{{Ed.id}}">
+        <h4>PL PAYMENT</h4>
+        {% comment %} <th>PL PAYMENT</th> {% endcomment %}
+    <div class="row">
+          <div class="col-sm-12">
+            <table class="table table-striped table-bordered table-hover">
+              
+              <tbody>
+                  <tr>
+                  <th>PL Total PL</th>
+                  <th>PL Basic Salary</th>
+                  <th>PL Rate</th>
+                  <th>PL Amount</th>
+                
+                  </tr>
+                  <tr>
+                    <th>{{Ed.PL_Total_PL}}</th>
+                    <th>{{Ed.PL_Basic_Salary}}</th>
+                    <th>{{Ed.PL_Rate}}</th>
+                    <th>{{Ed.PL_Amount}}</th>
+                   
+                  </tr>
+             
+                </tbody>
+              </table>
+            </div>
+          </div>        
+    </div>
+  </div>
+
+  <div class="card-body">
+    <input  type="hidden" name="ID" value="{{Ed.id}}">
+    {% comment %} <th>NOTICE PERIOD PAYMENT</th> {% endcomment %}
+    <h4>NOTICE PERIOD PAYMENT</h4>
+  <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-striped table-bordered table-hover">
+          
+          <tbody>
+              <tr>
+              <th>NPP Total Notice Pay Days</th>
+              <th>NPP Gross</th>
+              <th>NPP Rate</th>
+              <th>NPP Net Amount Paid</th>
+            
+              </tr>
+              <tr>
+                <th>{{Ed.NPP_Total_Notice_Pay_Days}}</th>
+                <th>{{Ed.NPP_Gross}}</th>
+                <th>{{Ed.NPP_Rate}}</th>
+                <th>{{Ed.NPP_Net_Amount_Paid}}</th>
+               
+              </tr>
+         
+            </tbody>
+          </table>
+        </div>
+      </div>        
+</div>
+</div>
+
+
+<div class="card-body">
+    <input  type="hidden" name="ID" value="{{Ed.id}}">
+    <h4>GRATUITY PAYMENT</h4>
+    {% comment %} <th>GRATUITY PAYMENT</th> {% endcomment %}
+  <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-striped table-bordered table-hover">
+          
+          <tbody>
+              <tr>
+              <th>GP No Of Years</th>
+              <th>GP Last Basics</th>
+              <th>GP Graturity Days</th>
+              <th>GP Graturity Payments</th>
+            
+              </tr>
+              <tr>
+                <th>{{Ed.GP_No_Of_Years}}</th>
+                <th>{{Ed.GP_Last_Basics}}</th>
+                <th>{{Ed.GP_Graturity_Days}}</th>
+                <th>{{Ed.GP_Graturity_Payments}}</th>
+               
+              </tr>
+         
+            </tbody>
+          </table>
+        </div>
+      </div>        
+</div>
+</div>
+
+<div class="card-body">
+    <input  type="hidden" name="ID" value="{{Ed.id}}">
+    <h4>FULL AND FINAL PAYMENT SUMMARY</h4>
+    {% comment %} <th>FULL AND FINAL PAYMENT SUMMARY</th> {% endcomment %}
+  <div class="row">
+      <div class="col-sm-12">
+        <table class="table table-striped table-bordered table-hover">
+          
+          <tbody>
+              <tr>
+              <th>PARTICULAR</th>
+              <th>AMOUNT</th>
+              <th>REMARKS</th>
+              <th>MONTHS</th>
+              <th>REMARKS</th>
+            
+              </tr>
+              <tr>
+                <td>Pending Salary</td>
+                
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>PL</td>
+                <th>{{Ed.FFPS_PL}}</th>
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>Gratuity</td>
+                <th>{{Ed.FFPS_Gratuity}}</th>
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>Grand Total</td>
+                <th>{{Ed.FFPS_Grand_Total}}</th>
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>Deductions</td>
+                <th>{{Ed.FFPS_Deductions}}</th>
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>Uniform Deductions</td>
+                <th>{{Ed.FFPS_Uniform_Deductions}}</th>
+                
+                
+                
+              </tr> 
+              <tr>
+                <td>Payable Amount</td>
+                <th>{{Ed.FFPS_Payable_Amount}}</th>
+                
+                
+                
+              </tr> 
+         
+            </tbody>
+          </table>
+        </div>
+      </div>        
+</div>
+</div>
+
+    {% endblock content %}

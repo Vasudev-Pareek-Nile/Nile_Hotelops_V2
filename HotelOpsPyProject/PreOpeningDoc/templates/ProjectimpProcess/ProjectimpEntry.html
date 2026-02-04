@@ -1,0 +1,140 @@
+{% extends 'ProjectimpProcess/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+    }
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Project Implementaion Process Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'ProImpProcessEntry' %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+            
+            <lable  class="control-label col-sm-1">Project</lable>
+            <div class="col-sm-4">
+                <input required type="text" class="form-control calc" name="Project" value ="{{mem.Project}}" >
+            </div>
+
+            <lable  class="control-label col-sm-1">Start Date</lable>
+            <div class="col-sm-4">
+                <input required type="date" class="form-control calc" name="StartDate" value ="{{mem.StartDate}}" >
+            </div>   
+
+        </div>
+       <br>
+        <div class="row">
+        <lable  class="control-label col-sm-1">Forecast Completion Date</lable>
+        <div class="col-sm-4">
+            <input required type="date" class="form-control calc" name="ForecastCompletionDate" value ="{{mem.ForecastCompletionDate}}" >
+        </div>
+
+        <lable  class="control-label col-sm-1">Attention</lable>
+        <div class="col-sm-4">
+            <input required type="text" class="form-control calc" name="Attention" value ="{{mem.Attention}}" >
+        </div>
+      </div>
+    </br>
+    <div class="row">
+        <lable  class="control-label col-sm-1">Issue</lable>
+        <div class="col-sm-4">
+         <input required type="text" class="form-control calc" name="Issue" value ="{{mem.Issue}}" >
+     </div>
+
+      <lable  class="control-label col-sm-1">By</lable>
+      <div class="col-sm-4">
+         <input required type="text" class="form-control calc" name="By" value ="{{mem.By}}" >
+      </div>
+  </div>
+</br>  
+<div class="row">
+  <lable  class="control-label col-sm-1">Date</lable>
+     <div class="col-sm-4">
+      <input required type="date" class="form-control calc" name="Date" value ="{{mem.Date}}" >
+     </div>
+    </dv>
+               
+</br>
+</br>
+<br>
+</br> 
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                        <th></th>
+                        <th>Activity</th>
+                        <th>Action BY</th>
+                        <th>Response Time</th>
+                        <th>Completion BY</th>
+                        <th>Remarks </th>
+                        
+                    </thead>
+                    {% for x in mem%}
+                    <tr> 
+                        <td data-c="{{x.category}}">{{x.category}}</td>            
+                        <td>{{x.title}}</td> 
+                        <td>{{x.ActionBy}}</td>
+    
+                        <td><input type="text"  class="form-control" name="ResponseTime_{{ forloop.counter0 }}"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                        </td>
+                        <td><input type="text"  class="form-control" name="CompletionBy_{{ forloop.counter0 }}"/>
+                        </td>
+                        <td><input type="text"  class="form-control" name="Remarks_{{ forloop.counter0 }}"/>
+                        </td>
+    
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+    
+                
+                </table>                          
+                <br>
+            </div>
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+
+ 
+    
+
+    <script>
+        $(function(){
+    
+            var c=""
+            $("#title tr").each(function(){
+                    var ct =$(this).find('td').eq(0).attr('data-c')
+                   if(c=="" || c !=ct){
+                    $(this).find('td').eq(0).addClass('bold')
+                   }else{
+                        $(this).find('td').eq(0).text('')
+                       
+                   }
+                c=ct            
+            })
+        })
+    
+       
+    </script>
+
+    
+    {% endblock content %}

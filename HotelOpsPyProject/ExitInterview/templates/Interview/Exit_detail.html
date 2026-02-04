@@ -1,0 +1,114 @@
+{% extends "Interview/homebase.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <strong>Exit Form View</strong>
+    </div>
+    <div class="card-body">
+        <!-- Employee Details Table -->
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>Name:</td>
+                    <td>{{ exit_interview.EmpName }}</td>
+                    <td>Position:</td>
+                    <td>{{ exit_interview.Job_Title }}</td>
+                </tr>
+                <tr>
+                    <td>Date of Joining:</td>
+                    <td>{{ exit_interview.DateofJoining }}</td>
+                    <td>Date of Leaving:</td>
+                    <td>{{ formatted_date }}</td>
+                </tr>
+                <tr>
+                    <td>Notice Period:</td>
+                    <td>{{ exit_interview.NoticePeriod }}</td>
+                    <td>Resign/Termination:</td>
+                    <td>
+                        {% if exit_interview.Resign %}
+                            {{ exit_interview.Resign }}
+                        {% endif %}
+                        {% if exit_interview.Termination %}
+                            {{ exit_interview.Termination }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reason for Leaving:</td>
+                    <td colspan="3">{{ exit_interview.ReasonForLeaving }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Experience Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="background-color: #958a79; color: black; font-size: 11px;">&nbsp;</th>
+                    <th style="background-color: #958a79; color: black; font-size: 11px;">Yes/No</th>
+                    <th style="background-color: #958a79; color: black; font-size: 11px;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for experience in experiences %}
+                    <tr>
+                        <td style="width: 400px;">{{ experience.Experience }}</td>
+                        <td style="width: 50px;">
+                            {% if experience.chekdata == "on" %}
+                                Yes
+                            {% elif experience.chekdata == "0" %}
+                                No
+                            {% else %}
+                                {{ experience.chekdata|title }}
+                            {% endif %}
+                        </td>
+                        
+                        <td style="width: 400px;">{{ experience.remarkexit }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Rating Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="background-color: #958a79; color: black; font-size: 11px;">Rating</th>
+                    <th style="background-color: #958a79; color: black; font-size: 11px;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rating in ratings %}
+                    <tr>
+                        <td style="width: 400px;">{{ rating.Rating }}</td>
+                        <td style="width: 400px;">{{ rating.remarks }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Final Comment Section -->
+        <h5>Final Comment</h5>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td style="width: 100%;">{{ exit_interview.FinalComment }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Rehire Question -->
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>
+                        Would you re-hire this employee? 
+                       <strong> {% if exit_interview.rehire %}Yes{% else %}No{% endif %}</strong>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

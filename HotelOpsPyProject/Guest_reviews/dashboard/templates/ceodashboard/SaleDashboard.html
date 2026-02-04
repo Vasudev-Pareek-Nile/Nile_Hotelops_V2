@@ -1,0 +1,1359 @@
+
+{% extends "ceodashboard/homebase.html" %}
+
+{% block body_id %}salesDashboard{% endblock %}
+
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'ceodashboard/css/dashboard.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+{% endblock %}
+
+    {% block content %}
+    
+            <div class="wrapper wrapper-content">
+                <div class="row">
+                    <div class="col-sm-12 text-right" style="margin-bottom: 10px;">
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="CEORevenueTotalData(this,'CEOData',1)">Yesterday</button>
+                            <button class="btn btn-default" onclick="CEORevenueTotalData(this,'CEOData',2)">Weekly</button>
+                            <button class="btn btn-default" onclick="CEORevenueTotalData(this,'CEOData',3)">Monthly</button>
+                            <button class="btn btn-default" onclick="CEORevenueTotalData(this,'CEOData',4)">Yearly</button>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <div id="loader-CEOData" class="loader-container">
+                                <div class="loader"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="ibox RGDS" data-type="Total Revenue">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="total-revenue-label">Yesterday</span>
+                                            </div>
+                                            <h5 id="revenueHeading" style="cursor: pointer; ">Total Revenue</h5>
+
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="total-revenue"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="ibox RGDS" data-type="Room Revenue">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="room-revenue-label">Yesterday</span>
+                                            </div>
+                                            <h5 id="RoomRevenueHeading" style="cursor: pointer; ">Room Revenue</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="room-revenue"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="ibox RGDS" data-type="FB Revenue">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="fb-revenue-label">Yesterday</span>
+                                            </div>
+                                            <h5 id="FBRevenueHeading" style="cursor: pointer; ">F&B Revenue</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="fb-revenue"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="ibox">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="adr-revpar-label">Yesterday</span>
+                                            </div>
+                                            <h5>ADR/RevPar</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="adr-revpar"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="ibox">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="outlet-revenue-label">Yesterday</span>
+                                            </div>
+                                            <h5>Outlet Revenue</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="outlet-revenue"></h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="ibox">
+                                        <div class="ibox-title">
+                                            <div class="ibox-tools">
+                                                <span class="label label-success float-right"
+                                                    id="banquet-revenue-label">Yesterday</span>
+                                            </div>
+                                            <h5>Banquet Revenue</h5>
+                                        </div>
+                                        <div class="ibox-content">
+                                            <h1 class="no-margins" id="banquet-revenue">0</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-3" style="margin-bottom: 10px;">
+                            <div id="calendar" class="calendar-container"></div>
+                            <div id="tooltipcalender" class="tooltip1"></div>
+
+
+                        </div>
+                        <div class="col-sm-1" style="padding-left:0px;">
+
+                            <div class="" style="background: #cef4d8;padding: 4px;margin: 0px;">Birthday</div>
+                            <div class="ibox-content" style="padding: 10px;">
+
+
+
+
+                                <div class="div_UC_Birth">
+
+                                    {% for birthday in bdayData %}
+                                    <div style="font-size:11px">
+                                        {{ birthday.EmpName }}<br>({{ birthday.hotel_name }}) - {{ birthday.Date }}
+                                    </div>
+                                    {% if not forloop.last %}
+                                    <hr>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+
+                            <div class="ibox-title">
+                                <h5>Hotel Revenue</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="HotelRevenueDataChart(this,'hotelrevenue', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="HotelRevenueDataChart(this,'hotelrevenue', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="HotelRevenueDataChart(this,'hotelrevenue', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="HotelRevenueDataChart(this,'hotelrevenue', 4)">Yearly</button>
+
+
+
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-hotelrevenue" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+
+
+                                        <div class="echarts-container" style=" height: 220px;" id="chartContainerARR">
+
+                                        </div>
+
+                                        <span class="dddd"></span>
+
+
+
+                                        <div class="echarts-container" style=" height: 220px;" id="chartContainerOcc">
+                                        </div>
+
+                                    </div>
+                                    
+                                </div>
+                                <div class="row">
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-lg-12">
+
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="ibox">
+                                    <div class="ibox-title collapse-link">
+                                        <h5>Hotel Revenue Nos v/s Budget</h5>
+                                        <div class="btn-group">
+                                            <button class="btn btn-primary"
+                                                onclick="HotelRevenueData(this, 1)">Yesterday</button>
+                                            <button class="btn btn-default"
+                                                onclick="HotelRevenueData(this, 2)">Weekly</button>
+                                            <button class="btn btn-default"
+                                                onclick="HotelRevenueData(this, 3)">Monthly</button>
+                                            <button class="btn btn-default"
+                                                onclick="HotelRevenueData(this, 4)">Yearly</button>
+
+
+
+                                        </div>
+                                        <div class="ibox-tools">
+                                            <a class="">
+                                                <i class="fa fa-chevron-down"></i>
+                                            </a>
+
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+
+
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <table id="tbl_Htl_r_V_b"
+                                                    class="table table-hover margin bottom hv table-bordered-withoutBG">
+                                                    <thead>
+                                                        <tr class="bg-white">
+                                                            <th rowspan="2" style="width: 1%" class="text-center">
+                                                                No.</th>
+                                                            <th rowspan="2">Hotel</th>
+
+                                                            <th colspan="3" style="text-align:center !important"
+                                                                align="center">FTD</th>
+                                                            <th colspan="3" style="text-align:center !important"
+                                                                align="center">MTD</th>
+                                                            <th colspan="3" style="text-align:center !important"
+                                                                align="center">YTD</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th class="text-center">Budget</th>
+                                                            <th class="text-center">Revenue</th>
+                                                            <th class="text-center">Variance</th>
+                                                            <th class="text-center">Budget</th>
+                                                            <th class="text-center">Revenue</th>
+                                                            <th class="text-center">Variance</th>
+                                                            <th class="text-center">Budget</th>
+                                                            <th class="text-center">Revenue</th>
+                                                            <th class="text-center">Variance</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tbl_Htl_r_V_b_body">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Out of Order</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="out_of_orderChart(this,'outoforder', 1)">Yesterday</button>
+                                    <button class="btn btn-default" onclick="out_of_orderChart(this,'outoforder', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="out_of_orderChart(this,'outoforder', 3)">Monthly</button>
+                                    <button class="btn btn-default" onclick="out_of_orderChart(this,'outoforder', 4)">Yearly</button>
+
+
+
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-outoforder" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="chartoutoforder">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>DSR</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary" onclick="DSRChart(this,'dsr',1)">Yesterday</button>
+                                    <button class="btn btn-default" onclick="DSRChart(this,'dsr', 2)">Weekly</button>
+                                    <button class="btn btn-default" onclick="DSRChart(this,'dsr', 3)">Monthly</button>
+                                    <button class="btn btn-default" onclick="DSRChart(this,'dsr', 4)">Yearly</button>
+
+
+
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-dsr" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style=" height: 220px;" id="chartOfTotalVisit">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Sales Contracts</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="SalesContractChartData(this,'sc', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="SalesContractChartData(this,'sc', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="SalesContractChartData(this,'sc', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="SalesContractChartData(this,'sc', 4)">Yearly</button>
+
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div id="loader-sc" class="loader-container">
+                                    <div class="loader"></div>
+                                </div>
+                                <div class="echarts-container" id="chartContainer" style="height: 250px;"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+                
+               
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Guest Met</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="RDGuestMetChart(this, 1)">Yesterday</button>
+                                    <button class="btn btn-default" onclick="RDGuestMetChart(this,'GMguest', 2)">Weekly</button>
+                                    <button class="btn btn-default" onclick="RDGuestMetChart(this,'GMguest',3)">Monthly</button>
+                                    <button class="btn btn-default" onclick="RDGuestMetChart(this,'GMguest', 4)">Yearly</button>
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-GMguest" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="guestMet"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Check List</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="RDChecklistChartData(this,'checklistloader', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="RDChecklistChartData(this,'checklistloader', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="RDChecklistChartData(this,'checklistloader', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="RDChecklistChartData(this,'checklistloader', 4)">Yearly</button>
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-checklistloader" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="checklist-chart">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>AR Collection</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="ArCollectionDatachart(this,'arc', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="ArCollectionDatachart(this,'arc', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="ArCollectionDatachart(this,'arc', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="ArCollectionDatachart(this,'arc', 4)">Yearly</button>
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-arc" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="ArCollection-chart">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" id="ForecastOccupancy">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Forecast Occupancy</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="forecastDatachart(this,'occ', 1)">Tomorrow</button>
+                                    <button class="btn btn-default" onclick="forecastDatachart(this,'occ', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="forecastDatachart(this,'occ', 3)">Monthly</button>
+                                    <button class="btn btn-default" onclick="forecastDatachart(this,'occ', 4)">Yearly</button>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                
+                                <div class="row">
+                                    <div id="loader-occ" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="forecast-occupancy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="ForecastADR">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Forecast ADR</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="forecastAdrDatachart(this,'adr', 1)">Tomorrow</button>
+                                    <button class="btn btn-default"
+                                        onclick="forecastAdrDatachart(this,'adr', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="forecastAdrDatachart(this,'adr', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="forecastAdrDatachart(this,'adr', 4)">Yearly</button>
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-adr" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="adr-chart"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+                
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Consumption</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="ConsumptionDataChart1(this,'csd', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="ConsumptionDataChart1(this,'csd', 1)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="ConsumptionDataChart1(this,'csd', 1)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="ConsumptionDataChart1(this,'csd', 1)">Yearly</button>
+
+
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-csd" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;"
+                                            id="consumptionchart">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                
+
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Training Hours</h5>
+                                <div class="btn-group">
+                                    <button class="btn btn-primary"
+                                        onclick="trainingHoursDatachart(this,'training', 1)">Yesterday</button>
+                                    <button class="btn btn-default"
+                                        onclick="trainingHoursDatachart(this,'training', 2)">Weekly</button>
+                                    <button class="btn btn-default"
+                                        onclick="trainingHoursDatachart(this,'training', 3)">Monthly</button>
+                                    <button class="btn btn-default"
+                                        onclick="trainingHoursDatachart(this,'training', 4)">Yearly</button>
+                                </div>
+
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div id="loader-training" class="loader-container">
+                                        <div class="loader"></div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="echarts-container" style="height: 220px;" id="trainingHours-chart">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox ">
+                            <div class="ibox-title">
+                                <h5>Manning Guide</h5>
+                                <div class="ibox-tools">
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="row">
+                                    <div class="col-sm-5">
+                                        <select class="form-control" id="Org_id" onchange="MainingGuideChart('mainingGuide')">
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <div >
+                                            <select id="level" name="level" onchange="MainingGuideChart('mainingGuide')" class="form-control">
+                                                <option value="" disabled selected>Level</option>
+                                                <option value="A">A</option>
+                                                <option value="T">T</option>
+                                                <option value="E">E</option>
+                                                <option value="M">M</option>
+                                                <option value="M1">M1</option>
+                                                <option value="M2">M2</option>
+                                                <option value="M3">M3</option>
+                                                <option value="M4">M4</option>
+                                                <option value="M5">M5</option>
+                                                <option value="M6">M6</option>
+                                            </select>
+                                        </div>
+                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div id="loader-mainingGuide" class="loader-container">
+                                            <div class="loader"></div>
+                                        </div>
+                                        <div class="echarts-container"
+                                            style="height: 300px; width: 1110PX; padding-left: 15px;"
+                                            id="mainingGuideChart">
+                                        </div>
+                                    </div>
+    
+                                </div>
+                            </div>
+    
+                        </div>
+                    </div>
+                </div>
+    
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title collapse-link">
+                                <h5>Open Positions </h5>
+                                <div class="ibox-tools">
+    
+                                    <span class="label label-success" id="OpenPositionsCount"></span>
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+    
+    
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive ofm" style="display: none; ">
+                                <table class="table table-hover no-margins">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Designation</th>
+                                            <th>Opened On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="OpenPositionsBody">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+    
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title collapse-link">
+                                <h5>Interview Assessment list</h5>
+                                <div class="ibox-tools">
+                                    <span class="label label-success " id="IAListCount"></span>
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+    
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive" style="display: none;">
+                                <div class="ibox-content table-responsive ofm" >
+                                    <table class="table table-hover no-margins">
+                                        <thead>
+                                            <tr>
+                                                <th>Hotel</th>
+                                                <th>Employee</th>
+                                                <th>Designation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="IAListBody">
+    
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+    
+                    </div>
+    
+                    <div class="col-lg-4">
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title collapse-link">
+                                <h5>Resignations</h5>
+                                <div class="ibox-tools">
+                                    <span class="label label-success " id="ResignListCount"></span>
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+    
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive ofm" style="display: none;">
+                                <table class="table table-hover no-margins tblrsg">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Name/Designation</th>
+    
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ResignListBody">
+                                        
+                                    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+    
+                    </div>
+    
+                </div>
+    
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title collapse-link">
+                                <h5>Leave Application list</h5>
+                                <div class="ibox-tools">
+                                    <span class="label label-success" id="leaveListCount"></span>
+                                    <a class="collapse-link">
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+    
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive" style="display: none;">
+                                <table class="table table-hover no-margins">
+                                    <thead>
+                                        <tr>
+                                            <th>Hotel</th>
+                                            <th>Employee</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="leaveApplicationBody">
+                                   
+                                        
+    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox">
+                            <div class="ibox-title collapse-link">
+                                <h5>Minutes of Meetings</h5>
+                                <div class="ibox-tools">
+                                    <span class="label label-success " id="MOMListCount"></span>
+                                    
+                                    <a>
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content table-responsive ofm" style="max-height: 570px; overflow: auto;display: none;">
+                                        <table class="table table-hover no-margins">
+                                            <thead>
+                                                
+                                            </thead>
+                                            <tbody id='MOMListBody'>
+                                            </tbody>
+                                        </table>
+                            </div>
+                        </div>
+    
+    
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="ibox border-bottom">
+                            <div class="ibox-title  collapse-link">
+                                <h5>Follow-Ups</h5>
+                                <div class="ibox-tools">
+                                    <a class="btn btn-primary" style="position: relative;top: -7px;" onclick="AddFollowTask()">New</a>
+                                    <a>
+                                        <i class="fa fa-chevron-down"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content" style="max-height: 570px; overflow: auto; display: none;">
+        
+                                <ul class="todo-list m-t small-list" id="followups"></ul>
+                            </div>
+                        </div>
+    
+    
+                    </div>
+    
+                </div>
+
+            </div>
+
+    <div class="modal fade" id="revenueModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="margin-left: 340px;">
+            <div class="modal-content" style="width: 820px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Revenue Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-lg-12" style="max-height:400px; overflow:auto;">
+                            <div class="echarts-container" style="width: 740px !important; height: 200px;"
+                                id="totalRevenuemodelChart"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="OutOfOrderModal" tabindex="-1" aria-labelledby="exampleModalLabel" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Out Of Order Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12" style="max-height:400px; overflow:auto">
+                            <table class="table table-bordered table-sm" id="tbl_OutOfOrder" style="font-size:11px">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #958a79;">Sr.No.</th>
+                                        <th style="background-color: #958a79;">Room</th>
+                                        <th style="background-color: #958a79;">From Date</th>
+                                        <th style="background-color: #958a79;">To Date</th>
+                                        <th style="background-color: #958a79;">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detailContent">
+                                    <!-- Dynamic content will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade show" id="consumptionDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+    style="display: none; padding-left: 0px; " aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style="max-width:900px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Consumption Details:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Item details will be inserted here -->
+                <div id="itemDetails"></div>
+                <div class="row">
+                    <div class="col-sm-12 " style="max-height:400px;overflow:auto; ">
+                        <table class="table table-bordered table-sm" id="tbl_trainingmaster" style="font-size:11px">
+                            <thead>
+                                <tr>
+                                    <th style="background-color: #958a79;">Sr. No.</th>
+                                    <th style="background-color: #958a79;">Date</th>
+                                    <th style="background-color: #958a79; text-align: center;">ItemCode</th>
+                                    <th style="background-color: #958a79; text-align: center;">Item</th>
+                                    <th style="background-color: #958a79;">Department</th>
+                                    <th style="background-color: #958a79;">Store</th>
+                                    <th style="background-color: #958a79;">Quantity</th>
+                                    <th style="background-color: #958a79; text-align: center;">Rate</th>
+                                    <th style="background-color: #958a79; text-align: center;">TotalAmount</th>
+                                    
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody id="consumptionDetailsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="modal fade" id="dsrDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+        role="dialog">
+        <div class="modal-dialog" role="document" style="max-width: 100%; width: 90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Visit Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="itemDetails">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                Hotel: <span id="modalDSRHotelName">HotelName</span>
+                            </div>
+                            <div class="col-sm-6">
+                                Total: <span id="modalDSRTotalVisit">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered" id="dsr_itmDettable" style="font-size: 11px">
+                                <thead>
+                                    <tr class="active">
+                                        <th style="width: 120px; text-align: center; background-color: #958a79;">Company
+                                            Name</th>
+                                        <th style="width: 142px; text-align: center; background-color: #958a79;">Contact
+                                            Person</th>
+                                        <th style="width: 110px; text-align: center; background-color: #958a79;">
+                                            Communication Mode</th>
+                                        <th style="background-color: #958a79;">RM NT<br>POTENTIAL</th>
+                                        <th style="background-color: #958a79;">Potential</th>
+                                        <th style="width: 100px; text-align: center; background-color: #958a79;">Visit
+                                            Date</th>
+                                        <th style="width: 110px; text-align: center; background-color: #958a79;">Next
+                                            Follow-Up Date</th>
+                                        <th style="text-align: center; background-color: #958a79;">Remarks</th>
+                                        <th style="width: 142px; text-align: center; background-color: #958a79;">Update
+                                            By</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dsrdetailContent">
+                                    <!-- Dynamic rows will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade show" id="salesContactDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width:100%;width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sales Contract Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered" id="salesContact_itmDettable" style="font-size:11px">
+                                <thead>
+                                    <tr class="active" style="height:auto !important;">
+                                        <th style="background-color: #958a79;">Sr.No.</th>
+                                        <th style="background-color: #958a79;">Company Name</th>
+                                        <th style="background-color: #958a79;">Vendor Name</th>
+                                        <th style="background-color: #958a79;">Valid From</th>
+                                        <th style="background-color: #958a79;">Valid To</th>
+                                        <th style="background-color: #958a79;">Contract Upload Status</th>
+                                        <th style="background-color: #958a79;">Account Manager</th>
+                                        <th style="background-color: #958a79;">Credit Approved</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="salesContactDetailsbody">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade show" id="GuestMetDetails" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="max-width:100%;width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Guest Met Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered" id="GuestMet_itmDettable" style="font-size:11px">
+                                <thead>
+                                    <tr class="active" style="height:auto !important;">
+                                        <th style="width:70px; background-color: #958a79;">Sr.No.</th>
+                                        <th style="width:170px; background-color: #958a79;">
+                                            Guest Name <br>
+                                            Room#
+                                        </th>
+                                        <th style="background-color: #958a79;">
+                                            Arrival<br>
+                                            Departure
+                                        </th>
+                                        <th style="background-color: #958a79;">Feedback</th>
+                                        <th style="background-color: #958a79;">Action Taken</th>
+                                        <th style="background-color: #958a79;">
+                                            Feedback
+                                            Type
+                                        </th>
+                                        <th style="background-color: #958a79;">
+                                            Met On<br>
+                                            Met By
+                                        </th>
+                                        <th style="background-color: #958a79;">Updated by </th>
+                                        <th style="background-color: #958a79;">Updated On </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="GuestMetDetailsbody">
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade show" id="ARCollectionModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">AR Collection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered  table-sm" id="tbl_arCollection" style="font-size:11px">
+                                <caption style="caption-side:top;text-align: right;"><span>Last updated On : <span
+                                            id="sp_arC_LastupdateDate">08 Oct 24</span></span></caption>
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #958a79;">Account</th>
+                                        <th width="150px" style="background-color: #958a79;">91 Days and Above</th>
+                                        <th width="150px" style="background-color: #958a79;">Total Pending</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ARCollectionModalBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal LeaveModal " tabindex="-1" role="dialog" aria-modal="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="myLeaveFrom" action="LeaveApprove" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Leave Application Details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+    
+                        <input type="hidden" name="AppID" id="id" value="7541">
+                        <input type="hidden" name="OID" id="oid" value="1001">
+                        <input type="hidden" name="UserID" id="UserID" value="20240920152518">
+                        <input type="hidden" name="Remark" id="Remark" value="">
+    
+                        <div class="">
+                            <div class="row">
+                                <label class="col-sm-3 text-b">Leave Type</label>
+                                <label class="col-sm-5 "><span id="sp_LeaveType">CL</span></label>
+    
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 text-b">From</label>
+                                <label class="col-sm-3"><span id="sp_From">23 Oct 2024</span></label>
+                                <label class="col-sm-2 text-b">To</label>
+                                <label class="col-sm-3"><span id="sp_To">23 Oct 2024</span></label>
+                            </div>
+                            <div class="row">
+                                <label class="col-sm-3 text-b">Reason</label>
+                                <label class="col-sm-9"><span id="sp_Reason">Hospital Visit</span></label>
+    
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" name="BtnAction" value="approve" class="btn btn-primary">Approve</button>
+                        <button type="submit" name="BtnAction" value="reject" class="btn btn-danger">Reject</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="modal ViewResignModal" tabindex="-1" role="dialog" aria-modal="true" style="display: none;">
+        <div class="modal-dialog" role="document" style="min-width: 60%; min-width: 900px ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Employee Resignation Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered tblr">
+                                <tbody><tr>
+                                    <th width="200px">Name</th>
+                                    <td id="Name">Fataniya RanchodbhaiBhikhubhai</td>
+                                    <th width="200px">Employee Code</th>
+                                    <td width="200px" id="Emp_Code">5402</td>
+                                </tr>
+                                <tr>
+                                    <th>Date Of Joining</th>
+                                    <td id="DOJ">15 Apr 2024</td>
+                                    <th width="200px">Department</th>
+                                    <td id="Department">Engineering</td>
+                                </tr>
+                                <tr>
+                                    <th>Designation</th>
+                                    <td id="Designation">Carpenter</td>
+                                </tr>
+                            </tbody></table>
+                            <br>
+                            <table class="table table-bordered tblr">
+                                <tbody><tr>
+                                    <th width="200px">Date of Resignation </th>
+                                    <td id="ResDate">07 Oct 2024</td>
+                                    <th width="200px">Type of Resignation</th>
+                                    <td width="200px" id="TypeofRes">Written</td>
+                                </tr>
+                                <tr>
+                                    <th>Notice Period</th>
+                                    <td id="NoticePeriod">15 Days</td>
+                                    <th>Reason of Resignantion</th>
+                                    <td id="Res_Reason">Due to medical problem</td>
+                                </tr>
+    
+                                <tr>
+                                    <th>Resignation Submited To</th>
+                                    <td id="Ressubmittedto">HOD &amp; HR</td>
+                                    <th>Last working day</th>
+                                    <td id="LastWorkingDays">14 Oct 2024</td>
+                                </tr>
+                                <tr>
+                                    <th>Resignation acceptance date</th>
+                                    <td id="Res_acceptance_Date">07 Oct 2024</td>
+                                    <th>Resignation acceptance by </th>
+                                    <td id="Res_acceptance_By">HOD &amp; HR</td>
+                                </tr>
+    
+    
+                            </tbody></table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal IAModal" tabindex="-1" role="dialog" aria-modal="true" style="display: none; padding-left: 0px;">
+        <div class="modal-dialog" role="document" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Interview Assessment Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="IAiframe" style="min-width: 100%; min-height: 500px " src="/InterviewAssessment/Home/View/6384"></iframe>
+                </div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal MOMDetailsModal" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+        <div class="modal-dialog" role="document" style="min-width:90%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">MOM Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe style="min-width: 100%; min-height: 500px " src="/MOM/Home/MOMView?M=2715&amp;s=pd"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade show" id="TrainingHoursDetailsModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        style="display: none; padding-left: 0px;" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Training Hours Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Item details will be inserted here -->
+                    <div id="itemDetails"></div>
+                    <div class="row">
+                        <div class="col-sm-12 " style="max-height:400px;overflow:auto">
+                            <table class="table table-bordered table-sm" id="tbl_trainingmaster" style="font-size:11px">
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #958a79;">Topic</th>
+                                        <th style="background-color: #958a79;">Department</th>
+                                        <th style="background-color: #958a79;">No.Of. Members</th>
+                                        <th width="90px" style="background-color: #958a79;">Training Date</th>
+                                        <th width="90px" style="background-color: #958a79;">Start Time</th>
+                                        <th width="80px" style="background-color: #958a79;">End Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="TrainingHoursDetailsModalBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+
+    {% block extra_js %}
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+        <script src="{% static 'ceodashboard/js/dashboard.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    {% endblock %}

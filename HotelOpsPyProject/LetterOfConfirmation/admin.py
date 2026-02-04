@@ -1,0 +1,6 @@
+from django.contrib import admin
+from .models import LETTEROFCONFIRMATIONEmployeeDetail,LETTEROFCONFIRMATIONDeletedFileofEmployee,LETTEROFCONFIRMATION
+# Register your models here.
+admin.site.register(LETTEROFCONFIRMATIONEmployeeDetail)
+admin.site.register(LETTEROFCONFIRMATION)
+admin.site.register(LETTEROFCONFIRMATIONDeletedFileofEmployee)

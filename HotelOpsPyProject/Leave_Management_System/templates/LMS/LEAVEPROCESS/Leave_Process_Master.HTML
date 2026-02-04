@@ -1,0 +1,232 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+  .table-wrapper {
+    position: relative;
+  }
+
+  .table thead th {
+    position: sticky;
+    top: 0;
+    background: white; /* or match your table header background */
+    z-index: 2;
+  }
+
+  .table thead tr.filters th {
+    top: 40px; /* height of the first header row */
+    z-index: 1;
+  }
+</style>
+
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <form action="" method="post" class="form-inline">
+            {% csrf_token %}
+            <div class="card">
+                <div class="card-header text-uppercase fw-bold">Leave Process</div>
+                <div class="card-body">
+                    
+                    <div class="row">
+                        <div class="col-sm-12">
+                                <table class="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th><input type="checkbox" class="selectAllLeaves"> Select All</th>
+                                      <th>Leave Type</th>
+                                      <th>Credit</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {% for leave in Leave_Type %}
+                                    <tr>
+                                      <td>
+                                        <input type="checkbox" name="leave_ids[]" class="leaveCheckBox" value="{{ leave.id }}">
+                                      </td>
+                                      <td>{{ leave.Type }}</td>
+                                      <td>
+                                        <input type="text" name="credits_{{ leave.id }}" class="form-control" placeholder="Enter credit" disabled>
+                                      </td>
+                                    </tr>
+                                    {% endfor %}
+                                  </tbody>
+                                </table>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2" style="margin-top:1rem;">
+                            <input type="submit" value="Assigned" class="btn btn-primary">
+                        </div>
+                    </div>
+                    {% comment %} <div class="row">
+                        <div class="col-md-2">
+                            <label for="Leave_Type" class="mr-2 mb-1">Leave Type:</label>
+                            <select name="type" required class="form-control mr-2">
+                                <option value="">Select Leave Type</option>
+                                {% for leave in Leave_Type %}
+                                    <option value="{{ leave.id }}">{{ leave.Type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="credit" class="mr-2 mb-2">Credit</label>
+                            <input type="text" required  class="form-control mr-2" name="credit">
+                        </div>
+                        <div class="col-md-2" style="margin-top:1rem;">
+                            <input type="submit" value="Assigned" class="btn btn-primary">
+                        </div>
+                    </div> {% endcomment %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-wrapper" style="max-height: 500px; overflow-y: auto;">
+  <table id="example" class="table table-striped custom-table mb-0 no-footer">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" name="check" class="checkBox selectAll"> Select All</th>
+                                <th>Emp Code</th>
+                                <th>Emp Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Emp Status</th>
+                                <th>Date of Joining</th>
+                            </tr>
+                            <tr class="filters">
+    <th></th>
+    <th><select class="column-filter form-control form-control-sm" data-column="1"><option value="">All</option></select></th>
+    <th><select class="column-filter form-control form-control-sm" data-column="2"><option value="">All</option></select></th>
+    <th><select class="column-filter form-control form-control-sm" data-column="3"><option value="">All</option></select></th>
+    <th><select class="column-filter form-control form-control-sm" data-column="4"><option value="">All</option></select></th>
+    <th><select class="column-filter form-control form-control-sm" data-column="5"><option value="">All</option></select></th>
+    <th></th>
+  </tr>
+                        </thead>
+                        <tbody>
+                            {% for emp in Emp_list %}
+                                <tr>
+                                    <td>
+                                    
+                                        <input type="checkbox" name="all_emp_codes[]"  class="checkBox" value="{{ emp.EmployeeCode }}">
+                                    </td>
+                                    <td>{{ emp.EmployeeCode }}</td>
+                                    <td>{{ emp.EmpName }}</td>
+                                    <td>{{ emp.Department }}</td>
+                                    <td>{{ emp.Designation }}</td>
+                                    <td>{{ emp.EmpStatus }}</td>
+                                    <td>{{ emp.DateofJoining }}</td>
+
+                                </tr>
+                                {% if forloop.last %}
+                                <input  type="hidden" name="Total_emd_id" value="{{ forloop.counter0 }}"/>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                  </table>
+</div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+{% comment %} <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+     {% endcomment %}
+
+<script>
+  $(document).ready(function () {
+    // Enable/disable credit input based on checkbox
+    $('.leaveCheckBox').on('change', function () {
+      const creditInput = $(this).closest('tr').find('input[type="text"]');
+      creditInput.prop('disabled', !this.checked);
+    });
+
+    // Handle select all
+    $('.selectAllLeaves').on('change', function () {
+      const isChecked = $(this).is(':checked');
+      $('.leaveCheckBox').prop('checked', isChecked).trigger('change');
+    });
+  });
+</script>
+
+     <script>
+  $(document).ready(function () {
+    // Populate dropdowns with unique values
+    $('.column-filter').each(function () {
+      let colIndex = $(this).data('column');
+      let values = new Set();
+
+      $('#example tbody tr').each(function () {
+        let cellText = $(this).find('td').eq(colIndex).text().trim();
+        if (cellText) {
+          values.add(cellText);
+        }
+      });
+
+      values = Array.from(values).sort();
+      for (let val of values) {
+        $(this).append(`<option value="${val}">${val}</option>`);
+      }
+    });
+
+    // Filter rows when dropdown changes
+    $('.column-filter').on('change', function () {
+      let filters = {};
+      $('.column-filter').each(function () {
+        let col = $(this).data('column');
+        let val = $(this).val();
+        if (val) {
+          filters[col] = val;
+        }
+      });
+
+      $('#example tbody tr').each(function () {
+        let show = true;
+        for (let col in filters) {
+          let cellText = $(this).find('td').eq(col).text().trim();
+          if (cellText !== filters[col]) {
+            show = false;
+            break;
+          }
+        }
+        $(this).toggle(show);
+      });
+    });
+  });
+</script>
+
+    <script>
+       $(document).ready(function () {
+    $(".selectAll").on("change", function () {
+        // Only select checkboxes in visible rows
+        $("#example tbody tr:visible .checkBox").prop("checked", $(this).prop("checked"));
+    });
+});
+
+  $(document).on("change", ".checkBox", function () {
+    let allVisible = $("#example tbody tr:visible .checkBox").length;
+    let checkedVisible = $("#example tbody tr:visible .checkBox:checked").length;
+
+    $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+});
+
+</script>
+
+
+{% endblock %}

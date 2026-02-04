@@ -1,0 +1,327 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+<style>
+  body {
+    font-family: 'Arial Nova', sans-serif; /* Use correct font name with quotes */
+  }
+</style>
+<style>
+    .actions {
+        margin-left: 10px;
+    }
+    .actions a {
+        margin-right: 5px;
+        text-decoration: none;
+        color: blue;
+    }
+    .actions a:hover {
+        text-decoration: underline;
+    }
+    .custom-card {
+        width: 98%; /* Adjust the width as needed */
+        margin: auto; /* Center the card */
+    }
+    .modal-dialog{
+        width: 72%;
+        max-width: 72%;
+        min-width: 720px;
+    }
+    th, td {
+        font-size: 13px;
+        font-family: 'Arial Nova', Arial, sans-serif;
+        border: 1px solid #ddd;
+    }
+    .input-small {
+        width: 70px;
+        height: 30px;
+    }
+    th {
+        text-align: center;
+        font-size: 13px;
+    }
+ 
+        .custom-label {
+          width: 300px; /* Adjust the width as needed */
+        }
+        .form-control {
+          flex-grow: 1;
+        }
+     
+</style>
+<style>
+    .btn-group {
+        margin-bottom: 10px; 
+    }
+    .custom-btn {
+        {% comment %} margin-right: 10px;  {% endcomment %}
+        padding-block: 10px;
+        color: black !important;
+        border: 1px solid #dedede !important;
+    }
+    .btn.active {
+        background-color: #edf0fb !important;
+        border-color: #edf0fb !important;
+        color: #000000 !important;
+        {% comment %} margin-right: 10px;  {% endcomment %}
+        padding-block: 10px;
+    }
+</style>
+
+
+<style>
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+
+             }
+             .card{
+                border-radius:10px;
+             }
+             .card .card-header {
+                padding: 20px;
+                padding-bottom: 0px;
+                background: transparent;
+            }
+
+             h4{
+               margin-bottom:10px !important;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+        }
+   
+    
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+                    {% comment %} margin-right: 10px;  {% endcomment %}
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+
+         {% comment %} .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        } {% endcomment %}
+
+        .HeaderWithColor {
+            background-color: #edf0fb !important;
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+        .filter-box{
+            margin-left: -16px;
+        }
+        #OnRollFilterForm{
+            margin-bottom: -3px;
+        }
+        .submit-input{
+            height:35px;
+        }
+        .submit-button{
+            margin-left:-10px;
+        }
+</style>
+
+{% comment %} <div class="content container-fluid pb-0"> {% endcomment %}
+<div class="row">
+    <div class="col-sm-12">
+    <section class="pt-0">
+        <div class="tab-pane">
+            <div>
+                <div class="card ">
+                    <div class="card-header">
+                        <span class="fw-bold text-uppercase">Entry Actual - Insurance Cost</span>
+                    </div>
+                    <!-- <br> -->
+                    <div class="card-body">
+                        <form method="GET" class="mb-0" >
+                            <div class="row">
+                            <div class="col-md-5">
+                                <div class="input-block">
+                                <select name="hotel_name" id="hotelnamelabel" class="form-control select2" style="20px; margin-right: 20px;">
+                                    <option value="Select" {% if SelHotelName == 'Select' %}selected{% endif %}>Select</option>
+                                    {% for itm in memOrg %}
+                                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == SelHotelName %}selected{% endif %}>
+                                        {{ itm.Organization_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                            </div>
+                        
+                            <div class="col-md-2 filter-box">
+                                <button type="submit" class="btn btn-primary" >Filter</button>
+                                <a href="{% url 'EntryInsurancesCost' %}" class="btn btn-danger">Clear</a>
+                            </div>
+                        </form>  
+                    </div>
+                    </div>
+                </div>
+            </div>
+                <!-- <br> -->
+                 <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="btn-list d-flex flex-md-row flex-column gap-2 mb-3">
+                            <a class="btn btn-default btn-sm custom-btn" href="{% url 'EntryActualContractCost' %}?hotel_name={{ SelHotelName }}">Entry Actual Contract</a>
+                            <a class="btn btn-default btn-sm  custom-btn " href="{% url 'Entrymealcost' %}?hotel_name={{ SelHotelName }}">Entry Actual Meal Cost</a>
+                            <a class="btn btn-primary btn-sm active" href="{% url 'EntryInsurancesCost' %}?hotel_name={{ SelHotelName }}" >Entry Actual Insurance Cost</a>
+                            <a class="btn btn-default btn-sm custom-btn " href="{% url 'EntrySharedServices' %}?hotel_name={{ SelHotelName }}">Entry Actual Shared Services</a>
+                        </div>
+  
+
+                        <form method="POST" >
+                            <div class="row">
+                            {% csrf_token %}
+
+                            <div class="col-md-3">
+                                <input type="hidden" name="hotel_name" value="{{ SelHotelName }}" />
+                                <label for="EmployeeInsurancecost" class="form-label mb-2 fw-bold">Employee Insurance Cost</label>
+                                <input type="number" class="form-control submit-input" id="EmployeeInsurancecost" name="EmployeeInsurancecost" value="{{ EmployeeInsurancecost }}" required>
+
+                            </div>
+                        
+                            <div class="col-md-1" style="margin-top:29px;">
+                                <button type="submit" class="btn btn-primary btn-sm submit-button">
+                                    Submit 
+                                </button>
+                            </div>
+                        </div>
+                        </form>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% comment %} </div> {% endcomment %}
+
+<!-- <div class="content container-fluid pb-0">
+    <section class="pt-0">
+        <div class="tab-pane">
+            <div>
+                <div class="card pb-4">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-6"><strong>Entry Actual - Insurance Cost</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <form method="GET" class="row g-2 mb-1" style="padding-inline: 21px">
+                            <div class="col-md-4 mb-1">
+                                {% comment %} <label for="hotelnamelabel" class="form-label">Select Organizations</label> {% endcomment %}
+                                <select name="hotel_name" id="hotelnamelabel" class="form-control select" style="20px; margin-right: 20px;">
+                                    <option value="Select" {% if SelHotelName == 'Select' %}selected{% endif %}>Select</option>
+                                    {% for itm in memOrg %}
+                                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == SelHotelName %}selected{% endif %}>
+                                        {{ itm.Organization_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        
+                            <div class="col-md-3 d-flex justify-items-start align-items-center gap-2">
+                                <button type="submit" class="btn mr-4 btn-primary" style="padding-inline:15px;">
+                                    <i class="fa fa-filter"></i> Filter
+                                </button>
+                            
+                                <a href="{% url 'EntryInsurancesCost' %}" class="btn btn-danger ml-3" style="padding-inline:15px;">
+                                    Clear
+                                </a>
+                            </div>
+                        </form>  
+                    </div>
+                </div>
+                </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="btn-list">
+                                    <a class="btn btn-default btn-sm custom-btn" href="{% url 'EntryActualContractCost' %}?hotel_name={{ SelHotelName }}">Entry Actual Contract</a>
+                                    <a class="btn btn-default btn-sm  custom-btn " href="{% url 'Entrymealcost' %}?hotel_name={{ SelHotelName }}">Entry Actual Meal Cost</a>
+                                    <a class="btn btn-primary btn-sm active" href="{% url 'EntryInsurancesCost' %}?hotel_name={{ SelHotelName }}" >Entry Actual Insurance Cost</a>
+                                    <a class="btn btn-default btn-sm custom-btn " href="{% url 'EntrySharedServices' %}?hotel_name={{ SelHotelName }}">Entry Actual Shared Services</a>
+                                </div>
+
+                    <form method="POST" class="row g-3 mb-1">
+                        {% csrf_token %}
+
+                        <div class="col-md-3">
+                            <input type="hidden" name="hotel_name" value="{{ SelHotelName }}" />
+                            <label for="EmployeeInsurancecost" class="form-label mb-2">Employee Insurance Cost</label>
+                            <input type="number" class="form-control" id="EmployeeInsurancecost" name="EmployeeInsurancecost" value="{{ EmployeeInsurancecost }}" required>
+
+                        </div>
+                    
+                        <div class="col-md-3 d-flex justify-items-start align-items-center" style="margin-top:3rem;">
+                            <button type="submit" class="btn btn-primary py-2" style="padding-inline:20px;">
+                                Submit 
+                            </button>
+                        </div>
+                    </form>  
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div> -->
+<!-- <form method="POST">
+    {% csrf_token %}
+    <div class="col-md-8">
+        <div class="row">
+            <input type="hidden" name="hotel_name" value="{{ SelHotelName }}" />
+            <div class="col-md-6 mb-1 d-flex align-items-center">
+                <input type="number" class="form-control" id="EmployeeInsurancecost" name="EmployeeInsurancecost" value="{{ EmployeeInsurancecost }}" required>
+            </div>
+            <div class="col-md-2 mb-1 d-flex align-items-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="card-footer">
+        <div>
+        </div>
+    </div>
+</form> -->
+
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ SelHotelName }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+        $('select').select2();
+    });
+</script>
+{% endblock content %}

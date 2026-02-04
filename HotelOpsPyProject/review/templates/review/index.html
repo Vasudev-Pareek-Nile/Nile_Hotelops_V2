@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <style>
+        .box {
+            /* background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden; */
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .box h5 {
+            padding: 0;
+            font-size: 2rem;
+            color: #333;
+            TEXT-ALIGN: LEFT;
+        }
+
+        .box p {
+            padding: 0;
+            margin: 0;
+            TEXT-ALIGN: LEFT;
+            FONT-SIZE: SMALL;
+
+        }
+
+        .box .arrow-icon {
+            position: absolute;
+            right: 0PX;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: #ffffff;
+            padding-right: 10px;
+            z-index: 1;
+            background: #0e77c5;
+            height: 100%;
+            WIDTH: 30PX;
+            PADDING-TOP: 33PX;
+            PADDING-LEFT: 6PX;
+        }
+
+        .col-md-2 {
+            /* flex: 0 0 auto;
+        width: 16.66666667%; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+        }
+
+        .heading {
+            font-size: 1rem;
+            /* Adjust as needed */
+            margin-bottom: 10px;
+            /* Space between heading and circle */
+        }
+
+        .progress-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: conic-gradient(#007bff calc(var(--value) * 1%), #e9ecef 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.25rem;
+            position: relative;
+            margin: auto;
+        }
+
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .progress-circle span {
+            z-index: 1;
+        }
+
+        .tr {
+            background-color: rgb(81, 195, 206);
+
+            .arrow-icon {
+                background-color: rgb(73, 175, 185)
+            }
+        }
+
+        .response {
+            background-color: rgb(113, 133, 202);
+
+            .arrow-icon {
+                background-color: rgb(102, 119, 181)
+            }
+
+
+        }
+
+        .neutral {
+            background-color: rgb(247, 167, 98);
+
+            .arrow-icon {
+                background-color: rgb(222, 150, 88)
+            }
+
+        }
+
+        .positive {
+            background-color: rgb(69, 175, 150);
+
+            .arrow-icon {
+                background-color: rgb(62, 157, 135)
+            }
+
+        }
+
+        .negative {
+            background-color: rgb(183, 77, 77);
+
+            .arrow-icon {
+                background-color: rgb(164, 69, 69)
+            }
+
+        }
+
+        h4 {
+            color: rgb(240, 153, 53) !important;
+        }
+
+        .container {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            padding: 5PX;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .reviw_reply {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .review {
+            margin-left: 10px;
+            padding: 10px;
+        }
+
+        .source {
+            text-align: end;
+            margin-right: 5px;
+        }
+
+        .partner_reviews {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 5px;
+        }
+        .underline {
+            position: relative;
+            padding-top: 10px; /* Space between the line and the text */
+            margin: 0; /* Remove default margin */
+        }
+
+        .underline::before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 0; /* Line at the top of the element */
+            left: 0;
+            width: 100%;
+            height: 4px; /* Line thickness */
+            border-radius: 4px;
+            background-color: rgb(236,236,236); /* Line color */
+        }
+        .col-md-4 {
+    width: 100%;
+    max-width: 33.33%;
+    box-sizing: border-box;
+    
+}
+
+/* Mood container styling */
+.mood-container {
+    text-align: center;
+    position: relative;
+}
+
+/* Styling for mood header */
+.mood-header {
+    font-size: 1em;
+
+   
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* Styling for mood emoji */
+.mood-emoji {
+    font-size: 2em;
+}
+.reviews-container {
+    height: 200px; /* Set a fixed height or use max-height if preferred */
+    overflow-y: auto; /* Adds a vertical scrollbar if content exceeds the height */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    background-color: #f9f9f9; /* Optional background color */
+}
+
+.review {
+    margin-bottom: 10px; /* Space between reviews */
+    padding: 10px;
+    border-bottom: 1px solid #eee; /* Optional: border between reviews */
+}
+
+.source {
+    text-align: end;
+    margin-right: 5px;
+}
+
+.review-reply {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review-text {
+    margin-bottom: 10px; /* Space below review text */
+}
+.review_date{
+    text-align: end;
+    margin-right: 5px;
+    font-size: 14px;
+    font-weight: 100;
+
+}
+
+      
+
+    </style>
+</head>
+
+<body>
+    {% include 'review/navbar.html' %}
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <form class="d-flex" role="search" style="margin-left: 60px;">
+                <div class="select-container">
+                    <select class="ui dropdown">
+                        <option value="">Select channel</option>
+                        <option value="1">Something 1</option>
+                        <option value="0">Something 2</option>
+                        <option value="0">Something 3</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline-success ms-2" type="submit">Search</button>
+                <a class="btn btn-outline-primary ms-2" href="#download" role="button"><i
+                        class="fas fa-download"></i></a>
+            </form>
+        </div>
+    </nav>
+
+
+    <div class="container mt-4">
+        <h4>Dashboard</h4>
+        <div class="row">
+            <div class="col-md-2 me-4">
+                <div class="box tr">
+                    <h5>{{ total_dict.total}}</h5>
+                    <p>Total review</p>
+                    <i class="fas fa-long-arrow-right arrow-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2 me-4">
+                <div class="box response">
+                    <h5>{{total_dict.response}}</h5>
+                    <p>Total responded</p>
+                    <i class="fas fa-long-arrow-right arrow-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2 me-4">
+                <div class="box negative">
+                    <h5>{{classification_counts.Negative}}</h5>
+                    <p>Total negative</p>
+                    <i class="fas fa-long-arrow-right arrow-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2 me-4">
+                <div class="box positive">
+                    <h5>{{classification_counts.Positive}}</h5>
+                    <p>Total positive</p>
+                    <i class="fas fa-long-arrow-right arrow-icon"></i>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2 me-4">
+                <div class="box neutral">
+                    <h5>{{ classification_counts.Neutral}}</h5>
+                    <p>Total Neutral</p>
+                    <i class="fas fa-long-arrow-right arrow-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        
+        <h4>Overall Status</h4>
+        <div class="row">
+            <div class="col-md-2 mb-2">
+                <h7>Hotel rating</h7>
+                <div class="progress-circle" style="--value: {{ averages.VALUE}}*20">
+                    <span>{{ averages.VALUE}}</span>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <h7>cleanliness</h7>
+                <div class="progress-circle" style="--value: {{averages.CLEANLINESS}}*20;">
+                    <span>{{averages.CLEANLINESS}}</span>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <h7>Staff and Service</h7>
+                <div class="progress-circle" style="--value: {{averages.SERVICE}}*20;">
+                    <span>{{averages.SERVICE}}</span>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <h7>Room comfort</h7>
+                <div class="progress-circle" style="--value: {{averages.ROOM}}*20;">
+                    <span>{{averages.ROOM}}</span>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <h7>Location</h7>
+                <div class="progress-circle" style="--value: {{averages.LOCATION}}*20;">
+                    <span>{{ averages.LOCATION}}</span>
+                </div>
+            </div>
+            <div class="col-md-2 mb-2">
+                <h7>Value</h7>
+                <div class="progress-circle" style="--value: {{averages.VALUE}}*20;">
+                    <span>{{averages.VALUE}}</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 mr-2">
+                <h4>Recent Reviews</h4>
+                <div class="reviews-container">
+                    {% for review in reviewslist %}
+                        <div class="review">
+                            <div class="source">{{ review.source }}</div>
+                            <div class="review-text mt-4">
+                                {{ review.review_text }}
+                            </div>
+                            <div class="review-reply">
+                                <h5>Reply:</h5>
+                                {{ review.management_response|default:"No response" }}
+                                <p class="review_date">Replied on: {{ review.reply_date }}</p>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p>No reviews available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+    
+            <div class="col-md-3" style="margin-left:50px">
+                <h4>Partner Reviews</h4>
+                <div class="row partner_reviews">
+                    <div class="col-md-9">Google:</div>
+                    <div class="col-md-3">{{source_counts.Google}}</div>
+                </div>
+                <div class="row partner_reviews">
+                    <div class="col-md-9">TripAdvisor:</div>
+                    <div class="col-md-3"> {{ source_counts.Tripadvisor|default:"0" }}</div>
+                </div>
+                <div class="row partner_reviews">
+                    <div class="col-md-9">Booking.com:</div>
+                    <div class="col-md-3">{{source_counts.Booking.com|default:"0" }}
+
+                    </div>
+                </div>
+                <div class="row partner_reviews">
+                    <div class="col-md-9">Agoda:</div>
+                    <div class="col-md-3">{{source_counts.Agoda|default:"0" }}
+
+                    </div>
+                </div>
+                <div class="row partner_reviews">
+                    <div class="col-md-9">MakeMyTrip:</div>
+                    <div class="col-md-3">{{source_counts.MakeMyTrip|default:"0"}}
+
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 mr-2">
+                <h4>Partner rating</h4>
+                <div class="row">
+                    <div class="col-md-2">
+                        <h2>Google</h2>
+                        <div class="progress-circle" style="--value:85">
+                            <span>4.5/5</span>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="underline">cleanliness</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="underline">Room Comfort</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="underline">Location</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="underline">Facilities</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="underline">Customers Service</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="underline">Value for Money</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="underline">Food</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="underline">Wifi(Free)</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="underline">Staff</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="underline">NA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3" style="margin-left:50px">
+                <h4>Sentiments</h4>
+                <div class="row">
+                    
+                    <div class="col-md-4 mood-container">
+                        <div class="mood-header">Positive</div>
+                        <div class="mood-emoji">😊</div>
+                    </div>
+                    <div class="col-md-4 mood-container">
+                        <div class="mood-header">Negative</div>
+                        <div class="mood-emoji">😞</div>
+                    </div>
+                    <div class="col-md-4 mood-container">
+                        <div class="mood-header">Neutral</div>
+                        <div class="mood-emoji">😐</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <h4>Competiotor Analysis</h4>
+        <div class="row">
+           
+        </div>
+    </div>
+    <script src="
+https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="
+https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

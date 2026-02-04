@@ -1,0 +1,56 @@
+{% extends 'pay/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="table-responsive">
+  <div >
+    <div  class="card-header">
+        Pay Master List
+    </div>
+    <div>
+      <br/>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>PM Number</th>
+            <th>PM Date</th>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>Employee Name</th>
+            <th>Reason</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.PM_Number}}</td>
+            <td>{{i.PM_Date}}</td>
+            <td>{{i.Name}}</td>
+            <td>{{i.Amount}}</td>
+            <td>{{i.Employee_Name}}</td>
+            <td>{{i.Reason}}</td>
+            <td> 
+              <div class="btn btn-group">
+                  <a href="/paymaster/PaymasterEditList?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/paymaster/PayMasterDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/paymaster/PayMaster_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+               </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  
+</div>
+
+{% endblock content %}

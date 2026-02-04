@@ -1,0 +1,81 @@
+{% extends 'uniform/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'UniformInventorySheet' %}  enctype="multipart/form-data">
+    {{ Uniform_Inventory_Sheet }}
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In Uniform Inventory Form </p>
+        </div>
+
+        <div class="card-body">
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-6">
+                <label>From</label>
+                {% render_field UniformInventoryForm.From class="form-control" placeholder="From"  %}
+              </div>
+              <div class="col-sm-6">
+                <label>To</label>
+                {% render_field UniformInventoryForm.To class="form-control" placeholder="To" %}
+              </div>
+            </div>
+<br/>
+                    <div class='row'>
+                        <div class="col-sm-12">
+                            <br>
+                            <b>Return of Hotel Property</b>
+                        </br>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                      <tr>  
+                            <th width="300">Item</th>
+                            <th>Fresh</th>
+                            <th>Soiled</th>
+                            <th>Total</th>
+                      </tr>
+
+                      {% for i in DbItemMaster %}
+                            <tr>
+                              <td>{{i.Item_Title_Name}}</td>
+                              <td class="rb">
+                                <input type="hidden"  rows=2 value="{{i.id}}"  name="ItemID_{{ forloop.counter0 }}" >
+                                <input type="text"  rows=2 name="Fresh_{{ forloop.counter0 }}" class="form-control">
+                              </td>
+                              <td>
+                                <input type="text"  rows=2 name="Soiled_{{ forloop.counter0 }}"class="form-control" ></td>
+                                <td>  <input type="text"  rows=2 name="Total_{{ forloop.counter0 }}" class="form-control">
+                                {% if forloop.last %}
+                                <input type="hidden" row=2 value="{{forloop.counter }}" name="TotalItem">
+                                {% endif %}
+                              </td>
+                            </tr>
+                      {% endfor %}
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+    {% endblock content %}

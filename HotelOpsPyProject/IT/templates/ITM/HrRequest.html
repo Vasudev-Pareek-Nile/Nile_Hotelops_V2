@@ -1,0 +1,466 @@
+{% extends 'ITM/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+
+<div class="container">
+    <div class="col-md-12">
+        <form action="" method="post" id="ITFORM">
+            <div class="card">
+                <div class="card-header">IT New Request</div>
+                <div class="card-main">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Employee Code</label>
+                                <input type="text" required class="form-control" name="EmpCode" id="employeeCode"  value="{{ITS.EmployeeCode}}"  readonly >
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="EmployeeName">Employee Name</label> 
+                                <input type="text" class="form-control" value="{{ITS.EmployeeName}}" readonly name="EmployeeName" id="EmployeeName"> 
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Department</label>
+                                <input type="text" class="form-control" value="{{ITS.Department}}" readonly name="Department" id="Department">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Designation Grade</label>
+                                <input type="text" class="form-control" readonly name="DesignationGrade" value="{{ITS.DesignationGrade}}">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Reporting To Desigantion</label>
+                                <input type="text" class="form-control" readonly name="ReportingtoDesigantion" value="{{ITS.ReportingtoDesigantion}}">
+
+                            </div>
+                        </div>
+                        
+                       
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <input type="checkbox" name="simCheckbox"  value="Sim"  {% if SI %}checked{% endif %}  id="simCheckbox">
+                                <label for="">Sim Card</label>
+                                <input type="checkbox" name="mobileCheckbox" value="Mobile"   {% if MB  %}checked{% endif %}   id="mobileCheckbox">
+                                <label for="">Mobile</label>
+                                <input type="checkbox" name="emailCheckbox" value="Email"  {% if EM %}checked{% endif %}  id="emailCheckbox">
+                                <label for="">Email</label>
+                                <input type="checkbox" name="sytstemCheckbox" value="Sytstem"  {% if SYS %}checked{% endif %}  id="sytstemCheckbox">
+                                <label for="">System Details</label>
+                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mt-3" id="Sim">
+                        <div class="card-header">Sim Details</div>
+                        <div class="card-main">
+                            <div class="row">
+                                        
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="">Date of Request</label>
+                                                    <input type="date" class="form-control" name="DateofRequest_Sim" value="{% if SI.DateofRequest %}{{ SI.DateofRequest|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" readonly>
+
+                                                
+                                                </div>
+                                            </div>
+                                            {% if SI  and SI.DateofIssue %}
+                                            
+                                            
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="">Date of Issue</label>
+                                                    <input type="text" class="form-control" name="DateofIssue_Sim"  value="{% if SI.DateofIssue %} {{ SI.DateofIssue|date:'d-m-Y' }}{% endif %}" readonly > 
+
+                                                
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="">Mobile No</label>
+                                                    <input type="text" class="form-control" name="MobileNo"   value = "{{SI.MobileNo}}"  readonly >
+
+                                                
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="col-md-4">
+
+                                                <div class="form-group m-3">
+                                                    <label for="">Requested By</label>
+                                                    <input type="text" class="form-control" name="RequestedBy_Sim"  value = "{{SI.RequestedBy}}" readonly> 
+
+                                                </div>
+                                            </div>
+                                            
+                                            {% endif %}
+                                           
+                            </div>
+                               
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card mt-3" id="Mobile">
+                        <div class="card-header">Mobile Details</div>
+                        <div class="card-main">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group m-3">
+                                        <label for="">Date of Request</label>
+                                        <input type="date" class="form-control" name="DateofRequest_Mob"  value="{% if MB.DateofRequest %}{{ MB.DateofRequest|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" readonly > 
+
+                                    
+                                    </div>
+                                </div>
+                               {% if MB and MB.DateofIssue %}
+                               
+                               <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Date of Issue : </label>
+                                    <input type="text" class="form-control" name="DateofIssue_Mob"  value="{{ MB.DateofIssue|date:'d-m-Y' }}" readonly> 
+
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Company Name</label>
+                                    <input type="text" class="form-control" name="CompanyName_Mob"  value="{{MB.CompanyName}}" readonly > 
+
+                                
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Model Number</label>
+                                    <input type="text" class="form-control" name="ModelNumber_Mob" value="{{MB.ModelNumber}}" readonly> 
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">IMEI Number</label>
+                                    <input type="text" class="form-control" name="IMEINumber"  value="{{MB.IMEINumber}}"readonly> 
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Colour</label>
+                                    <input type="text" class="form-control" name="Colour"  value="{{MB.Colour}}"readonly> 
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Requested By</label>
+                                    <input type="text" class="form-control"  value = "{{MB.RequestedBy}}" name="RequestedBy_Mob" readonly> 
+
+                                </div>
+                            </div>
+                               {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card mt-3 " id="Email">
+                        <div class="card-header">Email Details</div>
+                        <div class="card-main">
+                            <div class="row">
+                                
+                                <div class="col-md-4">
+                                    <div class="form-group m-3">
+                                        <label for="">Date of Request</label>
+                                        <input type="date" class="form-control" name="DateofRequest_Em" value="{% if EM.DateofRequest %}{{ EM.DateofRequest|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}"  readonly> 
+
+                                    
+                                    </div>
+                                </div>
+                               {% if EM and EM.DateofIssue  %}
+                               <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Date of Issue</label>
+                                    <input type="text" class="form-control" name="DateofIssue_Em"  value="{{ EM.DateofIssue|date:'Y-m-d' }}" readonly> 
+
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Email</label>
+                                
+                                    <input type="email" class="form-control" name="Email"  value="{{ EM.Email}}" readonly   > 
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Type</label>
+                                    <input type="text" class="form-control"  value="{{EM.Type}}" readonly> 
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Domain Type</label>
+                                
+                                    <input type="text" class="form-control"  value="{{EM.DomainType}}" readonly> 
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Requested By</label>
+                                    <input type="text" class="form-control"  value = "{{EM.RequestedBy}}" name="RequestedBy_EM" readonly> 
+
+                                </div>
+                            </div>
+                               {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card mt-3 " id="Sytstem">
+                        <div class="card-header">Sytstem Details</div>
+                        <div class="card-main">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group m-3">
+                                        <label for="">Date of Request</label>
+                                        <input type="date" class="form-control" name="DateofRequest_Sys"   value="{% if SYS.DateofRequest %}{{ SYS.DateofRequest|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" readonly> 
+
+                                    
+                                    </div>
+                                </div>
+                                
+                               {% if SYS and SYS.DateofIssue %}
+                               
+                               <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Date of Issue</label>
+                                    <input type="text" class="form-control" name="DateofIssue_Sys"  value="{{ SYS.DateofIssue|date:'d-m-Y' }}" readonly> 
+
+                                
+                                </div>
+                            </div>
+                               <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">Company Name</label>
+                                    <input type="text" class="form-control" name="CompanyName_Sys"    value="{{SYS.CompanyName}}" readonly  > 
+
+                                
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group m-3">
+                                    <label for="">System Type</label>
+                                    <input type="text" class="form-control"  value="{{SYS.SystemType}}" readonly> 
+
+                                
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Model Number</label>
+                                    <input type="text" class="form-control"  name="ModelNumber_Sys"  value="{{SYS.ModelNumber}}"  readonly> 
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Serial Number</label>
+                                    <input type="text" class="form-control" name="SerialNumber"   value="{{SYS.SerialNumber}}" readonly > 
+
+                                </div>
+                            </div>
+
+                            
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Configuration</label>
+                                   <textarea name="Configuration" class="form-control" id="" cols="30" rows="1" readonly>{{SYS.Configuration}}</textarea>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+
+                                <div class="form-group m-3">
+                                    <label for="">Requested By</label>
+                                    <input type="text" class="form-control"   value = "{{SYS.RequestedBy}}" name="RequestedBy_SYS" readonly> 
+
+                                </div>
+                            </div>   
+                               {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer text-right mt-3">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-sm">
+            </div>
+        </form>    
+    </div>
+</div>
+
+
+{% comment %} 
+<script>
+   $(document).ready(function () {
+
+function getQueryParam(name) {
+    var urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+}
+
+var empCodeFromUrl = getQueryParam('EC');
+if (empCodeFromUrl) {
+    $('#employeeCode').val(empCodeFromUrl).prop('readonly', true);
+    fetchEmployeeDetails(empCodeFromUrl);
+}
+
+if ('{{ITS.EmployeeCode}}') {
+    $('.btn-primary').prop('disabled', false);
+} else {
+    $('.btn-primary').prop('disabled', true);
+}
+
+function fetchEmployeeDetails(employeeCode) {
+    var organizationID = '{{OrganizationID}}';
+    $.ajax({
+        url: 'http://127.0.0.1:8000/GetEmployeeDetails/',
+        type: 'GET',
+        data: {
+            'EmployeeCode': employeeCode
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.EmployeeCode) {
+                $('#ITFORM input[name="EmployeeName"]').val(data.EmpName);
+                $('#ITFORM input[name="DesignationGrade"]').val(data.Designation);
+                $('#ITFORM input[name="Department"]').val(data.Department);
+                
+                $('#ITFORM input[name="ReportingtoDesigantion"]').val(data.ReportingtoDesigantion);
+
+                $('.btn-primary').prop('disabled', false);
+            } else {
+                clearEmployeeDetails();
+                alert('Employee details not found!');
+            }
+        },
+        error: function () {
+            clearEmployeeDetails();
+            alert('Error fetching employee details.');
+        }
+    });
+}
+
+function clearEmployeeDetails() {
+    $('#ITFORM input[name="EmployeeName"]').val('');
+    
+    $('#ITFORM input[name="DesignationGrade"]').val('');
+    $('#ITFORM input[name="Department"]').val('');
+    $('.btn-primary').prop('disabled', true);
+}
+});
+
+    </script> {% endcomment %}
+
+<script>
+    $(document).ready(function(){
+        $("#Sim, #Mobile, #Email, #Sytstem").hide();
+        
+        function toggleFields() {
+            if ($("#simCheckbox").is(":checked")) {
+                $("#Sim").show();
+            } else {
+                $("#Sim").hide();
+            }
+
+            if ($("#mobileCheckbox").is(":checked")) {
+                $("#Mobile").show();
+            } else {
+                $("#Mobile").hide();
+            }
+
+            if ($("#emailCheckbox").is(":checked")) {
+                $("#Email").show();
+            } else {
+                $("#Email").hide();
+            }
+
+            if ($("#sytstemCheckbox").is(":checked")) {
+                $("#Sytstem").show();
+            } else {
+                $("#Sytstem").hide();
+            }
+        }
+
+        $("input[name='simCheckbox']").change(toggleFields);
+        $("input[name='mobileCheckbox']").change(toggleFields);
+        $("input[name='emailCheckbox']").change(toggleFields);
+        $("input[name='sytstemCheckbox']").change(toggleFields);
+
+       
+        {% if SI %}
+            $("#simCheckbox").prop("checked", true);
+            $("#Sim").show();
+        {% endif %}
+        {% if MB %}
+            $("#mobileCheckbox").prop("checked", true);
+            $("#Mobile").show();
+        {% endif %}
+        {% if EM %}
+            $("#emailCheckbox").prop("checked", true);
+            $("#Email").show();
+        {% endif %}
+        {% if SYS %}
+            $("#sytstemCheckbox").prop("checked", true);
+            $("#Sytstem").show();
+        {% endif %}
+    });
+</script>
+
+{% endblock content %}
+
+
+
+
+
+
+
+

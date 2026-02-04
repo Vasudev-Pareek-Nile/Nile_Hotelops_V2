@@ -1,0 +1,505 @@
+
+{% extends "HR/homebase.html" %}
+{% comment %} {% extends "ceodashboard\homebase.html" %} {% endcomment %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+
+<style>
+    body{
+        position: relative;
+    }
+    table thead tr th{
+        background: #edf0fb !important;    }
+    #ChangeBtn{
+        position:fixed;
+        bottom: 0;
+        right: 0;
+        background-color: white;
+        width: 100%;
+    }
+    .select2-container, .dropdown-menu {
+        z-index: 1000 !important; /* Less than navbar */
+    }
+    .text-primary {
+        color: #3a4a93 !important;
+    }
+
+    .settings-icon span {
+        background-color: #3a4a93;
+        animation: none !important;
+    }
+
+    .select2-container--open {
+        z-index: 1056 !important; 
+       
+    }
+</style>
+
+<div class="card pb-4">
+    <div class="card-header mb-4" id="ChangeTitle">
+        <h4 class="card-title text-uppercase fw-bold">Change Reporting To</h4>
+    </div>
+    <!-- <br> -->
+    <div class="col-md-12">
+        <form method="GET" class="row" style="padding-inline: 21px" id="FilterForm">
+            <div class="m-1 col-md-3">
+                <label for="organization" class="form-label">Organizations</label>
+                {% if SessionOrganizationID == 3 %}
+                    <!-- Show dropdown for Nile users -->
+                    <select name="OrganizationID" id="organization" class="form-control select2">
+                        <option value="All" {% if selectedOrganizationID == "All" %}selected{% endif %}>All</option>
+                        {% for itm in orgs %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.OrganizationName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <!-- Show only their own organization as readonly -->
+                    <input type="hidden" name="OrganizationID" value="{{ SessionOrganizationID }}">
+                    <input type="text" class="form-control" value="{{ orgs.0.OrganizationName }}" readonly>
+                {% endif %}
+            </div>
+
+            <div class="m-1 col-md-3">
+                <label for="department-select" class="form-label">Departments</label>
+                <select id="department-select" name="Department" class="form-control select2">
+                    <option value="">All Department</option>
+                    {% for Department in Departments %}
+                    <option value="{{ Department.DepartmentName }}" {% if Department.DepartmentName == SelectedDepartment %}selected{% endif %}>
+                        {{ Department.DepartmentName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="m-1 col-md-3">
+                <label for="designation-select" class="form-label">Reporting To Designations</label>
+                <select id="designation-select" name="Designation" class="form-control select2">
+                    <option value="">All Designation</option>
+                    {% for Designationdata in Designations %}
+                        <option value="{{ Designationdata.designations }}"
+                            data-department="{{ Designationdata.department_name }}"
+                            {% if Designationdata.designations == SelectedDesignation %}selected{% endif %}>
+                            {{ Designationdata.designations }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+          <!--  <div class="m-1 col-md-3">
+                <label for="designation-select" class="form-label">Reporting To Designations</label>
+                 <select id="designation-select" name="Designation" class="form-control select2">
+                    <option value="">All Designation</option>
+                    {% for Designationdata in Designations %}
+                    <option value="{{ Designationdata.designations }}" {% if Designationdata.designations == SelectedDesignation %}selected{% endif %}>
+                        {{ Designationdata.designations }}
+                    </option>
+                    {% endfor %}
+                </select> 
+            </div> -->
+
+            <div class="col-md-2" style="margin-top:2.5rem;">
+                <!-- <button type="submit" class="btn mr-4 btn-primary">
+                    <i class="fa fa-filter"></i> Filter
+                </button> -->
+                <a href="{% url 'Change_Reporting_To' %}" class="btn btn-primary ml-3" style="padding-inline:15px;">
+                    Clear
+                </a>
+            </div>
+        </form>  
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <table id="example" class="table table-striped custom-table mb-0 no-footer" style="width:100%">
+                <thead class="thead">
+                    <tr class="">
+                        <th>#</th>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll">&nbsp; All</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <!-- <th>P_Org_ID</th>
+                        <th>W_Org_ID</th> -->
+                        <th>EmpStatus</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Level</th>
+                        <th>Reporting To Designation</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Emp_Data in employee_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <input type="checkbox" name="all_emp_codes[]" class="checkBox" value="{{ Emp_Data.EmployeeCode }}|{{ Emp_Data.EmpID }}|{{ Emp_Data.personal_OrganizationID }}">
+                        </td>
+                        <td>
+                            {{Emp_Data.EmployeeCode}}
+                         <!--  - {{Emp_Data.EmpID}} -->
+                        </td>
+                        <td>
+                            {% if Emp_Data.FirstName %}{{Emp_Data.FirstName}}{% else %}{% endif %}
+                            {% if Emp_Data.MiddleName %}{{Emp_Data.MiddleName}}{% else %}{% endif %}
+                            {% if Emp_Data.LastName %}{{Emp_Data.LastName}}{% else %}{% endif %}
+                        </td>
+                        <!-- <td>{{Emp_Data.personal_OrganizationID}}</td>
+                        <td>{{Emp_Data.work_OrganizationID}}</td> -->
+                        <td>{{Emp_Data.EmpStatus}}</td>
+                        <td>{{Emp_Data.Department}}</td>
+                        <td>{{Emp_Data.Designation}}</td>
+                        <td>{{Emp_Data.Level}}</td>
+                        <td>{{Emp_Data.ReportingtoDesignation}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody> 
+            </table>
+                    
+            <!-- Modal  -->
+            <div class="modal fade" id="ChangeModal" tabindex="-1"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title fw-bold" id="exampleModalLabel">Change Reporting To</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- <form> -->
+                                <div class="row">
+                                    <!-- New Reporting Designation -->
+                                    <div class="col-md-12 mb-3 mt-4">
+                                        <label>Reporting to Designation <span class="strike">*</span></label>
+                                        <select id="ReportingToDesignation" name="ReportingToDesignation" class="form-control" required>
+                                            <option value="">Select Position</option>
+                                            {% for Designation in MergedReportingtoDesignation %}
+                                            <option value="{{ Designation.designations }}" 
+                                                    {% if Workobj.ReportingtoDesignation == Designation.designations %}selected{% endif %}
+                                                    data-ReportingToDesignationLevel="{{ Designation.Lavel }}"
+                                        
+                                                    {% if Designation.OnRollDepartmentMaster %}
+                                                        data-ReportingToDesignationLeveldepartment="{{ Designation.OnRollDepartmentMaster.DepartmentName }}"
+                                                    {% elif Designation.CorporateDepartmentMaster %}
+                                                        data-ReportingToDesignationLeveldepartment="{{ Designation.CorporateDepartmentMaster.DepartmentName }}"
+                                                    {% endif %}>
+                                                {{ Designation.designations }}  
+                                                
+                                                {% if Designation.OnRollDepartmentMaster %}
+                                                    ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                                                {% elif Designation.CorporateDepartmentMaster %}
+                                                    ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                                                {% endif %}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <!-- Department and Level -->
+                                    <div class="col-md-6 mb-3">
+                                        <label>Department <span class="strike">*</span></label>
+                                        <input id="ReportingToDesignationDepartment" name="ReportingToDesignationDepartment" type="text" class="form-control" readonly>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                            <label>Level <span class="strike">*</span></label>
+                                            <input id="ReportingToDesignationLevel" name="ReportingToDesignationLevel" type="text" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            <!-- </form> -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Change</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="text-end p-2" id="ChangeBtn">
+    <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal"
+        data-bs-target="#ChangeModal" data-bs-whatever="@Change">
+        Change
+    </button>
+</div>
+
+<a href="#ChangeTitle">
+    <div class="settings-icon"> 
+        <span data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas" id="settingsicon">
+            <i class="fa-solid fa-circle-arrow-up"></i>
+        </span> 
+    </div> 
+</a>
+
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+<!-- <script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            $(".checkBox").prop("checked", $(this).prop("checked"));
+        });
+
+        // Initialize select2 dropdown inside modal context
+        $('select').select2();
+
+        $('#ReportingToDesignation').select2({
+            dropdownParent: $('#ChangeModal')
+        });
+
+        // Update Department & Level when designation changes
+        function ReportingupdateDesignationDetails() {
+            var selectElement = document.getElementById('ReportingToDesignation');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var department = selectedOption.getAttribute('data-ReportingToDesignationLeveldepartment');
+            var level = selectedOption.getAttribute('data-ReportingToDesignationLevel');
+            
+            document.getElementById('ReportingToDesignationDepartment').value = department || '';
+            document.getElementById('ReportingToDesignationLevel').value = level || '';
+        }
+
+        // Bind the event after the DOM is ready
+        $('#ReportingToDesignation').on('change', ReportingupdateDesignationDetails);
+
+        // Call once on load to populate if pre-selected
+        ReportingupdateDesignationDetails();
+    });
+</script> -->
+
+
+<script>
+    $(document).ready(function () {
+        // Initialize select2
+        $('.select2').select2();
+
+        // Submit form on any select2 change
+        $('#FilterForm select.select2').on('change', function () {
+            $('#FilterForm').submit();
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            $(".checkBox").prop("checked", $(this).prop("checked"));
+        });
+
+        // Initialize select2
+        $('select').select2();
+
+        $('#ReportingToDesignation').select2({
+            dropdownParent: $('#ChangeModal')
+        });
+
+        // Update Department & Level when designation changes
+        function ReportingupdateDesignationDetails() {
+            var selectElement = document.getElementById('ReportingToDesignation');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var department = selectedOption.getAttribute('data-ReportingToDesignationLeveldepartment');
+            var level = selectedOption.getAttribute('data-ReportingToDesignationLevel');
+
+            document.getElementById('ReportingToDesignationDepartment').value = department || '';
+            document.getElementById('ReportingToDesignationLevel').value = level || '';
+        }
+
+        $('#ReportingToDesignation').on('change', ReportingupdateDesignationDetails);
+        ReportingupdateDesignationDetails();
+
+        // ---------------------- Filter Designation on Department Change ----------------------
+        // const allDesignations = $('#designation-select option').clone();
+
+        // $('#department-select').on('change', function () {
+        //     var selectedDept = $(this).val().toLowerCase();
+        //     var filteredOptions = allDesignations.filter(function () {
+        //         var dept = $(this).data('department');
+        //         return !selectedDept || !dept || dept.toLowerCase() === selectedDept;
+        //     });
+
+        //     $('#designation-select').empty().append('<option value="">All Designation</option>').append(filteredOptions).val('').trigger('change');
+        // });
+
+        // // Trigger initial filter if pre-selected
+        // $('#department-select').trigger('change');
+    });
+</script>
+
+
+
+
+
+
+{% comment %} Modal Show {% endcomment %}
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("Success"); // Note: 'Success' is capitalized in your URL
+        const message = urlParams.get("message");
+        // const action = urlParams.get("action");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+                }
+
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+
+            // ✅ Remove only specific params from URL
+            urlParams.delete("Success");
+            // urlParams.delete("success");  // optional, covers both cases
+            urlParams.delete("message");
+            // urlParams.delete("action");
+    
+            const newQuery = urlParams.toString();
+            const newUrl = window.location.pathname + (newQuery ? "?" + newQuery : "");
+            window.history.replaceState({}, document.title, newUrl); 
+        }
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+
+<style>
+    html, body {
+        overflow-y: hidden;
+        height: 100%;
+    } 
+
+    .page-wrapper .content {
+        padding: 0px 10px !important;
+    }
+
+    #tableBody td{
+        font-size: 11px;
+    }
+
+    #tableHead th{
+        font-weight: bold;
+        font-size: 11px;
+    }
+
+    .card-footer {
+        z-index: 999;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 15px;
+        background: #fff;
+        border-top: 1px solid #e6e6e6;
+    }
+
+    #CardBody {
+        position: relative;
+        max-height: calc(100vh - 150px);
+        overflow-x: auto;  
+        overflow-y: auto;   
+        padding-left: -0px;  
+        padding-top: -0px;  
+        scrollbar-width: thin;
+    }
+
+    #kraTable thead th {
+        position: sticky;
+        top: 0;
+        background: #f2f2f2;
+        z-index: 10;
+        white-space: nowrap;
+    }
+
+    
+    #CardBody::-webkit-scrollbar {
+        width: 30px;       
+        height: 30px;       
+    }
+
+    #CardBody::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;  /* thumb color */
+        border-radius: 8px;
+        border: 3px solid #f1f1f1;  /* adds space around thumb */
+    }
+
+    #CardBody::-webkit-scrollbar-track {
+        background: #f1f1f1; /* scrollbar track color */
+        border-radius: 8px;
+    }
+
+    #kraTable {
+        width: max-content;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0px;
+        table-layout: fixed;
+        margin-left: auto;   
+        margin-right: auto;
+    }
+
+
+    .card {
+        overflow: hidden;
+        position: relative;
+    }
+
+    #profile-card {
+        overflow: hidden;
+        position: relative;
+    }
+
+
+
+    .form-control {
+        /* font-size: 12px !important; */
+        line-height: 1 !important;
+        height: 34px !important;
+    }
+
+    .VerifyHidden{
+        display: none;
+    }
+    .AlignLeft{
+        text-align: right !important;
+    }
+</style>
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body" id="CardBody">
+    
+        <div id="VerifySalaryTableForm">
+            <table class="table table-bordered" id="kraTable" border="1" cellpadding="6" cellspacing="0" style="border-collapse: collapse; width:100%;">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- loaders -->
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+
+<script>
+    async function loadKRATable() {
+        showLoader("profile-card");
+        try {
+            const response = await fetch(
+                "/KRA/api/KRA_Target_Report_Api/"
+            );
+            const result = await response.json();
+
+            if (!result.status || !result.data.length) {
+                alert("No data found");
+                return;
+            }
+            hideLoader("profile-card");
+
+            const data = result.data;
+            const table = document.getElementById("kraTable");
+            const thead = table.querySelector("thead");
+            const tbody = table.querySelector("tbody");
+
+            // 🔹 Extract headers dynamically
+            const headers = Object.keys(data[0]);
+
+            // 🔹 Build table header
+            let headerRow = "<tr>";
+            headers.forEach(h => {
+                headerRow += `<th style="background:#f2f2f2">${h}</th>`;
+            });
+            headerRow += "</tr>";
+            thead.innerHTML = headerRow;
+
+            // 🔹 Build table body
+            let bodyHtml = "";
+            data.forEach(row => {
+                bodyHtml += "<tr>";
+                headers.forEach(h => {
+                    bodyHtml += `<td>${row[h] ?? "NULL"}</td>`;
+                });
+                bodyHtml += "</tr>";
+            });
+            tbody.innerHTML = bodyHtml;
+            
+
+        } catch (error) {
+            console.error("API Error:", error);
+            hideLoader("profile-card");
+        }
+    }
+
+    // Load on page load
+    document.addEventListener("DOMContentLoaded", loadKRATable);
+</script>
+
+
+{% endblock content %}

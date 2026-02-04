@@ -1,0 +1,218 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    table td,th
+    {
+        font-size: 13px;
+    }
+</style><!-- Approve/Reject Request Modal -->
+<div class="modal" id="approveModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header  d-flex justify-content-between">
+                <h5 class="modal-title fw-bold">Approve or Reject Request</h5>
+                <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="">Comment</label>
+                <textarea class="form-control remarks-textarea" placeholder="Enter remarks" id="approveRemarks" required></textarea>
+                <input type="hidden" id="approveAID" value="">
+                <input type="hidden" id="approveOrganizationID" value="{{ OrganizationID }}"> <!-- Assuming OrganizationID is available in the context -->
+                <input type="hidden" id="approveUserID" value="{{ UserID }}"> <!-- Assuming UserID is available in the context -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeApproveFooter">Close</button>
+                <button type="button" class="btn btn-danger" id="rejectBtn">Reject</button>
+                <button type="button" class="btn btn-primary" id="approveBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="card">
+    <div class="card-header">
+            <div class="text-uppercase fw-bold"><strong>Uniform Request List</strong></div>
+    </div>
+
+    <div class="card-body">
+        <table id="" class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Employee Code</th>
+                    <th>Designation Grade</th>
+                    <th>Department</th>
+                    <th>HR</th>
+                    <th>HOD</th>
+                    
+                    <th>HKM</th>
+
+                    
+                    <th>Retrun Status</th>
+                   
+                    <th width = "200">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+              
+                {% for item in UNI %}
+                <tr>
+                    <td>{{ item.EmployeeName }}</td>
+                    <td>{{ item.EmployeeCode }}</td>
+                    <td>{{ item.DesignationGrade }}</td>
+                    <td>{{ item.Department }}</td>
+                    <td>
+                            {% if item.HrStatus == "1" %}Submitted By HR {% endif %}
+                            
+                    </td>
+                    <td>
+                        {% if item.HodStatus == "0" %}Pending From HOD{% endif %}
+                        {% if item.HodStatus == "1" %}Approved By HOD{% endif %}
+                        {% if item.HodStatus == "-1" %}Rejected By HOD{% endif %}
+
+
+                    </td>
+                    <td>
+                        {% if item.HousekeppingStatus == "0" %}Pending From HKM{% endif %}
+                        {% if item.HousekeppingStatus == "1" %}Approved By HKM{% endif %}
+                        {% if item.HousekeppingStatus == "-1" %}Rejected By HKM{% endif %}
+
+
+                    </td>
+
+                    
+
+                    <td>{% if item.Return %} Yes {%else%} No {% endif %}</td>
+
+                   <td>
+                   {% if item.HodStatus == "1"  and   item.Rights ==  "HKM"  %}
+                  
+                    {% comment %} {% if  item.Created == "0"  %} {% endcomment %}
+                    <a href="{% url 'HouseKeepingRequest' %}?ID={{item.id}}" class="btn btn-primary btn-sm">Edit</a>
+                    {% comment %} {% else %} {% endcomment %}
+                   {% if  item.HousekeppingStatus == "1"  %}
+                   <a href="{% url 'HouseKeepingReturnRequest' %}?ID={{item.id}}" class="btn btn-danger btn-sm mt-1">Return</a>
+                   
+                   {% endif %}
+                   
+                   
+                    {% comment %} {% endif %} {% endcomment %}
+                   
+                    {% elif item.HrStatus == "1" and item.Rights == "REP"  %}
+                        <a href="javascript:void(0);" 
+                        class="btn btn-primary btn-sm btn-action" 
+                        data-id="{{ item.id }}" 
+                        data-remarks="{{ item.HodComment }}">Action</a>
+                    {% endif %}
+
+                
+
+
+
+
+
+
+
+
+                  
+                  
+                    
+                    </td>
+                </tr>
+                {% endfor %}
+         
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $('.btn-action').on('click', function(e) {
+        e.preventDefault(); // Prevent the default action
+        var itemId = $(this).data('id'); // Get item ID from the button's data-id attribute
+        var currentRemarks = $(this).data('remarks'); // Get any existing remarks if available
+    
+        if (!currentRemarks || currentRemarks === 'None') {
+           $('#approveRemarks').val(''); // Clear any existing value
+            $('#approveRemarks').attr('placeholder', 'No existing remarks available.');
+        } else {
+            $('#approveRemarks').val(currentRemarks);
+        }
+        $('#approveModal').modal('show');
+    });
+    
+    function submitApproval(HodStatus) {
+        var itemId = $('#approveAID').val();  // Get ID from hidden input
+        var remarks = $('#approveRemarks').val();  // Get remarks from textarea
+        var organizationID = $('#approveOrganizationID').val();  // Get OrganizationID from hidden input
+        var userID = $('#approveUserID').val();  // Get UserID from hidden input
+    
+        if (!remarks.trim()) {
+            alert("Remarks are required!");
+            return;
+        }
+    
+        $.ajax({
+            url: '/UniformInventory/UniformHodApprovalApi/',  
+            type: 'POST',
+            data: JSON.stringify({
+                'ID': itemId,
+                'OrganizationID': organizationID,
+                'UserID': userID,
+                'HodStatus': HodStatus,  
+                'HodComment': remarks
+            }),
+            contentType: 'application/json',
+            headers: {
+                'hotel-api-token': '{{hotelapitoken}}'  
+            },
+            success: function(response) {
+    if (response.success) {
+        alert(response.success); 
+        $('#approveModal').modal('hide');  
+        location.reload();  
+    } else if (response.error) {
+        alert(response.error);  
+    } else {
+        alert("Unexpected response from the server.");
+    }
+},
+
+        });
+    }
+    
+    $('#approveBtn').on('click', function() {
+        submitApproval(1);  
+    });
+    
+    $('#rejectBtn').on('click', function() {
+        submitApproval(-1);  
+    });
+    
+    $('#closeApprove, #closeApproveFooter').on('click', function() {
+        $('#approveModal').modal('hide');
+    });
+    </script>
+    
+
+
+
+
+    
+
+  
+{% endblock content %}
+
+
+
+

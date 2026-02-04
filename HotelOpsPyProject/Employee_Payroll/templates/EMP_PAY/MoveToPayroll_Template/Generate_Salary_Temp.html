@@ -1,0 +1,651 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+{% comment %} {% extends 'EMP_PAY/NewHomeBase.html' %}
+{% block NewHomeBase %} {% endcomment %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+<style>
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        padding-inline: 10px;
+    }
+    .card-header{
+        margin-bottom: -28px;
+    }
+    body {
+        overflow-x: hidden;
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    /* Make table full width */
+    #GenerateSalaryTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #GenerateSalaryTable thead th {
+        position: sticky;
+        top: 118px;
+        /* z-index: 10; */
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add consistent styling */
+    #GenerateSalaryTable th, 
+    #GenerateSalaryTable td {
+        /* padding: 10px; */
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background-color: #fff;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: transparent !important;
+        color: inherit !important;
+        border-color: #6c757d !important; /* keep same border */
+    }
+
+    .LockColor{
+        color: lightseagreen !important;
+    }
+    .LockedColor{
+        color: red !important;
+    }
+    textarea{
+        height: 44px !important;
+    }
+
+    #LockTable thead th {
+        position: sticky;
+        top: -17px !important;
+        background: white;
+        z-index: 2;
+    }
+
+    #CardBody{
+    position: relative;
+    }
+
+    #LockAllContainer{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    }
+
+    .card-loader {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffffcc;
+        z-index: 10;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-primary-spinner{
+        color: #3a4a93;
+    }
+
+    #HR_DashboardBtn{
+        position:absolute;
+        top: 0px;
+        right: 10px;
+    }
+
+    #profile-card {
+        position: relative;
+    }
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 10px !important;
+    }
+</style>
+
+
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <!-- <div class="card-header text-uppercase fw-bold">
+        <h4 class="fw-bold">generate salary slip</h4>
+    </div> -->
+
+    <div class="card-body" id="CardBody">
+        <div class="d-flex justify-content-between mb-2">
+            <div class="">
+                <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            </div>
+            <div class="">
+                <span style="display: inline;" class="fw-bold text-uppercase">Generate Salary Slip ({{ current_month|date:"F Y" }})</span>
+            </div>
+            <div class="">
+                <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+            </div>
+        </div>
+    
+        <form method="post" id="GenerateSalaryTableForm">
+            {% csrf_token %}
+            <table class="table table-bordered mt-2" id="GenerateSalaryTable">
+                <thead>
+                    <tr>
+                        <th>Sr</th>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll"></th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Department</th>
+                        <th>Designation</th> 
+                        <th>DOJ</th> 
+                        <th>Emp Status</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>      
+                </thead>
+                <tbody id="tableBody">
+                    
+                </tbody>
+            </table>
+
+            <div class="card-footer d-flex justify-content-between">
+                <div class="d-flex gap-2">
+                    <a href="#" class="btn btn-sm btn-primary open-lock-modal">Response</a>
+                    <div class="">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search Employee Here ..."
+                            style="width: 200px; display: inline-block; height:34px;"
+                            onkeyup="searchTable()"
+                        >
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" id="BulkGenerateAction">Bulk Generate</button>
+                    <a class="btn btn-sm btn-outline-secondary">SE: 
+                        <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                </a>
+                </div>
+            </div>
+         </form>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="LockModal" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLgLabel">
+          Salary Genertion Response
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- Main Modal Body -->
+      <div class="modal-body p-0 d-flex flex-column" >
+
+          <!-- Scrollable Table Section -->
+          <div id="ResponseModelFormTable" class="flex-grow-1 overflow-auto p-3">
+            <table class="table table-bordered mt-2" id="ResponseModelTable">
+                <thead>
+                    <tr>
+                        <th>Sr</th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Status</th>
+                    </tr>      
+                </thead>
+                <tbody id="ResponseModelTabletableBody">
+
+                </tbody>
+                <tfoot id="Response_Footer"></tfoot>
+            </table>
+          </div>
+
+
+        <!-- Fixed Footer Buttons (outside scrollable area) -->
+        <div id="Footer-buttons" class="text-end">
+            <button type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Modal -->
+
+
+
+
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+
+
+<!-- List api for table -->
+<script>
+  function getUrlParam(key) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(key);
+  }
+
+  function loadPayrollList(year, month_no) {
+      showLoader("profile-card");
+      $.ajax({
+        //   url: '/Employee_Payroll/api/Employees_Payroll_List_API/', 
+          url: '/Employee_Payroll/api/Generate_Salary_Employee_List_API/', 
+          data: {
+              year: year,
+              month_no: month_no
+          },
+          success: function (response) {
+              let tbody = $('#tableBody');
+              tbody.empty(); // Clear existing rows
+
+
+            //   console.log("the response is here::", response)
+
+                hideLoader("profile-card");
+
+              response.emps.forEach((emp, index) => {
+
+                  let isLockedHtmlData = emp.IsGenerated
+                      ? `
+                      <a href="/Employee_Payroll/api/Show_Salary_Slip_PDF/${emp.EmpID}/${emp.OrganizationID}/${response.year}/${response.month_no}/Edit/" 
+                            id=""
+                            class="btn btn-sm btn-primary"><i class="fas fa-edit" title="Edit"></i>
+                          </a>
+
+                      <a href="/Employee_Payroll/api/Show_Salary_Slip_PDF/${emp.EmpID}/${emp.OrganizationID}/${response.year}/${response.month_no}/View/" 
+                            id=""
+                            class="btn btn-sm btn-primary"><i class="fas fa-eye" title="View"></i>
+                          </a>
+                        `
+                      : `Not Generate`;
+
+                  let isLockedHtml = emp.IsGenerated
+                      ? `<span class="text-success">Generated</span>`
+                      : `
+                        <a href="#" 
+                            id="Generate-attendance-btn"
+                            class="btn btn-sm btn-primary Generate-attendance-btn-class"
+                            data-empid="${emp.EmpID}"
+                            data-doj="${emp.DateofJoining}"
+                            data-oid="${emp.OrganizationID}"
+                            data-emp="${emp.EmployeeCode}"
+                            data-department="${emp.Department}"
+                            data-designation="${emp.Designation}"
+                            data-empname="${emp.EmpName}"
+                            data-year="${response.year}"
+                            data-month_no="${response.month_no}"
+                            data-lockid="${emp.lockid}"
+                            data-islock="${emp.IsLock}">
+                            Generate
+                          </a>
+                        
+                        `;
+
+                  let row = `
+                      <tr>
+                          <td>${index + 1}</td>
+                          <td>
+                            <input type="checkbox" 
+                            name="all_emp_codes" class="checkBox" 
+                            value="${emp.EmployeeCode}" 
+                            data-empid="${emp.EmpID}"
+                            data-doj="${emp.DateofJoining}"
+                            data-oid="${emp.OrganizationID}"
+                            data-emp="${emp.EmployeeCode}"
+                            data-department="${emp.Department}"
+                            data-designation="${emp.Designation}"
+                            data-empname="${emp.EmpName}"
+                            data-year="${response.year}"
+                            data-month_no="${response.month_no}"
+                            data-lockid="${emp.lockid}"
+                            data-islock="${emp.IsLock}">
+                          </td>
+                          <td>${emp.EmployeeCode}</td>
+                          <td>${emp.EmpName}</td>
+                          <td>${emp.Department}</td>
+                          <td>${emp.Designation}</td>
+                          <td>${emp.DateofJoining}</td>
+                          <td>${emp.EmpStatus}</td>
+                          <td>${isLockedHtmlData}</td>
+                          <td>${isLockedHtml}</td>
+                      </tr>`;
+
+                  tbody.append(row);
+
+              });
+          },
+          error: function (xhr) {
+              hideLoader("profile-card");
+              alert('Failed to load data.');
+              console.error(xhr);
+          }
+      });
+  }
+
+  // Example: Load current month
+  $(document).ready(function () {
+      const currentDate = new Date();
+
+      const year = getUrlParam('year') || currentDate.getFullYear();
+      const month = getUrlParam('month_no') || (currentDate.getMonth() + 1);
+
+      loadPayrollList(year, month);
+  });
+</script>
+
+
+<!-- List api for Response Modal -->
+<script>
+  $(document).ready(function () {
+    $(".open-lock-modal").on("click", function (e) {
+      e.preventDefault();
+
+      const currentDate = new Date();
+      const year = getUrlParam('year') || currentDate.getFullYear();
+      const month_no = getUrlParam('month_no') || (currentDate.getMonth() + 1);
+      const OID = "{{ Session_OrganizationID }}";
+
+      console.log("OID:", OID, "Year:", year, "Month:", month_no);
+
+      LoadResponceModal(year, month_no, OID);
+    });
+  });
+
+  function LoadResponceModal(year, month_no, OID) {
+    $.ajax({
+      url: '{% url "Response_Data_Slip_Api" %}',
+      data: { OID: OID, year: year, month_no: month_no },
+      success: function (data) {
+        console.log("✅ Data received:", data);
+
+        // Clear any old table rows or messages
+        $("#ResponseModelTabletableBody").empty();
+        $("#Response_Footer").empty();
+
+        // Check if the API returned a valid list
+        if (data.Response_Data && data.Response_Data.length > 0) {
+          data.Response_Data.forEach((item, index) => {
+            const statusColor =
+              item.Response_Status === "Success" ? "text-success" : "text-danger";
+
+            const row = `
+              <tr>
+                <td>${index + 1}</td>
+                <td>${item.Emp_Code || '-'}</td>
+                <td>${item.Emp_Name || '-'}</td>
+                <td class="${statusColor}">${item.Response_Message || '-'}</td>
+              </tr>
+            `;
+            $("#ResponseModelTabletableBody").append(row);
+          });
+        } else {
+          // No data case
+          const noDataRow = `
+            <tr>
+              <td colspan="4" class="text-center text-muted">No data found</td>
+            </tr>
+          `;
+          $("#ResponseModelTabletableBody").append(noDataRow);
+        }
+
+        // Open the modal after table is ready
+        $("#LockModal").modal("show");
+      },
+      error: function (xhr) {
+        alert("❌ Failed to load response data.");
+        console.error(xhr);
+      },
+    });
+  }
+</script>
+
+
+
+
+{% comment %} Search Table Input funcitonlity {% endcomment %}
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+
+{% comment %} Select All Checkbox and Counts section {% endcomment %}
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            // Select only visible checkboxes
+            $("#GenerateSalaryTable tbody tr:visible .checkBox")
+                .prop("checked", $(this).prop("checked"));
+            updateSelectedCount();
+        });
+    });
+
+    $(document).on("change", ".checkBox", function () {
+        let allVisible = $("#GenerateSalaryTable tbody tr:visible .checkBox").length;
+        let checkedVisible = $("#GenerateSalaryTable tbody tr:visible .checkBox:checked").length;
+
+        $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+        updateSelectedCount();
+    });
+
+    function updateSelectedCount() {
+        let count = $("#GenerateSalaryTable tbody tr:visible .checkBox:checked").length;
+        $("#selectedCount").text(count);
+    }
+</script>
+
+
+
+<!-- its here -->
+<script>
+    $(document).on("click", ".Generate-attendance-btn-class", function (e) {
+        e.preventDefault(); // prevent default anchor behavior
+        // console.log("we press this button");
+
+        var csrftoken = $('[name=csrfmiddlewaretoken]').val() || '';
+        var empid = $(this).data("empid");
+        var doj = $(this).data("doj");
+        var emp = $(this).data("emp");
+        var oid = $(this).data("oid");
+        var year = $(this).data("year");
+        var month_no = $(this).data("month_no");
+        var lockid = $(this).data("lockid");
+        var empname = $(this).data("empname");
+        var designation = $(this).data("designation");
+        var department = $(this).data("department");
+
+        // console.log("EmpID:", empid, "EmpCode:", emp, "Year:", year, "Month:", month_no, "LockID:", lockid, "EmpName:", empname, "oid:", oid, "Doj:", doj);
+    //   showLoader("profile-card");
+
+        $.ajax({
+            url: "{% url 'process_daily_earning' %}",
+            type: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            contentType: "application/json",
+            data: JSON.stringify({
+                EmpID: empid,
+                oid: oid,
+                Doj: doj,
+                empCode: emp,
+                empname: empname,
+                year: year,
+                month: month_no,
+                designation: designation,
+                department: department,
+            }),
+            success: function (data) {
+                // console.log("Unlocked:", data);
+                const year = getUrlParam('year');
+                const month = getUrlParam('month_no');
+
+                loadPayrollList(year, month);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error is here:", error);
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.message || "Something went wrong");
+                } catch (e) {
+                    alert("Something went wrong");
+                }
+            }
+        });
+    });
+</script>
+
+
+<!--  bulk lock -->
+  
+<script>
+    
+    document.getElementById("BulkGenerateAction").addEventListener("click", function () {
+        showLoader("profile-card");
+        let selectedEmployees = [];
+
+        // Loop over all checked checkboxes
+        $("#GenerateSalaryTableForm input[name='all_emp_codes']:checked").each(function () {
+            let empData = {
+                emp_code: $(this).attr("data-emp"),
+                empid: $(this).attr("data-empid"),
+                empname: $(this).attr("data-empname"),
+                designation: $(this).attr("data-designation"),
+                department: $(this).attr("data-department"),
+                doj: $(this).attr("data-doj"),
+                oid: $(this).attr("data-oid"),
+                year: $(this).attr("data-year"),
+                month_no: $(this).attr("data-month_no"),
+            };
+            selectedEmployees.push(empData);
+        });
+
+        // console.log("data is here", selectedEmployees)
+
+        // Add modal values if needed
+        // let fromDate = $("#FromDate").val();
+        // let toDate = $("#ToDateInput").val();
+
+        $.ajax({
+            url: "{% url 'Bulk_Generate_Salary_Process' %}",
+            method: "POST",
+            data: {
+                employees: JSON.stringify(selectedEmployees),
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                // FromDate: fromDate,
+                // ToDate: toDate
+            },
+            success: function (data) {
+                console.log("✅ Data received successfully:", data);
+
+                // // Clear any previous table rows
+                // $("#tableBody").empty();
+
+                // // Populate rows from the JSON data
+                // data.results.forEach((item, index) => {
+                //     let statusColor = item.status === "success" ? "text-success" : "text-danger";
+                //     let row = `
+                //         <tr>
+                //             <td>${index + 1}</td>
+                //             <td>${item.EmpCode}</td>
+                //             <td>${item.EmpName}</td>
+                //             <td class="${statusColor}">${item.message}</td>
+                //         </tr>
+                //     `;
+                //     $("#ResponseModelTabletableBody").append(row);
+                // });
+                
+
+                // console.log(data.year, ":year - Month:", data.month_no)
+                // Show summary message (optional)
+                alert(data.message);
+                
+                // Open the Bootstrap modal
+                // $("#LockModal").modal("show");
+                LoadResponceModal(data.year, data.month_no, data.OID);
+
+                loadPayrollList(data.year, data.month_no);
+            },
+
+            error: function (xhr) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.message || "Something went wrong");
+                    console.error("Error details:", response.results);
+                } catch (e) {
+                    alert("Something went wrong");
+                }
+                hideLoader("profile-card");
+            }
+        });
+    });
+</script>
+
+
+{% endblock content %} 

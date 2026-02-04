@@ -1,0 +1,246 @@
+{% load maningfilter %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary List Report</title>
+
+      <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; 
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #edf0fb ;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+
+    .my-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+
+    .my-table td,
+    .my-table th {
+        padding: 2px 4px !important;
+        font-size: 13px !important;
+        line-height: 1.1 !important;
+        vertical-align: middle !important;
+        border: 1px solid #ddd;
+    }
+    
+    .my-table th {
+        background-color: #f8f9fa;
+        color: #000;
+        font-size: 10px;
+    }
+    
+    @page {
+      size: landscape;
+      {% comment %} size: portrait; {% endcomment %}
+      margin: 1cm;
+    }
+
+  </style>
+  <style>
+    /* Light theme-based colors */
+    .avg-salary-group {
+        background-color: #f1f4f9 !important; /* light blue-gray */
+    }
+
+    .head-count-group {
+        background-color: #f9f7f1 !important; /* light beige */
+    }
+
+    .total-ctc-group {
+        background-color: #f2f6f3 !important; /* light green-gray */
+    }
+
+    /* Optional: subtle border or font styling for better visibility */
+    .avg-salary-group, .head-count-group, .total-ctc-group {
+        border-right: 1px solid #ddd !important;
+    }
+</style>
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+           <tr>
+                    <td>
+                        <p style="text-align: left; font-size:16px; margin-bottom:-20px;">{{organization_logo}}
+                       </p>
+                    </td>
+                    <td><p style="text-align: right; font-size:14px; margin-bottom:-20px;">Salary Report - {{month_name}} {{year}}</p></td>
+                  </tr>
+        </table>
+</header>
+
+    <!-- <hr style="background-color: #3a4a93;"> -->
+    <div class="table-container">
+            <table class="my-table" id="TableReport" >
+                <thead>
+                    <tr>
+                        <th class="TableThColor text-center align-middle" colspan="3" >DEPARTMENTS</th>
+                        <th class="TableThColor text-center" colspan="3">Average SALARY</th>
+                        <th class="TableThColor text-center" colspan="3">HEAD COUNT</th>
+                        <th class="TableThColor text-center" colspan="3">TOTAL CTC</th>
+                    </tr>
+                    <tr>
+                        <th class="TableThColor" colspan="3">DEPARTMENT</th>
+                        <th class="avg-salary-group">BUDGETED</th>
+                        <th class="avg-salary-group">ACTUAL</th>
+                        <th class="avg-salary-group">VARIANCE</th>
+                        <th class="head-count-group">BUDGETED</th>
+                        <th class="head-count-group">ACTUAL</th>
+                        <th class="head-count-group">VARIANCE</th>
+                        <th class="total-ctc-group">BUDGETED</th>
+                        <th class="total-ctc-group">ACTUAL</th>
+                        <th class="total-ctc-group">VARIANCE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                    {% if divisions %}
+                        {% for division in divisions %}
+                    
+                            {% for department in division.onrolldepartmentmaster_set.all %}
+                        
+                        
+                                {% for designation in department.onrolldesignationmaster_set.all %}
+                            
+                                {% endfor %}
+                        
+
+                                <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}">
+                                    <td colspan="3" style="text-transform: uppercase;">
+                                        {{ department.DepartmentName }} 
+                                        <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                                    </td>
+                                    <!-- Average SALARY -->
+                                    <td class="avg-salary-group" style="width: 120px;   text-align: right;">{{department_totals|get:department.DepartmentName|get:"aavg_salary"|formatingdata|default:"0" }}</td>
+                                    <td class="avg-salary-group" style="width: 120px;   text-align: right;">{{departmentemp_totals|get:department.DepartmentName|get:"total_salarymulti"|formatingdata|default:"0" }}</td></td>
+                                    <td class="avg-salary-group" style="text-align: right; color: {% if department_variance_dict|get:division.DivisionName|get:"variance_salary_multi" < 0 %}green{% else %}red{% endif %};">
+                                         {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_multi"|formatingdata|default:"0" }}
+                                    </td>
+                                    
+                                    <!-- HEAD COUNT -->
+                                    <td class="head-count-group" style="text-align: center;">{{department_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                                    <td class="head-count-group" style="text-align: center;">{{departmentemp_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                                    <td class="head-count-group" style="text-align: center; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|variance_color }};">
+                                        {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|formatingdata|default:"0" }}
+                                    </td>
+
+                                    <!-- TOTAL CTC -->
+                                    <td class="total-ctc-group" style="text-align: right;">{{department_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                                    <td class="total-ctc-group" style="text-align: right;">{{departmentemp_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                                    <td class="total-ctc-group" style="text-align: right; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|variance_color }};">
+                                        {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|formatingdata|default:"0" }}
+                                    </td>
+                                    
+                                </tr> 
+                            {% endfor %}
+                    
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="12">Data not found for selected hotel.</td>
+                    </tr>
+                    {% endif %}
+        
+                </tbody>
+                <tfoot>
+                    <tr style="font-weight: bold; background-color: #f2f2f2;">
+                        <td colspan="3" class="text-right">TOTAL</td>
+
+                        <!-- Average SALARY -->
+                        <td class="avg-salary-group text-right">{{ total_budgeted_avg_salary|formatingdata }}</td>
+                        <td class="avg-salary-group text-right">{{ total_actual_avg_salary|formatingdata }}</td>
+                        <td class="avg-salary-group text-right" style="color: {% if total_variance_avg_salary < 0 %}green{% else %}red{% endif %};">
+                            {{ total_variance_avg_salary|formatingdata }}
+                        </td>
+
+                        <!-- HEAD COUNT -->
+                        <td class="head-count-group text-center">{{ total_budgeted_headcount }}</td>
+                        <td class="head-count-group text-center">{{ total_actual_headcount }}</td>
+                        <td class="head-count-group text-center" style="color: {% if total_variance_headcount < 0 %}green{% else %}red{% endif %};">
+                            {{ total_variance_headcount }}
+                        </td>
+
+                        <!-- TOTAL CTC -->
+                        <td class="total-ctc-group text-right">{{ total_budgeted_ctc|formatingdata }}</td>
+                        <td class="total-ctc-group text-right">{{ total_actual_ctc|formatingdata }}</td>
+                        <td class="total-ctc-group text-right" style="color: {% if total_variance_ctc < 0 %}green{% else %}red{% endif %};">
+                            {{ total_variance_ctc|formatingdata }}
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+    </div> 
+
+<br>
+    <!-- <hr style="background-color: #3a4a93;"> -->
+    <footer style="border-top: 1px solid #3a4a93;">
+        <table style="width: 100%; font-size: 8px;">
+          <tr>
+              <td id="datetime" style="text-align: left;">
+                {{ current_datetime }}
+              </td>
+              <td style="text-align: center;">
+                  <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                      <tbody>
+                          <tr>
+                              <td>
+                                  <p style="font-size: 10px;"></p>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </td>
+              <td style="text-align: right;">
+                  <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+              </td>
+          </tr>
+        </table>
+      </footer>
+</body>
+</html>

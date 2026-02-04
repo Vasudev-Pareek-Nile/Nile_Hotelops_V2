@@ -1,0 +1,365 @@
+{% extends 'RevealingLetter/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+ 
+
+<style>
+    form p {
+        display: inline-block;
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+    {
+        visibility: hidden;
+    }
+
+    label{
+        margin-bottom:5px;
+        margin-top:15px;
+    }
+ </style>
+
+<div class="card">
+    <form action="" method="post">
+        <div class="card-header text-uppercase fw-bold">New Employee Relieving Letter</div>
+        
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row mt-2">
+        
+                    <!-- Emp code -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="emp_code">Emp code:</label>
+                            <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ Revealingobj.emp_code|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Prefix -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="prefix">Prefix:</label>
+                            <input type="text" name="prefix" id="prefix" class="form-control" value="{{ Revealingobj.prefix|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- First Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name:</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ Revealingobj.first_name|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Last Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ Revealingobj.last_name|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Mobile Number -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="mobile_number">Mobile Number:</label>
+                            <input type="text" name="mobile_number" id="mobile_number" class="form-control" value="{{ Revealingobj.mobile_number|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Email -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ Revealingobj.email|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Date of Revealing -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_Revealing">Date of Revealing:</label>
+                            <input type="date" name="date_of_Revealing" id="date_of_Revealing" class="form-control" value="{% if Revealingobj.date_of_Revealing  %}{{Revealingobj.date_of_Revealing|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" >
+                        </div>
+                    </div>
+        
+                    <!-- Date of Joining -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_joining">Date of Joining:</label>
+                            <input type="date" name="date_of_joining" id="date_of_joining" class="form-control" value="{% if  Revealingobj.date_of_joining %}{{Revealingobj.date_of_joining|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_joining">Last Day of Working:</label>
+                            <input type="date" name="date_of_last_working" id="date_of_last_working" class="form-control" value="{% if  Revealingobj.date_of_last_working %}{{Revealingobj.date_of_last_working|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" >
+                        </div>
+                    </div>
+        
+                    <!-- Department -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="department">Department:</label>
+                            <input type="text" name="department" id="department" class="form-control" value="{{ Revealingobj.department|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="designation">Designation:</label>
+                            <input type="text" name="designation" id="designation" class="form-control" value="{{ Revealingobj.designation|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Reporting to Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="reporting_to_designation">Reporting to Designation:</label>
+                            <input type="text" name="reporting_to_designation" id="reporting_to_designation" class="form-control" value="{{ Revealingobj.Reporting_to_designation|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Level -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="level">Level:</label>
+                            <input type="text" name="level" id="level" class="form-control" value="{{ Revealingobj.level|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Basic Salary -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="basic_salary">Basic Salary:</label>
+                            <input type="number" name="basic_salary" id="basic_salary" class="form-control" value="{{ Revealingobj.basic_salary|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Address -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                                <textarea name="address" id="address" class="form-control" cols="1" readonly>{{ Revealingobj.address|default_if_none:'' }}</textarea>
+                        </div>
+                    </div>
+        
+                                            <!-- HR Designation -->
+                                            <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="hr_designation">HR Designation:</label>
+                                                <select class="form-control" name="Hr_Designation" id="Hr_Designation" required>
+                                                    <option value="">Select</option>
+                                                    {% for HRManagerName in HRManagerNames %}
+                                                        <option value="{{ HRManagerName.designations }}" 
+                                                                {% if Revealingobj.Hr_Designation == HRManagerName.designations %} selected {% endif %} 
+                                                                data-hrname="{{ HRManagerName.EmployeeName }}">
+                                                            {{ HRManagerName.designations }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+    
+                                        <!-- HR Name -->
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="hr_name">HR Name:</label>
+                                                <input type="text" name="Hr_Name" id="Hr_Name" class="form-control" 
+                                                    value="{{ Revealingobj.Hr_Name|default_if_none:'' }}" readonly>
+                                            </div>
+                                        </div>
+    
+                        
+                                    
+                                        <!-- Issuing Manager Name -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="Issuing_designation">Issuing Designation</label>
+                                            <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                                                <option value="">Select</option>
+                                                {% for ManagerName in ManagerNames %}
+                                                    <option value="{{ ManagerName.designations }}" {% if Revealingobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                                        {{ ManagerName.designations }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Issuing Manager Name -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="Issuing_manager_name">Issuing Manager Name</label>
+                                            <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ Revealingobj.Issuing_manager_name }}" required readonly>
+                                        </div>
+                                    </div>
+                        
+
+        
+                </div>
+            </div>
+        </div>
+                    
+        {% csrf_token %}
+    
+        <div class="m-3 ml-4">
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+</div>
+
+
+<div class="card p-3">
+    <div class="row mb-2">
+        <div class="col-6 fw-bold">Appointment Date</div>
+        <div class="col-6">{{Appointment.date_of_appointment|date:'d-m-Y'}}</div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-6 fw-bold">Tenure</div>
+        <div class="col-6">{{tenure_till_today}}</div>
+        {% comment %} <div class="col-6">1 years, 11 months, 6 days</div> {% endcomment %}
+    </div>
+    <div class="row">
+        <div class="col-6 fw-bold">Confirmation Date</div>
+        <div class="col-6">{{Confirmation.ConfDate|date:'d-m-Y'}}</div> 
+    </div>
+</div>
+
+<br>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold"><Input:c></Input:c>Increment History</div>
+    
+    <div class="card-body">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width= '50'>S.No</th>
+                
+                    <th width= '300'>From Salary</th>
+                    <th width= '300'>To Salary</th>
+
+                    <th width= '150'>Effective From</th>
+                    <th width= '150'>Effective To</th>
+                    <th width= '300'>Source Type</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in Salaryhis %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>{{ record.FromSalary }}</td>
+                    <td>{{ record.ToSalary }}</td>
+
+                    <td>{{ record.Effective_from|date:'d-m-Y' }}</td>
+                    <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y' }}{% else %}Present{% endif %}</td>
+                    <td>{{ record.SourceType }}</td>
+
+                    
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-danger">
+                        
+                        No salary  history found for employee.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<br>
+
+<div class="card">
+    <div class="card-header  text-uppercase fw-bold">Promotion History</div>
+
+    <div class="card-body">
+        <table class="table table-bordered m-1">
+            <thead>
+                <tr>
+                    <th width= '50'>S.No</th>
+                    <th width= '300'>From Designation</th>
+                    <th width= '300'>To Designation</th>
+                    
+                    <th width= '150'>Effective From</th>
+                    <th width= '150'>Effective To</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in Designationhis %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ record.FromDesignation }} - {{ record.FromDepartment }} </td>
+                    <td>{{ record.ToDesignation }} - {{ record.ToDepartment }} </td>
+
+                    <td>{{ record.Effective_from|date:'d-m-Y' }}</td>
+                    <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y' }}{% else %}Present{% endif %}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-danger">
+                        
+                        No Designation  history found for employee.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function updateManagerName() {
+        const select = document.getElementById("Issuing_designation");
+        const selectedOption = select.options[select.selectedIndex];
+        const fullName = selectedOption.getAttribute("data-fullname");
+        document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateManagerName();
+    });
+
+    document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+
+<script>
+    // Function to update the HR Name based on the selected designation
+    function updateHRName() {
+        const designationSelect = document.getElementById("Hr_Designation");
+        const selectedOption = designationSelect.options[designationSelect.selectedIndex];
+        const hrName = selectedOption.getAttribute("data-hrname");
+
+        // Update the HR Name input field
+        document.getElementById("Hr_Name").value = hrName ? hrName : '';
+    }
+
+    // Add event listeners to update the HR Name on page load and when the selection changes
+    document.addEventListener("DOMContentLoaded", function() {
+        updateHRName(); // Set the initial value
+    });
+
+    document.getElementById("Hr_Designation").addEventListener("change", updateHRName);
+</script>
+  
+
+{% endblock content %}

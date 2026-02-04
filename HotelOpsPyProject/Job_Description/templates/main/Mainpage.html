@@ -1,0 +1,143 @@
+{% extends 'main/homebase.html' %} {% load static %}
+
+
+{% block content %}
+
+<head>
+  <style media="screen">
+    body {
+      font-family: arial nova;
+    }
+  ul.Ulmodule {
+    display: flex;
+    flex-wrap: wrap;      /* 🔥 allows next line */
+    justify-content: justify;
+    padding: 0;
+  }
+
+  .Ulmodule li {
+    display: flex;
+    align-items: justify;
+    justify-content: justify;
+    margin: 8px;
+    background: #3a4a93bd;
+    padding: 20px 25px;
+    border-radius: 10px;
+    list-style: none;
+    white-space: nowrap;  /* keeps text in one line */
+  }
+    .Ulmodule li a {
+      color: #fff !important;
+    }
+
+    .jumbotron {
+      margin-top: 0px;
+      margin-bottom: 0px;
+      background-image: url('{% static "images/bg.jpg" %}');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .jumbotron h5,
+
+    .alert {
+      margin: 0px;
+    }
+
+    .glow {
+      font-size: 50px;
+      color: white;
+      {% comment %} text-align: center; {% endcomment %}
+      -webkit-animation: glow 1s ease-in-out infinite alternate;
+      -moz-animation: glow 1s ease-in-out infinite alternate;
+      animation: glow 1s ease-in-out infinite alternate;
+    }
+
+    @-webkit-keyframes glow {
+      from {
+        text-shadow: 0 0 10px #eeeeee, 0 0 20px #000000, 0 0 30px #000000,
+          0 0 40px #000000, 0 0 50px #9554b3, 0 0 60px #9554b3, 0 0 70px #9554b3;
+      }
+
+      to {
+        text-shadow: 0 0 20px #eeeeee, 0 0 30px #ff4da6, 0 0 40px #ff4da6,
+          0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+      }
+    }
+  a {
+      color: #ffffff !important;
+  }
+  </style>
+</head>
+<br />
+
+{% comment %} 
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+          <ul class="Ulmodule text-center">
+            {% if department_descriptions %}
+                {% for department in department_descriptions %}
+                    <li>
+                        {% if department.Department %}
+                            <a href="{% url 'JobDescriptionListdepartment' department.Department %}">{{ department.Department }}</a>
+                        {% else %}
+                            <span>No department name available</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>No departments available </li>
+            {% endif %}
+        </ul>
+      </div>
+  </div>
+</div> {% endcomment %}
+
+<div class="card">
+  <div class="card-body">
+    <ul class="Ulmodule d-flex">
+          {% if department_descriptions %}
+              {% for department in department_descriptions %}
+                  {% comment %} <li>
+                      {% if department.Department %}
+                          <a href="{% url 'JobDescriptionListdepartment' department.Department %}">{{ department.Department }}</a>
+                      {% else %}
+                          <span>No department name available</span>
+                      {% endif %}
+                  </li> {% endcomment %}
+                  {% if department.Department %}
+                      <a href="{% url 'JobDescriptionListdepartment' department.Department %}">
+                        <li>
+                          {{ department.Department }}
+                        </li>
+                      </a>
+                  {% else %}
+                    <span>
+                          <li>
+                          No department name available
+                        </li>
+                    </span>
+                  {% endif %}
+              {% endfor %}
+          {% else %}
+              <li>No departments available </li>
+          {% endif %}
+      </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<br /><br /><br /><br />
+
+{% endblock content %}

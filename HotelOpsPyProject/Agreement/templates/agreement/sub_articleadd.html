@@ -1,0 +1,67 @@
+{% extends "agreement/homebase.html" %} {% block content %}
+
+<div class="container">
+  <div class="col-md-6 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>SUB ARTICLE ADD </strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-10">
+              <div class="form-group m-3">
+                <label for="">Article Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name=""
+                  value="{{mtn}}"
+                  id=""
+                  readonly
+                />
+              </div>
+              <div class="form-group m-3">
+                <label for=""> Sub Article Number</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="subartical_number"
+                  value="{{m_sub.subartical_number}}"
+                  id=""
+                />
+              </div>
+              <div class="form-group m-3">
+                <label for="">Sub Article</label>
+                <textarea
+                  name="sub_artical"
+                  style="width: 100%"
+                  class="form-control"
+                  cols="30"
+                  rows="5"
+                >
+{{m_sub.sub_artical}}</textarea
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if m_sub is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content%}

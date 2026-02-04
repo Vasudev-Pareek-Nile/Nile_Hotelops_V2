@@ -1,0 +1,119 @@
+{% extends 'Media_Asset_Library/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    
+    .custom-image {
+        max-height: 200px;
+        min-height: 200px;
+  
+    object-fit:contain; 
+    }
+    .Video_fix{
+        max-height: 200px;
+        min-height: 200px;
+        object-fit:contain; 
+        
+    }
+   
+    .padding_p{
+        padding: 5px;
+    }
+</style>
+<div class="container">
+    
+    <div class="container col-md-12 text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+    
+    <div class="card-header col-md-12">Media Asset Library List</div>
+       
+    
+<br> 
+<div class="col-md-12">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+
+        <a href="{% url 'upload_media' %}" style="width: 100px; margin-left: 0px;" class="btn btn-primary btn-sm mr-1">Upload Media</a>
+
+
+
+        <form method="get" class="d-flex">
+            <input type="text" value="{{searchQuery}}" class="form-control ml-2" name="q" placeholder="Search...">
+           
+            <select name="category" class="form-control ml-2">
+                <option value="" {% if not selectedCategory %}selected{% endif %}>Select Category</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if category.id == selectedCategory %}selected{% endif %}>
+                        {{ category.category_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <select name="I" class="form-control ml-2">
+                
+                {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                        {{ itm.Organization_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-primary btn-sm ml-2" >Filter</button>
+        </form>
+
+        <a href="{% url 'homeMedia' %}" class="btn btn-primary btn-sm" style="width: 80px;">Clear Filter</a>
+
+    </div>
+</div>
+
+    
+    <br>
+    <div class="row">
+       
+        <div class="col-md-12">
+            <div class="row">
+                {% for media in Media_List  %}
+                <div class="col-md-3 my-2">
+                    <div class="card">
+                        {% if media.Media_Type == 'Image' %}
+                        <img class = "custom-image" src="{{ media.Thumbnail.url }}" alt="{{ media.Title }}">
+                    {% elif media.Media_Type == 'Video' %}
+                    <video class="Video_fix" controls  controlsList="nodownload" poster="{{ media.Thumbnail.url }}">
+                        <source src="{{ media.Media.url }}" type="video/mp4">
+                    </video>
+                    {% endif %}
+                        <p class="mb-0 padding_p"><strong>Title: </strong>{{ media.Title }}</p>
+                            <a href="{% url 'view_download_Media' id=media.id %}" class="btn btn-primary btn-sm m-1">View</a>           
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-md-3 my-2">
+
+                    <div class="card p-2">
+                        No Results Found!
+
+                    </div>
+                </div>
+               
+                {%  endfor%}   
+
+            </div>
+            
+        </div>
+       
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedcategory = "{{ selectedCategory }}";
+        $("select[name='category']").val(selectedcategory);
+    });
+</script>
+
+  
+{% endblock content %}

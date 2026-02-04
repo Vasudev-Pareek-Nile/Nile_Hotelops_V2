@@ -1,0 +1,142 @@
+{% extends "task/homebase.html" %} {% block content %}
+
+<style>
+  body {
+    font-family: arial nova;
+  }
+  .card {
+    width: 280px;
+    height: 130px;
+    border: 0.5px solid #000;
+    border-radius: 8px;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    padding: 25px;
+  }
+</style>
+
+<div class="card-header">
+  <div class="row">
+    <div class="col-md-12 text-md-right" style="margin-top: 20px">
+      <a href="{% url '' %}" class="fa fa-print"> <strong>Print</strong></a>
+    </div>
+  </div>
+</div>
+<br />
+<h3><strong>Projects</strong></h3>
+{% comment %}
+<div class="col-md-12 text-right" style="margin-top: 20px">
+  <span style="color: black">Not Applicable</span>
+  <i class="fa fa-cloud" aria-hidden="true" style="color: #99eebb"></i>&nbsp;
+  <span style="color: black">Completed</span>
+  <i class="fa fa-cloud" aria-hidden="true" style="color: green"></i>&nbsp;
+  <span style="color: black">Past Due</span>
+  <i class="fa fa-cloud text-danger" aria-hidden="true" style="color: red"></i
+  >&nbsp;
+  <span style="color: black">In Progress</span>
+  <i
+    class="fa fa-cloud text-warning"
+    aria-hidden="true"
+    style="color: #ffd300"
+  ></i
+  >&nbsp;
+  <span style="color: black">Not Due</span>
+  <i class="fa fa-cloud" aria-hidden="true" style="color: #ccc"></i>&nbsp;
+</div>
+{% endcomment %}
+<div class="card-header">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-3">
+        <span><h5>Opening</h5></span>
+        <p>Based On |{{ opening_dates.opening_date }}</p>
+      </div>
+      <div class="col-md-4">
+        <h6>TASKS</h6>
+        <div class="progress">
+          <div
+            class="progress-bar bg-success"
+            role="progressbar"
+            style="width: {{ completed_tasks_percentage }}%;"
+            aria-valuenow="{{ completed_tasks_percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ completed_tasks_count }} tasks completed
+          </div>
+          <div
+            class="progress-bar bg-danger"
+            role="progressbar"
+            style="width: {{ pending_tasks_percentage }}%;"
+            aria-valuenow="{{ pending_tasks_percentage }}"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            {{ pending_tasks_count }} tasks pending
+          </div>
+        </div>
+      </div>
+    
+      <div class="col-md-3">
+        <table class="" style="width: 520px; margin-top: 10px">
+          <tbody>
+            <tr>
+              <td>
+                <button type="button" class="btn btn-primary m-r-sm">
+                  {{total_tasks_count}}
+                </button>
+                TOTAL
+              </td>
+
+              <td>
+                <button type="button" class="btn btn-danger m-r-sm">
+                  {{pastdue_tasks_count}}
+                </button>
+                PAST DUE
+              </td>
+
+              <td>
+                <button type="button" class="btn btn-warning m-r-sm">
+                  {{inprogess_tasks_count}}
+                </button>
+                IN PROGRESS
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<h3><strong>Summary</strong></h3>
+<div >
+  
+  <div class="row">
+    <div class="card" >
+      <h2>{{ completed_tasks_count }}</h2>
+      <p>Completed</p>
+    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="card">
+      <h2>{{pending_tasks_count}}</h2>
+      <p>Pending</p>
+    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <div class="card">
+      <h2>{{ notStarted_tasks_count }}</h2>
+      <p>Not Started</p>
+    </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <div class="card">
+      <h2>{{ notApplicable_tasks_count }}</h2>
+      <p>Not Applicable</p>
+    </div>
+  </div>
+</div>
+
+<br />
+
+<br />
+
+{% endblock content %}

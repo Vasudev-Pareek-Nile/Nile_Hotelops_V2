@@ -1,0 +1,129 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %} 
+
+{% load Payrollcustom_filters %}
+<style>
+    .card{
+        position: relative;
+    }
+
+    .card .card-body, .card .card-header {
+        padding: 15px;
+    }
+    .card .card-body{
+        padding-top: 0px;
+    }
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    /* Make table full width */
+    #example {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #example thead th {
+        position: sticky;
+        top: 118px;
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+{% if messages %}
+    <div class="container m-4">
+        {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="row mb-2">
+            <div class="col-md-6 text-uppercase fw-bold">Attendance</div>
+            <div class="col-md-6 text-right">
+                <a class="btn btn-sm btn-primary" style="display: none;" href="{% url 'Upload_Attendace' %}"></i>Upload Attendance</a>
+            </div>
+        </div>
+
+        <form action="" method="get" >
+            <div class="d-flex align-items-center gap-2">
+            
+                <div class="">
+                    <input type="date" class="form-control" name="Q_Date" value="{% if Q_Date %}{{Q_Date}}{% else %}{% now 'Y-m-d' %}{% endif %}">
+                </div>
+
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="submit" class="btn mr-4 btn-primary" style="padding-inline:15px;">
+                        <i class="fa fa-filter"></i> Filter
+                    </button> 
+                
+                    <a href="{% url 'Daily_Attendace' %}" class="btn btn-danger ml-3" style="padding-inline:15px;">
+                        Clear
+                    </a>
+                </div>
+                {% csrf_token %}
+            </div>
+        </form>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table id="example" class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>EmployeeCode</th>
+                            <th>EmployeeName</th>
+                            
+                            <th>DATE</th>
+                            <th>IN</th>
+                            <th>OUT</th>
+                            <th>IN</th>
+                            <th>OUT</th>
+                            <th>Duty Hours</th>
+
+                            <th>STATUS</th>
+                            <th>ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_data %}
+                        <tr>
+                            <td>{{ record.EmployeeCode }}</td>
+                            <td>{{ record.EmployeeName }}</td>
+                            <td>{{ record.Date|date:"j F, Y" }}</td>
+                            <td>{{ record.In_Time|format_time}}</td>
+                            <td>{{ record.Out_Time|format_time}}</td>
+                            <td>{{ record.S_In_Time|format_time}}</td>
+                            <td>{{ record.S_Out_Time|format_time}}</td>
+                            <td>{{ record.Duty_Hour|format_time}}</td>
+                            <td>{{ record.Status }}</td>
+                            <td> <a href="{% url 'Update_Attendance_HR' %}?ID={{record.id}}&Page=DA" class="btn btn-primary btn-sm">EDIT</a></td>
+                            
+                        </tr>
+                    
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+       var selectedStatus = "{{ Apporve_status }}";
+       $("select[name='Status']").val(selectedStatus);
+   });
+</script>
+
+{% endblock content %}
+ 

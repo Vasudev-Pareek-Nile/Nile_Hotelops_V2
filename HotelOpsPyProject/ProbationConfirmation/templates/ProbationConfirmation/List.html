@@ -1,0 +1,184 @@
+{% extends 'ProbationConfirmation/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    table td,th
+    {
+        font-size: 13px;
+    }
+    #clear, #filter{
+		padding-block: 8px;
+	}
+
+</style>
+{% if message %}
+    <div class="cotainer">
+        <div class="container text-center">
+            {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+            {% endif %} {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Probation Confirmation</span></div>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="col-md-12">
+            <form method="GET" class="row g-4">
+                <div class="col-md-5">
+                    <select name="I" id="organizationSelect" class="form-control">
+                        <option value="">Select Organization Name</option>
+                        {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="col-md-4 d-flex justify-items-start align-items-center gap-2">
+                    <button type="submit" class="btn btn-primary" id="filter">
+                        <i class="fa fa-filter"></i> Filter
+                    </button>
+                
+                    <a href="{% url 'ListPC' %}" class="btn btn-danger" id="clear">
+                        Clear
+                    </a>
+                </div>
+            </form>  
+        </div>
+
+        <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+            <thead>
+                <tr class="active" style="background-color:#8e9ebc">
+                    <th class="EmpCode">Emp Code</th>
+                    <th class="Name">Name</th>
+
+                    <th class="Designation">Designation</th>
+                    <th class="Department">Department</th>
+                    <th class="Date">Joining Date</th>
+
+                    <th class="Date">Confirmation Date</th>
+                    
+                    <th class="Signed">confirmed</th>
+
+                    <th class="Action" width="100">Probation Letter</th>
+                    <th class="Action" width="130"> Signed Document</th>
+
+                    <th class="Action" >Confirmation Letter</th>
+
+                </tr>
+
+            </thead>
+            <tbody>
+                {% for Emp_obj in Emp_objs %}
+                <tr>
+                    <td>{{Emp_obj.EmpCode}}</td>
+                    <td>{{Emp_obj.EmpName}}</td>
+                    <td>{{Emp_obj.Department}}</td>
+                    <td>{{Emp_obj.Position}}</td>
+                    <td>{{Emp_obj.JoiningDate|date:'d-m-Y'}}</td>
+                    <td>{{Emp_obj.ConfDate |date:'d-m-Y'}}</td>
+                    <td>
+                        {% if Emp_obj.EmpConfirm  == True %}Yes{% else %}No  {% if Emp_obj.Extended %}- {{Emp_obj.Extended}}{% endif %}  {% endif %}
+
+
+                    </td>
+                    <td>
+
+                        <div class="btn-group gap-2">
+                            <a href="{% url 'NewPC' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&Page=ListPC&OID={{Emp_obj.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                            
+                            
+                            <a href="{% url 'ViewPC' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&OID={{Emp_obj.OrganizationID}}" class="btn btn-primary btn-sm" target="_blank" Style="color:white;">View</a>
+                        </div>
+                        
+                        
+                        
+                </td>
+                <td >
+                    {% if  Emp_obj.EmpConfirm  == True  and Emp_obj.LOC_ID  %}
+                    
+                            {% if Emp_obj.Cnf_Filename  %}
+                        
+                            
+                                <a class="btn btn-danger btn-sm mb-2" href="{% url "repalce_filecl" %}?EmpID={{Emp_obj.EmpID}}&LOC_ID={{Emp_obj.LOC_ID}}&OID={{Emp_obj.OrganizationID}}&Page=ListPC" Style="color:white;">Delete File</a>
+                                <br/>
+                                <a class="btn btn-primary btn-sm" href="{% url "download_filecl" %}?LOC_ID={{Emp_obj.LOC_ID}}&OID={{Emp_obj.OrganizationID}}">Download File</a>
+                            
+                            {% elif Emp_obj.LOC_ID  %}
+                                <a class="btn btn-primary btn-sm" href="{% url "upload_filecl" %}?EmpID={{Emp_obj.EmpID}}&LOC_ID={{Emp_obj.LOC_ID}}&OID={{Emp_obj.OrganizationID}}&Page=ListPC">Upload File</a>
+                            {% endif %}
+                    {% endif %} 
+                </td>
+                <td >
+                
+                    <div class="btn-group mt-1 gap-2">
+                            
+                        {% if Emp_obj.LOC_ID  %}
+                        <a href="{% url 'entryempcl' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&LOC_ID={{Emp_obj.LOC_ID}}&DepartmentName={{Emp_obj.Department}}&Page=ListPC&OID={{Emp_obj.OrganizationID}}"   class="btn btn-primary btn-sm">Edit</a>
+                        
+                        <a href="{% url 'generate_Confirmation_Letter' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&LOC_ID={{Emp_obj.LOC_ID}}&OID={{Emp_obj.OrganizationID}}"   class="btn btn-primary btn-sm" target="_blank" >View</a>
+                        <a href="{% url 'generate_Confirmation_Letter' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&LOC_ID={{Emp_obj.LOC_ID}}&head=False&OID={{Emp_obj.OrganizationID}}"   class="btn btn-secondary text-white btn-sm">Print</a>
+                        
+                        {% else %}
+                        {% if  Emp_obj.EmpConfirm  == True %}
+                        <a href="{% url 'entryempcl' %}?ID={{Emp_obj.id}}&EC={{Emp_obj.EmpCode}}&EmpID={{Emp_obj.EmpID}}&DepartmentName={{Emp_obj.Department}}&Page=ListPC&OID={{Emp_obj.OrganizationID}}" class="btn btn-primary btn-sm">Generate  Letter</a>
+                        {% endif %}
+                        
+                        {% endif %}
+
+                    </div>
+                    
+                </td>   
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+        
+       
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);  
+        
+       
+    });
+    
+    
+</script>
+    
+
+  
+{% endblock content %}
+
+
+
+

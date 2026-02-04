@@ -1,0 +1,371 @@
+{% extends 'EMP_PAY/homebase.html' %} 
+{% load static %}
+{% block content %} 
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+
+<style>
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        /* padding-right: 56px; */
+        padding-inline: 8px;
+    }
+    .card-header{
+        margin-bottom: -28px;
+    }
+    body {
+        overflow-x: hidden;
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    /* Make table full width */
+    #MovetoPayrollTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #MovetoPayrollTable thead th {
+        position: sticky;
+        top: 118px;
+        /* z-index: 10; */
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add consistent styling */
+    #MovetoPayrollTable th, 
+    #MovetoPayrollTable td {
+        /* padding: 10px; */
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background-color: #fff;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: transparent !important;
+        color: inherit !important;
+        border-color: #6c757d !important; /* keep same border */
+    }
+
+    [data-layout=horizontal] body .page-wrapper {
+        margin: 0;
+        padding-top: 111px !important;
+    }
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 15px !important;
+    }
+</style>
+
+
+<div class="progress d-none" id="progressBarContainer" style="height: 25px;">
+  <div id="progressBar" 
+       class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+       role="progressbar" 
+       style="width: 0%">
+       0%
+  </div>
+</div>
+<div id="progressText" class="mt-2 small text-muted"></div>
+
+
+<div class="card">
+    <!-- <div class="card-header text-uppercase fw-bold"> -->
+        <!-- </div> -->
+    <div class="card-body">
+        <h4 class="fw-bold mb-3 text-uppercase">Move To Payroll</h4>
+       
+        <form method="post" id="MovetoPayrollTableForm">
+            {% csrf_token %}
+            <table class="table table-bordered mt-2" id="MovetoPayrollTable">
+                <thead>
+                    <tr>
+                        <th>Sr</th>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll"> Select All</th>
+                        <th>Emp Code</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Status</th>
+                        <th>DOJ</th>
+                    </tr>
+                </thead>
+                <tbody id="MovetoPayrollTableBody">
+                    {% for emp in EmployeesList %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>
+                            <input type="checkbox" name="all_emp_codes"  class="checkBox" value="{{ emp.EmployeeCode }}" data-empid="{{ emp.EmpID }}">
+                            <!-- <input type="number" name="all_emp_ids"  class="checkBox" value="{{ emp.EmpID }}"> -->
+                        </td>
+                        <td>{{ emp.EmployeeCode }}</td>
+                        <td>{{ emp.EmpName }}</td>
+                        <td>{{ emp.Department }}</td>
+                        <td>{{ emp.Designation }}</td>
+                        <td>{{ emp.EmpStatus }}</td>
+                        <td>{{ emp.DateofJoining }}</td>
+
+                    </tr>
+                    {% if forloop.last %}
+                        <input  type="hidden" name="Total_emd_id" value="{{ forloop.counter0 }}"/>
+                        <input type="hidden" name="SelectedOID" id="SelectedOID" value="{{ Selected_OID }}"/>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+                             
+            <!-- Center modal content -->
+            <div class="modal fade" id="centermodal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myCenterModalLabel">Enter Date</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="SelectMonth">Select Month Of salary</label>
+                                    <select name="SelectMonth" id="SelectMonth" class="form-select">
+                                        <option value="January" {% if today_Month_Name == 'January' %} selected {% endif %}>January</option>
+                                        <option value="February" {% if today_Month_Name == 'February' %} selected {% endif %}>February</option>
+                                        <option value="March" {% if today_Month_Name == 'March' %} selected {% endif %}>March</option>
+                                        <option value="April" {% if today_Month_Name == 'April' %} selected {% endif %}>April</option>
+                                        <option value="May" {% if today_Month_Name == 'May' %} selected {% endif %}>May</option>
+                                        <option value="June" {% if today_Month_Name == 'June' %} selected {% endif %}>June</option>
+                                        <option value="July" {% if today_Month_Name == 'July' %} selected {% endif %}>July</option>
+                                        <option value="August" {% if today_Month_Name == 'August' %} selected {% endif %}>August</option>
+                                        <option value="September" {% if today_Month_Name == 'September' %} selected {% endif %}>September</option>
+                                        <option value="October" {% if today_Month_Name == 'October' %} selected {% endif %}>October</option>
+                                        <option value="November" {% if today_Month_Name == 'November' %} selected {% endif %}>November</option>
+                                        <option value="December" {% if today_Month_Name == 'December' %} selected {% endif %}>December</option>
+                                    </select>
+                                </div> 
+
+                                <div class="mb-3 col-md-6">
+                                    <label class="form-label" for="SelectYear">Year</label>
+                                    <select name="SelectYear" id="SelectYear" class="form-select">
+                                        {% for year in years %}
+                                            <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div> 
+                            </div> 
+
+                            <div class="mb-3">
+                                <label class="form-label" for="FromDate">From Date</label>
+                                <input type="date" class="form-control" name="FromDate" id="FromDate" value="{{month_start|date:'Y-m-d'}}">
+                            </div> 
+
+                            <div class="mb-3">
+                                <label class="form-label" for="ToDateInput">To Date</label>
+                                <input type="date" class="form-control" name="ToDateInput" id="ToDateInput" value="{{month_end|date:'Y-m-d'}}">
+                            </div> 
+
+                            <div class="mb-3 d-flex align-items-center">
+                                <p>
+                                    <input type="checkbox" name="Exisiting_Data_check" id="Exisiting_Data_check" class="check"> Overwrite the Exisiting Data
+                                </p>
+                            </div> 
+
+                            <div class="modal-footer">
+                                <button class="btn rounded-pill btn-primary" type="button" id="startBtn">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- <div class="card-footer text-end">
+                <button type="button" class="btn btn-primary mt-1" data-bs-toggle="modal" data-bs-target="#centermodal">Move To Payroll</button>
+                <a class="btn btn-outline-secondary">Selected Employees : 
+                    <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                </a>
+            </div> -->
+
+            <div class="card-footer d-flex justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search Employee Here ..."
+                            style="width: 200px; display: inline-block; height:34px;"
+                            onkeyup="searchTable()"
+                        >
+                    </div>
+                </div>
+                
+                
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#centermodal">Move To Payroll</button>
+                    <a class="btn btn-sm btn-outline-secondary">SE: 
+                        <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+     
+
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            // Select only visible checkboxes
+            $("#MovetoPayrollTable tbody tr:visible .checkBox")
+                .prop("checked", $(this).prop("checked"));
+            updateSelectedCount();
+        });
+    });
+
+    $(document).on("change", ".checkBox", function () {
+        let allVisible = $("#MovetoPayrollTable tbody tr:visible .checkBox").length;
+        let checkedVisible = $("#MovetoPayrollTable tbody tr:visible .checkBox:checked").length;
+
+        $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+        updateSelectedCount();
+    });
+
+    function updateSelectedCount() {
+        let count = $("#MovetoPayrollTable tbody tr:visible .checkBox:checked").length;
+        $("#selectedCount").text(count);
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/progressbar.js"></script>
+
+
+<script>
+    document.getElementById("startBtn").addEventListener("click", function(){
+        let formData = $("#MovetoPayrollTableForm").serializeArray(); 
+        // array of {name, value}
+
+        // collect employee code + empid manually
+        let employeeData = [];
+        $("#MovetoPayrollTableBody .checkBox:checked").each(function() {
+            let emp_id = $(this).attr("data-empid")
+            console.log("Employee id is here :: ", emp_id);
+            employeeData.push({
+                emp_code: $(this).val(),
+                emp_id: $(this).attr("data-empid")
+            });
+        });
+
+        // add employeeData JSON into the formData
+        formData.push({
+            name: "employee_data",
+            value: JSON.stringify(employeeData)
+        });
+
+        // manually add modal values
+        formData.push({name: "FromDate", value: $("#FromDate").val()});
+        formData.push({name: "ToDate", value: $("#ToDateInput").val()});
+        formData.push({name: "Exisiting_Data_check", value: $("#MovetoPayrollTableForm input[name='Exisiting_Data_check']").prop("checked") ? "on" : ""});
+
+        // debugger;
+        $.ajax({
+            url: "/Employee_Payroll/start-move-to-payroll/",
+            method: "POST",
+            // data: $("#MovetoPayrollTableForm").serialize(),
+            data: $.param(formData),
+            headers: {
+                "X-CSRFToken": $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success: function(data){
+
+                // hide modal
+                // var myModalEl = document.getElementById('centermodal');
+                // var modal = bootstrap.Modal.getInstance(myModalEl); // get current instance
+                // if(modal) modal.hide();
+                $('#centermodal').modal('hide');
+
+
+                let task_id = data.task_id;
+                $("#progressBarContainer").removeClass("d-none");
+                $("#progressBox").show();
+
+                let interval = setInterval(function(){
+                    $.get("/Employee_Payroll/payroll_progress/" + task_id + "/", function(progress){
+                        let percent = 0;
+                        if (progress.total > 0) {
+                            percent = Math.floor((progress.processed / progress.total) * 100);
+                        }
+                        $("#progressBar").css("width", percent + "%").text(percent + "%");
+                        $("#progressText").text(
+                            "Processed: " + progress.processed + "/" + progress.total +
+                            " | Inserted: " + progress.inserted
+                        );
+
+                        if (progress.status === "done") {
+                            clearInterval(interval);
+                            $("#progressText").append("<br><b>✅ Completed!</b>");
+
+                            setTimeout(function() {
+                               // $("#progressBar").fadeOut();  
+                                $("#progressBarContainer").fadeOut(); 
+                                $("#progressText").fadeOut();
+                            }, 1000); 
+                        }
+                    });
+                }, 2000);
+            }
+        });
+    });
+
+</script>
+
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("MovetoPayrollTableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+
+
+{% endblock content %} 

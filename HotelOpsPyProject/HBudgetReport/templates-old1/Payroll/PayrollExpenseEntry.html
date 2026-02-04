@@ -1,0 +1,36 @@
+{% extends 'Payroll/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <div class="container1">
+        <h1>Add Title</h1>
+        <form action="{%url 'PayrollExpenseEntry' %}" method = "post">
+            {% csrf_token %}
+            <table id="title" border="1" cellpadding="5" cellspacing="0">
+                <thead>
+                    <th>Id</th>
+                    <th>Title</th>
+                    
+                </thead>
+                {% for x in mem%}
+                <tr>
+                                       
+                    <td>{{x.title}}</td> 
+                    <td><input type="text" name="Amount_{{ forloop.counter0 }}"/>
+                        <input name="ExpenseID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                    </td>
+                                                                
+                </tr>
+                {% if forloop.last %}
+                <input type="text" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                {% endif %}
+                {% endfor %}
+
+            </table>
+            
+            <button type="submit" id="new">Submit</button>
+        </form>
+    </div>
+    {% endblock content %}

@@ -1,0 +1,633 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+<!-- Display alert messages -->
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+<style>
+  body {
+    font-family: 'Arial Nova', sans-serif; /* Use correct font name with quotes */
+  }
+
+  #AddDesignation label{
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  #AddDesignation row{
+    padding: 10px;
+  }
+</style>
+<style>
+        .tree ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .tree li {
+            position: relative;
+            padding-left: 20px;
+            cursor: pointer;
+        }
+
+        .tree li::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #ccc;
+        }
+
+        .tree li::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 10px;
+            width: 10px;
+            height: 1px;
+            background: #ccc;
+        }
+
+        .tree li:last-child::before {
+            height: 10px;
+        }
+
+        .tree ul.collapsed {
+            display: none;
+        }
+
+        .tree li span {
+            user-select: none;
+        }
+
+        .tree i {
+            margin-right: 5px;
+        }
+
+        .actions {
+            margin-left: 10px;
+        }
+
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+         .custom-card {
+            width: 98%; /* Adjust the width as needed */
+            margin: auto; /* Center the card */
+        }
+        {% comment %} .modal-dialog{
+          width: 50%;
+          max-width: 50%;
+          min-width: 700px;
+        } {% endcomment %}
+    </style>
+
+
+     <style>
+        .card{
+            border-radius:10px;
+        }
+        .card .card-header {
+    padding: 20px;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important;
+    background: transparent;
+}
+.btn{
+  border-radius:4px;
+}
+.form-control{
+  border-radius:4px;
+}
+ .text-primary{
+    color: #3a4a93 !important;
+}
+    </style>
+
+
+<div class="row">
+  <div class="col-sm-12">
+    <section class="pt-0">
+      <div class="container vstack gap-5">
+        <div class="tab-pane">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h4 class="">Manage Master -  Contract</h4>
+                
+                <div class="">
+                  <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#AddDivision">Add New Division</button>
+                  <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#AddDepartmentModal">Add New Department</button>
+                  <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#AddDesignation">Add New Designation</button>
+                </div>
+            </div>
+          
+      <div class="card-body" >
+      <div class="tree">
+        <ul>
+            {% for division in divisions %}
+                {% if not division.IsDelete %}
+                    <li id="division_{{ division.id }}">
+                        <i class="fas fa-folder"></i><span>{{ division.DivisionName }}</span>
+                        <span>
+                            <a href="#" class="edit edit-division text-primary" data-id="{{ division.id }}" data-type="division" data-toggle="modal" data-target="#AddDivision">Edit</a> |
+                            <a onclick="return confirm('Are you sure you want to delete? ')" href="{% url 'ContractDivision_delete' %}?ID={{ division.id }}" class="delete text-danger">Delete</a> || 
+                            Sort Order : <a href="#" class="up text-info" onclick="move_up_contract({{ division.id }});">Up</a> | <a href="#" class="down" onclick="move_down_contract({{ division.id }});">Down</a>
+                        </span>
+                        <ul>
+                            {% for department in departments %}
+                                {% if not department.IsDelete and department.ContractDivisionMaster_id == division.id %}
+                                    <li id="department_{{ department.id }}">
+                                        <i class="fas fa-folder"></i><span>{{ department.DepartmentName }}</span>
+                                        <span>
+                                            <a href="#" class="edit edit-department text-primary" data-id="{{ department.id }}" data-type="department" data-toggle="modal" data-target="#AddDepartmentModal">Edit</a> |
+                                            <a onclick="return confirm('Are you sure you want to delete? ')"  href="{% url 'ContractDepartment_delete' %}?ID={{ department.id }}" class="delete text-danger">Delete</a> || 
+                                            Sort Order: <a href="#" class="up text-info" onclick="move_up_department({{ department.id }});">Up</a> | <a href="#" class="down" onclick="move_down_department({{ department.id }});">Down</a>
+                                        </span>
+                                        <ul>
+                                            {% for designation in reportings %}
+                                                {% if not designation.IsDelete and designation.ContractDepartmentMaster_id == department.id %}
+                                                    <li id="designation_{{ designation.id }}">
+                                                        <i class="fas fa-file"></i><span>{{ designation.designations }} ({{ designation.Lavel }})</span>
+                                                        <span>
+                                                            <a href="#" class="edit edit-designation text-primary" data-id="{{ designation.id }}" data-type="designation" data-toggle="modal" data-target="#AddDesignation">Edit</a> |
+                                                            <a onclick="return confirm('Are you sure you want to delete? ')" href="{% url 'ContractDesignation_delete' %}?ID={{ designation.id }}" class="delete text-danger">Delete</a> || 
+                                                            Sort Order : <a href="#" class="up text-info" onclick="move_up_designation({{ designation.id }});">Up</a> | <a href="#" class="down" onclick="move_down_designation({{ designation.id }});">Down</a>
+                                                        </span>
+                                                    </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    </div>
+
+    </div>
+    </div>
+        
+    </section>
+  </div>
+</div>
+
+
+<div class="modal fade" id="AddDivision" tabindex="-1" role="dialog" aria-labelledby="divisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="divisionForm" method="POST" action="{% url 'ContractDivisionAdd' %}">
+                {% csrf_token %}
+                <div class="modal-header d-flex justify-content-between">
+                    <h5 class="modal-title" id="divisionModalLabel">Division</h5>
+                    <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="division_id" id="division_id">
+                    <div class="form-group">
+                        <label for="division_name" style="margin-bottom:10px;">Division Name</label>
+                        <input type="text" class="form-control" id="division_name" name="DivisionName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                    {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="departmentModalLabel">Department Details</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        <form  method="POST" action="{% url 'ContractDepartmentAdd' %}">
+          {% csrf_token %}
+          <input type="hidden" name="department_id" id="department_id">
+          <div class="form-group">
+            <label for="division_id" style="margin-bottom:3px;">Division</label>
+            <select id="division_detas" name="DivisionID" class="form-control select" required>
+              <option value="">Select Division</option>
+              {% for division in Divisionsfilter %}
+              <option value="{{ division.id }}">{{ division.DivisionName }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group mt-2">
+            <label for="department_name" style="margin-bottom:3px;">Department Name</label>
+            <input type="text" class="form-control" id="department_name" name="DepartmentName" required>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="AddDesignation" tabindex="-1" role="dialog" aria-labelledby="designationModalLabel" aria-hidden="true">
+  <div class="modal-dialog " role="document"> 
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="designationModalLabel">New Designation</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'ContractDesignationAdd' %}">
+          {% csrf_token %}
+          <input type="hidden" name="designation_id" id="designation_id">
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="division_get">Division</label>
+              <select id="division_get" name="DivisionID" class="form-control select" required>
+                <option value="">Select Division</option>
+                {% for division in Divisionsfilter %}
+                <option value="{{ division.id }}">{{ division.DivisionName }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="department_deta">Department</label>
+              <select id="department_deta" name="DepartmentID" class="form-control select" required>
+                <option value="">Select Department</option>
+                {% for department in Departmentsfilter %}
+                <option value="{{ department.id }}">{{ department.DepartmentName }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="division_dates">Div</label>
+              <input type="text" class="form-control" name="Div" id="division_dates" required />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="designation_descriptiondeta">Dept</label>
+              <input type="text" class="form-control" name="Dept" id="designation_descriptiondeta" required />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="form-group col-md-8">
+              <label for="designation_descriptions">Designations</label>
+              <input type="text" class="form-control" name="designations" id="designation_description" required />
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="designation_lavel">Level</label>
+              <select name="Lavel" id="designation_lavels" class="form-control select">
+                <option value="">Select Level</option>
+                {% for laveladd in laveladds %}
+                <option value="{{ laveladd.lavelname }}">{{ laveladd.lavelname }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="form-group col-md-12">
+              <label for="designation_lavel">Report Designations </label>
+              <select name="Report_Designations" id="report_designations" class="form-control select">
+                <option value="">Select Designations</option>
+                {% for reporting in reportings %}
+                <option value="{{ reporting.id }}">{{ reporting.designations }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="Submit" class="btn btn-primary btn-sm" />
+            {% comment %} <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button> {% endcomment %}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+ <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const tree = document.querySelector('.tree');
+    if (tree) {
+        tree.querySelectorAll('li span').forEach(span => {
+            span.addEventListener('click', function (e) {
+                const parentLi = e.target.parentElement;
+                const childUl = parentLi.querySelector('ul');
+                if (childUl) {
+                    childUl.classList.toggle('collapsed');
+                    // Change folder icon when collapsed or expanded
+                    const icon = parentLi.querySelector('i');
+                    if (childUl.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-folder-open');
+                        icon.classList.add('fa-folder');
+                    } else {
+                        icon.classList.remove('fa-folder');
+                        icon.classList.add('fa-folder-open');
+                    }
+                }
+            });
+        });
+
+        
+        tree.querySelectorAll('.actions a').forEach(actionLink => {
+            actionLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (this.classList.contains('edit')) {
+                    alert('Edit action for ' + this.parentElement.previousElementSibling.textContent);
+                   
+                } else if (this.classList.contains('delete')) {
+                    alert('Delete action for ' + this.parentElement.previousElementSibling.textContent);
+                    
+                }
+            });
+        });
+    }
+});
+
+    </script>
+<script>$(document).ready(function() {
+    $('.edit').click(function(e) {
+        e.preventDefault();
+        
+        var divisionId = $(this).data('id');
+        
+        $.ajax({
+            url: '/Manning_Guide/Contractdivisions_list/',
+            type: 'GET',
+            data: { id: divisionId },
+            dataType: 'json',
+            success: function(data) {
+                if ('error' in data) {
+                    console.error('Error fetching division data:', data.error);
+                    return;
+                }
+                $('#division_id').val(data.id); // Set the division ID in the hidden input
+                $('#division_name').val(data.DivisionName); // Set the division name in the input field
+                $('#AddDivision').modal('show'); // Show the modal
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching division data:', status, error);
+            }
+        });
+    });
+});
+</script>
+<script>
+  $(document).ready(function() {
+    $('.edit').click(function(e) {
+      e.preventDefault();
+      
+      var departmentId = $(this).data('id');
+      
+      $.ajax({
+        url: '/Manning_Guide/Contractdepartments_list/',
+        type: 'GET',
+        data: { id: departmentId },
+        dataType: 'json',
+        success: function(data) {
+          if ('error' in data) {
+            console.error('Error fetching department data:', data.error);
+            return;
+          }
+          console.log('Department data received:', data); // Debug: Log data to console
+          $('#department_id').val(data.id);
+          $('#division_detas').val(data.DivisionID);
+          $('#department_name').val(data.DepartmentName);
+          // $('#AddDepartmentModal').modal('show');
+        },
+        error: function(xhr, status, error) {
+          console.error('AJAX error:', status, error);
+        }
+      });
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $(document).on('click', '.edit-designation', function(e) {
+      e.preventDefault();
+      var designationId = $(this).data('id');
+      $.ajax({
+        url: '/Manning_Guide/Contractdesignation_details/',
+        type: 'GET',
+        data: { id: designationId },
+        dataType: 'json',
+        success: function(data) {
+          console.log('Designations data received:', data);
+          if ('error' in data) {
+            console.error('Error fetching designation data:', data.error);
+            return;
+          }
+          $('#designation_id').val(data.id);
+          $('#division_get').val(data.DivisionID);
+          $('#department_deta').val(data.DepartmentID);
+          $('#division_dates').val(data.Div);
+          $('#designation_descriptiondeta').val(data.Dept);
+          $('#designation_description').val(data.designations);
+          $('#designation_lavels').val(data.Lavel);
+          $('#report_designations').val(data.Report_Designations);
+          // $('#AddDesignation').modal('show');
+        },
+        error: function(xhr, status, error) {
+          console.error('Error fetching designation data:', status, error);
+        }
+      });
+    });
+  });
+</script>
+<script>
+function move_up_contract(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_up_divisioncontract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function move_down_contract(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_down_divisioncontract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+<script>
+function move_up_department(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_up_departmentContract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function move_down_department(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_down_departmentContract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+</script>
+<script>
+function move_up_designation(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_up_designationContract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();  // Example: Reload the page after successful operation
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function move_down_designation(id) {
+    $.ajax({
+        url: `/Manning_Guide/move_down_designationContract/${id}/`,
+        type: 'POST',
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        },
+        success: function(data) {
+            console.log(data);
+            location.reload();  
+        },
+        error: function(error) {
+            console.error('Error:', error);
+        }
+    });
+}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+
+{% endblock content %}

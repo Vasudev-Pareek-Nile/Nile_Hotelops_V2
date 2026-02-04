@@ -1,0 +1,318 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+
+
+
+<style>
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        padding-inline: 10px;
+    }
+    .card-header{
+        margin-bottom: -30px;
+    }
+    body {
+        overflow-x: hidden;
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    /* Make table full width */
+    #AttendanceLockTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #AttendanceLockTable thead th {
+        position: sticky;
+        top: 118px;
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    #AttendanceLockTable th, 
+    #AttendanceLockTable td {
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background-color: #fff;
+        font-size: 12px;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: transparent !important;
+        color: inherit !important;
+        border-color: #6c757d !important; /* keep same border */
+    }
+
+    .LockColor{
+        color: lightseagreen !important;
+    }
+    .LockedColor{
+        color: red !important;
+    }
+    textarea{
+        height: 44px !important;
+    }
+
+
+
+    #CardBody{
+        position: relative;
+    }
+
+
+    .card-loader {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffffcc;
+        z-index: 10;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-primary-spinner{
+        color: #3a4a93;
+    }
+
+    #HR_DashboardBtn{
+        position:absolute;
+        top: 0px;
+        right: 10px;
+    }
+
+    #profile-card {
+        position: relative;
+    }
+
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 10px !important;
+    }
+
+    .ModifiedStatus{
+        color: red !important;
+    }
+
+    .form-control {
+        height: 34px !important;
+    }
+
+    .Remarks{
+        width: 200px !important;
+        max-width: 200px !important;
+        min-width: 200px !important;
+    }
+</style>
+
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-header mb-1">
+        <h4 class="text-uppercase fw-bold">
+            Audit Trail Attendance Report 
+        </h4>
+    </div>
+    <div class="card-body" id="CardBody">
+            {% csrf_token %}
+            <table class="table table-bordered" id="AttendanceLockTable">
+                <thead>
+                    <tr>
+                        <th>Emp Code</th>
+                        <th>Employee Name</th>
+                        <th>Date</th>
+                        <th>Actual</th>
+                        <th class="ModifiedStatus">Modified</th>
+                        <th>Modified Date</th>
+                        <th class="Remarks">Remarks</th>
+                    </tr>     
+                </thead>
+                <tbody id="tableBody">
+                    {% for emp in emps %}
+                        {% for record in emp.attendance_records %}
+                            <tr class="emp-col">
+                                {% if forloop.first %}
+                                    <td rowspan="{{ emp.attendance_records|length }}"  style="vertical-align: top;">{{ emp.EmployeeCode }}</td>
+                                    <td rowspan="{{ emp.attendance_records|length }}"  style="vertical-align: top;">{{ emp.EmpName }}</td>
+                                {% endif %}
+                                <td>{{ record.Date }}</td>
+                                <td>{{ record.ActualStatus }}</td>
+                                <td class="ModifiedStatus">{{ record.Status }}</td>
+                                <td>{{ record.ModifyDateTime|date:"d-m-Y H:i" }}</td>
+                                <td class="Remarks">{{ record.Remarks|default:"" }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No records found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            <div class="card-footer d-flex justify-content-between">
+                <form  class="d-flex gap-2">
+                    <div class="">
+                        <select class="form-control" name="month_no">
+                            <option value="1"  {% if CMonth == 1 %}selected{% endif %}>Jan</option>
+                            <option value="2"  {% if CMonth == 2 %}selected{% endif %}>Feb</option>
+                            <option value="3"  {% if CMonth == 3 %}selected{% endif %}>Mar</option>
+                            <option value="4"  {% if CMonth == 4 %}selected{% endif %}>Apr</option>
+                            <option value="5"  {% if CMonth == 5 %}selected{% endif %}>May</option>
+                            <option value="6"  {% if CMonth == 6 %}selected{% endif %}>Jun</option>
+                            <option value="7"  {% if CMonth == 7 %}selected{% endif %}>Jul</option>
+                            <option value="8"  {% if CMonth == 8 %}selected{% endif %}>Aug</option>
+                            <option value="9"  {% if CMonth == 9 %}selected{% endif %}>Sep</option>
+                            <option value="10" {% if CMonth == 10 %}selected{% endif %}>Oct</option>
+                            <option value="11" {% if CMonth == 11 %}selected{% endif %}>Nov</option>
+                            <option value="12" {% if CMonth == 12 %}selected{% endif %}>Dec</option>
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <select class="form-control" name="year">
+                            {% for i in CYear %}
+                                <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search Employee Here ..."
+                            style="width: 200px; display: inline-block; height:34px;"
+                            onkeyup="searchTable()"
+                        >
+                    </div>
+                    <div class="">
+                        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                    </div>
+                    <div class="">
+                        <a href="{% url 'Audit_Attendance_Report' %}" class="btn btn-sm btn-primary">Clear</a>
+                    </div>
+                </form>
+                
+                
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" id="GenerateAuditPDF">PDF Report</button>
+                </div>
+            </div>
+    </div>
+</div>
+
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+
+<script>
+    function searchTable() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.querySelectorAll("#tableBody tr");
+
+        let currentEmpVisible = true;  // flag to track current employee group visibility
+
+        rows.forEach(row => {
+            const empCodeCell = row.querySelector("td[rowspan]:first-child");
+            const empNameCell = row.querySelector("td[rowspan]:nth-child(2)");
+
+            // When a new employee block starts
+            if (empCodeCell && empNameCell) {
+                const empCode = empCodeCell.textContent.toLowerCase();
+                const empName = empNameCell.textContent.toLowerCase();
+                currentEmpVisible = (empCode.includes(input) || empName.includes(input));
+            }
+
+            // Show or hide current row based on current employee visibility
+            row.style.display = currentEmpVisible ? "" : "none";
+        });
+    }
+</script>
+
+
+<script>
+    document.getElementById("GenerateAuditPDF").addEventListener("click", function () {
+        const orgId = "{{ Session_OrganizationID }}";  
+        const year = "{{ year }}";
+        // const monthNo = "10";
+       const monthNo = "{{ month_no }}";
+
+
+       console.log("Generating PDF for OrgID:", orgId, "Year:", year, "MonthNo:", monthNo);
+
+
+        // Show loader
+        showLoader("profile-card");
+
+        // Construct URL for your Django view
+        const url = `/Employee_Payroll/Reports/Audit_Attendance_Report_PDF_View/?OID=${orgId}&year=${year}&month_no=${monthNo}`;
+
+        // Fetch PDF via AJAX
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Network error while fetching PDF");
+            return response.blob();  // get the binary PDF
+        })
+        .then(blob => {
+            // Hide loader
+            hideLoader("profile-card");
+
+            // Create a temporary object URL for the PDF
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, "_blank");  // open in new tab
+        })
+        .catch(error => {
+            hideLoader("profile-card");
+            alert("Failed to generate PDF. Please try again.");
+            console.error(error);
+        });
+    });
+</script>
+
+
+
+
+{% endblock content %} 

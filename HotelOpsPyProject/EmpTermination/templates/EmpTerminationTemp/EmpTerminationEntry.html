@@ -1,0 +1,175 @@
+{% extends 'EmpTerminationTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  label{
+    padding-top: 14px;
+    margin-bottom:5px;
+  }
+  .card-header{
+    margin-bottom:-40px;
+  }
+</style>
+
+
+<div class="card">
+  <div class="card-header text-uppercase fw-bold">Termination Form</div>
+
+  <form action="" method="post">
+    
+    <div class="card-body">
+      <div class="col-md-12">
+        <div class="row">
+          <!-- Employee Code -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="emp_code">Employee Code:</label>
+              <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ Terminationstobj.Emp_Code|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+          <!-- Employee Name -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="name">Employee Name:</label>
+              <input type="text" name="name" id="name" class="form-control" value="{{ Terminationstobj.Name|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Date of Joining -->
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="doj">Date of Joining:</label>
+              <input type="date" name="doj" id="doj" class="form-control" value="{{ Terminationstobj.DOJ|date:'Y-m-d' }}" readonly>
+            </div>
+          </div>
+
+          
+          <!-- Date of Termination -->
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="date_of_termination">Date of Termination:</label>
+              <input type="date" name="date_of_termination" id="date_of_termination" class="form-control" value="{% if Terminationstobj.Date_Of_Termination %}{{ Terminationstobj.Date_Of_Termination|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}">
+            </div>
+          </div>
+
+          <!-- Department -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="dept">Department:</label>
+              <input type="text" name="dept" id="dept" class="form-control" value="{{ Terminationstobj.Dept|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+          <!-- Designation -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="designation">Designation:</label>
+              <input type="text" name="designation" id="designation" class="form-control" value="{{ Terminationstobj.Designation|default_if_none:'' }}" readonly>
+            </div>
+          </div>
+
+
+          <!-- Warning Issued -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="is_warning_issued">Warning Issued:</label>
+              <select name="is_warning_issued" id="is_warning_issued" class="form-control">
+                <option value="Yes" {% if Terminationstobj.IsWarningIssued == 'Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if Terminationstobj.IsWarningIssued == 'No' %}selected{% endif %}>No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Last Warning Letter -->
+          <div class="col-md-4">
+            <div class="form-group">
+              <label for="last_warning_letter">Last Warning Letter:</label>
+              <select name="last_warning_letter" id="last_warning_letter" class="form-control">
+                <option value="Verbal" {% if Terminationstobj.LastWarningLatter == 'Verbal' %}selected{% endif %}>Verbal</option>
+                <option value="Written" {% if Terminationstobj.LastWarningLatter == 'Written' %}selected{% endif %}>Written</option>
+                <option value="Final" {% if Terminationstobj.LastWarningLatter == 'Final' %}selected{% endif %}>Final</option>
+
+              </select>
+           
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+                <label for="reviewed_designation">Reviewed By</label>
+                <select class="form-control" name="reviewed_designation" id="reviewed_designation" required>
+                    <option value="">Select</option>
+                    {% for ManagerName in ManagerNames %}
+                        <option value="{{ ManagerName.designations }}"
+                            {% if Terminationstobj.reviewed_designation == ManagerName.designations %}
+                                selected
+                            {% endif %}
+                            data-full-name="{{ ManagerName.EmployeeName }}">
+                            {{ ManagerName.designations }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="reviewed_manager_name">Reviewed By Name</label>
+                <input type="text" class="form-control" name="reviewed_manager_name" id="reviewed_manager_name" value="{{ Terminationstobj.reviewed_manager_name }}" required readonly>
+            </div>
+        </div>
+        
+          <!-- Remarks -->
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="remarks">Remarks:</label>
+              <textarea name="remarks" id="remarks" class="form-control" maxlength="1500" rows="4"
+                  placeholder="Enter remarks (max 1500 characters)"
+                  title="Enter Less Than 1500 characters">{{ Terminationstobj.Remarks }}</textarea>
+              <small id="charWarning" class="text-danger d-none">⚠️ Max limit of 1500 characters reached!</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% csrf_token %}
+    <div class="CustomFooter">
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </div>
+  </form>
+</div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const textarea = document.getElementById("remarks");
+    const warning = document.getElementById("charWarning");
+
+    textarea.addEventListener("input", function () {
+        const remaining = 1500 - textarea.value.length;
+
+        if (remaining <= 0) {
+            warning.classList.remove("d-none");
+        } else {
+            warning.classList.add("d-none");
+        }
+    });
+});
+</script>
+<script>
+  function updateManagerName() {
+      const select = document.getElementById("reviewed_designation");
+      const selectedOption = select.options[select.selectedIndex];
+      const fullName = selectedOption.getAttribute("data-full-name");
+      document.getElementById("reviewed_manager_name").value = fullName ? fullName : '';
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+      updateManagerName();
+  });
+
+  document.getElementById("reviewed_designation").addEventListener("change", updateManagerName);
+</script>
+{% endblock content %}

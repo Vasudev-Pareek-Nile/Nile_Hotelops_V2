@@ -1,0 +1,23 @@
+from django.shortcuts import render,redirect
+from .models import Objective_Master,Attribute_Master,Ineffective_Indicators_Master,Effective_Indicators_Master,Entry_Master,Leadership_Details,Leadership_AttributeDetails,Effective_Indicators_Details_Appraisee,Effective_Indicators_Details_Appraisor,Ineffective_Indicators_Details_Appraisee,Ineffective_Indicators_Details_Appraisor,SPECIFIC_MEASURABLE_ACHIEVABLE,SPECIFIC_MEASURABLE_ACHIEVABLE_Details,SUMMARY_AND_ACKNOWLEDGEMENT,FINAL_PERFORMANCE_RATING,calculate_appraisal_date,calculate_next_date,Get_next_approval_level
+from Manning_Guide.models import OnRollDesignationMaster,CorporateDesignationMaster
+import datetime
+from itertools import zip_longest
+
+from hotelopsmgmtpy.GlobalConfig  import MasterAttribute
+from django.shortcuts import get_object_or_404
+from django.db  import connection, transaction
+from HumanResources.views import get_employee_designation_by_EmployeeCode,EmployeeDetailsData,get_employee_names_by_designation,get_Appraisers_ReportingtoDesignation
+from HumanResources.models import EmployeePersonalDetails
+from KRA.views import TargetAssignNamesWithReportingtoDesignationEmployeeNameCode
+from app.views import OrganizationList 
+# PADP 
+
+from itertools import chain
+import calendar
+import datetime
+
+
+
+from django.db import transaction, connection
+from itertools import chain

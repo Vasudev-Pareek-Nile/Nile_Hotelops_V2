@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+{% comment %} {% from Cake_Order_Form %} {% endcomment %}
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>LazyCoder || himanshu</title>
+  <style type="text/css">
+    body {
+      color: #aa082e;
+      background-color: #b6bde7;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+  </style>
+
+</head>
+
+
+<body>
+  {% include "apps/navbar.html" %}
+ 
+ 
+  {% render_field  Cake_Order_Form.To %}
+<style>
+  label
+  {
+    font-weight:bold;
+  }
+  </style
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'update' %}" enctype="multipart/form-data">
+    {{ Cake_Order_Form }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Cake Order</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>To</label>
+               {{Ed.To}}
+              </div>
+              <div class="col-sm-3">
+                <label>From</label>
+                {{Ed.From}}
+              </div>
+              <div class="col-sm-3">
+                <label>Guest Name</label>
+                {{Ed.Guest_Name}}
+              </div>
+              <div class="col-sm-3">
+                <label>To Be Prepared For</label>
+                {{Ed.To_Be_Prepared_For}}
+              </div>
+              <div class="col-sm-3">
+                <label>Size</label>
+                {{Ed.Size}}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Date</label>
+                {{Ed.Date}}
+              </div>
+             <div class="col-sm-3">
+              <label>Time</label>
+                {{Ed.Time}}
+              </div>
+              <div class="col-sm-3">
+                <label>Type Of Cake</label>
+                {{Ed.Type_Of_Cake}}
+              </div>
+              <div class="col-sm-3">
+                <label>Required Time</label>
+                {{Ed.Required_Time}}
+              </div>
+              <div class="col-sm-3">
+                <label>Required Date</label>
+                {{Ed.Required_Date}}
+              </div>
+              <div class="col-sm-3">
+                    <label>Packing</label>
+                {{Ed.Packing}}
+              </div>
+              <div class="col-sm-3">
+                <label>Message On Cake</label>
+                {{Ed.Message_On_Cake}}
+              </div>
+              <div class="col-sm-3">
+                <label>Selling Price</label>
+                {{Ed.Selling_Price}}
+              </div>
+              <div class="col-sm-3">
+                <label>Complimentory</label>
+                {{Ed.Complimentory}}
+              </div> 
+              <div class="col-sm-3">
+                <label>Authorised By</label>
+                {{Ed.Authorised_By}}
+              </div> 
+
+            </div>
+          </div>
+        </div>
+        {% comment %} <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div> {% endcomment %}
+
+      </div>
+    </div>
+
+  </form>
+
+  {% comment %} {% include "apps/footer.html" %} {% endcomment %}
+</body>
+
+
+</html>

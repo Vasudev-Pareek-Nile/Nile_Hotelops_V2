@@ -1,0 +1,703 @@
+
+{% load static %}
+{% load apadpfilter %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A PADP</title>
+ 
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 5px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        
+        font-size: 10px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+   
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %} 
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>PADP  </strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      <div class="main-container">
+        <table  class="table table-striped custom-table">
+            <tr>
+                <td style="width:20%; "><strong>Employee No:</strong></td>
+                <td>{{emp_data.EmployeeCode}}</td>
+                <td style="width:20%; "><strong>Employee Name</strong></td>
+                <td>{{emp_data.EmpName}}</td>
+              
+            </tr>
+            <tr>
+                <td style="width:20%; "><strong>Designation</strong></td>
+                <td>{{emp_data.Designation}}</td>
+                <td style="width:20%; "><strong>Reporting to Designation</strong></td>
+                <td>{{emp_data.ReportingtoDesigantion}}</td>
+              
+            </tr>
+            <tr>
+                <td style="width:20%; "><strong>Level</strong></td>
+                <td>{{emp_data.Level}}</td>
+               
+                <td style="width:20%; "><strong>Reporting to Level</strong></td>
+                <td>{{emp_data.ReportingtoLevel}}</td>
+              
+            </tr>
+           
+            <tr>
+                <td style="width:20%; "><strong>Joining Date</strong></td>
+                <td>{{emp_data.DateofJoining}}</td>
+                <td style="width:20%; "><strong>Current Role Tenure</strong></td>
+                <td>{{emp_data.Tenure}}</td>
+              
+            </tr>
+            <tr>
+                <td style="width:20%; "><strong>Review Period From</strong></td>
+                <td>{{emp_data.review_from_date}}</td>
+                <td style="width:20%; "><strong>Review Period To</strong></td>
+                <td>{{emp_data.review_to_date}}</td>
+              
+            </tr>
+            <tr>
+                <td style="width:20%; "><strong>Approval Stauts</strong></td>
+                <td>
+                    {{emp_data.Approval_stage|safe}}
+                       
+                </td>
+                <td style="width:20%; "><strong>&nbsp;</strong></td>
+                <td>&nbsp;</td>
+              
+            </tr>   
+                
+
+           
+
+           
+        </table>
+       
+        
+        <table class="table table-bordered table-striped custom-table"  >
+            <thead>
+              
+            </thead>
+            <tbody>       
+       
+                <tr colspan="5" >
+                    <td colspan="5" style="background-color: #d1ecf1; color: #0d5a65; "><b>SECTION 1: PERFORMANCE APPRAISAL</b></td>
+                </tr>
+             
+        {% for item in apadp_items %}
+          
+          <tr>
+            <td colspan="5" style="background-color: #1ab394; color: white;" ><b>{{ item.ItemName }}</b></td>
+          </tr>
+          <tr>
+            <th style="background-color: #cebc82; ">Evaluation Key</th>
+            <th style="background-color: #cebc82; text-align: center;">Below Standard</th>
+            <th style="background-color: #cebc82; text-align: center;">Meets Expectation</th>
+            <th style="background-color: #cebc82; text-align: center;">Above Standard</th>
+            <th style="background-color: #cebc82; text-align: center;">Outstanding</th>
+        </tr>
+        
+         
+            
+           
+            
+        {% for subitem in apadp_subitems %}
+        {% if subitem.Master_APADP_Item == item %}
+            <tr class="top-margin">
+                <td style="width: 300px;">{{ subitem.SubItemName }}</td>
+    
+                <td style="text-align: center;">
+                    {% if status_mapping|get_item:subitem.id == 'Below Standard' %}
+                    <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                             style="width: 20px; height: 20px;">
+                       
+                    {% else %}
+                    <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                    style="width: 20px; height: 20px; background-color: red;">
+                    {% endif %}
+                </td>
+                
+                <td style="text-align: center;">
+                    {% if status_mapping|get_item:subitem.id == 'Meets Expectation' %}
+                    <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                         style="width: 20px; height: 20px;">
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if status_mapping|get_item:subitem.id == 'Above Standard' %}
+                    <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                    style="width: 20px; height: 20px;">
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if status_mapping|get_item:subitem.id == 'Outstanding' %}
+                    <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+     style="width: 20px; height: 20px;"/>
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+    
+   
+                
+                    {% endfor %}
+        
+    </tbody>
+</table> 
+
+  
+<table class="table table-bordered table-striped custom-table"  >
+    <thead>
+        <tr colspan="6" >
+            <td colspan="6" style="background-color: #d1ecf1; color: #0d5a65; "><b>SECTION 2: DEVELOPMENT GOALS</b></td>
+        </tr>
+        <tr>
+            <th style="background-color: #cebc82; ">GOAL</th>
+            <th style="background-color: #cebc82; "> TIMELINE</th>
+            <th style="background-color: #cebc82; ">STATUS</th>
+            <th style="background-color: #cebc82; ">REMARKS</th>
+            <th style="background-color: #cebc82; "> START
+                DATE</th>
+            <th style="background-color: #cebc82; ">
+                COMPLETION
+                DATE</th>
+            
+           
+        </tr>
+            
+    </thead>
+    <tbody> 
+        {% for goal in existing_goals %}     
+        <tr>
+            <td style="text-align: center;">{{goal.Goal}}</td>
+            <td style="text-align: center;">{{goal.Timeline|format_time }}</td>
+            <td style="text-align: center;">{{goal.Status}}</td>
+            <td style="text-align: center;">{{goal.Remarks}}</td>
+            <td style="text-align: center;">{{goal.GoalStartDate}}</td>
+            <td style="text-align: center;">{{goal.GoalCompletionDate}}</td>
+
+        </tr>
+        {% endfor %}       
+     
+
+</tbody>
+</table>  
+
+<table class="table table-bordered table-striped custom-table"  >
+    <thead>
+        <tr colspan="5" >
+            <td colspan="5" style="background-color: #d1ecf1; color: #0d5a65; "><b>Reporting to Desigantion Rating</b></td>
+        </tr>
+        <tr>
+            <th style="background-color: #cebc82; ">BELOW STANDARD</th>
+            <th style="background-color: #cebc82; ">MEETS EXPECTATION</th>
+            <th style="background-color: #cebc82; ">ABOVE STANDARD</th>
+            <th style="background-color: #cebc82; ">OUTSTANDING</th>
+            <th style="background-color: #cebc82; "> GM RECOMMENDATION</th>
+            
+           
+        </tr>
+            
+    </thead>
+    <tbody>       
+   <tr>
+    <td style="text-align: center;">
+            {% if emp_data and emp_data.Development == 'Below Standard' %}
+                <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                    style="width: 20px; height: 20px;">
+            {% else %}
+            <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+            style="width: 20px; height: 20px; background-color: red;">
+            {% endif %}
+    </td>
+    <td style="text-align: center;">
+        {% if emp_data and emp_data.Development == 'Meets Expectation' %}
+        <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+            style="width: 20px; height: 20px;">
+        {% else %}
+        <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+        style="width: 20px; height: 20px; background-color: red;">
+        {% endif %}
+    </td>
+    <td style="text-align: center;">
+        {% if emp_data and emp_data.Development == 'Above Standard' %}
+        <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+            style="width: 20px; height: 20px;">
+        {% else %}
+        <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+        style="width: 20px; height: 20px; background-color: red;">
+        {% endif %}
+    </td>
+    <td style="text-align: center;">
+        {% if emp_data and emp_data.Development == 'Outstanding' %}
+        <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+            style="width: 20px; height: 20px;">
+        {% else %}
+        <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+        style="width: 20px; height: 20px; background-color: red;">
+        {% endif %}
+    </td>
+    <td style="text-align: center;">
+        {% if emp_data and emp_data.Development == 'Gm Recommendation' %}
+        <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+            style="width: 20px; height: 20px;">
+        {% else %}
+        <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+        style="width: 20px; height: 20px; background-color: red;">
+        {% endif %}
+    </td>
+    
+    
+    
+   </tr>
+       
+     
+
+</tbody>
+</table>
+      
+<table class="table table-bordered table-striped custom-table"  >
+    <thead>
+        <tr colspan="5" >
+            <td colspan="5" style="background-color: #d1ecf1; color: #0d5a65; "><b>SECTION 3: FINAL PERFORMANCE RATING</b></td>
+        </tr>
+        <tr>
+            <th style="background-color: #cebc82; ">BELOW STANDARD</th>
+            <th style="background-color: #cebc82; ">MEETS EXPECTATION</th>
+            <th style="background-color: #cebc82; ">ABOVE STANDARD</th>
+            <th style="background-color: #cebc82; ">OUTSTANDING</th>
+            <th style="background-color: #cebc82; "> GM RECOMMENDATION</th>
+            
+           
+        </tr>
+            
+    </thead>
+    <tbody>       
+        <tr>
+         <td style="text-align: center;">
+                 {% if existing_performance_rating and existing_performance_rating.rating == 'Below Standard' %}
+                     <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                         style="width: 20px; height: 20px;">
+                 {% else %}
+                 <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                 style="width: 20px; height: 20px; background-color: red;">
+                 {% endif %}
+         </td>
+         <td style="text-align: center;">
+             {% if existing_performance_rating and existing_performance_rating.rating == 'Meets Expectation' %}
+             <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                 style="width: 20px; height: 20px;">
+             {% else %}
+             <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+             style="width: 20px; height: 20px; background-color: red;">
+             {% endif %}
+         </td>
+         <td style="text-align: center;">
+             {% if existing_performance_rating and existing_performance_rating.rating == 'Above Standard' %}
+             <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                 style="width: 20px; height: 20px;">
+             {% else %}
+             <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+             style="width: 20px; height: 20px; background-color: red;">
+             {% endif %}
+         </td>
+         <td style="text-align: center;">
+             {% if existing_performance_rating and existing_performance_rating.rating == 'Outstanding' %}
+             <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                 style="width: 20px; height: 20px;">
+             {% else %}
+             <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+             style="width: 20px; height: 20px; background-color: red;">
+             {% endif %}
+         </td>
+         <td style="text-align: center;">
+             {% if existing_performance_rating and existing_performance_rating.rating == 'Gm Recommendation' %}
+             <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                 style="width: 20px; height: 20px;">
+             {% else %}
+             <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+             style="width: 20px; height: 20px; background-color: red;">
+             {% endif %}
+         </td>
+         
+         
+         
+        </tr>
+            
+          
+     
+     </tbody>
+
+
+</table> 
+
+
+
+<table class="table table-bordered table-striped custom-table"  >
+        <thead>
+            <tr colspan="8" >
+                <td colspan="8" style="background-color: #d1ecf1; color: #0d5a65; "><b>Salary Increment</b></td>
+            </tr>
+            <tr>
+            
+                <th style="background-color:  #cebc82; text-align: center;">No Correction</th>
+                <th style="background-color:  #cebc82; text-align: center;">3%</th>
+                <th style="background-color:  #cebc82; text-align: center;">5%</th>
+                <th style="background-color:  #cebc82; text-align: center;">8%</th>
+                <th style="background-color:  #cebc82; text-align: center;">10%</th>
+                <th style="background-color:  #cebc82; text-align: center;">Salary Correction</th>
+                <th style="background-color:  #cebc82; text-align: center;">Promotion</th>
+                <th style="background-color:  #cebc82; text-align: center;">Promotion with Increase</th>
+                
+            </tr>
+                
+        </thead>
+        <tbody>       
+            <tr>
+             <td style="text-align: center;">
+                     {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'No Correction' %}
+                         <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                             style="width: 20px; height: 20px;">
+                     {% else %}
+                     <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                     style="width: 20px; height: 20px; background-color: red;">
+                     {% endif %}
+             </td>
+             <td style="text-align: center;">
+                 {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '3%' %}
+                 <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                     style="width: 20px; height: 20px;">
+                 {% else %}
+                 <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                 style="width: 20px; height: 20px; background-color: red;">
+                 {% endif %}
+             </td>
+             <td style="text-align: center;">
+                 {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '5%' %}
+                 <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                     style="width: 20px; height: 20px;">
+                 {% else %}
+                 <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                 style="width: 20px; height: 20px; background-color: red;">
+                 {% endif %}
+             </td>
+             <td style="text-align: center;">
+                 {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '8%' %}
+                 <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                     style="width: 20px; height: 20px;">
+                 {% else %}
+                 <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                 style="width: 20px; height: 20px; background-color: red;">
+                 {% endif %}
+             </td>
+             <td style="text-align: center;">
+                 {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == '10%' %}
+                 <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                     style="width: 20px; height: 20px;">
+                 {% else %}
+                 <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                 style="width: 20px; height: 20px; background-color: red;">
+                 {% endif %}
+             </td>
+             <td style="text-align: center;">
+                {% if  existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'Salary Correction' %}
+                <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                    style="width: 20px; height: 20px;">
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+            </td>
+            <td style="text-align: center;">
+                {% if  existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'Promotion' %}
+                <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                    style="width: 20px; height: 20px;">
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+            </td>
+            <td style="text-align: center;">
+                {% if existing_performance_rating and existing_performance_rating.SalaryIncrementOption == 'Promotion with Increase' %}
+                <img src="static/Images/PADP/accept.png" alt="Accept Image" 
+                    style="width: 20px; height: 20px;">
+                {% else %}
+                <img src="static/Images/PADP/circle.png" alt="Circle Image" 
+                style="width: 20px; height: 20px; background-color: red;">
+                {% endif %}
+            </td>
+             
+             
+             
+            </tr>
+
+           
+            
+         </tbody>
+        
+        
+
+</table> 
+
+{% if existing_performance_rating.SalaryIncrementOption == 'Salary Correction' or existing_performance_rating.SalaryIncrementOption == 'Promotion with Increase' or   existing_performance_rating.SalaryIncrementOption == 'Promotion'  %}
+<table class="table table-bordered table-striped custom-table">
+    <tbody>
+        <tr>
+            {% if existing_performance_rating.SalaryIncrementOption == 'Salary Correction'%}
+                <td colspan="4"><b>Salary Increment</b><br>
+                    From : {{existing_performance_rating.SalaryCorrectionFrom}}<br>
+                    To :  {{existing_performance_rating.SalaryCorrectionTo}}<br>
+                    Justification for Salary Correction : {{existing_performance_rating.JustificationSalaryCorrection}}
+                </td>
+            {% endif %}
+            {% if existing_performance_rating.SalaryIncrementOption == 'Promotion'%}
+                <td colspan="4"><b>Promotion</b><br>
+                    From : {{existing_performance_rating.PromotionFrom}}<br>
+                    To :  {{existing_performance_rating.PromotionTo}}<br>
+                    Justification for Salary Correction : {{existing_performance_rating.JustificationPromotion}}
+                </td>
+            {% endif %}
+
+            {% if existing_performance_rating.SalaryIncrementOption == 'Promotion with Increase'%}
+            <td colspan="4"><b>Salary Increment</b><br>
+                From : {{existing_performance_rating.SalaryCorrectionFrom}}<br>
+                To :  {{existing_performance_rating.SalaryCorrectionTo}}<br>
+                Justification for Salary Correction : {{existing_performance_rating.JustificationSalaryCorrection}}
+            </td>
+            <td colspan="4"><b>Promotion</b><br>
+                From : {{existing_performance_rating.PromotionFrom}}<br>
+                To :  {{existing_performance_rating.PromotionTo}}<br>
+                Justification for Salary Correction : {{existing_performance_rating.JustificationPromotion}}
+            </td>
+            {% endif %}
+
+            
+           
+        </tr>
+    </tbody>
+</table>
+
+{% endif %}
+
+              
+<table class="table table-bordered table-striped custom-table"  >
+    <thead>
+        <tr colspan="5" >
+            <td colspan="5" style="background-color: #d1ecf1; color: #0d5a65; "><b>SECTION 4: FINAL COMMENTS</b></td>
+
+        </tr>
+       
+            
+    </thead>
+    <tbody>       
+   <tr>
+    <td colspan="5" >{{emp_data.Finalcomments}}</td>
+   </tr> 
+       
+     
+
+</tbody>
+</table>                         
+              
+                
+              
+       
+          
+       
+      
+       
+
+       
+                
+              
+              
+                
+              
+                
+              
+       
+          
+       
+      
+       
+
+       
+      </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

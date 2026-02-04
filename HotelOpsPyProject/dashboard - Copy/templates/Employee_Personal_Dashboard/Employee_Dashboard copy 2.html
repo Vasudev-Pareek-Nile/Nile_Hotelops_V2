@@ -1,0 +1,909 @@
+{% extends "Employee_Personal_Dashboard/homebase.html" %}
+{% block content %}
+{% load static %}
+
+<style>
+  .employee-dashboard-container {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+
+.employee-dashboard-container .card {
+    width: 100%;
+}
+
+  .employee-welcome-card {
+    flex: 0 0 40%;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+  }
+
+  .employee-details {
+    flex: 0 0 58%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .welcome-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .Profile-Img {
+    width: 50px;
+    height: 50px;
+    /* overflow: hidden; */
+    flex-shrink: 0;
+  }
+
+  .Profile-Img img{
+    width: 80px !important;
+    height: 80px !important;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    flex: 3;
+  }
+
+  .info-item {
+    font-size: 14px;
+  }
+
+  .info-item span {
+    font-weight: 600;
+    display: block;
+  }
+
+  .dashboard-bottom-section {
+    display: flex;
+    gap: 20px;
+    /* margin-top: 20px; */
+    flex-wrap: wrap;
+  }
+
+  .AllLeaves-Container {
+    flex: 0 0 20%;
+  }
+
+  .Calendar-Container {
+    flex: 0 0 54%;
+  }
+
+  .LeaveAction-Container {
+    flex: 0 0 23%;
+  }
+
+
+
+  @media (max-width: 768px) {
+    .employee-welcome-card, .employee-details {
+      flex: 0 0 100%;
+    }
+
+    .AllLeaves-Container,
+    .Calendar-Container,
+    .LeaveAction-Container {
+      flex: 0 0 100%;
+    }
+  }
+
+  /* all leaves */
+  .card-bodyAllLeaves{
+    padding: 0px 24px !important;
+    /* border-bottom: 0.5px solid #222; */
+  }
+
+.page-wrapper .content {
+    padding: 0px 24px !important;
+}
+
+.LeaveAction-Cards{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    
+}
+.LeaveAction-Cards div {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.LeaveAction-Cards div span:first-child{
+    color: green;
+}
+.LeaveAction-Cards div:nth-child(2) span:first-child{
+    color: orange;
+}
+.LeaveAction-Cards div:nth-child(3) span:first-child{
+    /* color: #958c7d; */
+    color: red;
+}
+
+/* profile image */
+.profile-img-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.welcome-btn {
+    margin-top: 10px;
+}
+
+.welcome-btn .btn {
+    padding: 4px 12px;
+    font-size: 14px;
+    border-radius: 20px;
+}
+
+/* .profile-view .profile-img-wrap { */
+    /* height: 200px; */
+    /* width: 120px; */
+    /* position: absolute; */
+/* } */
+
+.profile-view .profile-img-wrap img{
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+}
+
+#ViewProfile{
+    background-color:rgb(74, 133, 197);
+    border-color: rgb(74, 133, 197);;
+}
+
+
+/* Latest Notification */
+.employee-notification-list{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 25px;
+    height: 390px;
+    max-height: 390px;
+    overflow-y: scroll;
+}
+
+.employee-noti-content .employee-notification-list .employee-notification-grid {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    box-shadow: none  !important;
+    padding: 12px;
+    margin-bottom: 5px;
+}
+
+
+/* .LeaveAction-Cards{
+    margin-top: ;
+} */
+
+ /* View Attendence */
+ .view-attendance a {
+    color: #373B3E;
+    font-weight: 500;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+}
+</style>
+
+<style>
+  #calendar {
+    max-width: 900px;
+    height: 450px;
+    margin: 0 auto;
+  }
+
+  .fc-daygrid-day-number {
+    color: #3a4a93; /* Change to any color like red, blue, etc. */
+    font-weight: bold;
+  }
+
+  /* Change date numbers in each cell */
+.fc-daygrid-day-number {
+    color: #3a4a93; /* black or any color */
+    font-weight: bold;
+}
+
+/* Change month title (OCTOBER 2024) */
+.fc-toolbar-title {
+    font-size: 20px !important;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Change weekday header colors (SUN, MON, etc.) */
+.fc-col-header-cell-cushion {
+    color: #3a4a93;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Optional: Style header buttons */
+.fc-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 13px !important;
+}
+
+.fc-button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+
+<div class="employee-dashboard-container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="profile-view">
+                        <div class="profile-img-wrap">
+                            <div class="profile-img">
+                                <a href="#">
+                                    <!-- {% if Emobj.ProfileImageFileName %}
+                                        <img id="" src="/static/Images/avatarimg.webp" alt="Profile Image Preview">
+                                    {% else %}
+                                        <img id="" src="{% static 'Images/avatarimg.webp' %}" alt="Profile Image Preview"> 
+                                    {% endif %} -->
+                                    <img id="emp-profile-image" src="/static/Images/avatarimg.webp" alt="Profile Image Preview">
+                                </a>
+                                <a href="profile.html" class="btn btn-sm btn-primary mt-2 rounded-2" id="ViewProfile">View Profile</a>
+                            </div>
+                        </div>
+                        <div class="profile-basic">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="profile-info-left">
+                                        <h3 class="user-name m-t-0 mb-0" id="emp-full-name"></h3>
+                                        <ul class="personal-info mt-2">
+                                            <li>
+                                                <div class="title">Designation:</div>
+                                                <div class="text" id="emp-designation"></div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Department:</div>
+                                                <div class="text" id="emp-department"></div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Reports to:</div>
+                                                <div class="text" id="emp-reporting-to"></div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <ul class="personal-info" style="border-right: 2px dashed #D3D3D4;">
+                                        <li>
+                                            <div class="title">Code:</div>
+                                            <div class="text" id="emp-code"></div>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <div class="title">Status:</div>
+                                            <div class="text" id="emp-status"></div>
+                                        </li>
+                                        <li>
+                                            <div class="title">DOJ:</div>
+                                            <div class="text" id="emp-doj"></div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Tenure:</div>
+                                            <div class="text" id="emp-tenure"></div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="personal-info">
+                                    <li>
+                                        <div class="title">Phone:</div>
+                                        <div class="text" id="emp-phone"></div>
+                                    </li>
+                                    <li>
+                                        <div class="title">Email:</div>
+                                        <div class="text" id="emp-email"></div>
+                                    </li>
+                                    <li>
+                                        <div class="title">Birthday:</div>
+                                        <div class="text" id="emp-birthday"></div>
+                                    </li>
+
+                                    <li>
+                                        <div class="title">Gender:</div>
+                                        <div class="text" id="emp-gender"></div>
+                                    </li>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-bottom-section border-bottom">
+  <div class="card AllLeaves-Container border-bottom">
+      <div class="card-header border-bottom"><span class="card-title fw-bold fs-5">All Leaves</span></div>
+      <!-- <hr> -->
+    <div class="card-body card-bodyAllLeaves mt-2">
+      <div id="LeavesContainer">
+        <!-- {% for leave_Details in leave_balance  %}
+            <div class="d-flex justify-content-between border-bottom p-1 pt-2">
+                <p>{{leave_Details.Leave_Type_Master.Type}}</p>
+                <p>{{leave_Details.Balance}}</p>
+            </div>
+        {% endfor %} -->
+      </div>
+    </div>
+    <div class="Card-footer p-3 view-attendance">
+          <a href="{% url "Leave_Application" %}?Page=Employee_Personal_Dashboard">
+              Apply Leave <i class="fas fa-arrow-circle-right"></i>
+          </a>
+      </div>
+  </div>
+
+  <div class="card Calendar-Container">
+     <div class="card-header border-bottom"><span class="card-title fw-bold fs-5">Attendance</span></div>
+    <div class="card-body">
+       <div id="calendar"></div>
+      <!-- Your calendar or upcoming events go here -->
+    </div>
+  </div>
+
+  <div class="card LeaveAction-Container">
+    <div class="card-header border-bottom"><span class="card-title fw-bold fs-5">Leave Alerts</span></div>
+    <!-- <div class="card-header border-bottom"><span class="card-title fw-bold fs-5">Leave Summary</span></div> -->
+    <div class="card-body">
+      <!-- <h4>Leave Actions</h4> -->
+      <!-- Apply Leave, View History, etc. -->
+       <div class="LeaveAction-Cards">
+        <div>
+            <span id="ApprovedCount"></span>
+            <span>Approved</span>
+        </div>
+        <div>
+            <span id="PendingCount"></span>
+            <span>Pending</span>
+        </div>
+        <div>
+            <span id="RejectedCount"></span>
+            <span>Rejected</span>
+        </div>
+       </div>
+       <!-- <div class="TopLatest"> -->
+        <div class="">
+            <div class="tab-pane active" id="notification_tab" role="tabpanel">
+                <div class="employee-noti-content">
+                    <ul  class="employee-notification-list" id="leave-notifications"></ul>
+
+                    <!-- <ul class="employee-notification-list" id="leave-notifications"> -->
+                        <!-- {% for Leave_Item in Selected_Leave_Application %}
+                            <li class="employee-notification-grid">
+                                <div class="employee-notification-icon">
+                                    <a>
+                                        <span class="badge-soft-danger rounded-circle">{{ Leave_Item.Leave_Type_Master.Type }}</span>
+                                    </a>
+                                </div>
+                                <div class="employee-notification-content">
+                                    <h6>
+                                        <a>
+                                            Your {{ Leave_Item.Leave_Type_Master.Type }} Request
+                                            {% if Leave_Item.Status == 0 %}
+                                                Is Pending
+                                            {% elif Leave_Item.Status == 1 %}
+                                                Is Approved
+                                            {% elif Leave_Item.Status == -1 %}
+                                                Is Rejected
+                                            {% else %}
+                                                has Unknown Status
+                                            {% endif %}
+                                        </a>
+                                    </h6>
+                                    <ul class="nav">
+                                        <li>{{ Leave_Item.Start_Date }}</li>
+                                        <li>{{ Leave_Item.End_Date }}</li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% endfor %} -->
+
+                        <!-- Other Elements -->
+                         <!-- <li class="employee-notification-grid">
+                            <div class="employee-notification-icon">
+                                <a href="activities.html">
+                                    <span class="badge-soft-danger rounded-circle">CL</span>
+                                </a>
+                            </div>
+                            <div class="employee-notification-content">
+                                <h6>
+                                    <a href="activities.html">
+                                        Your CL leave
+                                    </a>
+                                </h6>
+                                <ul class="nav">
+                                    <li>02:10 PM</li>
+                                    <li>21 Apr 2024</li>
+                                </ul>
+                            </div>
+                        </li>  -->
+ 
+                    </div>
+                </div>
+            </div>
+       </div>
+    <!-- </div> -->
+  </div>
+</div>
+
+<!-- 
+<div class="card">
+    <div class="card-body">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="mb-3" style="text-align: right;">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        class="form-control"
+                        placeholder="Search ..."
+                        style="width: 200px; display: inline-block;"
+                        onkeyup="searchTable()"
+                    >
+              </div>
+                <div class="table-responsive">
+                    <table class="table table-striped custom-table mb-0 datatable">
+                        <thead>
+                            <tr>
+                                <th>Sr#</th>
+                                <th>Emp Code</th>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>In Time</th>
+                                <th>Out Time</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            {% for emp_code, data in employee_data.items %}
+                            {% for attendance in data.Attendance %}
+                            <tr>
+                                
+                                  {% if attendance.type == "leave" %}
+                                    <td data-sort="{{ attendance.start|date:'Y-m-d' }}">
+                                       {{ forloop.counter }}
+                                    </td>
+                                {% else %}
+                                    <td data-sort="{{ attendance.Date|date:'Y-m-d' }}">{{ forloop.counter }}</td>
+                                {% endif %}
+                                <td>{{ data.EmployeeCode }}</td>
+                                <td>{{ data.EmployeeName }}</td>
+
+                                {% if attendance.type == "leave" %}
+                                    <td data-sort="{{ attendance.start|date:'Y-m-d' }}">
+                                        {{ attendance.start|date:'d-m-Y' }}
+                                        {{ attendance.start }} <strong>To</strong>
+                                        {{ attendance.end }}
+                                    </td>
+                                {% else %}
+                                    <td data-sort="{{ attendance.Date|date:'Y-m-d' }}">{{ attendance.Date }}</td>
+                                {% endif %}
+                                
+                                <td style="color: 
+                                    {% if attendance.status == 'Absent' %} red 
+                                    {% elif attendance.status == 'Present' or attendance.status == 'Half Day Present' or attendance.status == 'Week Off' %} green 
+                                    {% else %} #3498db {% endif %};">
+                                    {{ attendance.title }}
+                                </td>
+        
+
+                                <td>
+                                    {% if attendance.type == "leave" %}
+                                        - <br>
+                                    {% else %}
+                                        {% if attendance.in_time or attendance.s_in_time  %}
+                                            {{ attendance.in_time }} <br>
+                                            {{ attendance.s_in_time }}
+                                        {% else %}
+                                            - 
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                
+                                <td>
+                                    {% if attendance.type == "leave" %}
+                                        - <br>
+                                    {% else %}
+                                        {% if attendance.out_time or attendance.s_out_time  %}
+                                            {{ attendance.out_time }} <br>
+                                            {{ attendance.s_out_time }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            
+                                <td> 
+                                    <button class="btn btn-outline-success view-details-btn" 
+                                        {% if attendance.type == "leave" %}
+                                            data-reason="{{ attendance.Reason }}" 
+                                            data-total_credit="{{ attendance.Total_credit }}" 
+                                            data-reporting="{{ attendance.ReportingtoDesigantion }}" 
+                                            data-remark="{{ attendance.Remark }}" 
+                                            data-Start-Date="{{ attendance.start }}" 
+                                            data-End-Date="{{ attendance.end }}" 
+                                            data-title="{{ attendance.title }}" 
+                                            data-Leavestatus="{{ attendance.Leavestatus }}" 
+                                        {% else %}
+                                            data-in_time="{{ attendance.in_time }}" 
+                                            data-out_time="{{ attendance.out_time }}" 
+                                            data-s_in_time="{{ attendance.s_in_time }}" 
+                                            data-s_out_time="{{ attendance.s_out_time }}" 
+                                            data-duty_hours="{{ attendance.duty_hours }}" 
+                                            data-status="{{ attendance.title }}"
+                                        {% endif %}
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#add_leave">
+                                        View
+                                    </button>
+                                </td>   
+                            </tr>
+                            {% endfor %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="9">No attendance records found.</td>
+                        </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      events: [
+        {
+          // background event
+          start: '2025-06-18',
+          end: '2025-06-21',
+          display: 'background',
+          backgroundColor: '#ff9f89'
+        },
+        {
+          // recurring background event every Monday
+          daysOfWeek: [1], // Monday
+          startTime: '09:00',
+          endTime: '17:00',
+          display: 'background',
+          backgroundColor: '#d2f8d2'
+        }
+      ]
+    });
+
+    calendar.render();
+  });
+</script> -->
+
+<script>
+  $(document).ready(function () {
+    $.getJSON('/Employee_Personal_Dashboard/api/employee-dashboard/', function(data) {
+
+      console.log("Api data without employee_data", data)
+      console.log("Api data", data.employee_data)
+      let employeeCode = "451000181"; // Replace dynamically if needed
+      let attendanceData = data["employee_data"][employeeCode]["Attendance"];
+
+      let events = attendanceData.map(item => {
+        if (item.Date) {
+          return {
+            title: item.title || item.status,
+            start: item.DateFormatted || item.Date,
+            allDay: true,
+            color: item.status === "Present" ? "#C8E6C9" :
+                   item.status === "Absent" ? "#FFCDD2" :
+                   item.title === "Weekly Off" ? "#BBDEFB" :
+                   "#FFF9C4"
+          };
+        } else if (item.start && item.end) {
+          // Parse dd-mm-yyyy to yyyy-mm-dd
+          const parseDate = d => d.split("-").reverse().join("-");
+          return {
+            title: item.title,
+            start: parseDate(item.start),
+            end: moment(parseDate(item.end)).add(1, "days").format("YYYY-MM-DD"),
+            allDay: true,
+            color: "#FFE082"
+          };
+        }
+      });
+
+      // Render the calendar with the events
+      $('#calendar').fullCalendar({
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month'
+        },
+        defaultView: 'month',
+        editable: false,
+        events: events
+      });
+    });
+  });
+</script>
+
+
+<!-- Data We inserting in Entire HTMl Except The calender -->
+<!-- <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch("/Employee_Personal_Dashboard/api/employee-dashboard/")
+            .then(response => response.json())
+            .then(data => {
+                const emp = data.Emobj;
+
+                // console.log("Information About Object:", emp);
+
+                document.getElementById("emp-full-name").textContent = `${emp.FullName || ''}`;
+                document.getElementById("emp-designation").textContent = `${emp.Designation || ''} (${emp.Level || ''})`;
+                document.getElementById("emp-department").textContent = emp.Department || '';
+                document.getElementById("emp-reporting-to").textContent = emp.ReportingtoDesignation || '';
+                document.getElementById("emp-code").textContent = emp.EmployeeCode || '';
+                document.getElementById("emp-status").textContent = emp.EmpStatus || '';
+                document.getElementById("emp-doj").textContent = formatDate(emp.DateofJoining);
+                document.getElementById("emp-tenure").textContent = emp.TenureTillToday || '';
+                document.getElementById("emp-phone").textContent = emp.MobileNumber || '';
+                document.getElementById("emp-email").textContent = emp.EmailAddress || '';
+                document.getElementById("emp-birthday").textContent = formatBirthday(emp.DateofBirth);
+                document.getElementById("emp-gender").textContent = emp.Gender || '';
+
+                const profileImg = document.getElementById("emp-profile-image");
+                if (emp.ProfileImageFileName) {
+                    profileImg.src = `/Employee_Personal_Dashboard/${emp.EmpID}`;  // or construct URL dynamically
+                }
+
+                
+                // Leave Action Cards 
+                const leave_Action_Cards = data.Selected_Leave_Application
+                // console.log("leave_balance::", leave_Action_Cards)
+                const leaveList = document.getElementById("leave-notifications");
+
+
+                const statusMap = {
+                    '0': "Is Pending",
+                    '1': "Is Approved",
+                    '-1': "Is Rejected"
+                };
+
+                const statusColorMap = {
+                    '0': "badge-soft-danger",   // Red
+                    '1': "badge-soft-success",  // Green
+                    '-1': "badge-soft-secondary" // Grey
+                };
+                const textColorClassMap = {
+                    '0': "text-danger",     // Red text
+                    '1': "text-success",    // Green text
+                    '-1': "text-secondary"  // Grey text
+                };
+
+                leave_Action_Cards.forEach((leave) => {
+                    const statusText = statusMap[leave.Status] || "has Unknown Status";
+                    // const statusText = "Approved" || "has Unknown Status";
+                    // const badgeClass = statusColorMap[leave.Status] || "badge-soft-light";
+                    const badgeClass = statusColorMap[leave.Status] || "badge-soft-light";
+                    const textClass = textColorClassMap[leave.Status] || "text-muted";
+
+                    const li = document.createElement("li");
+                    li.className = "employee-notification-grid";
+                    // li.className = badgeClass
+
+                    li.innerHTML = `
+                        <div class="employee-notification-icon">
+                            <a>
+                                <span class="${badgeClass} rounded-circle">${leave.Leave_Type_Master.Type}</span>
+                            </a>
+                        </div>
+                        <div class="employee-notification-content">
+                            <h6>
+                                <a class="${textClass}">
+                                    Your ${leave.Leave_Type_Master.Type} Request ${statusText}
+                                </a>
+                            </h6>
+                            <ul class="nav">
+                                <li>${leave.Start_Date}</li>
+                            <li>${leave.End_Date}</li>
+                            </ul>
+                        </div>
+                        `;
+                    leaveList.appendChild(li);
+                });
+
+                // Leave Balance - PL, CL, SL ...
+                const Leave_Balance =  data.leave_balance
+                const LeavesContainer = document.getElementById("LeavesContainer");
+                // console.log("Leave_Balance", Leave_Balance);
+
+                Leave_Balance.forEach((leave) => {
+                        // const statusText = statusMap[leave.Status] || "has Unknown Status";
+                        // const statusText = "Approved" || "has Unknown Status";
+                        // const badgeClass = statusColorMap[leave.Status] || "badge-soft-light";
+                        // const badgeClass = statusColorMap[leave.Status] || "badge-soft-light";
+                        // const textClass = textColorClassMap[leave.Status] || "text-muted";
+
+                        const li = document.createElement("div");
+                        li.className = "d-flex justify-content-between border-bottom p-1 pt-2";
+                        // li.className = badgeClass
+
+                        li.innerHTML = `
+                            <p>${leave.Leave_Type_Master.Type}</p>
+                            <p>${leave.Balance}</p>
+                        `;
+                        LeavesContainer.appendChild(li);
+                    });
+
+                    
+                    const leave_requset_appr_count =  data.leave_requset_appr_count
+                    const ApprovedCount = document.getElementById("ApprovedCount");
+                    ApprovedCount.innerHTML = leave_requset_appr_count
+
+                    
+                    const leave_requset_Pending_count =  data.leave_requset_Pending_count
+                    const PendingCount = document.getElementById("PendingCount");
+                    PendingCount.innerHTML = leave_requset_Pending_count
+                    
+                    const leave_requset_rejected_count =  data.leave_requset_rejected_count
+                    const RejectedCount = document.getElementById("RejectedCount");
+                    RejectedCount.innerHTML = leave_requset_rejected_count
+                
+
+                // const Employee_Data = data.employee_data
+                // console.log("Employee_Data is here::", Employee_Data)
+            })
+            .catch(error => {
+                console.error("Failed to load employee data:", error);
+            });
+
+        function formatDate(dateStr) {
+            if (!dateStr) return "";
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatBirthday(dateStr) {
+            if (!dateStr) return "";
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { month: 'long', day: 'numeric' });
+        }
+    });
+</script> -->
+
+
+{% endblock content %}
+
+{% comment %} <div class="employee-dashboard-container">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="profile-view">
+                        <div class="profile-img-wrap" style="text-align: center;">
+                            <div class="profile-img">
+                                <a href="#">
+                                    <img src="/static/Images/avatarimg.webp" alt="Profile Image Preview">
+                                </a>
+                                <a href="profile.html" class="btn btn-sm btn-primary mt-2 rounded-2" id="ViewProfile">View Profile</a>
+                            </div>
+                            <!-- <div class="welcome-btn mt-2"> -->
+                                <!-- <a href="profile.html" class="btn btn-sm btn-primary">View Profile</a> -->
+                            <!-- </div> -->
+                        </div>
+                        <div class="profile-basic">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="profile-info-left">
+                                        <h3 class="user-name m-t-0 mb-0">Kishor  Singh</h3>
+                                        <ul class="personal-info mt-2">
+                                            <li>
+                                                <div class="title">Designation:</div>
+                                                <div class="text">Housekeeping Associate (A)
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Department:</div>
+                                                <div class="text">Housekeeping</div>
+                                            </li>
+                                            <li>
+                                                <div class="title">Reports to:</div>
+                                                <div class="text">Housekeeping Manager</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <ul class="personal-info" style="border-right: 2px dashed #D3D3D4;">
+                                        <li>
+                                            <div class="title">Code:</div>
+                                            <div class="text">451000404</div>
+                                        </li>
+                                        <li class="d-flex align-items-center">
+                                            <div class="title">Status:</div>
+                                            <div class="text">Confirmed</div>
+                                        </li>
+                                        <li>
+                                            <div class="title">DOJ:</div>
+                                            <div class="text">1 March 2025</div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Tenure:</div>
+                                            <div class="text">3 months, 12 days</div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4">
+                                    <ul class="personal-info">
+                                        <li>
+                                            <div class="title">Phone:</div>
+                                            <div class="text"><a href="#">6376871202</a></div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Email:</div>
+                                            <div class="text"><a href="#">rjputkishorsingh46@gmail.com</a></div>
+                                        </li>
+                                        <li>
+                                            <div class="title">Birthday:</div>
+                                            <div class="text">13 December</div>
+                                        </li>
+
+                                        <li>
+                                            <div class="title">Gender:</div>
+                                            <div class="text">Male</div>
+                                        </li>
+                                </ul></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> {% endcomment %}

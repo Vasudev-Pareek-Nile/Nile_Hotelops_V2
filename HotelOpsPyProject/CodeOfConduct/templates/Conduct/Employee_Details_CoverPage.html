@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acknowledgment - Business Ethics & Code Of Conduct Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+
+        .table-box {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        .Acknowledgment {
+            margin-bottom: 15px;
+        }
+        .statement_name {
+            margin-bottom: 200px;
+        }
+        .signature-box {
+            margin-top: 55px;
+        }
+
+        .table-box th, 
+        .table-box td {
+            border: 0.5px solid #33333362;
+            padding: 12px 10px;
+            font-size: 12px;
+            vertical-align: top;
+        }
+
+        .table-label {
+            font-size: 11px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .table-value {
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .signature-label {
+            font-size: 12px;
+            color: #333;
+            padding-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="page">
+
+        <header class="header">
+        <table style="width: 100%;">
+            <tr>
+            <td style="text-align: left;"></td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold;  font-size: 15px; text-align: center;">
+                <tbody>
+                    <tr>
+                    <td></td>
+                    </tr>
+                </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 120px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+            </tr>
+        </table>
+        </header>
+
+        <!-- Title -->
+        <div class="Acknowledgment">
+            Acknowledgment – Business Ethics & Code Of Conduct Training
+        </div>
+
+        <!-- Form -->
+        <table class="table-box">
+            <tr>
+                <th style="width: 15%;"><span class="table-label">Name</span></th>
+                <td><span class="table-value">{{ EmpData.EmpName }}</span></td>
+                <th style="width: 15%;"><span class="table-label">Designation</span></th>
+                <td><span class="table-value">{{ EmpData.Designation }}</span></td>
+            </tr>
+
+            <tr>
+                <th><span class="table-label">Department</span></th>
+                <td><span class="table-value">{{ EmpData.Department }}</span></td>
+                <th><span class="table-label">Date</span></th>
+                <td><span class="table-value">{{ current_datetime }}</span></td>
+            </tr>
+        </table>
+
+        <div class="statement_name">
+            I <span class="statement-name">{{EmpData.EmpName}}</span>, acknowledge that I have attended the above training on and I have understood the policy.
+        </div>
+
+        <div class="signature-box">
+            <div class="signature-line"></div>
+            <div class="signature-label">Employee Signature</div>
+        </div>
+    </div>
+</body>
+</html>

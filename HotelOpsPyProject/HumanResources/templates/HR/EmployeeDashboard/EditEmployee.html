@@ -1,0 +1,803 @@
+{% load static %}
+{% load encryption_filters %}
+<!DOCTYPE html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-layout-mode="orange" data-layout-width="fluid" data-layout-position="fixed" data-layout-style="default">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Smarthr - Bootstrap Admin Template">
+		    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+        <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
+        <title>Product - Hotelops</title>
+		
+		<!-- jQuery (Load only once) -->
+		<script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+		<!-- FontAwesome Icons -->
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+
+		<!-- LineAwesome & Material Icons -->
+		<link rel="stylesheet" href="{% static 'assets/css/line-awesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/material.css' %}">
+
+		<!-- Main Styles -->
+		<link rel="stylesheet" href="{% static 'assets/css/style.css' %}?V=1">
+
+		
+		<!-- Datatable CSS -->
+		<link rel="stylesheet" href="{% static "assets/css/dataTables.bootstrap4.min.css" %}">
+
+		<link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap-datetimepicker.min.css' %}">
+		<script src="{% static '/js/plugins/typehead/bootstrap3-typeahead.min.js' %}"></script>
+    <Style>
+        [data-layout-width=boxed] body, [data-layout-width=boxed] .header {
+          max-width: 100% !important;
+          margin: auto;
+      }
+	  
+	  #ProfileImagePreviewedit{
+        max-height: 200px;
+        max-width: 200px;
+        width: 100%;
+        height: 100%;
+        object-fit: fit; 
+        border-radius: 5px !important;  
+    }
+    
+
+      {% comment %} #settingsicon{
+        width: 0% !important; 
+      } {% endcomment %}
+
+	.btn-primary {
+		background: #3a4a93;
+		border-color: #3a4a93;
+		transition: all 0.5s ease
+	}
+
+	.btn-primary:hover {
+		background: #5464af;
+		border-color: #3a4a93;
+	}
+
+	.header {
+		background: #3a4a93 !important;
+	}
+    .card{
+        font-size: 14px important;
+    }
+    </Style>
+		<script>
+			var GRedURL ="{{ request.session.MasterURL }}";
+			var ProductUserRightsList ="{{ request.session.ProductUserRightsList }}";
+			var UserID="{{request.session.UserID}}"
+		</script>
+		<script>
+			$(function () {
+				var CS_SearchDataSource=[];
+				$(".nav_l_h_s_m").empty();
+				$(".nav_l_h_s_m").append('<li><form ><input class="form-control top-custsearch" id="" type="text" placeholder="Search here"> </form></li>')
+				$.getJSON('/get_cached_data',function(data){
+					debugger
+						console.log(data)
+						
+							var pl = data[0].ModuleList
+							pl = JSON.parse(pl);
+						
+							$(pl).each(function (index, item) {
+								var r= GRedURL+item.DomainURL ;
+									var it = { "name": item.ProductLabel, "id": "27", "type": "module", redURL:r};
+									$(".nav_l_h_s_m").append('<li><a href="'+r+'">'+item.ProductLabel+'</a></li>');
+                                    CS_SearchDataSource.push(it)
+							})
+
+                            $('.top-search').typeahead({
+                                source: CS_SearchDataSource
+                                , updater: function (item) {
+                                    console.log(item)
+                                    // Call your function here
+                               
+                   
+                                        if (item.type == "module") {
+                                            window.location.href = item.redURL
+                                            showLoader();
+                                        }
+                                  
+                                }
+                            });
+						
+
+							$(".top-custsearch").on("keyup", function() {
+        let value = $(this).val().toLowerCase();
+        
+        $(this).parent().parent().parent().parent().find(".nav_l_h_s_m li").filter(function(index,item) {
+			if(index>0){
+            // Get the text from <a> inside the <li>
+            let itemText = $(this).find("a").text().toLowerCase();
+
+            if (value === "") {
+                $(this).css("hide-important");
+            } else {
+                if (itemText.includes(value)) {
+                    $(this).removeClass("hide-important");
+                } else {
+                    $(this).addClass("hide-important");
+                }
+            }
+		}
+        });
+    });
+						debugger
+				})
+			})
+		</script>
+		<style>
+			.hide-important {
+    display: none !important;
+}
+
+.loader-container{
+	display: none;
+}
+.header .user-menu {
+    margin-top: 10px !important; 
+}
+
+#EditButtonContainer{
+	position:relative;
+}
+#editButtonstatusdiv{
+	position:absolute;
+	right: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+
+.submit-button-wrapper{
+    text-align: right;
+}
+
+.CustomFooter{
+    float: right;
+}
+.CustomFooter button{
+    float: right;
+}
+
+    .btn-primary{
+        border-radius:5px !important;
+    }
+    .btn-secondary{
+        border-radius:5px !important;
+    }
+</style>
+
+
+<style>
+    .card {
+        border-radius: 5px;
+        border: 1px solid #0000004f;
+    }
+
+    .card-header{
+        margin-bottom: -20px !important;
+    }
+
+    .EmpStatusBox{
+        border-radius:5px !important;
+        border:1px solid #E9E9EA;
+    }
+    .EmpStatusBox select{
+        border-radius:5px !important;
+        border:1px solid #E9E9EA;
+    }
+	table {
+		border: 0.5px solid #b0afaf75;
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+	}
+
+	table th, table td {
+		border: 0.5px solid #b0afaf75;
+	}
+</style>
+    </head>
+    <body>
+
+		<!-- Main Wrapper -->
+        <div class="main-wrapper">
+		
+			<!-- Header -->
+            <div class="header">
+			
+				<!-- Logo -->
+          <div class="header-left">
+                    <a  href="{{request.session.HomeURL}}" class="logo">
+						<img alt="image" class="" src="{{ request.session.OrganizationLogo}}" style="max-width:53px;box-shadow: none !important;"/>
+					</a>
+					<a  href="{{request.session.HomeURL}}" class="logo collapse-logo">
+						<img src="{{ request.session.OrganizationLogo}}" alt="Logo">
+					</a>
+					<a  href="{{request.session.HomeURL}}" class="logo2">
+						<img src="{{ request.session.OrganizationLogo}}" width="40" height="40" alt="Logo">
+					</a> 
+                </div>
+				<!-- /Logo -->
+				
+				<a id="toggle_btn" href="javascript:void(0);">
+					<span class="bar-icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
+				</a>
+				
+				<!-- Header Title -->
+                <div class="page-title-box">
+					<div class="nav-element-container d-flex justify-content-between align-items-center">
+						<div class="nav-element-container d-flex gap-4">
+                        {% comment %} {% block NavContent %}
+                        {% endblock NavContent %} {% endcomment %}
+
+                            {% include 'HR/TopNavbarMenu.html' %}
+						</div>
+					</div>
+			   </div>
+				<!-- /Header Title -->
+				
+				<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+				
+				<!-- Header Menu -->
+				
+
+                <ul class="nav user-menu mt-3" style="margin-right:30px;">
+                    <!-- Search -->
+                    <!-- Flag -->
+                    <!-- Notifications -->
+                    <!-- Message Notifications -->
+
+                    <!-- /Profile Home Nav - Button -->
+                    <li class="list-unstyled" >
+						<div class="top-nav-search">
+							<a href="javascript:void(0);" class="responsive-search">
+								{% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+						   </a>
+							<form >
+								<input class="form-control top-search" id="" type="text" placeholder="Search here">
+							</form>
+						</div>
+					</li>
+					
+                    <li class="list-unstyled"><a href="{{request.session.HomeURL}}" class="nav-link text-white">Home</a></li>
+
+                    <li class="nav-item dropdown has-arrow main-drop">
+                        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        
+                        <span class="status online"></span></span>
+                        <span>{{ request.session.FullName }}</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" ref="{{request.session.ChangePassword}}">Change Password</a>
+                            <a class="dropdown-item" href="#">setting</a>
+                            <a class="dropdown-item" ref="{{request.session.Logout}}">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+				<!-- /Header Menu -->
+				
+				<!-- Mobile Menu -->
+				<div class="dropdown mobile-user-menu">
+					<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+					<div class="dropdown-menu dropdown-menu-right">
+						<a class="dropdown-item">{{ request.session.FullName }}</a>
+						<a class="dropdown-item" href="settings.html">Settings</a>
+						<a class="dropdown-item" ref="{{request.session.ChangePassword}}">Change Password</a>
+						<a class="dropdown-item" ref="{{request.session.Logout}}">Logout</a>
+					</div>
+				</div>
+				<!-- /Mobile Menu -->
+				
+            </div>
+			<!-- /Header -->
+			
+			<!-- Sidebar -->
+			<div class="sidebar" id="sidebar">
+				<div class="sidebar-inner slimscroll">
+					<div id="sidebar-menu" class="sidebar-menu">
+						<nav class="greedys sidebar-horizantal">
+							<ul  class="list-inline-item list-unstyled links">
+                                <li class="submenu">
+									<a href="#"><i class="la la-dashcube"></i> <span> Modules</span> <span class="menu-arrow"></span></a>
+									<ul class="nav_l_h_s_m">
+										
+									</ul>
+								</li>
+								<li style="position: absolute; right: 0;">
+									<a style="display: inline-block"><i class="fas fa-arrow-left" style="cursor: pointer; color: #fff;" onclick="window.history.back();"></i></a>
+									<a style="display: inline-block"><i class="fas fa-sync-alt" style="cursor: pointer; color: #fff; display: inline-block" onclick="location.reload();"></i></a>
+								</li>
+								<li class="submenu">
+									
+                                        <a href="#" class=" "><i class="la la-dashcube"></i> <span> Emp Information</span> <span class="menu-arrow"></span></a>
+                                        <ul >
+                                            <li><a class="nav-link" href="{% url "PersonalDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Personal Information</a></li>
+                                        
+                                            <li><a class="nav-link" href="{% url "EmergencyInfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Emergency Information</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "FamilyinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Family Information</a></li>
+        
+                                            <li><a class="nav-link" href="{% url "AddressPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Address Information</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "IdentityPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Identity Information</a></li>
+                                            <li><a class="nav-link" href="{% url "DocumentinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Document Information</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "QualificationinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Qualification Information</a></li>
+                                            <li><a class="nav-link" href="{% url "BankDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Bank Details Information</a></li>
+                                          
+                                        </ul>
+                                    </li>
+                                    <li class="submenu">
+                                        <a href="#" class=" "><i class="la la-dashcube"></i> <span> Work Information</span> <span class="menu-arrow"></span></a>
+                                        <ul >
+                                            <li><a class="nav-link" href="{% url "PreviousworkinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Previous Work Information</a></li>
+        
+                                            <li><a class="nav-link" href="{% url "EmployeeWorkDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Work Information</a></li>
+                                          
+                                          
+                                            <li><a class="nav-link" href="{% url "SalaryDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Salary Details Information</a></li>
+                                            
+        
+                                            <li><a class="nav-link" href="{% url "EmployeeLetters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Employee Letters</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "Uniform" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Uniform</a></li>
+                                           <li><a class="nav-link" href="{% url "IT" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">IT</a></li>
+                                          
+                                      
+                                            <li><a class="nav-link" href="{% url "JobDescriptions" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Job Description</a></li>
+                                       
+                                            <li><a class="nav-link" href="{% url "CodeConduct" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Code of Conduct </a></li>
+                                            <li><a class="nav-link" href="{% url "Checklist" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">CheckList</a></li>
+                                            <li><a class="nav-link"  href="{% url "LeaveDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Leave Details</a></li>
+        
+                                            <li><a class="nav-link" href="{% url "ProbationConfirmation" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Probation Confirmation</a></li>
+                                           
+                                            
+        
+                                            <li><a class="nav-link" href="{% url "KraReport" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">KraReport Report</a></li>
+                                          
+                                            <li><a class="nav-link" href="{% url "PADP" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">PADP</a></li>
+        
+                                            <li><a class="nav-link"  href="{% url "Warning_Letters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Warning Letters</a></li>
+        
+        
+                                        </ul>
+                                    </li>
+                                    <li class="submenu">
+                                        <a href="#" class=" "><i class="la la-dashcube"></i> <span> Exit Process</span> <span class="menu-arrow"></span></a>
+                                        <ul >
+                                            <li><a class="nav-link" href="{% url "Resigantion" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Resignation</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "Termination" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Termination</a></li>
+                                            
+                                            <li><a class="nav-link" href="{% url "Absconding" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Absconding</a></li>
+        
+                                          
+                                            
+                                            <li><a class="nav-link" href="{% url "FullandFinal" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Full and Final Settlement</a></li>
+                                            <li><a class="nav-link" href="{% url "ExitInterview" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Exit Interview</a></li>
+                                            <li><a class="nav-link" href="{% url "Clearance_From" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Clearance Form</a></li>
+        
+                                        </ul>
+                                    
+								</li>
+							</ul>
+						</nav>
+						
+						<ul class="sidebar-vertical" >
+                            <li >
+                                <a href="#"><i class="la la-dashcube"></i> <span> Modules</span> <span class="menu-arrow"></span></a>
+                                <ul class="nav_l_h_s_m">
+                                    
+                                </ul>
+                            </li>
+							<li >
+                                <a href="#" class="active subdrop"><i class="la la-dashcube"></i> <span> Emp Information</span> <span class="menu-arrow"></span></a>
+                                <ul style="display: block;">
+                                    <li><a class="nav-link" href="{% url "PersonalDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Personal  Information</a></li>
+                                
+                                    <li><a class="nav-link" href="{% url "EmergencyInfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Emergency Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "FamilyinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Family Information</a></li>
+
+                                    <li><a class="nav-link" href="{% url "AddressPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Address Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "IdentityPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Identity Information</a></li>
+                                    <li><a class="nav-link" href="{% url "DocumentinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Document Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "QualificationinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Qualification Information</a></li>
+                                    <li><a class="nav-link" href="{% url "BankDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Bank Details Information</a></li>
+                                  
+                                </ul>
+
+                                <a href="#" class="active subdrop"><i class="la la-dashcube"></i> <span> Work Information</span> <span class="menu-arrow"></span></a>
+                                <ul style="display: block;">
+                                    <li><a class="nav-link" href="{% url "PreviousworkinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Previous Work Information</a></li>
+
+                                    <li><a class="nav-link" href="{% url "EmployeeWorkDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Work Information</a></li>
+                                  
+                                  
+                                    <li><a class="nav-link" href="{% url "SalaryDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Salary Details Information</a></li>
+                                    
+
+                                    <li><a class="nav-link" href="{% url "EmployeeLetters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Employee Letters</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Uniform" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Uniform</a></li>
+                                   <li><a class="nav-link" href="{% url "IT" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">IT</a></li>
+                                  
+                              
+                                    <li><a class="nav-link" href="{% url "JobDescriptions" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Job Description</a></li>
+                               
+                                    <li><a class="nav-link" href="{% url "CodeConduct" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Code of Conduct </a></li>
+                                    <li><a class="nav-link" href="{% url "Checklist" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">CheckList</a></li>
+                                    <li><a class="nav-link"  href="{% url "LeaveDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Leave Details</a></li>
+
+                                    <li><a class="nav-link" href="{% url "ProbationConfirmation" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Probation Confirmation</a></li>
+                                   
+                                    
+
+                                    <li><a class="nav-link" href="{% url "KraReport" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Kra Report</a></li>
+                                  
+                                    <li><a class="nav-link" href="{% url "PADP" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">PADP</a></li>
+
+                                    <li><a class="nav-link"  href="{% url "Warning_Letters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Warning Letters</a></li>
+
+
+                                </ul>
+
+                                <a href="#" class="active subdrop"><i class="la la-dashcube"></i> <span> Exit Process</span> <span class="menu-arrow"></span></a>
+                                <ul style="display: block;">
+                                    <li><a class="nav-link" href="{% url "Resigantion" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Resignation</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Termination" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Termination</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Absconding" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Absconding</a></li>
+
+                                  
+                                    
+                                    <li><a class="nav-link" href="{% url "FullandFinal" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Full and Final Settlement</a></li>
+                                    <li><a class="nav-link" href="{% url "ExitInterview" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Exit Interview</a></li>
+                                    <li><a class="nav-link" href="{% url "Clearance_From" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Clearance Form</a></li>
+
+                                </ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<!-- /Sidebar -->
+			
+			<!-- Two Col Sidebar -->
+			<div class="two-col-bar" id="two-col-bar">
+				<div class="sidebar sidebar-twocol" id="navbar-nav">
+					<div class="sidebar-left slimscroll">
+						<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+							<a class="nav-link active" id="v-pills-dashboard-tab" title="Dashboard" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+								<span class="material-icons-outlined">
+									home
+								</span>
+							</a> 
+						</div>
+					</div>
+					
+					 <div class="sidebar-right">
+						<div class="tab-content" id="v-pills-tabContent">
+							<div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+								<p>Modules</p>
+								<ul class="nav_l_h_s_m">
+								</ul>
+							</div> 
+						</div>
+					</div> 
+				</div>
+			</div>
+			<!-- /Two Col Sidebar -->
+
+			
+			
+			<!-- Page Wrapper -->
+            <div class="page-wrapper">
+			
+				<!-- Page Content -->
+                <div class="content container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card"> 
+
+                                <div class="card-body" >
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="profile-view" id="EditButtonContainer">
+												{% if  request.session.UserID == "20240903106516" or request.session.UserID == '20201212175519' %}
+													<div id="editButtonstatusdiv">
+														<button id="saveButtonstatus" class="btn btn-primary btn-sm">Save</button>
+														<button id="editButtonstatus" class="btn btn-primary btn-sm">Edit</button>
+													</div>
+												{% endif %}
+                                                <div class="profile-img-wrap">
+                                                    <div class="profile-img">
+                                                        <a href="#">
+                                                            {% if Emobj.ProfileImageFileName %}
+                
+                                                            
+															<img id="ProfileImagePreviewedit" src="{% url 'Humanview_file' %}?ID={{ Emobj.EmpID }}&model=EmployeePersonalDetails" alt="Profile Image Preview" style="width: 100%; height: auto;"> 
+																{% comment %} src="{% if employee.profile_image %}{{ employee.profile_image.url }}{% else %}{% static 'assets/img/avatar/avatarimg.jpg' %}{% endif %}"  {% endcomment %}
+                                                            {% else %}
+                                                            <img id="" src="{% static 'Images/avatarimg.webp' %}"
+                                                                alt="Profile Image Preview">
+                                                            {% endif %}
+                
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="profile-basic">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <div class="profile-info-left">
+                
+                                                                <h3 class="user-name m-t-0 mb-0">{{ Emobj.FirstName }} {{Emobj.MiddleName }} {{ Emobj.LastName }}</h3>
+                
+                
+                                                                <ul class="personal-info mt-2">
+                                                                    <li>
+                                                                        <div class="title">Designation:</div>
+                                                                        <div class="text">{{Emobj.Designation}} ({{ Emobj.Level }})
+                                                                        </div>
+                                                                    </li>
+                                                                    <li>
+                                                                        <div class="title">Department:</div>
+                                                                        <div class="text">{{Emobj.Department}}</div>
+                                                                    </li>
+                                                                    <li>
+                                                                        <div class="title">Reports to:</div>
+                                                                        <div class="text">{{Emobj.ReportingtoDesignation}}</div>
+                                                                    </li>
+                                                                </ul>
+                
+                
+                
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4">
+                                                            <ul class="personal-info" style="border-right: 2px dashed #D3D3D4;">
+                                                                <li>
+                                                                    <div class="title">Code:</div>
+                                                                    <div class="text">{{ Emobj.EmployeeCode }}</div>
+                                                                </li>
+                                                                <li class="d-flex align-items-center">
+                                                                    <div class="title">Status:</div>
+																	{% if  request.session.UserID == "20240903106516" or request.session.UserID == '20201212175519' %}
+																		<form method="POST" id="updateStatusForm" action="{% url "EmployeeList_StatusFormHandle" %}">
+																			{% csrf_token %}
+																			<input type="hidden" name="form_name" value="update_status_form">
+																			<input type="hidden" name="EmpID" value="{{ Emobj.EmpID }}">
+																			<input type="hidden" name="OrganizationID" value="{{ Emobj.OrganizationID }}">
+																			<div class="text EmpStatusBox">
+																				<select name="EmpStatus" id="EmpStatus" class="form-control" style="width:200px;">
+																					<option value="On Probation" {% if Emobj.EmpStatus == "On Probation" %}selected{% endif %}>On Probation</option>
+																					<option value="Not Confirmed" {% if Emobj.EmpStatus == "Not Confirmed" %}selected{% endif %}>Not Confirmed</option>
+																					<option value="Confirmed" {% if Emobj.EmpStatus == "Confirmed" %}selected{% endif %}>Confirmed</option>
+																					<option value="Resigned" {% if Emobj.EmpStatus == "Resigned" %}selected{% endif %}>Resigned</option>
+																					<option value="Terminate" {% if Emobj.EmpStatus == "Terminate" %}selected{% endif %}>Terminate</option>
+																					<option value="F&F In process" {% if Emobj.EmpStatus == "F&F In process" %}selected{% endif %}>F&F In Process</option>
+																					<option value="F&F Completed" {% if Emobj.EmpStatus == "F&F Completed" %}selected{% endif %}>F&F Completed</option>
+																					<option value="F&F In Completed" {% if Emobj.EmpStatus == "F&F Completed" %}selected{% endif %}>F&F In Completed</option>
+																					<option value="Absconding" {% if Emobj.EmpStatus == "Absconding" %}selected{% endif %}>Absconding</option>
+																					<option value="Left" {% if Emobj.EmpStatus == "Left" %}selected{% endif %}>Left</option>
+																					<option value="Archive" {% if Emobj.EmpStatus == "Archive" %}selected{% endif %}>Archive</option>
+																				</select>
+																			</div>
+																		</form>
+																	{% else %}
+																	 <div class="text">{{ Emobj.EmpStatus }}</div>
+																	{% endif %}
+                                                                </li>
+                                                                <li>
+                                                                    <div class="title">DOJ:</div>
+                                                                    <div class="text">{{ Emobj.DateofJoining|date:'j F Y' }}</div>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="title">Tenure:</div>
+                                                                    <div class="text">{{ Emobj.TenureTillToday }}</div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <ul class="personal-info">
+                                                                <li>
+                                                                    <div class="title">Phone:</div>
+                                                                    <div class="text"><a href="#">{{Emobj.MobileNumber}}</a></div>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="title">Email:</div>
+                                                                    <div class="text"><a href="#">{{ Emobj.EmailAddress }}</a></div>
+                                                                </li>
+                                                                <li>
+                                                                    <div class="title">Birthday:</div>
+                                                                    <div class="text">{{ Emobj.DateofBirth|date:'j F' }}</div>
+                                                                </li>
+                
+                                                                <li>
+                                                                    <div class="title">Gender:</div>
+                                                                    <div class="text">{{ Emobj.Gender }}</div>
+                                                                </li>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                
+                        </div>
+                    </div>
+                    {% block content %}{% endblock %}
+                </div>
+
+            </div>
+			<!-- /Page Wrapper -->
+			<div id="modalview" class="modal fade" role="dialog">
+				<div class="modal-dialog" style="max-width:90%;width:90%">
+					<!-- Modal content-->
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">View</h4>
+							<button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<iframe src="" style="width:100%;min-height:500px;overflow:auto"></iframe>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+		<!-- /Main Wrapper -->
+		
+
+		
+		<!-- Bootstrap Core JS -->
+		<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+		<!-- Slimscroll (for scrollbars, if needed) -->
+		<script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
+
+		<!-- Select2 (for enhanced select dropdowns, if used) -->
+		<script src="{% static 'assets/js/select2.min.js' %}"></script>
+
+		<!-- DataTables (for tables, if needed) -->
+		<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+		<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+		<!-- Datetimepicker (for date/time pickers, if used) -->
+		<script src="{% static 'assets/js/moment.min.js' %}"></script>
+		<script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+		<!-- Morris Charts (if using charts) -->
+		<script src="{% static 'assets/plugins/morris/morris.min.js' %}"></script>
+		<script src="{% static 'assets/plugins/raphael/raphael.min.js' %}"></script>
+
+		<!-- Theme & Custom Scripts -->
+
+		<script src="{% static 'assets/js/layout.js' %}"></script>
+		<script src="{% static 'assets/js/theme-settings.js' %}"></script>
+		<script src="{% static 'assets/js/greedynav.js' %}"></script>
+		<script src="{% static 'assets/js/app.js' %}"></script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButton = document.getElementById('editButtonstatus');
+        const saveButton = document.getElementById('saveButtonstatus');
+        const empStatusSelect = document.getElementById('EmpStatus');
+		const statusForm = document.getElementById("updateStatusForm");
+
+        // Initially disable the select
+        empStatusSelect.setAttribute('disabled', 'disabled');
+        saveButton.style.display = 'none';
+
+        editButton.addEventListener('click', function () {
+            if (editButton.textContent.trim() === 'Edit') {
+                editButton.textContent = 'Cancel';
+                empStatusSelect.removeAttribute('disabled');
+                saveButton.style.display = 'inline-block';
+            } else {
+                editButton.textContent = 'Edit';
+                empStatusSelect.setAttribute('disabled', 'disabled');
+                saveButton.style.display = 'none';
+            }
+        });
+
+        // Add save logic here
+        saveButton.addEventListener('click', function () {
+            // Optional: save the selected status (submit form or AJAX)
+            editButton.textContent = 'Edit';
+            saveButton.style.display = 'none';
+        });
+
+
+		        // Submit only this form when "Save" is clicked
+        saveButton.addEventListener("click", function () {
+			empStatusSelect.removeAttribute('disabled');
+            statusForm.submit();  // only submit this specific form
+        });
+    });
+</script> 
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editBtn = document.getElementById('editButtonstatus');
+        const saveBtn = document.getElementById('saveButtonstatus');
+        const statusSelect = document.getElementById('EmpStatus');
+
+        editBtn.addEventListener('click', function () {
+            statusSelect.removeAttribute('disabled');
+            saveBtn.style.display = 'inline-block';
+            editBtn.style.display = 'none';
+        });
+    });
+</script> -->
+
+
+		<script>
+			$(document).ready(function () {         
+			  
+				$("select").each(function(){
+				try
+					{
+	
+					if($(this).attr('data-val')!=undefined)
+					{
+	
+						$(this).val($(this).attr('data-val'));
+					}
+	
+				}catch(e){}
+	
+				})
+	
+			});
+	
+			{% comment %} $(window).bind("scroll", function () {
+				let toast = $('.toast');
+				toast.css("top", window.pageYOffset + 20);
+	
+			}); {% endcomment %}
+			$(window).bind("scroll", function () {
+				let toast = $('.toast');
+				if (toast.length > 0) {
+					toast.css("top", window.pageYOffset + 20);
+				}
+			});
+			
+		</script>
+		 
+		<script>
+			var showview = function (obj) {
+				$("#modalview").modal('show')
+				var url = $(obj).attr('data-href')
+				$("#modalview iframe").attr('src', url);
+			}
+		</script>
+    </body>
+</html>

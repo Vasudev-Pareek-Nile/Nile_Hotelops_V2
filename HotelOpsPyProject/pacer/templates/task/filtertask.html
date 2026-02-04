@@ -1,0 +1,215 @@
+{% extends "task/homebase.html" %} {% block content %}
+
+<style>
+    body{
+        font-family: arial nova;
+    }
+    .card {
+    width: 280px;
+    height: 130px;
+    border: 0.5px solid #000;
+    border-radius: 8px;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    padding: 22px;
+  }
+  .table-bordered {
+    border: 1px solid #000; /* You can adjust the color and thickness of the border */
+}
+</style>
+
+
+<div class="card-header"  >
+      <div class="row">
+          {% comment %} <div class="col-md-5" style="color: #1ab394;">
+            <div class="form-group m-">
+                  <label for=""></label>
+                  <select name="hotel" class="form-control">
+                    <option value="">Select Hotel Name</option>
+                  {% for organization in memOrg %}
+        <option value="{{ organization.OrganizationID }}" {% if organization.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+            {{ organization.Organization_name }}
+        </option>
+    {% endfor %}
+                  </select>
+                </div>
+          </div> {% endcomment %}
+          
+         <div class="col-md-12 text-md-right" style="margin-top: 20px;">
+    <a href="{% url '' %}" class="fa fa-print"> <strong>Print</strong></a>
+</div>
+      </div>  </div>
+<br>
+<h3><strong>Projects</strong></h3>
+{% comment %} <div class="col-md-12 text-right" style="margin-top: 20px;">
+
+     <span style="color: black;">Not Applicable</span>
+   <i class="fa fa-cloud" aria-hidden="true" style="color: #99EEBB;"></i>&nbsp;
+     <span style="color: black;">Completed</span>
+   <i class="fa fa-cloud" aria-hidden="true" style="color: green;"></i>&nbsp;
+   <span style="color: black;">Past Due</span>
+   <i class="fa fa-cloud  text-danger" aria-hidden="true" style="color: red;"></i>&nbsp;
+   <span style="color: black;">In Progress</span>
+<i class="fa fa-cloud text-warning" aria-hidden="true" style="color: #FFD300;"></i>&nbsp;
+<span style="color: black;">Not Due</span>
+<i class="fa fa-cloud" aria-hidden="true" style="color: #CCC;"></i>&nbsp;
+
+</div> {% endcomment %}
+<div class="card-header"  >
+    <div class="col-md-12">
+     
+      <div class="row">
+          <div class="col-md-2">
+            <span><h5>Opening</h5></span>
+           <p>Based On | {{ opening_dates.opening_date }}</p>
+          
+
+
+          </div>
+          <div class="col-md-4">
+             <h6>TASKS</h6>
+<div class="progress">
+  <div class="progress-bar" role="progressbar" style="width: {{ remaining_tasks_percentage }}%;" aria-valuenow="{{ remaining_tasks_percentage }}" aria-valuemin="0" aria-valuemax="100">
+    {{ total_contracts }} tasks
+  </div>
+</div>
+          </div>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <div class="col-md-4">
+                 <table class="" style="width: 600px; margin-top: 10px">
+    <tbody>
+        <tr>
+            <td>
+                <button type="button" class="btn btn-primary m-r-sm">&nbsp;&nbsp;{{ total_contracts }}</button>
+                TOTAL
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger m-r-sm">{{ pending_tasks_countss }}</button>
+                PAST DUE
+            </td>
+            <td>
+                <button type="button" class="btn btn-warning m-r-sm"> {{ inprogress_tasks_count }}</button>
+                IN PROGRESS
+            </td>
+            <td>
+                <button type="button" class="btn btn-info m-r-sm">{{ due_soon_count }}</button>
+                DUE SOON
+            </td>
+        </tr>
+    </tbody>
+</table>
+          </div>
+           
+          
+      </div>  </div></div>
+<br>
+ <h3><strong>Summary</strong></h3>
+
+      <div   >
+        {% comment %} <div class="col-md-12 text-right" style="margin-top: 20px;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <span style="color: black;">Not Applicable</span>
+   <i class="fa fa-cloud text-success" aria-hidden="true" style="color: #99EEBB;"></i>&nbsp;
+     <span style="color: black;">Completed</span>
+   <i class="fa fa-cloud" aria-hidden="true" style="color: green;"></i>&nbsp;
+    <span style="color: black;">Past Due</span>
+   <i class="fa fa-cloud  text-danger" aria-hidden="true" style="color: red;"></i>&nbsp;
+   <span style="color: black;">In Progress</span>
+<i class="fa fa-cloud text-warning" aria-hidden="true" style="color: #FFD300;"></i>&nbsp;
+<span style="color: black;">Not Due</span>
+<i class="fa fa-cloud" aria-hidden="true" style="color: #CCC;"></i>&nbsp;
+
+</div> {% endcomment %}
+<div class="row">
+  <div class="card">
+    <h2>{{ tasks_within_period_count }}</h2>
+    <p>TASK  DUE THIS WEEK</p>
+  </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <div class="card">
+    <h2>{{location}}</h2>
+    <p>LOCATION TASK</p>
+  </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <div class="card">
+    <h2>0</h2>
+    <p>TASK IN GM</p>
+  </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  <div class="card">
+    <h2>0</h2>
+    <p>TASK ASSIGNED TO ME</p>
+  </div>
+</div>
+</div>
+
+<br>
+
+
+<br>
+
+<h3><strong>Department Wise Task</strong></h3>
+<div >
+ <div class="container" style="width: auto">
+  <div class="row justify-content-center" style="padding: 15px">
+    <div>
+      <table class="table table-bordered sticky-top" style="width: 1180px; margin-top: 10px; background-color: white;">
+        <tbody>
+         
+         
+  {% for department_name, department_data in department_tasks.items %}
+   <tr>
+    <td style="color: green; width: 500px;">{{ department_name }}</td>
+   
+    
+   
+    <td >
+                    <button type="button" class="btn btn-primary m-r-sm">{{ department_data.task_count }}</button>
+                    Total Task
+                </td>
+     
+      <td>
+                    <button type="button" class="btn btn-danger m-r-sm">{{ department_data.pending_task_count }}</button>
+                    Past Due
+                </td>
+                
+                  <td>
+                    <button type="button" class="btn btn-warning m-r-sm">{{ department_data.progres_tasks_count  }}</button>
+                    In Progress
+                </td>
+                 
+
+  
+  </tr>
+
+  {% endfor %}
+  
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+      
+</div>
+          
+</div>  
+{% comment %} <br><br>
+<div class="col-lg-3" style="margin-top: 20px;">
+  <h3><strong>MILESTONES</strong></h3>
+   <div style="background-color: white; width: 300px; height: 150px; text-align: center; border: 1px solid black;">
+        <div class="row">
+            <div class="col-12" style="margin-top: 50px;">
+              <h2 class="font-bold">0</h2>
+              <span style="color: black;">LOCATION MILESTONES</span>
+                
+            </div>
+        </div>
+    </div>
+</div>
+ {% endcomment %}
+
+
+
+ {% endblock content %}

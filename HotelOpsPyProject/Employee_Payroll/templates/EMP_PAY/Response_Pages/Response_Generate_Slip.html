@@ -1,0 +1,28 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+
+<div class="card"> 
+    <div class="card-body"> 
+        <table class="table table-bordered mt-2" id="GenerateSalaryTable">
+            <thead>
+                <tr>
+                    <th>Sr</th>
+                    <th>Emp Code</th>
+                    <th>Emp Name</th>
+                    <th>Status</th>
+                </tr>      
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td>1</td>
+                    <td>101</td>
+                    <td>Radhey Choudhary</td>
+                    <td>Proceed successfully</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %} 

@@ -1,0 +1,20 @@
+from django.contrib import admin
+from PreOpeningDoc.models import *
+
+admin.site.register(FixedSignageMaster)
+admin.site.register(FixedSignageEntryMaster)
+admin.site.register(FixedSignageEntryDetails)
+admin.site.register(IndicativeProImpMaster)
+admin.site.register(IndicativeProImpEntryMaster)
+admin.site.register(IndicativeProImpEntryDetails)
+admin.site.register(SnagListMaster)
+admin.site.register(SnagListEntryMaster)
+admin.site.register(SnagListEntryDetails)
+admin.site.register(ProjectImpProcessMaster)
+admin.site.register(ProjectImpProcessEntryMaster)
+admin.site.register(ProjectImpProcessEntryDetails)
+admin.site.register(HotelHandOverMaster)
+admin.site.register(HotelHandOverEntryMaster)
+admin.site.register(HandOverEntryDetails)
+admin.site.register(DivisionMaster)
+admin.site.register(SectionMaster)

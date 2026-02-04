@@ -1,0 +1,54 @@
+{% extends 'uniform/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'UniformItemMasterNew' %}  enctype="multipart/form-data">
+    {{ Uniform_Inventory_Sheet }}
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Item</p>
+        </div>
+
+        <div class="card-body">
+            
+          
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-1">
+                <label>Item</label>
+               
+              </div>
+              <div class="col-sm-10">
+                {% for item in key2.DbItemMaster %}
+                <input type="hidden" name="Itemid" value="{{item.id}}">
+                <input name="Item_Title_Name" class="form-control" value="{{item.Item_Title_Name}}"/>
+              {% endfor %}
+              </div>
+            </div>
+<br/>
+                    
+                
+                  
+
+
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+ {% endblock content %}

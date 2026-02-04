@@ -1,0 +1,44 @@
+
+{% comment %} <li><a href="/Clearance_From/ClearanceFrom"> Clearance From </a></li> {% endcomment %}
+{% comment %} <li><a href="/Clearance_From/ClearanceFromlist"> Clearance List </a></li> {% endcomment %}
+
+
+{% if request.session.UserID == '20201212178780' %}
+
+<li class="nav-item dropdown">
+  <a
+	href="#"
+	class="nav-link dropdown-toggle"
+	data-toggle="dropdown"
+	role="button"
+	aria-haspopup="true"
+	aria-expanded="true"
+	>Master <span class="caret"></span
+  ></a>
+  <ul class="dropdown-menu">
+	 <li>
+	  <a
+		class="dropdown-item"
+		href="/Clearance_From/MasterClearanceApproved"
+		>Master - <br> Clearance Item</a
+	  >
+	</li>
+   
+  
+	 <li>
+	  <a
+		class="dropdown-item"
+		href="/Clearance_From/MasterReturnlist"
+		> Master - Return </a
+	  >
+	</li>
+
+   
+	 
+	
+	
+  </ul>
+  
+  
+</li>
+{% endif %}

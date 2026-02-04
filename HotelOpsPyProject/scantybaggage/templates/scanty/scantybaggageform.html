@@ -1,0 +1,82 @@
+{% extends 'scanty/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="ScantyBaggageForm" enctype="multipart/form-data">
+    {{ Scanty_Baggage_Register_Form }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p> Register Scanty Baggage Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field ScantyBaggageForm.Date class="form-control" placeholder="Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Room No</label>
+                {% render_field ScantyBaggageForm.Room_No class="form-control" placeholder="Room_No" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Guest Name</label>
+                {% render_field ScantyBaggageForm.Guest_Name class="form-control" placeholder="Guest_Name" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Arrival Date</label>
+                {% render_field ScantyBaggageForm.Arrival_Date class="form-control" placeholder="Arrival_Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Departure Date</label>
+                {% render_field ScantyBaggageForm.Departure_Date class="form-control" placeholder="Departure_Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Deposite</label>
+                {% render_field ScantyBaggageForm.Deposite class="form-control" placeholder="Deposite" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Comment</label>
+                {% render_field ScantyBaggageForm.Comment class="form-control" placeholder="Comment" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Front Desk Associate</label>
+                {% render_field ScantyBaggageForm.Front_Desk_Associate class="form-control" placeholder="Front_Desk_Associate" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Duty Manager</label>
+                {% render_field ScantyBaggageForm.Duty_Manager class="form-control" placeholder="Duty_Manager" %}
+              </div>
+             
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Remarks</label>
+                {% render_field ScantyBaggageForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks" %}
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  {% endblock content %}

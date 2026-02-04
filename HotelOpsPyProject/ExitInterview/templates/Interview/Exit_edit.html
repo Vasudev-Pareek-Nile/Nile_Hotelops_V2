@@ -1,0 +1,259 @@
+
+{% extends "Interview/homebase.html" %}
+{% load custom_filters %}
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    .custom-label {
+        width: 200px; 
+        font-family: "Arial Nova",
+        margin-top: 50px; 
+    }
+    
+    .form-control {
+        flex-grow: 1;
+        margin-top: 5px;
+    }
+    
+    
+</style>   
+ 
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 23px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #f44336; /* Red color for the "left" (unchecked) position */
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 15px;
+        width: 15px;
+        border-radius: 50%;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #4CAF50; /* Green color for the "right" (checked) position */
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(27px); /* Adjust the translation to match the width of the slider */
+    }
+   
+
+</style>
+
+<div class="col-md-12">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-header">
+                <strong>Edit Exit Form</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <input type="hidden" name="hotel" value="{{ exit.hotel }}" />
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Employee Code:</label>
+                        <input type="text" class="form-control" name="EmployeeCode" value="{{ exit.Employee_Code }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Employee Name:</label>
+                        <input type="text" class="form-control" name="EmpName" value="{{ exit.EmpName }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                        <label class="from-label custom-label">Date of Joining:</label>
+                        <input type="text" class="form-control" name="DateofJoining" value="{{exit.DateofJoining}}" >
+                    </div>
+                </div>
+                       
+                <div class="row">
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Department:</label>
+                        <input type="text" class="form-control" name="Department" value="{{ exit.Department }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <label class="from-label custom-label">Job Title:</label>
+                        <input type="text" class="form-control" name="Designation" value="{{ exit.Job_Title }}" readonly>
+                    </div>
+                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                        <label class="from-label custom-label">Date of Leaving:</label>
+                        <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="{{ exit.DateofLeaving }}">
+                    </div>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <label class="me-2">Notice Period Given:</label>
+                            <div class="d-flex">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="NoticePeriod" value="Yes" {% if exit.NoticePeriod == 'Yes' %}checked{% endif %} style="width: 23px;">
+                                    <span style="margin-left: 5px;">Yes</span>
+                                </label>
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Resign" value="Resign" {% if exit.Resign == 'Resign' %}checked{% endif %} style="width: 23px;">
+                                    <span style="margin-left: 5px;">Resign</span>
+                                </label>
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Termination" value="Termination" {% if exit.Termination == 'Termination' %}checked{% endif %} style="width: 23px;">
+                                    <span style="margin-left: 5px;">Termination</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                        <div class="d-flex align-items-center">
+                            <label class="from-label custom-label">Reasons of Leaving:</label>
+                            <select class="form-control" name="reasons" id="reasonDropdown">
+                                {% for reason in reasons %}
+                                    <option value="{{ reason.Reason_Leaving_name }}" {% if reason.Reason_Leaving_name == exit.ReasonForLeaving %}selected{% endif %}>
+                                        {{ reason.Reason_Leaving_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <br>
+                <table class="table table-bordered ">
+                    <thead>
+                      <tr>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">&nbsp;</th>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Yes/No</th>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for experiencedata in experiencedatas %}
+                            <tr>
+                                <td style="width: 300px;">
+                                    {{ experiencedata.experience_name }}
+                                    <input type="hidden" name="experiencedata_ID_{{ forloop.counter0 }}" value="{{ experiencedata.id }}" />
+                                </td>
+                    
+                                <td style="width: 50px;">
+                                    <!-- Hidden field to send "no" if not checked -->
+                                    <input type="hidden" name="chekdata_{{ forloop.counter0 }}" value="no">
+                                    
+                                    <label class="switch">
+                                        <!-- If checked, "Yes" will override the hidden input -->
+                                        <input type="checkbox" name="chekdata_{{ forloop.counter0 }}"
+                                            value="Yes"
+                                            {% if experience_chekdata|get_item:experiencedata.id == 'Yes' %}
+                                                checked
+                                            {% endif %}
+                                            
+                                          
+
+
+                                            id="customToggle_{{ forloop.counter0 }}" class="custom-toggle">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </td>
+                    
+                                <td style="width: 400px;">
+                                    <textarea class="form-control" name="remarkexit_{{ forloop.counter0 }}" rows="1">{{ experience_remarks|get_item:experiencedata.id }}</textarea>
+                                </td>
+                            </tr>
+                    
+                            {% if forloop.last %}
+                                <input type="hidden" name="TotalExitInterview" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                    
+                    
+                    
+                    
+                </table>  
+                <br>
+                <table class="table table-bordered ">
+                    <thead>
+                      <tr>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Rating</th>
+                        <th style="background-color: #958a79; color: black; font-size: 11px;">Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for ratingleveing in ratingleveings %}
+                            <tr>
+                                <td style="width: 400px;">{{ ratingleveing.rating_name }}
+                                    <input type="hidden" name="ratingleveing_ID_{{ forloop.counter0 }}" value="{{ ratingleveing.id }}" />
+                                </td>
+                                <td style="width: 400px;">
+                                    <select class="form-control" name="remarks_{{ forloop.counter0 }}" style="width: 100%;">
+                                        <option value="Very Poor" {% if exit_ratings|get_item:ratingleveing.id == 'Very Poor' %}selected{% endif %}>Very Poor</option>
+                                        <option value="Poor" {% if exit_ratings|get_item:ratingleveing.id == 'Poor' %}selected{% endif %}>Poor</option>
+                                        <option value="Average" {% if exit_ratings|get_item:ratingleveing.id == 'Average' %}selected{% endif %}>Average</option>
+                                        <option value="Good" {% if exit_ratings|get_item:ratingleveing.id == 'Good' %}selected{% endif %}>Good</option>
+                                        <option value="Very Good" {% if exit_ratings|get_item:ratingleveing.id == 'Very Good' %}selected{% endif %}>Very Good</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                                <input type="hidden" name="TotalRatingviewdata" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                    
+                </table>
+                <br>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label style="font-size: 13px; font-weight: bold; margin-right: 10px;">Final Comment:</label>
+                        <textarea class="form-control" rows="2" name="FinalComment">{{ exit.FinalComment }}</textarea>
+                    </div>
+                </div>
+               
+                      
+                <div class="col-sm-12 mt-3">
+                    <div style="display: inline-flex; align-items: center;">
+                        <label style="font-size: 13px; font-weight: bold; margin-right: 2px;">
+                            Would you re-hire this employee?
+                        </label>
+                        
+                        <label class="switch">
+                            <input type="checkbox" name="rehire" value="Yes" {% if exit.rehire %}checked{% endif %} id="customToggle">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                <input type="submit" class="btn btn-primary" value="Update">
+               
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

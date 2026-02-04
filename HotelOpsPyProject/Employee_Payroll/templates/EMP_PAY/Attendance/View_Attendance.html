@@ -1,0 +1,67 @@
+
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+
+<style>
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 20px !important;
+    }
+</style>
+
+
+<div class="card">
+    <!-- <div class="card-header text-uppercase mb-3 ">Attendance Details</div> -->
+
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-4">
+            <div class="">
+                <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            </div>
+            <div class="">
+                <h4 style="display: inline;" class="fw-bold text-uppercase">Attendance Details ({{ current_month|date:"F Y" }})</h4>
+            </div>
+            <div class="">
+                <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+            </div>
+        </div>
+
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Duty Hours</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_data %}
+                <tr>
+                    <td>{{ record.Date|date:"j F, Y" }}</td>
+                    <td> {% if record.In_Time %}{{ record.In_Time }}{% else %}Missing{% endif %}</td>
+                    <td> {% if record.Out_Time %}{{ record.Out_Time }}{% else %}Missing{% endif %} </td>
+                    <td> {% if record.S_In_Time %}{{ record.S_In_Time }}{% else %}Missing{% endif %}</td>
+                    <td> {% if record.S_Out_Time %}{{ record.S_Out_Time }}{% else %}Missing{% endif %} </td>
+                    <td>{{ record.Duty_Hour }}</td>
+                    <td>{{ record.Status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center;">No Data Available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock content %}
+ 

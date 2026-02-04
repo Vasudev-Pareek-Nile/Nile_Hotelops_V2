@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      font-size: 12px;
+    }
+    
+        /* Define any custom CSS styles here */
+       
+    </style>
+  </style>
+  <body>
+    <div class="container">
+      <table style="border: none;">
+    <tr>
+        <td>
+            <table class="boder">
+                <tbody>
+                    <td>
+                        <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100">
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td>
+            <table  class="boder" style="border: none; border-radius: 0px; background-color:; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                    <td style="text-align: center;">
+                        <div style="font-size: larger;">NILE Hospitality</div>
+                        <div style="font-size: 9px;">CHIRAG COMPLEX, 47, Ganpati Vihar, Pulan, Pulla Bhuwana, Panerion Ki Madri, Udaipur, Rajasthan 313002</div>
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td></td>
+    </tr>
+</table>
+    </br>
+   <table style="border-collapse: collapse; width: 100%;">
+    <tbody>
+        <tr style="height: 50px;">
+            <td colspan="3" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">Project review - Proposed hotel at :- {{check.title}}</td>
+        </tr>
+        <tr style="height: 50px;">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Project :- <span style="color:#040647">{{check.project}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Height of the building :- <span style="color:#040647">{{check.height_bulding}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Structure Type :- <span style="color:#040647">{{check.structure_type}}</span></td>
+        </tr>
+        <tr style="height: 50px;">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Total Site area :- <span style="color:#040647">{{check.total_area}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Structure - levels :- <span style="color:#040647">{{check.structure_levels}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Total Built up area :- <span style="color:#040647">{{check.built_area}}</span></td>
+        </tr>
+        <tr style="height: 50px;">
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">No. of Rooms :- <span style="color:#040647">{{check.no_of_room}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Standard Guest room size :- <span style="color:#040647">{{check.guest_size}}</span></td>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Room Mix :- <span style="color:#040647">{{check.room_mix}}</span></td>
+        </tr>
+    </tbody>
+</table>
+<br>
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Location</th>
+            <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">L</th>
+            <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">B</th>
+            <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Net Size (Sq Mt.)</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for item in arenn %}
+        {% if item.title !=  "" %}
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;background-color: #f2f2f2;font-weight:bold" colspan="4">
+                {{item.title}}
+            </td>
+
+        </tr>
+        {% endif %}
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ item.location_name }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 100px;">{{ check.lenth }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 100px;">{{ check.barth }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 100px;">{{ check.net }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    </div>
+  </body>
+</html>

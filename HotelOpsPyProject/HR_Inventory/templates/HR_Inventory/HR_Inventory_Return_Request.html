@@ -1,0 +1,191 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<style>
+    .CustomFooter input{
+		float: right;
+	}
+    table thead th {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+    }
+    table body td {
+        font-size: 13px;
+    }
+
+    .form-control{
+        border-radius:5px !important;
+    }
+
+    .btn-primary{
+        border-radius:5px !important;
+    }
+    .btn-secondary{
+        border-radius:5px !important;
+    }
+</style>
+
+<div class="">
+    <div class="col-md-12">
+        <form action="" method="post" id="UniformFORM">
+            <div class="card">
+                <div class="card-header text-uppercase fw-bold">Uniform Return Request</div>
+                <div class="card-main">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="employeeCode">Employee Code</label>
+                                <input type="text" required class="form-control" name="EmployeeCode" id="employeeCode" value="{{ UN.EmployeeCode }}" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="EmployeeName">Employee Name</label> 
+                                <input type="text" class="form-control" name="EmployeeName" id="EmployeeName" value="{{ UN.EmployeeName }}" readonly> 
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="Department">Department</label>
+                                <input type="text" class="form-control" name="Department" id="Department" value="{{ UN.Department }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="DesignationGrade">Designation Grade</label>
+                                <input type="text" class="form-control" name="DesignationGrade" id="DesignationGrade" value="{{ UN.DesignationGrade }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="ReportingtoDesigantion">Reporting To Designation</label>
+                                <input type="text" class="form-control" name="ReportingtoDesigantion" id="ReportingtoDesigantion" value="{{ UN.ReportingtoDesigantion }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Issued</th>
+                                <th>Returned</th>
+                                <th>Price</th>
+                                <th>Total Charged</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in uitem %}
+                            <tr>
+                                <td>
+                                    {{ u.ItemName }}
+                                    <input name="ItemID_{{ forloop.counter0 }}" type="hidden" value="{{ u.id }}" /> 
+                                </td>
+                                <td>
+                                    <select name="Issued_{{ forloop.counter0 }}" class="form-control new-select">
+                                        <option value="" {% if u.Item_Issued == '' %}selected{% endif %}>Select</option>
+                                        <option value="Yes" {% if u.Item_Issued == 'Yes' %}selected{% endif %}>Yes</option>
+                                        <option value="No" {% if u.Item_Issued == 'No' %}selected{% endif %}>No</option>   
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="Item_Returned_{{ forloop.counter0 }}" class="form-control altered-select">
+                                        <option value="" {% if u.Item_Returned == '' %}selected{% endif %}>Select</option>
+                                        <option value="Yes" {% if u.Item_Returned == 'Yes' %}selected{% endif %}>Yes</option>
+                                        <option value="No" {% if u.Item_Returned == 'No' %}selected{% endif %}>No</option>   
+                                    </select> 
+                                </td>
+                                <td>
+                                    <input name="Price_{{ forloop.counter0 }}" class="form-control" type="text" value="{{ u.Price }}">  
+                                </td>
+                                <td>
+                                    <input class="form-control total-charged" name="TotalCharged_{{ forloop.counter0 }}" type="text" >  
+                                </td>
+                            </tr>
+                        
+                            {% if forloop.last %}
+                                <input type="hidden" name="Total_item" value="{{ forloop.counter }}" />
+                            {% endif %}
+                            {% endfor %}
+                            <tr>
+                                <td colspan="4" style="text-align: center; font-weight: bold;">Total Charged Amount</td>
+                                <td><input type="text" name="ReturnAmount" class="form-control" id="totalChargedAmount"  {{ UN.ReturnAmount }} readonly></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% if Hide_Value != 'True' %}
+                    <div class="CustomFooter m-3 mt-0">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-primary" value="Submit">
+                    </div>
+                {% endif %}
+            </div>
+        </form>    
+</div>
+
+<script>
+    function calculateRow(row) {
+        let issued = row.querySelector('select[name^="Issued_"]').value;
+        let returned = row.querySelector('select[name^="Item_Returned_"]').value;
+        let price = parseFloat(row.querySelector('input[name^="Price_"]').value) || 0;
+        let totalInput = row.querySelector('input[name^="TotalCharged_"]');
+
+        // Calculate only when issued = Yes AND returned = No
+        if (issued === "Yes" && returned === "No") {
+            totalInput.value = price.toFixed(2);
+        } else {
+            totalInput.value = "0.00";
+        }
+
+        updateTotalChargedAmount();
+    }
+
+
+    function updateTotalChargedAmount() {
+        let total = 0;
+        document.querySelectorAll('.total-charged').forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        document.getElementById('totalChargedAmount').value = total.toFixed(2);
+    }
+
+    document.addEventListener("change", function(e) {
+        if (e.target.matches('select[name^="Issued_"], select[name^="Item_Returned_"]')) {
+            calculateRow(e.target.closest("tr"));
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll("tr").forEach(row => {
+            if (row.querySelector('select[name^="Issued_"]')) {
+                calculateRow(row);
+            }
+        });
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        let hide_value = "{{Hide_Value}}";   
+        console.log("the hide value is here::",hide_value)
+
+        if (hide_value === "True" || hide_value === "true" || hide_value === "1") {
+            $(".form-control").attr("readonly", true);
+        } else {
+            $(".form-control").removeAttr("readonly");
+        }
+    });
+</script>
+
+{% endblock content %}

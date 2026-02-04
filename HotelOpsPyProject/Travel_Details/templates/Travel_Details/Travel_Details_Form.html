@@ -1,0 +1,442 @@
+{% extends 'Travel_Details/homebase.html' %}
+{% load static %}
+{% block content %} 
+<style>
+    .btn-outline-primary{
+        border-color: #3a4a93 !important;
+        color: #3a4a93 !important;
+        transition: all 0.5s ease-in-out;
+    }
+
+    input:focus, select:focus{
+        border-color: #3a4a93 !important;
+    }
+
+    .btn-outline-primary:hover{
+        border-color: #3a4a93 !important;
+        color: white !important;
+        background-color: #3a4a93 !important;
+    }
+    #statusSuccessModal{
+        user-select: none;
+    }
+
+    .card-header{
+        margin-bottom: -20px;
+    }
+
+    .MarginTop{
+        margin-top: 2rem;
+    }
+
+    .existing-entry .remove-entry {
+        display: none;
+    }
+</style>
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+    <div class="col-md-12">
+        <div class="card">
+            <form method="post" id="TravelForm">
+                {% csrf_token %}
+                <p class="card-header text-uppercase fw-bold">
+                    Travel Information
+                </p>
+                <div class="card-body">
+                    <!-- SALARY ADVANCE/ LOAN APPLICATION FORM -->
+                    <div class="row">
+                        <!-- Row 1 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label for="booked_by" class="form-label">Booked By</label>
+                                <input type="text" class="form-control" id="booked_by" name="booked_by" value="{% if RunLoop == "yes" %}{{travel_request.booked_by}}{% else %}{{ request.session.FullName }}{% endif %}" required>
+                                {% comment %} <input type="text" class="form-control" id="booked_by" name="booked_by" value="{{travel_request.booked_by}}" required> {% endcomment %}
+                            </div>
+                        </div>
+                        {% comment %} <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{travel_request.name}}"  required>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="col-md-4 position-relative">
+                            <div class="input-block mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{travel_request.name}}" list="EmployeeList"  required>
+                                <datalist id="EmployeeList">
+                                    {% for emp in employees %}
+                                        <option value="{{ emp.EmpName }}">
+                                            {{ emp.EmpName }}
+                                        </option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label for="booking_date" class="form-label">Booking Date</label>
+                                <input type="date" class="form-control" id="booking_date" name="booking_date"  value="{% if travel_request.booking_date %}{{ travel_request.booking_date|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if RunLoop == "yes" %}
+                    <div class="mt-3 m-2" id="travel-Card">    
+                        <div id="travel-entries mt-3">
+                                    {% for Item in EntriesObj %}
+                                    <div class="row g-3 travel-entry border rounded p-3 mb-3 mt-3">
+                                        <div class="col-md-2">
+                                            <label for="travel_Date_from" class="form-label">Travel Date (From)</label>
+                                            <input type="date" class="form-control" name="travel_Date_from[]" value="{{ Item.travel_Date_from|date:'Y-m-d' }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="travel_Date_to" class="form-label">Travel Date (To)</label>
+                                            <input type="date" class="form-control" name="travel_Date_to[]" value="{{ Item.travel_Date_to|date:'Y-m-d' }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="travel_route_from" class="form-label">Departure (From)</label>
+                                            <input type="text" class="form-control" name="travel_route_from[]" value="{{ Item.travel_route_from }}" placeholder="e.g. Ahm">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="travel_route_to" class="form-label">Arrival (To)</label>
+                                            <input type="text" class="form-control" name="travel_route_to[]" value="{{ Item.travel_route_to }}" placeholder="e.g. UDR">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="fare" class="form-label">Fare</label>
+                                            <input type="number" class="form-control" name="fare[]" value="{{ Item.fare }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="travel_mode" class="form-label">Travel Mode</label>
+                                            <select class="form-control" name="travel_mode[]">
+                                                <option value="">Select</option>
+                                                <option value="Train" {% if Item.travel_mode == "Train" %}selected{% endif %}>Train</option>
+                                                <option value="Bus" {% if Item.travel_mode == "Bus" %}selected{% endif %}>Bus</option>
+                                                <option value="Flight" {% if Item.travel_mode == "Flight" %}selected{% endif %}>Flight</option>
+                                                <option value="By Road" {% if Item.travel_mode == "By Road" %}selected{% endif %}>By Road</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="pnr" class="form-label">PNR</label>
+                                            <input type="text" class="form-control" name="pnr[]" value="{{ Item.pnr }}" placeholder="e.g. 12356">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="Comment" class="form-label">Comment</label>
+                                            <input type="text" class="form-control" name="comment[]" value="{{ Item.comment }}">
+                                        </div>
+                                        <div class="col-md-3 position-relative">
+                                            <label for="Billing" class="form-label">Billing</label>
+                                            <input type="text" class="form-control" name="billing[]" value="{{ Item.billing }}" list="orgList">
+                                            <datalist id="orgList">
+                                                {% for org in memOrg %}
+                                                    <option value="{{ org.Organization_name }}">{{ org.Organization_name }}</option>
+                                                {% endfor %}
+                                            </datalist>
+                                        </div>
+                                        <div class="col-md-2 text-end delete-entry">
+                                            <a class="btn btn-danger MarginTop" href="{% url "Delete_Travel_Single_Entry" %}?Travel_TravelRequest_ID={{travel_request.id}}&Travel_Entry_ID={{Item.id}}&OID={{Item.organization_id}}">Delete</a>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% else %}
+                        <div class="mt-3 m-2" id="travel-Card">    
+                            <div id="travel-entries">
+                                <div class="row g-3 travel-entry border rounded p-3 mb-3">
+                                    <div class="col-md-2">
+                                        <label for="travel_Date_from"  class="form-label">Travel Date (From)</label>
+                                        <input type="date" class="form-control" name="travel_Date_from[]" id="travel_Date_from" value="{{EntriesObj.travel_Date_from|date:'d-m-Y '}}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="travel_Date_to"  class="form-label">Travel Date (To)</label>
+                                        <input type="date" class="form-control" name="travel_Date_to[]" id="travel_Date_to">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="travel_route_from"  class="form-label">Departure (From)</label>
+                                        <input type="text" class="form-control" name="travel_route_from[]" id="travel_route_from"
+                                            placeholder="e.g. Ahm">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="travel_route_to"  class="form-label">Arrival (To)</label>
+                                        <input type="text" class="form-control" name="travel_route_to[]" id="travel_route_to"
+                                            placeholder="e.g. UDR" >
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="fare"  class="form-label">Fare</label>
+                                        <input type="number" class="form-control" name="fare[]" id="fare" placeholder="e.g. 1220">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="travel_mode"  class="form-label">Travel Mode</label>
+                                        <select class="form-control" name="travel_mode[]" id="travel_mode">
+                                            <option value="">Select</option>
+                                            <option value="Train">Train</option>
+                                            <option value="Bus">Bus</option>
+                                            <option value="Flight">Flight</option>
+                                            <option value="By Road">By Road</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="pnr"  class="form-label">PNR</label>
+                                        <input type="text" class="form-control" name="pnr[]" id="pnr" placeholder="e.g. 12356">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="Comment"  class="form-label">Comment</label>
+                                        <input type="text" class="form-control" name="comment[]" id="Comment">
+                                    </div>
+                                    <div class="col-md-3 position-relative">
+                                        <label for="Billing" class="form-label">Billing</label>
+                                        <input type="text" id="Billing" class="form-control" name="billing[]" list="orgList">
+                                        <datalist id="orgList">
+                                            {% for org in memOrg %}
+                                                <option value="{{ org.Organization_name }}">{{ org.Organization_name }}</option>
+                                            {% endfor %}
+                                        </datalist>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <!-- Add Row Button -->
+                    <div class="">
+                        <button type="button" class="btn btn-outline-primary" onclick="addTravelEntry()">+ Add Another
+                            Entry</button>
+                    </div>
+
+
+                    <!-- Submit -->
+                    <div class="text-end mt-5">
+                        <button type="submit" class="btn btn-primary">{% if RunLoop == "yes" %}Update{% else %}Submit{% endif %}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>  
+
+
+<!-- Modals For Success and Error -->
+<div class="container p-5">
+    <div class="row">
+        <!-- Error Modal -->
+        <div class="modal fade" id="statusErrorsModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body text-center p-lg-4">
+                        <svg version="1.1" xmlns="http://www.w3.org/200/svg" viewBox="0 0 130.2 130.2">
+                            <circle class="path circle" fill="none" stroke="#ff0000" stroke-width="6" stroke-miterlimit="10"
+                                cx="65.1" cy="65.1" r="62.1" />
+                            <line class="path line" fill="none" stroke="#ff0000" stroke-width="6" stroke-linecap="round"
+                                stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+                            <line class="path line" fill="none" stroke="#ff0000" stroke-width="6" stroke-linecap="round"
+                                stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" />
+                        </svg>
+                        <h4 class="text-danger mt-3">Error !!</h4>
+                        <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p>
+                        <button type="button" class="btn btn-sm mt-3 btn-danger" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $('input[type="text"]').on('blur', function () {
+            const capitalized = $(this).val().replace(/\b\w/g, function (char) {
+            return char.toUpperCase();
+            });
+            $(this).val(capitalized);
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isError = urlParams.get('error');  // ✅ should be 'error'
+        const errorMessage = urlParams.get('message');  // ✅ get the message from URL
+
+        if (isError === 'True' || isError === 'true') {
+            const errorText = document.getElementById('errorMessageText');
+            if (errorText && errorMessage) {
+                errorText.textContent = decodeURIComponent(errorMessage);  // ✅ set custom error message
+            }
+
+            var ErrorModalEl = document.getElementById('statusErrorsModal');
+            var ErrorModal = new bootstrap.Modal(ErrorModalEl, {
+                backdrop: 'static',
+                keyboard: false
+            });
+            ErrorModal.show();  // ✅ show the error modal
+        }
+    });
+</script>
+
+
+
+
+<script>
+    $(document).on('click', '.remove-entry', function () {
+        if (confirm("Are you sure you want to delete this travel entry?")) {
+            $(this).closest('.travel-entry').remove();
+        }
+    });
+</script> 
+{% comment %} <script>
+    function addTravelEntry() {
+    const original = document.querySelector('.travel-entry');
+    const clone = original.cloneNode(true);
+    clone.classList.add('mt-3');
+
+    // Clear inputs in the clone (optional)
+    const inputs = clone.querySelectorAll('input, select, textarea');
+    inputs.forEach(input => {
+        if (input.type !== "file") input.value = '';
+    });
+
+    // Add a remove button only to the new clone
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-danger MarginTop remove-entry';
+    removeBtn.textContent = 'Remove';
+
+    // Wrap in a div for alignment
+    const btnWrapper = document.createElement('div');
+    btnWrapper.className = 'col-md-2 text-end';
+    btnWrapper.appendChild(removeBtn);
+
+    // Append the remove button to the cloned row
+    clone.appendChild(btnWrapper);
+
+    // Add click event to remove this block
+    removeBtn.addEventListener('click', function () {
+        clone.remove();
+    });
+
+    // Append the new entry to the container
+    original.parentNode.appendChild(clone);
+    }
+</script> {% endcomment %}
+
+<script>
+    function addTravelEntry() {
+        const original = document.querySelector('.travel-entry');
+        const clone = original.cloneNode(true);
+        clone.classList.add('mt-3');
+        clone.classList.remove('existing-entry'); // So JS doesn't treat it as existing
+        clone.querySelectorAll('.delete-entry').forEach(btn => btn.remove()); // Remove Delete buttons
+
+        // Clear inputs
+        const inputs = clone.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.type !== "file") input.value = '';
+        });
+
+        // Add Remove button
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-danger MarginTop remove-entry';
+        removeBtn.textContent = 'Remove';
+
+        // Append it to the right place
+        const wrapper = document.createElement('div');
+        wrapper.className = 'col-md-2 text-end';
+        wrapper.appendChild(removeBtn);
+        clone.appendChild(wrapper);
+
+        // Remove functionality
+        removeBtn.addEventListener('click', () => clone.remove());
+
+        // Append clone
+        original.parentNode.appendChild(clone);
+    }
+</script>
+
+
+{% endblock content %}

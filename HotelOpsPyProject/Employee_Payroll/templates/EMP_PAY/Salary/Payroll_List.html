@@ -1,0 +1,67 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+{% comment %} {% extends "EMP_PAY\homebase.html" %}
+{% block content %}  {% endcomment %}
+
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">Payslip List</div>
+    <div class="card-body">
+        <div class="col-md-12">
+            <form method="GET" action="{% url 'Payroll_List' %}">
+                <div class="row">
+                    <input type="hidden" name="current_year" value="{{ current_year }}">
+                    <div class="col-md-2">
+                        <button type="submit" name="action" value="prev_year" class="btn btn-primary btn-sm">Previous Year</button>
+                    </div>
+                    <div class="col-md-8 text-center">
+                        <h1 style="display: inline;"> {{current_year}}</h1>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" name="action" value="next_year" class="btn btn-primary btn-sm">Next Year</button>
+                    </div>
+                </div> 
+            </form>
+        </div>   
+    </div>   
+</div>  
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for month in months_data %}
+                <tr>
+                    <td>{{ month.month_name }}</td>
+                    <td>
+                    
+                        <a href="{% url 'Generate_Salary_Slip' %}?year={{month.year}}&month_no={{month.month}}" class="btn btn-success btn-sm">Download <i class="fa-solid fa-file-arrow-down"></i></a>
+                    
+                    
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center;">No Data Available</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

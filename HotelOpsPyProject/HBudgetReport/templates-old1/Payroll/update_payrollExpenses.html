@@ -1,0 +1,19 @@
+{% extends 'Payroll/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div class="container2">
+        <h1>Update Title</h1>     
+
+        <form action="{% url 'update_payrolleXPENSES' rem.id %}" method ="post">
+            {% csrf_token %}
+            <label for="">Title</label><br><br>
+           
+            <input type="text" name="title" value="{{rem.title}}"><br><br>
+            <button type="submit" id="new1">Update</button>
+        </form>
+
+    </div>
+    {% endblock content %}

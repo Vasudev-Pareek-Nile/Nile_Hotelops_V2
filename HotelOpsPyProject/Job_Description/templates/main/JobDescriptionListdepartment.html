@@ -1,0 +1,106 @@
+{% extends "main/homebase.html" %} 
+{% block content %}
+
+  <style>
+    .dt-buttons .btn {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: #fff;
+    }
+  
+    .dt-buttons .btn:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+      color: #fff;
+    }
+  
+    .dt-buttons .btn:focus, .dt-buttons .btn:active {
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+  
+    table th {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 11px;
+      background-color: #f8f9fa; /* Light background for headers */
+    }
+  
+    td {
+      
+      font-size: 12px;
+    }
+  
+    body {
+      font-family: 'Arial Nova', sans-serif;
+    }
+  
+    .dataTables_wrapper .dataTables_filter {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  
+    .dataTables_wrapper .dataTables_filter input {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  
+    .dataTables_wrapper .dt-buttons {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  
+    .card-header {
+      {% comment %} color: #1ab394; {% endcomment %}
+    }
+  
+    .card {
+      margin-bottom: 20px;
+    }
+  </style>
+  
+  <link href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  
+
+<div class="card">
+    <div class="card-header">
+      <strong>Job Descriptions for {{ department_name }}</strong>
+    </div>
+    {% comment %} <br> {% endcomment %}
+    <div class="card-body">
+      {% if job_descriptions %}
+        <table id="example" class="table table-bordered">
+          <thead class="thead">
+            <tr class="table-success">
+              <th>Reeno</th>
+              <th>Title</th>
+              <th>Department</th>
+              <th>Position</th>
+              <th>Update Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for job in job_descriptions %}
+            <tr>
+              <td>{{ job.Reference_No }}</td>
+              <td>{{ job.JD_Title }}</td>
+              <td>{{ job.Department }}</td>
+              <td>{{ job.Position }}</td>
+              <td>{{ job.ModifyDateTime | date:"j F Y" }}</td>
+              <td style="width: 90px;">
+                <a href="{% url 'JobDescriptionPdf' job.id %}" class="btn btn-primary btn-sm fa fa-eye" style="color: white; text-decoration: none; font-size: 12px;" title="View">&nbsp;View</a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>No job descriptions available for this department.</p>
+      {% endif %}
+  </div>
+</div>
+
+
+  {% endblock content %}

@@ -1,0 +1,322 @@
+{% extends 'HTotal_OOD/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Latest compiled and minified CSS -->
+    <div class="container1">
+        <Div class="card card-primary ">
+
+
+        <div class = "card-header">Total OOD Edit</div>
+        <div class="card-body">
+
+        <form action="{%url 'Total_OODEdit' mem.id %}" method = "post">
+            {% csrf_token %}
+    
+            <div class="row">
+        
+                <lable  class="control-label col-sm-2">Month</lable>
+                <span class="col-sm-3">
+                    <select class="form-control calc" name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">Februry</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>
+                        
+                    </select>
+    
+            </span>
+            <lable  class="col-sm-1"> Year</lable>
+            <span  class="col-sm-3">
+                
+                   
+                <select class="form-control calc"  name="EntryYear" name="{{mem.EntryYear}}">
+                    {%for i in CYear %}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+
+            </span>
+        </div>
+        <br>
+        
+        <div class="row">
+        
+            <lable  class="control-label col-sm-2">SPA TREATMENT REVENUE</lable>
+            <div class="col-sm-4">
+                <input type="text" class="form-control calc" name ="SpaTreatmentRevenue" value ="{{mem.SpaTreatmentRevenue}}" >
+            </div>
+        </div>
+    
+        <br>
+
+        <div class ="row">
+            <label class="control-label col-sm-2">MOD - EXTERNAL GUEST TRANSPORTATION</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name="Mod_ExtGuestTransportation" value="{{mem.Mod_ExtGuestTransportation}}">
+            </div>
+        </div>
+
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">GUEST LAUNDRY REVENUE</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="GuestLaundryRevenue" value="{{mem.GuestLaundryRevenue}}">
+            </div>
+        </div>
+        <br>
+        <div class="row">      
+           <lable  class="control-label col-sm-2"> Revenue</lable>
+            <div class="col-sm-4">
+                <input type="text" readonly class="form-control calc" name="Revenue" value="{{mem.Revenue}}" >
+            </div>
+        </div>    
+
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Cost of Merchandise</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="Cost_OfMerchandise" value="{{mem.Cost_OfMerchandise}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Cost of Guest Transportation</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="Cost_OfGuestTransportation" value="{{mem.Cost_OfGuestTransportation}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Cost of Laundry Services</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="Cost_OfLaundryServices" value="{{mem.Cost_OfLaundryServices}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Total Cost of Sales</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="Total_CostOfSales" value="{{mem.Total_CostOfSales}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Gross Profit (Loss)</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="GrossProfit" value="{{mem.GrossProfit}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Salary And Wages</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="SalaryAndWages" value="{{mem.SalaryAndWages}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Bonuses And Incentives</label>
+            <div class ="col-sm-4">
+                <input type="text"  class="form-control calc" name ="Bonuses_and_Incentives" value="{{mem.Bonuses_and_Incentives}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Salary Wages And Bonuses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly  class="form-control calc" name ="Salary_Wages_and_Bonuses" value="{{mem.Salary_Wages_and_Bonuses}}">
+            </div>
+        </div>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Employee Benefits</label>
+            <div class ="col-sm-4">
+                <input type="text" class="form-control calc" name ="EmployeeBenefits" value="{{mem.EmployeeBenefits}}">
+            </div>
+        </div>
+        <br>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Payroll Related Expenses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="PayrollRelatedExpenses" value="{{mem.PayrollRelatedExpenses}}">
+            </div>
+        </div>
+        <br>
+        <br>   
+        <div class ="row">
+            <label class="control-label col-sm-2">Payroll And Related Expenses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="PayrollAndRelatedExpenses" value="{{mem.PayrollAndRelatedExpenses}}">
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+         
+
+            <table id="title" class="table table-bordered ">
+                <thead>
+
+                    <th>Utilities </th>
+                    <th>Amount</th>
+                    
+                </thead>
+
+                {% for x in mem1%}
+                <tr>    
+                    
+                    <td>{{x.Total_OODMaster.title}}</td> 
+                    <td><input type="text" class="form-control calc" value="{{x.Amount}}" name="Amount_{{ forloop.counter0 }}"/>
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.Total_OODMaster.id}}" type="text"/>
+                    </td>
+               
+                </tr>
+                {% if forloop.last %}
+                <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                {% endif %}
+                {% endfor %}
+            </table>
+            
+
+            <br></br>
+
+            <div class="row">
+                <label for="text" class="col-sm-2"> Total Other Expenses </label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="Total_Other_Expenses" value="{{mem.Total_Other_Expenses}}" >
+                 </div>
+             </div>
+             <br>
+             <div class="row">
+                <label for="text" class="col-sm-2"> Total Expenses </label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="TotalExpenses" value="{{mem.TotalExpenses}}" >
+                 </div>
+             </div>
+             <br>
+    
+             <div class="row">
+                <label for="text" class="col-sm-2">Department Income (Loss) </label>
+                <div class="col-sm-4">
+                      <input type="text" readonly class="form-control calc" name="DepartmentIncome" value="{{mem.DepartmentIncome}}" >
+                 </div>
+             </div>
+             <br>
+             <br>
+         
+                <div class = "card-footer text-right">
+                <button class="btn btn-success" type="submit" id="new1">Edit</button>
+                </div>
+           </div>          
+        </form>
+    </div>
+</div>
+</div>
+
+<br>
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var Rev = 0;
+        var a = $("input[name='SpaTreatmentRevenue']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var e = $("input[name='Mod_ExtGuestTransportation']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;           
+
+        var g = $("input[name='GuestLaundryRevenue']").val();
+        g = parseFloat(g);
+        g = isNaN(g)?0:g;
+        Rev = a+e+g ;
+        $("input[name='Revenue']").val(Rev.toFixed(2));
+
+        
+        var TotSale = 0;
+        var m = $("input[name='Cost_OfMerchandise']").val();
+        m = parseFloat(m);
+        m = isNaN(m)?0:m;
+
+        var n = $("input[name='Cost_OfGuestTransportation']").val();
+        n = parseFloat(n);
+        n = isNaN(n)?0:n;           
+
+        var o = $("input[name='Cost_OfLaundryServices']").val();
+        o = parseFloat(o);
+        o = isNaN(o)?0:o;
+        TotSale = m+n+o ;
+        $("input[name='Total_CostOfSales']").val(TotSale.toFixed(2));
+
+        $("input[name='GrossProfit']").val((Rev-TotSale).toFixed(2));
+        var GrossProfit = (Rev - TotSale);
+
+     
+        var TotSalWag=0;
+        var c = $("input[name='SalaryAndWages']").val();
+        c = parseFloat(c);
+        c = isNaN(c)?0:c;
+               
+        var TotSalWag=0;
+        var d = $("input[name='Bonuses_and_Incentives']").val();
+        d = parseFloat(d);
+        d = isNaN(d)?0:d;
+        TotSalWag = c+d;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+
+        var f = $("input[name='EmployeeBenefits']").val();
+        f = parseFloat(f);
+        f = isNaN(f)?0:f;
+        $("input[name='PayrollRelatedExpenses']").val(f.toFixed(2));
+
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag + f).toFixed(2));
+        var PayrollAndRelatedExpenses = (TotSalWag + f);
+      
+        
+        
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+        $("input[name='Total_Other_Expenses']").val(TotalAmount.toFixed(2))
+        var Total_Other_Expenses = TotalAmount;
+
+        $("input[name='TotalExpenses']").val((PayrollAndRelatedExpenses+Total_Other_Expenses + TotSale ).toFixed(2))
+        var TotalExpenses = (PayrollAndRelatedExpenses+Total_Other_Expenses + TotSale);
+
+        
+        $("input[name='DepartmentIncome']").val((GrossProfit - TotalExpenses).toFixed(2))
+
+      
+            
+
+      
+    }
+</script>
+ 
+{% endblock content %}

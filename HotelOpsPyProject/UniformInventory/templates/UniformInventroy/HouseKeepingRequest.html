@@ -1,0 +1,141 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<div class="card">
+    <div class="col-md-12">
+        <form action="" method="post" id="UniformFORM">
+
+                <div class="card-header text-uppercase fw-bold">Uniform New Request</div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="employeeCode">Employee Code</label>
+                            <input type="text" required class="form-control" name="EmployeeCode" id="employeeCode" value="{{ EmployeeData.EmployeeCode }}" readonly>
+                            <input type="hidden" class="form-control" name="EmpID" id="EmpID" value="{{ EmployeeData.EmpID }}" >
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="EmployeeName">Employee Name</label> 
+                            <input type="text" class="form-control" name="EmployeeName" id="EmployeeName" value="{{ EmployeeData.EmpName }}" readonly> 
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="Department">Department</label>
+                            <input type="text" class="form-control" name="Department" id="Department" value="{{ EmployeeData.Department }}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="DesignationGrade">Designation</label>
+                            <input type="text" class="form-control" name="DesignationGrade" id="DesignationGrade" value="{{ EmployeeData.Designation }}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="ReportingtoDesigantion">Reporting To Designation</label>
+                            <input type="text" class="form-control" name="ReportingtoDesigantion" id="ReportingtoDesigantion" value="{{ EmployeeData.ReportingtoDesigantion }}" readonly>
+                        </div>
+                    </div>
+                    {% comment %} {% if Hide_Value %} {% endcomment %}
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="ReportingtoDesigantion">Issued Date</label>
+                                <input type="date" class="form-control" name="IssuedDate" id="IssuedDate" value="{% if UN.IssuedDate %}{{UN.IssuedDate|date:"Y-m-d"}}{% else %}{{date}}{% endif %}" readonly>
+                            </div>
+                        </div>
+                    {% comment %} {% endif %} {% endcomment %}
+                </div>
+
+                <div class="card-body">
+                    <table class="table table-bordered mt-2">
+                        <thead>
+                            <tr>
+                                <th>Uniform</th>
+                                <th>New</th>
+                                <th>Altered</th>
+                                <th>Issued</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in uitem %}
+                            <tr>
+                                <td>
+                                    {{ u.ItemName }}
+                                    <input name="ItemID_{{ forloop.counter0 }}" type="hidden" value="{{ u.id }}" />
+                                </td>
+                                <td>
+                                    <select name="New_{{ forloop.counter0 }}" class="form-control new-select" {% if Hide_Value %}readonly{% endif %}>
+                                        <option value="0" {% if u.NewQuantity == 0 %}selected{% endif %}>0</option>
+                                        <option value="1" {% if u.NewQuantity == 1 %}selected{% endif %}>1</option>    
+                                        <option value="2" {% if u.NewQuantity == 2 %}selected{% endif %}>2</option>    
+                                        <option value="3" {% if u.NewQuantity == 3 %}selected{% endif %}>3</option>    
+                                        <option value="4" {% if u.NewQuantity == 4 %}selected{% endif %}>4</option>    
+                                        <option value="5" {% if u.NewQuantity == 5 %}selected{% endif %}>5</option>    
+                                        <option value="6" {% if u.NewQuantity == 6 %}selected{% endif %}>6</option>    
+                                        <option value="7" {% if u.NewQuantity == 7 %}selected{% endif %}>7</option>    
+                                        <option value="8" {% if u.NewQuantity == 8 %}selected{% endif %}>8</option>    
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="Altered_{{ forloop.counter0 }}" class="form-control altered-select" {% if Hide_Value %}readonly{% endif %}>
+                                        <option value="0">0</option>
+                                        <option value="1" {% if u.AlteredQuantity == 1 %}selected{% endif %}>1</option>    
+                                        <option value="2" {% if u.AlteredQuantity == 2 %}selected{% endif %}>2</option>    
+                                        <option value="3" {% if u.AlteredQuantity == 3 %}selected{% endif %}>3</option>    
+                                        <option value="4" {% if u.AlteredQuantity == 4 %}selected{% endif %}>4</option>    
+                                        <option value="5" {% if u.AlteredQuantity == 5 %}selected{% endif %}>5</option>    
+                                        <option value="6" {% if u.AlteredQuantity == 6 %}selected{% endif %}>6</option>    
+                                        <option value="7" {% if u.AlteredQuantity == 7 %}selected{% endif %}>7</option>    
+                                        <option value="8" {% if u.AlteredQuantity == 8 %}selected{% endif %}>8</option>    
+
+
+                                    </select>
+                                </td>
+                                <td>
+                                    <input class="form-control" name="Issued_{{ forloop.counter0 }}" value="{{ u.IssuedQuantity }}" type="number" readonly>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                                <input type="hidden" name="Total_item" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if Hide_Value != 'Hide' %}
+                        <div class="CustomFooter mb-2">
+                            {% csrf_token %}
+                            <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+                        </div>
+                    {% endif %}
+                </div>
+        </form>    
+    </div>
+</div>
+
+<script>
+    function updateIssuedQuantities(selectElement) {
+        const row = selectElement.closest('tr');
+        const id = selectElement.name.split('_')[1];
+        const newValue = parseInt(row.querySelector(`select[name="New_${id}"]`).value) || 0;
+        const alteredValue = parseInt(row.querySelector(`select[name="Altered_${id}"]`).value) || 0;
+        const issuedValue = newValue + alteredValue;
+        row.querySelector(`input[name="Issued_${id}"]`).value = issuedValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const selects = document.querySelectorAll('select[name^="New"], select[name^="Altered"]');
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                updateIssuedQuantities(this);
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,95 @@
+{% extends 'PADPAPP/homebase.html' %}
+<style>
+    table th,td{
+        font-size: 11px;
+    }
+</style>
+{% block content %} 
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Objective Master List</div>
+            <div class="card-body">
+                <div class="text-right mb-4">
+                    <a class="btn btn-sm btn-primary" href="{% url 'Objective_Master_Add' %}"><i class="fa fa-plus"></i> Add Objective</a>
+                    <a class="btn btn-sm btn-primary" href="{% url 'Makecopy' %}"><i class="fa fa-plus"></i> Make Copy</a>
+                </div>
+                <div class="table-responsive mb-0">
+                    <table id="example" class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Level</th>
+                            <th>Objective</th>
+                            <th>Definitions</th>
+                            <th>Attribute Master</th>
+                            <th>Ineffective Indicators</th>
+                            <th>Effective Indicators</th>
+                            
+                            
+                
+                            <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for  Ojb in Ojbs  %}
+                            <tr>
+                                <td>{{Ojb.Level}}</td>
+                                <td>{{Ojb.Title }}</td>
+                                <td>{{ Ojb.Definitions|slice:":54" }}.</td>
+
+                               <td><a href="{% url 'Attribute_Master_List' %}?O_ID={{Ojb.id}}">Attribute Master</a></td>
+                               <td><a href="{% url 'Ineffective_Indicators_List' %}?O_ID={{Ojb.id}}">Ineffective Indicators</a></td>
+                               <td><a href="{% url 'Effective_Indicators_List' %}?O_ID={{Ojb.id}}">Effective Indicators</a></td>
+                                <td>
+                                    <a href="{% url "Objective_Master_Add" %}?ID={{Ojb.id}}"><i class="fa fa-edit text-primary"></i></a>
+                                
+                                    <a href="{% url 'Objective_Master_Delete' %}?ID={{Ojb.id}}" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash text-danger"></i></a>
+                                    
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        
+       
+    });
+    
+    
+</script>
+
+{% endblock %}

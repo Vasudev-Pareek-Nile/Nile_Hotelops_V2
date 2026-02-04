@@ -1,0 +1,237 @@
+{% load maningfilter %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manning Guide</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 3px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #dedede;
+        
+        font-size: 10px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+    @page {
+      size: landscape;
+      margin: 1cm;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+     
+      <table style="width: 100%;">
+        <tr>
+            <!-- Organization Logo -->
+            <td style="text-align: left; width: 20%;">
+                {% if organization_logos %}
+                    <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+    
+            <!-- Manning Guide Content -->
+            <td style="text-align: center; width: 60%;">
+                <table style="width: 100%; border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding: 5px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                                <strong>
+                                    Manning Guide <br/> {{ selectedOrganizationName }}<br>
+                                    Hotel Actual Salary Report
+                                    {% if selected_division %}
+                                        - {{ selected_division }}
+                                    {% else %}
+                                        {{ selected_division }}
+                                    {% endif %}
+                                </strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+    
+            <!-- Placeholder for Additional Content -->
+            <td style="text-align: right; width: 20%;">
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+    
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      <div class="main-container">
+        <table  class="table table-striped custom-table">
+         
+            <tbody>
+                {% for designation, hotels in salary_dict.items  %}
+                    <tr>
+                        <th>{{ designation }}</td>
+                        {% for label in ShortDisplayLabels %}
+                            <td style="text-align: center; vertical-align: middle;">{{ label|upper  }} <br/>{{ hotels|get:label|default:"0" }}</td>
+                            {% if forloop.counter|divisibleby:14 and not forloop.last %}
+                                </tr><tr><td  width="200px"></td> <!-- Close row and add empty cell for alignment -->
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td collapse="{{ salary_dict.items|length }}"></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+            <!-- Table Footer for Totals -->
+            <tfoot>
+                <tr>
+                    <th><strong>Total</strong></td>
+                    {% for label in ShortDisplayLabels %}
+                        <th style="text-align: center; vertical-align: middle;"><strong>{{ label|upper  }}<br> {{ total_salary_all_designations|get:label|default:"0" }}</strong></td>
+                        {% if forloop.counter|divisibleby:14 and not forloop.last %}
+                            </tr><tr><td  width="200px"></td> <!-- Close row and add empty cell for alignment -->
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </tfoot>
+        </table>
+
+      </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

@@ -1,0 +1,149 @@
+{% extends 'Warning/homebase.html' %}
+
+
+{% block content %}
+
+<style>
+    .dt-buttons .btn {
+      background-color: #007bff;
+      border-color: #007bff;
+      color: #fff;
+    }
+  
+    .dt-buttons .btn:hover {
+      background-color: #0056b3;
+      border-color: #0056b3;
+      color: #fff;
+    }
+  
+    .dt-buttons .btn:focus, .dt-buttons .btn:active {
+      box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    }
+  
+    table th {
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+  
+    td {
+      font-size: 12px;
+    }
+  
+    body {
+      font-family: 'Arial Nova', sans-serif;
+    }
+  
+    .dataTables_wrapper .dataTables_filter {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  
+    .dataTables_wrapper .dataTables_filter input {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  
+    .dataTables_wrapper .dt-buttons {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  
+    .job-title {
+      text-align: left; /* Align the text to the left */
+    }
+    .dropdown-toggle::after {
+      display: none; /* Hide the dropdown arrow */
+    }
+    
+  </style>
+  
+
+<body>
+   <div class="card">
+    <div class="card-header">
+      <h3>Warning List</h3>
+  </div>
+  <div class="card-body">
+
+    <table  class="table table-bordered table-striped custom-table mb-0 datatable dataTable no-footer">
+      <thead>
+          <tr>
+              <th>Warning Type</th>
+              <th>Employee Code</th>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Problems</th>
+              <th>Improvements</th>
+              <th>From Date</th>
+              <th>To Date</th>
+             
+              <th>Actions</th>
+              
+          </tr>
+      </thead>
+      <tbody>
+          {% for warning in warnings %}
+              <tr>
+                  
+                  <td>{{ warning.type }}</td>
+                  {% if warning.type == 'Verbal' %}
+                      <td>{{ warning.data.emp_code }}</td>
+                      <td>{{ warning.data.emp_name }}</td>
+                      <td>{{ warning.data.department }}</td>
+                      <td>{{ warning.data.designation }}</td>
+                      <td style="width: 200px;">{{ warning.data.problems }}</td>
+                      <td  style="width: 200px;">{{ warning.data.improvements }}</td>
+                      <td>{{ warning.data.from_date |date:"d M. Y" }}</td>
+                      <td>{{ warning.data.to_date |date:"d M. Y" }}</td>
+                   
+                      
+                  {% elif warning.type == 'Written' %}
+                      <td>{{ warning.data.employee_no }}</td>
+                      <td>{{ warning.data.name }}</td>
+                      <td>{{ warning.data.department }}</td>
+                      <td>{{ warning.data.designation }}</td>
+                      <td  style="width: 200px;">{{ warning.data.problems }}</td>
+                      <td  style="width: 200px;">{{ warning.data.written_warning }}</td>
+                     
+                      <td>{{ warning.data.period_from |date:"d M. Y" }}</td>
+                      <td>{{ warning.data.period_to |date:"d M. Y"  }}</td>
+                     
+                  {% elif warning.type == 'Final' %}
+                      <td>{{ warning.data.employee_no }}</td>
+                      <td>{{ warning.data.name }}</td>
+                      <td>{{ warning.data.department }}</td>
+                      <td>{{ warning.data.designation }}</td>
+                      <td  style="width: 200px;">{{ warning.data.employee_problem }}</td>
+                      <td  style="width: 200px;">{{ warning.data.written_warning }}</td>
+                    
+                      <td>{{ warning.data.improvement_period_from |date:"d M. Y"  }}</td>
+                      <td>{{ warning.data.improvement_period_to |date:"d M. Y"  }}</td>
+                    
+                      
+                  {% endif %}
+                  <td>
+                      {% if warning.type == 'Verbal' %}
+                          <a target="_blank" href="{% url 'verbal_warning_pdf'  %}?id={{warning.data.id}}&OID={{warning.data.OrganizationID}}" class="btn btn-primary btn-sm" title="Verbal Warning PDF">PDF</a>
+                      {% elif warning.type == 'Written' %}
+                          <a target="_blank" href="{% url 'written_warning_pdf' %}?id={{warning.data.id}}&OID={{warning.data.OrganizationID}}" class="btn btn-primary btn-sm" title="Written Warning PDF">PDF</a>
+                      {% elif warning.type == 'Final' %}
+                          <a target="_blank" href="{% url 'final_warning_pdf'  %}?id={{warning.data.id}}&OID={{warning.data.OrganizationID}}" class="btn btn-primary btn-sm" title="Final Warning PDF">PDF</a>
+                      {% endif %}
+                  </td>
+              </tr>
+          {% empty %}
+              <tr>
+                  <td colspan="11">No warnings found</td>
+              </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+
+  </div>
+
+   </div>
+    
+</body>
+</html>
+{% endblock content %}

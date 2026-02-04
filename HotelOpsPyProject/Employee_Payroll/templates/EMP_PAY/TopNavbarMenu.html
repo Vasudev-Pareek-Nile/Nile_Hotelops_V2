@@ -1,0 +1,107 @@
+
+
+<!-- New - Example Element Element -->
+<div class="nav-element-container d-flex gap-4">
+    <!-- <li class="list-unstyled"><a href="/Leave_Management_System/Employee_Dashboard/" class="nav-link text-white">Dashboard</a></li> -->
+
+    <!-- Nav - Element -->
+    <!-- <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            <span>Application</span>
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Application/">New Leave</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Status/">Leave Status</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Approval_list/">Approval List</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOffRequest/">Comp Off Claim</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOffClaim_Status/">Comp Off Status</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/CompOfffApproval_list/">Comp Off Approval List</a>
+        </div>
+    </li> -->
+
+    <!-- Nav - Element -->
+    <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+            <span>Reports</span>
+        </a>
+        <div class="dropdown-menu">
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/">Attendace</a>
+            <a class="dropdown-item dropdown-item-color" href="/Leave_Management_System/Leave_Status/">Leave</a>
+            <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/Payroll_List">Salary Slip</a> {% endcomment %}
+
+            <a class="dropdown-item dropdown-item-color" href="{% url "Daily_Attendace" %}">Daily Attendance Report</a>
+            {% if  request.session.Department_Name|lower == "hr" %}
+                <a class="dropdown-item dropdown-item-color" href="{% url "AttendaceMonthlyReport" %}">Monthly Attendance Report</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Audit_Attendance_Report' %}">Audit Attendance Report</a>
+            {% endif %} 
+        </div>
+    </li>
+
+    <!-- Restriction starts from here - - - - - - - - - -  - - - -->
+    {% if  request.session.Department_Name|lower == "hr" %}
+        <!-- PayRoll - Nav - Element -->
+        {% comment %} <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Attendance</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item dropdown-item-color" href="{% url "Excel_Attendance_Upload" %}">Upload Attendance</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "View_Attendance" %}">View Attendance</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "index" %}">Week Off</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url "AttendanceProcess" %}">Advance Attendance Posting</a>
+            </div>
+        </li> {% endcomment %}
+
+        <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Payroll</span>
+            </a>
+            <div class="dropdown-menu">
+                <!-- <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/Employees_Payroll_List/">Payroll Manage</a> -->
+                <!-- <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/SalaryList/">Salary Verification</a> -->
+                <a class="dropdown-item dropdown-item-color" href="{% url 'MoveToPayroll' %}">Move To Payroll</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Attendance_Lock_Payroll' %}">Attendance Lock</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Generte_Salary_View' %}">Generate Salary</a>
+                <a class="dropdown-item dropdown-item-color" href="{% url 'Verify_Salary_Slip' %}">Verify Salary</a>
+
+            </div>
+        </li>
+        {% endif %} 
+        <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+            <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                <span>Old Payroll</span>
+            </a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/Payroll_List">Salary Slip</a>
+                {% if  request.session.Department_Name|lower == "hr" %}
+                    <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/Employees_Payroll_List/">Payroll Manage</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Employee_Payroll/SalaryList/">Salary Verification</a>
+                {% endif %} 
+            </div>
+        </li>
+
+    <!-- Alif Attendace - - - Nav - Element -->
+    {% if request.session.OrganizationID == '401' or request.session.OrganizationID == '20180612060935' %}
+        {% if request.session.Department_Name|lower == "hr" %}
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled text-white">
+                <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                    <span>Alif Attendace</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="{% url "Alifupload_csv" %}">Alif Attendace</a>
+                </div>
+            </li>
+        {% endif %} 
+    {% endif %} 
+
+    <!-- Organization - - -  Nav - Element -->
+    {% if  request.session.OrganizationID == '3'  %} 
+        <li class="list-unstyled"><a href= "{% url 'OrgConfigList'%}" class="nav-link text-white">Organization</a></li>
+    {% endif %} 
+
+    <!-- Salary Verification - - -  Nav - Element -->
+    {% if  request.session.Department_Name|lower == "finance" %}  
+        {% comment %} <li class="list-unstyled"><a href= "{% url 'SalaryList' %}" class="nav-link text-white">Salary Verification</a></li> {% endcomment %}
+        <a class="dropdown-item dropdown-item-color" href="{% url 'Verify_Salary_Slip' %}">Verify Salary</a>
+    {% endif %} 
+</div>

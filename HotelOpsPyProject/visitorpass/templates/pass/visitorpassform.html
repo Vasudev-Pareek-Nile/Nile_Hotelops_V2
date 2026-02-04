@@ -1,0 +1,58 @@
+{% extends 'pass/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="VisitorPassForm" enctype="multipart/form-data">
+    {{ Visitor_Pass }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p> Register Visitor Pass Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field VisitorPassForm.Date class="form-control" placeholder="Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>In Time</label>
+                {% render_field VisitorPassForm.In_Time class="form-control" placeholder="In_Time" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field VisitorPassForm.Name class="form-control" placeholder="Name" %}
+              </div>
+             
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Purpose Of Visit</label>
+                {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite" %}
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  {% endblock content %}

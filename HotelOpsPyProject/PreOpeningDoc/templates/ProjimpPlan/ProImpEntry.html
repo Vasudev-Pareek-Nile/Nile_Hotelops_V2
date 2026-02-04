@@ -1,0 +1,118 @@
+{% extends 'ProjimpPlan/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+        font-size: 15px;
+    }
+    .title{
+        font-size: 40px;
+    }
+
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Project Implementaion Plan Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'ProImpPlanEntry' %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-3">
+                    <select class="form-control "   data-val="{{CMonth}}" name="EntryMonth" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">February</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>                        
+                    </select>  
+                </div>
+            <lable  class="col-sm-1"> Year</lable>
+            <div  class="col-sm-3">
+                <select class="form-control" name="EntryYear" value ="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>    
+                </div>
+
+            
+            
+        </div>
+               
+                <br/>
+                <br>
+               
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                        <th></th>
+                        <th>Description Of Tasks</th>
+                        <th>Months</th>
+                        
+                    </thead>
+                    {% for x in mem%}
+                    <tr> 
+                        <td data-c="{{x.category}}">{{x.category}}</td>      
+
+                       <div class="title">
+                        <td>{{x.title}}</td> 
+                       </div>
+                       <td><input type="text"  class="form-control" name="Months_{{ forloop.counter0 }}"/>
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                       </td>
+                         
+                    </tr>
+                    {% endfor %} 
+                    <tfoot>
+                        <tr>
+                            <th>
+                                TOTAL INDICATIVE PROJECT TIME FRAME
+                            </th>
+                            <td></td>
+                            <td>
+                                <input type="text"  class="form-control" id="TotalIndProjTimeFrame" name="TotalIndProjTimeFrame" >
+                            </td>                        
+                        </tr>                   
+                    </tfoot>                       
+            </form>
+        </div>
+    </div>
+    
+
+    <script>
+        $(function(){
+    
+            var c=""
+            $("#title tr").each(function(){
+                    var ct =$(this).find('td').eq(0).attr('data-c')
+                   if(c=="" || c !=ct){
+                    $(this).find('td').eq(0).addClass('bold')
+                   }else{
+                        $(this).find('td').eq(0).text('')
+                       
+                   }
+                c=ct            
+            })
+        })
+    
+       
+    </script>
+
+
+{% endblock content %}

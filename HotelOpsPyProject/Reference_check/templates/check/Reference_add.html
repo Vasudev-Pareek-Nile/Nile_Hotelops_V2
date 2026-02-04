@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference Check Form</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+   
+    @media (min-width: 992px) {
+      .card-body {
+        margin-right: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <div class="col-md-12">
+    <form method="POST">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-header d-flex align-items-center justify-content-between" style="color: #1ab394;">
+       
+          <div class="col-md-4">
+
+            <img src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{Logo}}" alt="{{OrganizationName}}" height="100" alt="Logo" />
+
+          </div>
+          <div class="col-md-4 text-center">
+
+            <strong >REFERENCE CHECK FORM</strong>
+
+          </div>
+
+          <div class="col-md-4">
+
+          </div>
+          
+
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 ">
+              <div class="form-group">
+                <label for="name">Reference  Name:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Enter Your Name"
+                  value="{{ ref_name }}"
+                  
+                  name="name"
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="name">Applicant  Name:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  placeholder="Enter Your Name"
+                  value="{{ ApplicantName }}"
+                  
+                  name="ApplicantName"
+                  readonly
+                />
+              </div>
+              
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <label for="employment_from_date">From:</label>
+                  <input
+                    type="month"
+                    id="employment_from_date"
+                    class="form-control"
+                    name="employment_from_date"
+                    value="{{ check.employment_from_date }}"
+                  />
+                </div>
+              
+                <div class="col-md-6">
+                  <label for="employment_to_date">To:</label>
+                  <input
+                    type="month"
+                    id="employment_to_date"
+                    class="form-control"
+                    name="employment_to_date"
+                    value="{{ check.employment_to_date }}"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="job_performance">How would you rate the applicant’s job performance?</label>
+                <select class="form-control" name="job_performance" id="job_performance">
+                  <option value="">--Please choose an option--</option>
+                  <option value="Poor" {% if check.job_performance == "Poor" %}selected{% endif %}>Poor</option>
+                  <option value="Average" {% if check.job_performance == "Average" %}selected{% endif %}>Average</option>
+                  <option value="Good" {% if check.job_performance == "Good" %}selected{% endif %}>Good</option>
+                  <option value="Excellent" {% if check.job_performance == "Excellent" %}selected{% endif %}>Excellent</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="attendance">How would you rate the applicant’s attendance at work?</label>
+                <select class="form-control" name="attendance_work" id="attendance">
+                  <option value="">--Please choose an option--</option>
+                  <option value="Poor" {% if check.attendance_work == "Poor" %}selected{% endif %}>Poor</option>
+                  <option value="Average" {% if check.attendance_work == "Average" %}selected{% endif %}>Average</option>
+                  <option value="Good" {% if check.attendance_work == "Good" %}selected{% endif %}>Good</option>
+                  <option value="Excellent" {% if check.attendance_work == "Excellent" %}selected{% endif %}>Excellent</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Would you rehire this applicant?</label><br>
+                <div class="rehire-options">
+                    <input type="radio" id="rehire_yes" name="rehire" value="1" {% if check.rehire == True %}checked{% endif %} />
+                    <label for="rehire_yes">Yes</label>
+                    <input type="radio" id="rehire_no" name="rehire" value="0" {% if check.rehire == False %}checked{% endif %} />
+                    <label for="rehire_no">No</label>
+                </div>
+            </div>
+            </div>
+            <div class="col-md-6 ">
+              <div class="form-group">
+                <label for="contact_info">Reference Contact Information:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contact_info"
+                  name="contact_informations"
+                  value="{{ ref_contact }}"
+                  placeholder="Enter Your Contact Information"
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="name">Applicant Department:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AppliedDepartment"
+                  placeholder="Enter Your Name"
+                  value="{{ AppliedDepartment }}"
+                  
+                  name="AppliedDepartment"
+                  readonly
+                />
+              </div>
+              <div class="form-group">
+                <label for="relationship">Relationship to the applicant:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="relationship"
+                  placeholder="Enter Your Relationship"
+                  value="{{check.relationship}}"
+                  required
+                  name="relationship"
+                />
+              </div>
+          
+            
+              <div class="form-group">
+                <label for="interpersonal_skills">How would you rate the applicant’s interpersonal skills?</label>
+                <select class="form-control" name="interpersonal_skills" id="interpersonal_skills">
+                  <option value="">--Please choose an option--</option>
+                  <option value="Poor" {% if check.interpersonal_skills == "Poor" %}selected{% endif %}>Poor</option>
+                  <option value="Average" {% if check.interpersonal_skills == "Average" %}selected{% endif %}>Average</option>
+                  <option value="Good" {% if check.interpersonal_skills == "Good" %}selected{% endif %}>Good</option>
+                  <option value="Excellent" {% if check.interpersonal_skills == "Excellent" %}selected{% endif %}>Excellent</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="leave_company">Why did the applicant leave the company?</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="leave_company"
+                  name="leave_company"
+                  value="{{check.leave_company}}"
+                  placeholder="Enter why the applicant left the company."
+                />
+              </div>
+              <div class="form-group">
+                <label for="anything_else">Is there anything else we should know?</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="anything_else"
+                  name="anything_else"
+                  value="{{check.anything_else}}"
+                  placeholder="Is there anything else we should know."
+                />
+              </div>
+              <div class="form-group">
+                <label>Did the applicant work at this company?</label><br />
+                <div class="company-options">
+                    <input type="radio" id="company_yes" name="this_company" value="1" {% if check.this_company == True %}checked{% endif %} />
+                    <label for="company_yes">Yes</label>
+                    <input type="radio" id="company_no" name="this_company" value="0" {% if check.this_company == False %}checked{% endif %} />
+                    <label for="company_no">No</label>
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+
+        
+        <div class="card-footer text-right">
+          {% if check is none %}
+            <input type="submit" value="Submit" class="btn btn-primary" />
+          {% else %}
+            <input type="submit" value="Update" class="btn btn-primary" />
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  window.onload = function() {
+    var today = new Date();
+    var month = today.getMonth() + 1; // Months are zero-based in JavaScript
+    var year = today.getFullYear();
+    
+    // Format month to always have two digits (e.g., 01, 02)
+    month = month < 10 ? '0' + month : month;
+
+    var currentMonthYear = year + '-' + month;
+
+    // Set the default value for both inputs if no value is set
+    if (!document.getElementById("employment_from_date").value) {
+      document.getElementById("employment_from_date").value = currentMonthYear;
+    }
+    
+    if (!document.getElementById("employment_to_date").value) {
+      document.getElementById("employment_to_date").value = currentMonthYear;
+    }
+  };
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

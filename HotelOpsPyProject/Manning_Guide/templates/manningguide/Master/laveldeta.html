@@ -1,0 +1,272 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+
+
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+<style>
+  body {
+    font-family: 'Arial Nova', sans-serif; 
+  }
+</style>
+<style>
+        .tree ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .tree li {
+            position: relative;
+            padding-left: 20px;
+            cursor: pointer;
+        }
+
+        .tree li::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: #ccc;
+        }
+
+        .tree li::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 10px;
+            width: 10px;
+            height: 1px;
+            background: #ccc;
+        }
+
+        .tree li:last-child::before {
+            height: 10px;
+        }
+
+        .tree ul.collapsed {
+            display: none;
+        }
+
+        .tree li span {
+            user-select: none;
+        }
+
+        .tree i {
+            margin-right: 5px;
+        }
+
+        .actions {
+            margin-left: 10px;
+        }
+
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+         .custom-card {
+            width: 98%; /* Adjust the width as needed */
+            margin: auto; /* Center the card */
+        }
+        {% comment %} .modal-dialog{
+          width: 50%;
+          max-width: 50%;
+          min-width: 700px;
+        } {% endcomment %}
+    </style>
+    <style>
+        .card{
+            border-radius:10px;
+        }
+        .card .card-header {
+    padding: 20px;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important;
+    background: transparent;
+}
+.btn{
+    border-radius:4px;
+}
+.form-control{
+    border-radius:4px;
+    margin-bottom:10px;
+}
+.text-primary {
+    color: #3a4a93 !important;
+}
+    </style>
+
+    <div class="row">
+        <div class="col-sm-12">
+<section class="pt-0">
+  <div class="container vstack gap-5">
+    <div class="tab-pane">
+      <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h4 class="text-uppercase">Manage Master -  Level</h4>             
+                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#AddDivision">Add New Level</button>
+                        
+                </div>         
+            </div>
+        
+        
+<div class="card-body">
+<div class="tree">
+    <ul>
+        {% for lavel in lavels %}
+            <li>
+                <i class="fas fa-folder"></i><span>{{ lavel.lavelname }}</span>
+                <span>
+                    <a href="#" class="edit edit-division text-primary" data-id="{{ lavel.id }}" data-type="division" data-toggle="modal" data-target="#AddDivision">Edit</a> |
+                    <a href="{% url 'level_delete' %}?ID={{ lavel.id }}" class="delete text-danger">Delete</a> |
+                    
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+    </div>
+</div>
+</div>
+
+    </div>
+  </div>
+</section>
+</div>
+</div>
+
+
+<div class="modal fade" id="AddDivision" tabindex="-1" role="dialog" aria-labelledby="divisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="divisionModalLabel">New Level</h5>
+                <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{% url 'Masterlavel' %}" class="mb-0">
+                    <div class="row">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="lavel">Level Name</label>
+                            <input type="text" class="form-control" name="lavelname" id="lavelname" required>
+                            <input type="hidden" name="lavel_id" id="lavel_id">
+                        </div>
+                        <div class="modal-footer">
+                            <input type="submit" value="Submit" class="btn btn-primary " />
+                            {% comment %} <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button> {% endcomment %}
+                        </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+  
+
+
+
+
+
+
+
+
+
+
+
+ <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const tree = document.querySelector('.tree');
+    if (tree) {
+        tree.querySelectorAll('li span').forEach(span => {
+            span.addEventListener('click', function (e) {
+                const parentLi = e.target.parentElement;
+                const childUl = parentLi.querySelector('ul');
+                if (childUl) {
+                    childUl.classList.toggle('collapsed');
+                 
+                    const icon = parentLi.querySelector('i');
+                    if (childUl.classList.contains('collapsed')) {
+                        icon.classList.remove('fa-folder-open');
+                        icon.classList.add('fa-folder');
+                    } else {
+                        icon.classList.remove('fa-folder');
+                        icon.classList.add('fa-folder-open');
+                    }
+                }
+            });
+        });
+
+        
+        tree.querySelectorAll('.actions a').forEach(actionLink => {
+            actionLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (this.classList.contains('edit')) {
+                    alert('Edit action for ' + this.parentElement.previousElementSibling.textContent);
+                   
+                } else if (this.classList.contains('delete')) {
+                    alert('Delete action for ' + this.parentElement.previousElementSibling.textContent);
+                    
+                }
+            });
+        });
+    }
+});
+
+ </script>
+
+<script>
+    $(document).ready(function() {
+    $('.edit-division').on('click', function() {
+        var lavelId = $(this).data('id');
+        
+        $.ajax({
+            url: '/Manning_Guide/level_Edit/',
+            data: {
+                'id': lavelId
+            },
+            success: function(data) {
+                $('#lavel_id').val(data.id);
+                $('#lavelname').val(data.lavelname);
+                $('#divisionModalLabel').text('Edit Level');
+            },
+            error: function() {
+                alert('Error retrieving data.');
+            }
+        });
+    });
+
+    $('#AddDivision').on('hidden.bs.modal', function () {
+        $('#lavel_id').val('');
+        $('#lavelname').val('');
+        $('#divisionModalLabel').text('New Level');
+    });
+});
+
+</script>
+
+{% endblock content %}
+
+
+
+

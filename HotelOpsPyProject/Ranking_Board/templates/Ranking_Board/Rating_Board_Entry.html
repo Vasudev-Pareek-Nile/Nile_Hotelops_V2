@@ -1,0 +1,342 @@
+{% extends "Ranking_Board\homebase.html" %}
+{% load static %}
+{% block content %} 
+     
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9fafb;
+        padding: 32px 16px;
+        color: #000;
+        font-size: 14px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #d1d5db;
+    }
+
+    thead {
+        background-color: #f9fafb;
+    }
+
+    th {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        font-weight: 500;
+        font-size: 13px;
+    }
+
+    th.main-header {
+        background-color: #f3f4f6;
+    }
+
+    th.htl-header {
+        vertical-align: middle;
+        background-color: #ffffff;
+        min-width: 120px;
+    }
+
+    th.sub-header {
+        background-color: #f9fafb;
+        min-width: 80px;
+    }
+
+    tbody tr {
+        transition: background-color 0.2s;
+    }
+
+    tbody tr:hover {
+        background-color: #f9fafb;
+    }
+
+    td {
+        padding: 10px 12px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        font-size: 13px;
+    }
+
+    td:first-child {
+        text-align: left;
+        font-weight: 500;
+    }
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+    @media print {
+        body {
+            background-color: #fff;
+            padding: 0;
+        }
+
+        .card {
+            box-shadow: none;
+            padding: 16px;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        body {
+            padding: 16px 8px;
+        }
+
+        .card {
+            padding: 16px;
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        th, td {
+            padding: 8px;
+            font-size: 12px;
+        }
+    }
+</style>
+
+<style>
+    .input-small {
+        width: 98px;
+        height: 30px;
+        text-align: center;
+    }
+
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        padding-right: 56px;
+    }
+</style>
+
+<!-- <div class="container"> -->
+<div class="card">
+    <div class="card-header">
+        <h4 class="mb-2">Hotel Ranking Dashboard</h4>
+    </div>
+    <div class="card-body">
+        <form action="" method="POST">
+            {% csrf_token %}
+
+            <div class="mb-2">
+                <label>Entry Date 
+                    <input type="date" class="form-control" value="{{current_date}}" name="EntryDate" required {% if Date_Flag %}readonly{% endif %}>
+                </label>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="htl-header">HTL</th>
+                        <th colspan="2" class="main-header">TRIP ADVISOR</th>
+                        <th colspan="2" class="main-header">Google Review</th>
+                        <th colspan="2" class="main-header">MMT</th>
+                        <th colspan="2" class="main-header">Booking.Com</th>
+                    </tr>
+                    <tr>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                        <th class="sub-header">Ranking</th>
+                        <th class="sub-header">NRR</th>
+                    </tr>
+                </thead>
+                <tbody id="Ranking_Board_Table">
+
+                </tbody>
+            </table>
+
+            <!-- Fixed Footer Buttons (outside scrollable area) -->
+            <div class="card-footer text-end">
+                <button type="button" class="btn btn-primary mt-1" id="Save">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- </div> -->
+
+
+<script>
+    $(document).ready(function () {
+
+        // 🔹 Function to read URL parameter
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 🔹 Load hotel list and fill in existing data (if date in URL)
+        function loadRankingBoard(dateParam = null) {
+            $.ajax({
+                // url: "{% url 'OrganizationList_Api' 3 %}",
+                url: "{% url 'OrganizationList_Api' OrganizationID %}",
+                method: "GET",
+                dataType: "json",
+                success: function (orgData) {
+                    let tbody = $("#Ranking_Board_Table");
+                    tbody.empty();
+
+                    if (orgData.length === 0) {
+                        tbody.append(`<tr><td colspan="9">No hotels found</td></tr>`);
+                        return;
+                    }
+
+                    // First — build the table with blank inputs
+                    orgData.forEach(item => {
+                        let row = `
+                            <tr data-hotel-id="${item.OrganizationID}" data-hotel-name="${item.ShortDisplayLabel}">
+                                <td title="${item.OrganizationName}">${item.ShortDisplayLabel}</td>
+                                <td><input type="number" class="form-control input-small" name="trip_ranking"></td>
+                                <td><input type="number" class="form-control input-small" name="trip_nrr"></td>
+                                <td><input type="number" class="form-control input-small" name="google_ranking"></td>
+                                <td><input type="number" class="form-control input-small" name="google_nrr"></td>
+                                <td><input type="number" class="form-control input-small" name="mmt_ranking"></td>
+                                <td><input type="number" class="form-control input-small" name="mmt_nrr"></td>
+                                <td><input type="number" class="form-control input-small" name="booking_ranking"></td>
+                                <td><input type="number" class="form-control input-small" name="booking_nrr"></td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+
+                    // 🔹 If URL has ?date=YYYY-MM-DD, load existing data
+                    if (dateParam) {
+                        loadExistingRankings(dateParam);
+                        $("input[name='EntryDate']").val(dateParam);
+                    }
+                },
+                error: function () {
+                    $("#Ranking_Board_Table").html(`<tr><td colspan="9">Error loading hotels</td></tr>`);
+                }
+            });
+        }
+
+        // 🔹 Function to load existing ranking data from API
+        function loadExistingRankings(dateParam) {
+            $.ajax({
+                url: `{% url 'hotel-ranking-api' %}?HotelID=3&date=${dateParam}`,
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    if (!data || data.length === 0) return;
+
+                    data.forEach(item => {
+                        let row = $(`#Ranking_Board_Table tr[data-hotel-id='${item.HotelID}']`);
+                        if (row.length) {
+                            row.find("input[name='trip_ranking']").val(item.ta_ranking || '');
+                            row.find("input[name='trip_nrr']").val(item.ta_nrr || '');
+                            row.find("input[name='google_ranking']").val(item.google_ranking || '');
+                            row.find("input[name='google_nrr']").val(item.google_nrr || '');
+                            row.find("input[name='mmt_ranking']").val(item.mmt_ranking || '');
+                            row.find("input[name='mmt_nrr']").val(item.mmt_nrr || '');
+                            row.find("input[name='booking_ranking']").val(item.booking_ranking || '');
+                            row.find("input[name='booking_nrr']").val(item.booking_nrr || '');
+                        }
+                    });
+                },
+                error: function () {
+                    console.log("Error loading existing rankings");
+                }
+            });
+        }
+
+        // 🔹 Handle Save button
+        $("#Save").click(function () {
+            let allData = [];
+            let entryDate = $("input[name='EntryDate']").val();
+            const dateFromURL = getUrlParam('Date');
+
+            $("#Ranking_Board_Table tr").each(function () {
+                let hotelId = $(this).data("hotel-id");
+                let hotelName = $(this).data("hotel-name");
+                if (!hotelId) return;
+
+                let rowData = {
+                    HotelID: hotelId,
+                    HotelName: hotelName,
+                    date: entryDate,
+                    ta_ranking: $(this).find("input[name='trip_ranking']").val() || null,
+                    ta_nrr: $(this).find("input[name='trip_nrr']").val() || null,
+                    google_ranking: $(this).find("input[name='google_ranking']").val() || null,
+                    google_nrr: $(this).find("input[name='google_nrr']").val() || null,
+                    mmt_ranking: $(this).find("input[name='mmt_ranking']").val() || null,
+                    mmt_nrr: $(this).find("input[name='mmt_nrr']").val() || null,
+                    booking_ranking: $(this).find("input[name='booking_ranking']").val() || null,
+                    booking_nrr: $(this).find("input[name='booking_nrr']").val() || null,
+                };
+                allData.push(rowData);
+            });
+
+            if (allData.length === 0) {
+                alert("No data to submit!");
+                return;
+            }
+
+            let methodType = dateFromURL ? "PUT" : "POST";
+
+            $.ajax({
+                url: "{% url 'hotel-ranking-api' %}?UserID={{UserID}}&S_OID={{OrganizationID}}",
+                method: methodType,
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                contentType: "application/json",
+                data: JSON.stringify(allData),
+                success: function () {
+                    alert("Ranking data saved successfully!");
+                    // location.reload();
+                    window.location.href = "{% url 'Ranking_Board' %}";
+                },
+                error: function (xhr) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        // console.log("Error response:", response);
+                        alert(response.error || "Error saving data!");
+                    } catch (e) {
+                        alert("Unexpected error occurred!");
+                    }
+                }
+            });
+        });
+
+        // 🔹 Auto-load based on URL parameter
+        const dateFromURL = getUrlParam('Date');
+        loadRankingBoard(dateFromURL);
+    });
+</script>
+
+{% endblock content %} 
+
+

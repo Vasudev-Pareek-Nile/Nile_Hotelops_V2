@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>KRA Entry Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>KRA Entry Report</h2>
+
+<p>
+<b>
+    {{ Org_Name.OrganizationName }}
+</b>
+<br>
+{{ Current_Date }}
+</p>
+<table>
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Definition</th>
+            <th>Standard</th>
+            <th>Actual Value</th>
+            <th>Actual</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in data %}
+        <tr>
+            <td>{{ row.Task }}</td>
+            <td>{{ row.Defination }}</td>
+            <td>{{ row.Standard }}</td>
+            <td>{{ row.ActualValue }}</td>
+            <td>{{ row.Actual }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

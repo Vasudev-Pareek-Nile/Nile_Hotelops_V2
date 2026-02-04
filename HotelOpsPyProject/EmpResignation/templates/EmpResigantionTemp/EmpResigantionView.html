@@ -1,0 +1,121 @@
+{% load static %}
+
+{% block content %}
+<style>
+  body,
+  html {
+      padding: 0;
+      margin: 0;
+  }
+  th {
+      text-align: center;
+      vertical-align: middle;
+  }
+  
+  h4 {
+      color: #34495e;
+      padding: 10px;
+  }
+  table th {
+      text-align: left;
+      {% comment %} color: goldenrod; {% endcomment %}
+      border-width: 0px;
+  }
+  .table td,
+  .table th {
+      border: 1px solid #d3d3d3;
+      padding: 4px;
+  }
+  h4 {
+      font-size: 18px;
+      color: darkblue;
+  }
+</style>
+
+
+  <div>
+    <div>
+      <div>
+     
+
+        <header>
+          <table style="width: 100%; border: none;">
+            <tr>
+                <td style="text-align: left;">
+                    {% if organization_logo %}
+                        <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                    {% else %}
+                        <p>No logo available</p>
+                    {% endif %}
+                </td>
+              <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                  <tbody>
+                    <tr>
+                      <td><strong>Employee Resignation Details</strong></td>
+                      
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td style="text-align: right;">
+                {% if organization_logos %}
+                <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+            {% else %}
+                <p>No logo available</p>
+            {% endif %}
+              </td>
+            </tr>
+          </table>
+        </header>
+        <br />
+        <table class="table table-bordered">
+          <tr>
+            <th>Name</th>
+            <td>{{ Ed.Name|default:"&nbsp;"}}</td>
+            <th>Employee Code</th>
+            <td>{{ Ed.Emp_Code|default:"&nbsp;"}}</td>
+          </tr>
+          <tr>
+            <th>Date Of Joining</th>
+            <td>{{ Ed.DOJ|default:"&nbsp;"}}</td>
+            <th>Department</th>
+            <td>{{ Ed.Dept|default:"&nbsp;"}}</td>
+          </tr>
+          <tr>
+            <th>Designation</th>
+            <td>{{ Ed.Designation|default:"&nbsp;"}}</td>
+          </tr>
+        </table>
+        <h4 style="color: black;">Resignation Details</h4>
+        <table class="table">
+          <tr>
+            <th>Date of Resignation</th>
+            <td>{{ Ed.Date_Of_res|default:"&nbsp;"}}</td>
+
+            <th>Type of Resignation</th>
+            <td>{{ Ed.TypeofRes|default:"&nbsp;"}}</td>
+          </tr>
+          <tr>
+            <th>Notice Period</th>
+            <td>{{ Ed.NoticePeriod|default:"&nbsp;"}}</td>
+            <th>Reason of Resignation</th>
+            <td>{{ Ed.Res_Reason|default:"&nbsp;"}}</td>
+          </tr>
+          <tr>
+            <th>Resignation Submited To</th>
+            <td>{{ Ed.Ressubmittedto|default:"&nbsp;"}}</td>
+            <th>Last working day</th>
+            <td>{{ Ed.LastWorkingDays|default:"&nbsp;"}}</td>
+          </tr>
+          <tr>
+            <th>Resignation acceptance date</th>
+            <td>{{ Ed.Res_acceptance_Date|default:"&nbsp;"}}</td>
+            <th>Resignation acceptance by</th>
+            <td>{{ Ed.Res_acceptance_By|default:"&nbsp;"}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

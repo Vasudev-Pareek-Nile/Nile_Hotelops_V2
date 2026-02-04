@@ -1,0 +1,178 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+
+<style>
+  table th, td {
+      font-size: 14px;
+  }
+
+  .input-wrapper {
+    position: relative;
+  }
+
+  .input-wrapper input[type="date"] {
+    padding-left: 59px;
+  }
+
+  .input-wrapper label {
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    background-color: white;
+    padding: 0 5px;
+  }
+</style>
+<div class="container">
+    <div class="container text-center">
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="card">
+  <div class="card-header text-uppercase fw-bold">Leave Approval List</div>
+
+  <div class="card-body">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="get" >
+              <div class="row">
+                <div class="col-md-2">
+                    <label for="Status">Status</label>
+                      <select name="Status" id="" class="form-control ml-2">
+                          <option value="Approved" {% if Status == selectedStatus %}selected{% endif %}>Approved</option>
+                          <option value="Pending" {% if Status == selectedStatus %}selected{% endif %}>Pending</option>
+                          <option value="Rejected" {% if Status == selectedStatus %}selected{% endif %}>Rejected</option>
+                      </select>
+                  </div>
+                  <div class="col-md-2">
+                      <label for="Start_Date">From</label>
+                      <input type="date" name="Start_Date" id="Start_Date" value="{% if Start_Date %}{{ Start_Date }}{% endif %}" class="form-control">
+                  </div>
+                  <div class="col-md-2">
+                      <label for="To_Date">To</label>
+                      <input type="date" name="To_Date" id="To_Date" value="{% if To_Date %}{{ To_Date }}{% endif %}" class="form-control">
+                  </div>
+
+                  <div class="col-md-3 d-flex justify-items-start align-items-center gap-2" style="margin-top:1.1rem;">
+                      <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                          <i class="fa fa-filter"></i> Filter
+                      </button>
+                  
+                      <a href="{% url 'CompOfffApproval_list' %}" class="btn btn-danger ml-3" id="clear">
+                          Clear
+                      </a>
+                  </div> 
+              </div>
+            </form>
+        </div>
+    </div>
+
+    <table id="example" class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Employee Code</th>
+                <th>Date</th>
+                <th>Reason</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in employee_data %}
+            <tr>
+                <td>{{ data.EmpName }}</td>
+                <td>{{ data.EmployeeCode }}</td>
+                <td>{{ data.LeaveApplicationDetails.CompOff_Date | date:'d-m-Y'}}</td>
+                <td>{{ data.LeaveApplicationDetails.Reason }}</td>
+                <td> 
+                    {% if data.LeaveApplicationDetails.Status == "Pending" %}
+                    <a href="{% url 'CompOffApprove_Leave' %}?ID={{data.LeaveApplicationDetails.id}}&action=approve&OID={{data.LeaveApplicationDetails.OrganizationID}}" class="btn btn-primary btn-sm">Approve</a>
+                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#rejectModal" data-id="{{data.LeaveApplicationDetails.id}}" data-oid="{{data.LeaveApplicationDetails.OrganizationID}}">Reject</button>
+                    {% endif %}
+                    
+                    
+                    
+                    {% if data.LeaveApplicationDetails.Status == "Approved" %}
+                    <div class="d-flex align-items-center">
+                      <p class="btn btn-primary btn-sm mb-0">Approved</p>
+                      
+                  </div>
+                  
+
+                    {% endif %}
+                    
+                    
+                    {% if data.LeaveApplicationDetails.Status == "Rejected" %}
+                    <p style="color: red;" >Rejected <br> Reason :- {{  data.LeaveApplicationDetails.Remark }}</p>
+                    
+                    
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rejectModalLabel">Reject Leave Application</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="rejectForm" method="post" action="{% url 'RejectLeave' %}">
+          {% csrf_token %}
+          <input type="hidden" name="ID" id="applicationId">
+          <input type="hidden" name="OID" id="organizationId">
+          <div class="form-group">
+            <label for="remark">Rejection Remark</label>
+            <textarea class="form-control" id="remark" name="Remark" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-danger">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+        $('#rejectModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) 
+            var applicationId = button.data('id') 
+            var organizationId = button.data('oid')
+
+            var modal = $(this)
+            modal.find('#applicationId').val(applicationId)
+            modal.find('#organizationId').val(organizationId)
+        });
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedStatus = "{{ Status }}";
+        $("select[name='Status']").val(selectedStatus);
+    });
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,359 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+body {
+    font-family: "Arial Nova", sans-serif; 
+    margin: 0;
+    padding: 0;
+}
+
+.settings-icon {
+    display: none !important;
+}
+
+#TableReportContainer {
+    max-height: 600px; 
+    overflow-y: auto;
+    position: relative;
+    font-size: 13px !important;
+}
+
+#TableReport {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#TableReport thead{
+    position: sticky;
+    top: 0px;
+    background-color: #f8f9fa; /* Matches Bootstrap card background */
+    z-index: 2;
+    font-size: 13px !important;
+    font-weight: bold;
+}
+
+#TableReport tbody td {
+    font-size: 13px !important;
+}
+
+.custom-checkbox {
+    width: 8px; /* Adjust width */
+    height: 15px; /* Adjust height */
+    transform: scale(2.1); /* Adjust scale factor */
+    margin-right:10px;
+    
+}
+.stickySetting{
+    border-top: 1px solid #E9E9EA !important;
+}
+
+.select2-container, .dropdown-menu {
+    z-index: 1000 !important; /* Less than navbar */
+}
+
+</style>
+
+<style>
+    /* Light theme-based colors */
+    .avg-salary-group {
+        background-color: #f1f4f9 !important; /* light blue-gray */
+    }
+
+    .head-count-group {
+        background-color: #f9f7f1 !important; /* light beige */
+    }
+
+    .total-ctc-group {
+        background-color: #f2f6f3 !important; /* light green-gray */
+    }
+
+    /* Optional: subtle border or font styling for better visibility */
+    .avg-salary-group, .head-count-group, .total-ctc-group {
+        border-right: 1px solid #ddd !important;
+    }
+    
+    .TotalFooter{
+        text-align: right !important;
+    }
+
+    .Total{
+        font-size: 20px;
+    }
+</style>
+
+<style>
+    .card-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 10;
+        transform: translate(-50%, -50%);
+        display: none;
+    }
+
+    .text-primary-spinner{
+        color: #3a4a93;
+    }
+</style>
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="col-md-12 mb-4">
+            <form method="GET" class="row g-2 mb-1 align-items-center" id="hotelForm">
+                <div class="col-md-4">
+                    <select name="hotel_name" class="form-control select2">
+                        {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.Organization_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="col-md-2" >
+                    <div class="input-group input-group-sm">
+                        <div class="input-group-prepend d-flex align-items-center">
+                            <label class="input-group-text mb-0 ml-2" for="exclude_zero_headcount" style="padding: 10px;">
+                                <input type="checkbox" class="custom-checkbox" name="exclude_zero_headcount" value="1" id="exclude_zero_headcount"
+                                    {% if request.GET.exclude_zero_headcount %}checked{% endif %}>
+                                Excluding 0 Head Count
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3 d-flex gap-2">
+                    <a href="{% url 'Variance_Ceo_Report' %}" class="btn btn-sm btn-danger rounded-1" target="_blank">
+                        Clear
+                    </a>
+                    <button onclick="exportToExcel()" class="btn btn-sm btn-primary rounded-1" type="button">
+                        Excel
+                    </button>
+                    <a href="{% url 'Variance_Ceo_Report_PDF' %}?hotel_name={{selectedOrganizationID}}&exclude_zero={{exclude_zero_headcount}}" class="btn btn-sm btn-danger rounded-1" target="_blank">
+                        PDF
+                    </a>
+
+                </div>
+            </form>
+
+        </div>
+
+
+        <div class="" id="TableReportContainer" style="position: relative;" >
+            <!-- Loader Code -->
+            <div class="card-loader">
+                <div>
+                    <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+                    <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+                </div>
+            </div>
+            <!-- // Loader Code -->
+             
+            <table class="table table-striped table-bordered table-hover" id="TableReport" >
+                <thead>
+                    <tr>
+                        <th class="stickySetting text-center align-middle" colspan="3" rowspan="2" >DEPARTMENTS</th>
+                        <th class="stickySetting text-center" colspan="3">Average SALARY</th>
+                        <th class="stickySetting text-center" colspan="3">HEAD COUNT</th>
+                        <th class="stickySetting text-center" colspan="3">TOTAL CTC</th>
+                    </tr>
+                    <tr>
+                        {% comment %} <th class="TableThColor">SR</th> {% endcomment %}
+                        <!-- <th class="TableThColor" colspan="3">DEPARTMENT</th> -->
+                        <th class="stickySetting text-center avg-salary-group">BUDGETED</th>
+                        <th class="stickySetting text-center avg-salary-group">ACTUAL</th>
+                        <th class="stickySetting text-center avg-salary-group">VARIANCE</th>
+                        <th class="stickySetting text-center head-count-group">BUDGETED</th>
+                        <th class="stickySetting text-center head-count-group">ACTUAL</th>
+                        <th class="stickySetting text-center head-count-group">VARIANCE</th>
+                        <th class="stickySetting text-center total-ctc-group">BUDGETED</th>
+                        <th class="stickySetting text-center total-ctc-group">ACTUAL</th>
+                        <th class="stickySetting text-center total-ctc-group">VARIANCE</th>
+                    </tr>
+                </thead>
+                <tbody id="varianceReportBody">
+                    <!-- Rows will be populated here via jQuery -->
+                </tbody>
+                <tfoot id="varianceReporttfoot">
+
+                </tfoot>
+            </table>
+        </div> 
+    </div> 
+</div> 
+
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Select2 auto-submit
+    $('select[name="hotel_name"]').on('select2:select', function (e) {
+      $('#hotelForm').submit();
+    });
+
+    // Checkbox auto-submit
+    $('#exclude_zero_headcount').on('change', function () {
+      $('#hotelForm').submit();
+    });
+  });
+</script>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
+<script>
+    function exportToExcel() {
+        const table = document.getElementById("TableReport");
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(table, { raw: false });  // Set raw: false to allow type inference
+
+        // Convert numeric strings to actual numbers
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = range.s.r + 1; R <= range.e.r; ++R) {  // skip header row
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+                const cell = ws[cell_address];
+                if (cell && typeof cell.v === 'string') {
+                    // Remove commas, trim, and check if it's a number
+                    const cleaned = cell.v.replace(/,/g, '').trim();
+                    if (!isNaN(cleaned) && cleaned !== '') {
+                        cell.v = parseFloat(cleaned);
+                        cell.t = 'n';  // mark cell as number
+                    }
+                }
+            }
+        }
+
+        // Optional: Adjust column widths
+        const colWidths = [];
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            let maxWidth = 10;
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
+                const cell = ws[cell_ref];
+                if (cell && cell.v) {
+                    const len = cell.v.toString().length;
+                    if (len > maxWidth) maxWidth = len;
+                }
+            }
+            colWidths.push({ wch: maxWidth + 2 });
+        }
+        ws['!cols'] = colWidths;
+
+        XLSX.utils.book_append_sheet(wb, ws, "Variance_CEO_Report List");
+        XLSX.writeFile(wb, "Variance_CEO_Report.xlsx");
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        const OrganizationID = {{selectedOrganizationID_str}}
+        const exclude_zero = {{exclude_zero_headcount}}
+        const apiUrl = `/Manning_Guide/api/variance_report_api/?organization_id=${OrganizationID}&exclude_zero=${exclude_zero}`;
+
+        $('.card-loader').show();
+
+        $.getJSON(apiUrl, function (data) {
+            const tbody = $('#varianceReportBody');
+            const tfoot = $('#varianceReporttfoot');
+            tbody.empty();
+            tfoot.empty();
+
+            if (data.length === 0) {
+                tbody.append('<tr><td colspan="12">Data not found for selected hotel.</td></tr>');
+                return;
+            }
+
+            const records = data.data || data;
+
+            records.forEach(item => {
+                if (item.Department === 'Total') {
+                    // Add total row only to the <tfoot>
+                    const tfootrow = `
+                        <tr style="font-size: 17px; font-weight:bold;">
+                            <td colspan="3">${item.Department}</td>
+
+                            <!-- Average Salary -->
+                            <td align="right">${formatNumber(item.Bud_AvgSal)}</td>
+                            <td align="right">${formatNumber(item.Act_AvgSal)}</td>
+                            <td align="right" style="color: ${getColor(item.Var_AvgSal)};">${formatNumber(item.Var_AvgSal)}</td>
+
+                            <!-- Head Count -->
+                            <td class="text-center">${item.Bud_HC || "0"}</td>
+                            <td class="text-center">${item.Act_HC || "0"}</td>
+                            <td class="text-center" style="color: ${getColor(item.Var_HC)};">${item.Var_HC || "0"}</td>
+
+                            <!-- Total CTC -->
+                            <td align="right">${formatNumber(item.Bud_TotalCTC)}</td>
+                            <td align="right">${formatNumber(item.Act_TotalCTC)}</td>
+                            <td align="right" style="color: ${getColor(item.Var_TotalCTC)};">${formatNumber(item.Var_TotalCTC)}</td>
+                        </tr>
+                    `;
+                    tfoot.append(tfootrow);
+                } else {
+                    // Add all non-total rows to the <tbody>
+                    const row = `
+                        <tr>
+                            <td colspan="3">${item.Department}</td>
+
+                            <!-- Average Salary -->
+                            <td align="right" class="avg-salary-group">${formatNumber(item.Bud_AvgSal)}</td>
+                            <td align="right" class="avg-salary-group">${formatNumber(item.Act_AvgSal)}</td>
+                            <td align="right" class="avg-salary-group" style="color: ${getColor(item.Var_AvgSal)};">${formatNumber(item.Var_AvgSal)}</td>
+
+                            <!-- Head Count -->
+                            <td class="head-count-group text-center">${item.Bud_HC || "0"}</td>
+                            <td class="head-count-group text-center">${item.Act_HC || "0"}</td>
+                            <td class="head-count-group text-center" style="color: ${getColor(item.Var_HC)};">${item.Var_HC || "0"}</td>
+
+                            <!-- Total CTC -->
+                            <td align="right" class="total-ctc-group">${formatNumber(item.Bud_TotalCTC)}</td>
+                            <td align="right" class="total-ctc-group">${formatNumber(item.Act_TotalCTC)}</td>
+                            <td align="right" class="total-ctc-group" style="color: ${getColor(item.Var_TotalCTC)};">${formatNumber(item.Var_TotalCTC)}</td>
+                        </tr>
+                    `;
+                    tbody.append(row);
+                }
+            });
+        })
+        .fail(function () {
+            $('#varianceReportBody').html('<tr><td colspan="12">Error loading data.</td></tr>');
+        })
+        .always(function () {
+            // Hide loader after success or failure
+            $('.card-loader').hide();
+        });
+
+        function formatNumber(value) {
+            const num = parseFloat(value);
+            if (isNaN(num)) return "0";
+            return num.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function getColor(value) {
+            const num = parseFloat(value);
+            return (num < 0) ? "green" : "red";
+        }
+    });
+</script>
+
+
+{% endblock content %}

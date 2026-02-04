@@ -1,0 +1,255 @@
+{% extends 'HBBSM/homebase.html' %}
+
+{% load static %}
+{% load custom_filters %}
+
+{% block content %} 
+<style>
+    #tableData tr td:not(:first-child),#tableData tr th:not(:first-child){
+text-align: center;
+
+    }
+    .btn.btn-default.active {
+        background-color: #1ab394;
+        color: #fff;
+        border: 0px;
+      }
+    .trBold {
+        font-weight: bold;
+        background: #edf6ff;
+      }
+      .abtn .btn{
+        margin-top: 5px;
+      }
+
+      
+tr[data-r-type="Section"] {
+    background: #dff0ff;
+    font-weight: bold;
+  }
+  
+  
+  tr[data-r-type="Category"] {
+    background: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  tr[data-r-type='Item'] td:nth-child(1){
+  padding-left: 20px !important;;
+  }
+  .ibox-content h4 {
+    padding-left: 1px;
+    background: aliceblue;
+    padding: 10px;
+    border: 1px solid darkblue;
+  }
+  
+</style>
+          <div class="row">
+            <div class="col">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Hotel Budget Report</h5>
+                       
+                    </div>
+                    <div class="ibox-content">
+                        <form>
+                        <div class="row">
+                            <div class="col">
+
+                                <select name="I" class="form-control">
+
+                                    {% for itm in mem %}
+                                    {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                    <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                    {% endfor %}
+                                   
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <select class="form-control" name="EntryYear">
+                                    {% for year in years reversed%}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-1">
+                                <button class="btn btn-primary" type="submit">Filter</button>
+                            </div>
+                        </div>
+                        </form>
+                     
+                        <br/>
+                        {% comment %} {{DataRes}} {% endcomment %}
+                        <div class="row">
+                            <div class="col abtn table-responsive">
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plu">P&L Utilities</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=pleng">P&L Engineering</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plsm">P&L S&M</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plit">IT</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plsecurity">A&G-Security</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plhr">A&G-HR</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=plag">A&G-A&G</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=pltotalag">Total A&G</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=RentalOtherIncome">Rental Other Income</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=MinorGuestCommunication">Minor-Guest Communication</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=OODBusinessCentre">OOD-Business Centre</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=OODGuestLaundry">OOD-Guest Laundry</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=OODTransport">OOD-Transport</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=OODSPA">OOD - SPA & Health Club</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=TotalOOD">Total OOD</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=FBOOD">F&B_ODC</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=FBBanquet">F&B_Banquet</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=FBMiniBar">F&B_Mini Bar</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=FB_IRD">F&B_IRD</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=Outlet1">Outlet#1</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=Outlet2">Outlet#2</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=Outlet3">Outlet#3</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=Outlet4">Outlet#4</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=Outlet5">Outlet#5</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=PLFBOutlets">P&L-F&B Outlets</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=TotalFB">Total F&B</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=RoomsWorksheet">Rooms Worksheet</a>
+                                <a class="btn btn-default" href="/HotelBudget/YearlyReport?rt=FBWorksheet">F&B Worksheet</a>
+                                
+
+                                
+                                
+                                
+                            </div>
+                            
+                        </div>
+                        <br>
+                       
+                        <div class="row">
+                            <div class="col table-responsive">
+                                <div class="row" style="min-width: 3800px;">
+
+                                {% if DataResFBW != '' %}
+                                    {% for row in DataResFBW %}
+                                    <div class="col-sm-3">
+                                    <h4>{{row.Title}} </h4>
+                                    <div class="row">
+                                   
+                                        <div class="col-12">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>January</th><th>February</th><th>March</th><th>April</th><th>May</th><th>June</th>
+                                                        <th>July</th><th>August</th><th>September</th><th>October</th><th>November</th><th>December</th>
+                                                        <!-- Add more column headers here as needed -->
+                                                    </tr>
+                                                </thead>
+                                                {% if row.JsonData != "[]" %}
+                                                {% with jsonDataObj=row.JsonData|json_to_dict %}
+                                                {% for row1 in jsonDataObj %}
+                                                <tr >
+                                                   <td>{{row1.Title}}</td>
+                                                   <td>{{row1.January}}</td>
+                                                   <td>{{row1.February}}</td>
+                                                   <td>{{row1.March}}</td>
+                                                   <td>{{row1.April}}</td>
+                                                   <td>{{row1.May}}</td>
+                                                   <td>{{row1.June}}</td>
+                                                   <td>{{row1.July}}</td>
+                                                   <td>{{row1.August}}</td>
+                                                   <td>{{row1.September}}</td>
+                                                   <td>{{row1.October}}</td>
+                                                   <td>{{row1.November}}</td>
+                                                   <td>{{row1.December}}</td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endwith %}   
+                                                {% endif %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    {% endfor %}
+                                {% endif %}
+                                </div>
+                                {% for row in results %}
+                                <tr data-d="{{row.0}}">
+                                    {% for value in row %}
+                                    <td>{{ value }}</td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                                <table class="table table-bordered" id="tableData">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>January</th><th>February</th><th>March</th><th>April</th><th>May</th><th>June</th>
+                                            <th>July</th><th>August</th><th>September</th><th>October</th><th>November</th><th>December</th>
+                                            <!-- Add more column headers here as needed -->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if DataRes != '' %}
+                                        {% for row in DataRes %}
+                                        <tr data-r-type="{{row.Type}}">
+                                           <td>{{row.Title}}</td>
+                                           <td>{{row.January}}</td>
+                                           <td>{{row.February}}</td>
+                                           <td>{{row.March}}</td>
+                                           <td>{{row.April}}</td>
+                                           <td>{{row.May}}</td>
+                                           <td>{{row.June}}</td>
+                                           <td>{{row.July}}</td>
+                                           <td>{{row.August}}</td>
+                                           <td>{{row.September}}</td>
+                                           <td>{{row.October}}</td>
+                                           <td>{{row.November}}</td>
+                                           <td>{{row.December}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                        {% for row in results %}
+                                        <tr data-d="{{row.0}}">
+                                            {% for value in row %}
+                                            <td>{{ value }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    
+          
+            <script>
+                function getUrlParameter(name) {
+                    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                    var results = regex.exec(location.search);
+                    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+                };
+            $(function(){
+                $("tr[data-d]").each(function(){
+                        var d =["Guest Laundry Revenue","Guest Transport Revenue","Total Cost of Sales","Gross Profit (Loss)","Salaries Wages and Bonuses","Payroll-Related Expenses","Payroll and Related Expenses","Total Other Expenses","Total Expenses","Departmental Income (Loss)","Total","Total Marketing Expenses","Total Sales Expenses","Total System Expenses","System Expenses","Other Expenses","Rental and Other Income","Total Food Revenue","Total Beverage Revenue","Total Other Income","F&B Revenue","Total Cost of F&B Sales","Total Cost of Other Rev",""];
+                        if(d.indexOf($(this).attr('data-d'))>=0){
+
+                            $(this).after('<tr><td colspan="13"></td></tr>')
+                            $(this).addClass('trBold')
+                        }
+                })
+                $("tr[data-r-type='Section']").each(function(){
+
+                    $(this).before("<tr><td colspan='13'>&nbsp;</td></tr>")
+                })
+                if (getUrlParameter("I") !=false) {
+                    $("select[name='I']").val((getUrlParameter("I")))
+                }
+                if (getUrlParameter("rt") !=false) {
+                   $("a.btn[href='/HotelBudget/YearlyReport?rt="+getUrlParameter("rt")+"']").addClass('active')
+                }
+               
+            })
+          </script>
+    {% endblock content %}

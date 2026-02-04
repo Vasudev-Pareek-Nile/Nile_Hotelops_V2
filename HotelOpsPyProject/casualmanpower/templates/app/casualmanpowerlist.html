@@ -1,0 +1,70 @@
+{% extends 'app/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<div class=" table-responsive">
+  <div class="card card-primary">
+    <div  class="card-header">
+        Casual Manpower Requisition List
+    </div>
+    <div class="card-body">
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>Date</th>
+            <th>Prepared By</th>
+            <th>Department</th>
+            <th>Number Required</th>
+            <th>Reason</th>
+            <th>Function</th>
+            <th>Rate</th>
+            <th>No Of Pax</th>
+            <th>Date Required</th>
+            <th>Est Sales Volume</th>
+            <th>Reporting Time</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            {% comment %} <td>{{i.To}}</td> {% endcomment %}
+            <td>{{i.Date|date:"d-M-Y"}}</td>
+            <td>{{i.Prepared_By}}</td>
+            {% comment %} <td>{{i.Time|time:"h:i a"}}</td> {% endcomment %}
+            <td>{{i.Department}}</td>
+            <td>{{i.Numbers_Required}}</td>
+            <td>{{i.Reason}}</td>
+            <td>{{i.Function}}</td>
+            <td>{{i.Rate}} {{i.Required_Time|time:"h:i a"}}</td>
+            <td>{{i.No_Of_Pax}}</td>
+            <td>{{i.Date_Required}}</td>
+            <td>{{i.Est_Sales_Volume}}</td>
+            <td>{{i.Reporting_Time}}</td>
+            {% comment %} <td>{{i.Authorised_By}}</td> {% endcomment %}
+            <td>
+              
+            <div class="btn btn-group">
+              
+                  <a href="/casualmanpower/CasualManPowerEditList?id={{i.id}}" class="btn btn-primary btn-sm"> Edit</a>
+                  <a href="/casualmanpower/CasualManPowerDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/casualmanpower/CasualManpower_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+             </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+
+
+  
+</div>
+{% endblock content %}

@@ -1,0 +1,390 @@
+{% load static %}
+{% load encryption_filters %}
+<!DOCTYPE html>
+<html lang="en" data-layout="horizontal" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-layout-mode="orange" data-layout-width="fluid" data-layout-position="fixed" data-layout-style="default">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Smarthr - Bootstrap Admin Template">
+		    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+        <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
+        <title>Product - Hotelops</title>
+		
+		<!-- jQuery (Load only once) -->
+		<script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+		<!-- FontAwesome Icons -->
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+
+		<!-- LineAwesome & Material Icons -->
+		<link rel="stylesheet" href="{% static 'assets/css/line-awesome.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/material.css' %}">
+
+		<!-- Main Styles -->
+		<link rel="stylesheet" href="{% static 'assets/css/style.css' %}?V=1">
+
+		
+		<!-- Datatable CSS -->
+		<link rel="stylesheet" href="{% static "assets/css/dataTables.bootstrap4.min.css" %}">
+
+		<link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
+		<link rel="stylesheet" href="{% static 'assets/css/bootstrap-datetimepicker.min.css' %}">
+		<script src="{% static '/js/plugins/typehead/bootstrap3-typeahead.min.js' %}"></script>
+    <Style>
+        [data-layout-width=boxed] body, [data-layout-width=boxed] .header {
+          max-width: 100% !important;
+          margin: auto;
+      }
+	  
+	  #ProfileImagePreviewedit{
+        max-height: 200px;
+        max-width: 200px;
+        width: 100%;
+        height: 100%;
+        object-fit: fit; 
+        border-radius: 5px !important;  
+    }
+    
+
+      {% comment %} #settingsicon{
+        width: 0% !important; 
+      } {% endcomment %}
+
+	.btn-primary {
+		background: #3a4a93;
+		border-color: #3a4a93;
+		transition: all 0.5s ease
+	}
+
+	.btn-primary:hover {
+		background: #5464af;
+		border-color: #3a4a93;
+	}
+
+	.header {
+		background: #3a4a93 !important;
+	}
+    </Style>
+		<script>
+			var GRedURL ="{{ request.session.MasterURL }}";
+			var ProductUserRightsList ="{{ request.session.ProductUserRightsList }}";
+			var UserID="{{request.session.UserID}}"
+		</script>
+		<script>
+			$(function () {
+				var CS_SearchDataSource=[];
+				$(".nav_l_h_s_m").empty();
+				$(".nav_l_h_s_m").append('<li><form ><input class="form-control top-custsearch" id="" type="text" placeholder="Search here"> </form></li>')
+				$.getJSON('/get_cached_data',function(data){
+					debugger
+						console.log(data)
+						
+							var pl = data[0].ModuleList
+							pl = JSON.parse(pl);
+						
+							$(pl).each(function (index, item) {
+								var r= GRedURL+item.DomainURL ;
+									var it = { "name": item.ProductLabel, "id": "27", "type": "module", redURL:r};
+									$(".nav_l_h_s_m").append('<li><a href="'+r+'">'+item.ProductLabel+'</a></li>');
+                                    CS_SearchDataSource.push(it)
+							})
+
+                            $('.top-search').typeahead({
+                                source: CS_SearchDataSource
+                                , updater: function (item) {
+                                    console.log(item)
+                                    // Call your function here
+                               
+                   
+                                        if (item.type == "module") {
+                                            window.location.href = item.redURL
+                                            showLoader();
+                                        }
+                                  
+                                }
+                            });
+						
+
+							$(".top-custsearch").on("keyup", function() {
+        let value = $(this).val().toLowerCase();
+        
+        $(this).parent().parent().parent().parent().find(".nav_l_h_s_m li").filter(function(index,item) {
+			if(index>0){
+            // Get the text from <a> inside the <li>
+            let itemText = $(this).find("a").text().toLowerCase();
+
+            if (value === "") {
+                $(this).css("hide-important");
+            } else {
+                if (itemText.includes(value)) {
+                    $(this).removeClass("hide-important");
+                } else {
+                    $(this).addClass("hide-important");
+                }
+            }
+		}
+        });
+    });
+						debugger
+				})
+			})
+		</script>
+		<style>
+			.hide-important {
+    display: none !important;
+}
+
+.loader-container{
+	display: none;
+}
+.header .user-menu {
+    margin-top: 10px !important; 
+}
+
+#EditButtonContainer{
+	position:relative;
+}
+#editButtonstatusdiv{
+	position:absolute;
+	right: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+		</style>
+    </head>
+    <body>
+
+		<!-- Main Wrapper -->
+        <div class="main-wrapper">
+		
+			<!-- Header -->
+            <div class="header">
+			
+				<!-- Logo -->
+          <div class="header-left">
+                    <a  href="{{request.session.HomeURL}}" class="logo">
+						<img alt="image" class="" src="{{ request.session.OrganizationLogo}}" style="max-width:53px;box-shadow: none !important;"/>
+					</a>
+					<a  href="{{request.session.HomeURL}}" class="logo collapse-logo">
+						<img src="{{ request.session.OrganizationLogo}}" alt="Logo">
+					</a>
+					<a  href="{{request.session.HomeURL}}" class="logo2">
+						<img src="{{ request.session.OrganizationLogo}}" width="40" height="40" alt="Logo">
+					</a> 
+                </div>
+				<!-- /Logo -->
+				
+				<a id="toggle_btn" href="javascript:void(0);">
+					<span class="bar-icon">
+						<span></span>
+						<span></span>
+						<span></span>
+					</span>
+				</a>
+				
+				<!-- Header Title -->
+                <div class="page-title-box">
+					<div class="nav-element-container d-flex justify-content-between align-items-center">
+						<div class="nav-element-container d-flex gap-4">
+                            {% include 'HR/TopNavbarMenu.html' %}
+						</div>
+					</div>
+			   </div>
+				<!-- /Header Title -->
+				
+				<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+				
+				<!-- Header Menu -->
+				
+
+                <ul class="nav user-menu mt-3" style="margin-right:30px;">
+                    <!-- Search -->
+                    <!-- Flag -->
+                    <!-- Notifications -->
+                    <!-- Message Notifications -->
+
+                    <!-- /Profile Home Nav - Button -->
+                    <li class="list-unstyled" >
+						<div class="top-nav-search">
+							<a href="javascript:void(0);" class="responsive-search">
+								{% comment %} <i class="fa-solid fa-magnifying-glass"></i> {% endcomment %}
+						   </a>
+							<form >
+								<input class="form-control top-search" id="" type="text" placeholder="Search here">
+							</form>
+						</div>
+					</li>
+					
+                    <li class="list-unstyled"><a href="{{request.session.HomeURL}}" class="nav-link text-white">Home</a></li>
+
+                    <li class="nav-item dropdown has-arrow main-drop">
+                        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+                        
+                        <span class="status online"></span></span>
+                        <span>{{ request.session.FullName }}</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" ref="{{request.session.ChangePassword}}">Change Password</a>
+                            <a class="dropdown-item" href="#">setting</a>
+                            <a class="dropdown-item" ref="{{request.session.Logout}}">Logout</a>
+                        </div>
+                    </li>
+                </ul>
+				<!-- /Header Menu -->
+				
+				<!-- Mobile Menu -->
+				<div class="dropdown mobile-user-menu">
+					<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+					<div class="dropdown-menu dropdown-menu-right">
+						<a class="dropdown-item">{{ request.session.FullName }}</a>
+						<a class="dropdown-item" href="settings.html">Settings</a>
+						<a class="dropdown-item" ref="{{request.session.ChangePassword}}">Change Password</a>
+						<a class="dropdown-item" ref="{{request.session.Logout}}">Logout</a>
+					</div>
+				</div>
+				<!-- /Mobile Menu -->
+				
+            </div>
+			<!-- /Header -->
+			
+			<!-- Sidebar -->
+            <div class="sidebar" id="sidebar">
+                <div class="sidebar-inner slimscroll">
+                    <div id="sidebar-menu" class="sidebar-menu">
+                        {% include 'apps/sidenavbar.html' %}
+                    </div>
+                </div>
+            </div>
+			<!-- /Sidebar -->
+			
+			<!-- Two Col Sidebar -->
+			<div class="two-col-bar" id="two-col-bar">
+				<div class="sidebar sidebar-twocol" id="navbar-nav">
+					<div class="sidebar-left slimscroll">
+						<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+							<a class="nav-link active" id="v-pills-dashboard-tab" title="Dashboard" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+								<span class="material-icons-outlined">
+									home
+								</span>
+							</a> 
+						</div>
+					</div>
+					
+					 <div class="sidebar-right">
+						<div class="tab-content" id="v-pills-tabContent">
+							<div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+								<p>Modules</p>
+								<ul class="nav_l_h_s_m">
+								</ul>
+							</div> 
+						</div>
+					</div> 
+				</div>
+			</div>
+			<!-- /Two Col Sidebar -->
+
+			
+			
+			<!-- Page Wrapper -->
+            <div class="page-wrapper">
+                <div class="content container-fluid pb-0">
+                    {% block content %}{% endblock %}
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                </div>
+            </div>
+			<!-- /Page Wrapper -->
+
+        </div>
+		<!-- /Main Wrapper -->
+		
+
+		
+		<!-- Bootstrap Core JS -->
+		<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+		<!-- Slimscroll (for scrollbars, if needed) -->
+		<script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
+
+		<!-- Select2 (for enhanced select dropdowns, if used) -->
+		<script src="{% static 'assets/js/select2.min.js' %}"></script>
+
+		<!-- DataTables (for tables, if needed) -->
+		<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+		<script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+
+		<!-- Datetimepicker (for date/time pickers, if used) -->
+		<script src="{% static 'assets/js/moment.min.js' %}"></script>
+		<script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+		<!-- Morris Charts (if using charts) -->
+		<script src="{% static 'assets/plugins/morris/morris.min.js' %}"></script>
+		<script src="{% static 'assets/plugins/raphael/raphael.min.js' %}"></script>
+
+		<!-- Theme & Custom Scripts -->
+
+		<script src="{% static 'assets/js/layout.js' %}"></script>
+		<script src="{% static 'assets/js/theme-settings.js' %}"></script>
+		<script src="{% static 'assets/js/greedynav.js' %}"></script>
+		<script src="{% static 'assets/js/app.js' %}"></script>
+
+
+		<script>
+			$(document).ready(function () {         
+			  
+				$("select").each(function(){
+				try
+					{
+	
+					if($(this).attr('data-val')!=undefined)
+					{
+	
+						$(this).val($(this).attr('data-val'));
+					}
+	
+				}catch(e){}
+	
+				})
+	
+			});
+	
+			{% comment %} $(window).bind("scroll", function () {
+				let toast = $('.toast');
+				toast.css("top", window.pageYOffset + 20);
+	
+			}); {% endcomment %}
+			$(window).bind("scroll", function () {
+				let toast = $('.toast');
+				if (toast.length > 0) {
+					toast.css("top", window.pageYOffset + 20);
+				}
+			});
+			
+		</script>
+		 
+		<script>
+			var showview = function (obj) {
+				$("#modalview").modal('show')
+				var url = $(obj).attr('data-href')
+				$("#modalview iframe").attr('src', url);
+			}
+		</script>
+    </body>
+</html>

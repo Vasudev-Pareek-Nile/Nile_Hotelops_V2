@@ -1,0 +1,226 @@
+{% extends "NewJob/homebase.html" %} 
+{% block content %}
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<style>
+label {
+    font-family: 'Arial Nova', sans-serif;
+    font-weight: bold;
+}
+
+body {
+    font-family: 'Arial Nova', sans-serif;
+}
+  .editor-container {
+    margin-bottom: 20px;
+}
+.ck-editor__editable {
+    min-height: 150px; 
+}
+ 
+    
+</style>
+
+
+<link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.css">
+<div class="container">
+    <div class="row">
+      <div class="col-md-12 ">
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="OrganizationID" value="{{ Description.OrganizationID }}">
+  
+          <div class="card">
+            <div class="card-header" style="color: #1ab394">
+              <strong>Copy Job Description</strong>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group m-3">
+                    <label for="">JD Title</label>
+                    <input type="text" class="form-control" name="JD_Title" value="{{ Description.JD_Title }}" />
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="form-group m-3">
+                        <label for="">Department(s)</label>
+                        <select class="select2_demo_2" multiple="multiple" id="department_select" name="Department" style="width: 310px;">
+                          {% for department in Departments %}
+                            <option value="{{ department.DepartmentName }}" {% if department.DepartmentName in Description.Department %}selected{% endif %}>{{ department.DepartmentName }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="form-group m-3">
+                        <label for="">Report To</label>
+                        <input type="text" class="form-control" name="Report_To" value="{{ Description.Report_To }}" />
+                      </div>
+                      <div class="form-group m-3">
+                        <label for="">Effective Date</label>
+                        <input type="date" class="form-control" name="Effective_Date" value="{{ Description.Effective_Date|date:'Y-m-d' }}" />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group m-3">
+                        <label for="">Division</label>
+                        <input type="text" class="form-control" name="Division" value="{{ Description.Division }}" />
+                      </div>
+                      <div class="form-group m-3">
+                        <label for="">Level/Grade</label>
+                        <input type="text" class="form-control" name="Level" value="{{ Description.Level }}" />
+                      </div>
+                      <div class="form-group m-3">
+                        <label for="">JD Approved By</label>
+                        <input type="text" class="form-control" name="JD_Approved_By" value="{{ Description.JD_Approved_By }}" />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group m-3">
+                        <label for="">Position(s)</label>
+                        <select class="select2_demo_3" multiple="multiple" id="designation_select" name="Position" style="width: 310px;">
+                          {% for Designation in Designations %}
+                            <option value="{{ Designation.designations }}" {% if Designation.designations in Description.Position %}selected{% endif %}>{{ Designation.designations }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="form-group m-3">
+                        <label for="">Signatory</label>
+                        <input type="text" class="form-control" name="Signatory" value="{{ Description.Signatory }}" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group m-3">
+                      <label for="">Job Scope Summary</label>
+                      <textarea name="Job_Scope" id="editor1">{{ Description.Job_Scope }}</textarea>
+                  </div>
+                  <div class="form-group m-3">
+                      <label for="">Duties & Responsibilities</label>
+                      <textarea name="Duties_Responsibilities" id="editor2">{{ Description.Duties_Responsibilities }}</textarea>
+                  </div>
+                  <div class="form-group m-3">
+                      <label for="">Job Knowledge Skills & Abilities</label>
+                      <textarea name="Job_Knowledge_Skills" id="editor3">{{ Description.Job_Knowledge_Skills }}</textarea>
+                  </div>
+                </div>
+            </div>
+            </div>
+            <div class="card-footer">
+              <input type="submit" value="Create New Job Description" class="btn btn-primary btn-lg" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/42.0.1/ckeditor5.js",
+            "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/42.0.1/"
+        }
+    }
+</script>
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Paragraph,
+        Bold,
+        Italic,
+        Font,
+        Heading,
+        List
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create(document.querySelector('#editor1'), {
+            plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ],
+            toolbar: {
+                items: [
+                    'undo', 'redo', '|',
+                    'bold', 'italic', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ]
+            },
+            height: '150px' 
+        })
+        .then(editor => {
+            window.editor1 = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#editor2'), {
+            plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ],
+            toolbar: {
+                items: [
+                    'undo', 'redo', '|',
+                    'bold', 'italic', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ]
+            },
+            height: '300px' 
+        })
+        .then(editor => {
+            window.editor2 = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#editor3'), {
+            plugins: [Essentials, Paragraph, Bold, Italic, Font, Heading, List],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ],
+            toolbar: {
+                items: [
+                    'undo', 'redo', '|',
+                    'bold', 'italic', '|',
+                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+                ]
+            },
+            height: '150px' 
+        })
+        .then(editor => {
+            window.editor3 = editor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+<script>
+    $(document).ready(function() {
+      $('.select2_demo_2').select2({
+        placeholder: "Select Departments",
+        allowClear: true
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function() {
+      $('.select2_demo_3').select2({
+        placeholder: "Select Designation",
+        allowClear: true
+      });
+    });
+  </script>
+  {% endblock content %}

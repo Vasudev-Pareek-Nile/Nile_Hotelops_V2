@@ -1,0 +1,66 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header" style="font-weight: bold;">Update Attendance Request</div>
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Date</label>
+                        <input type="date" value={{obj.Date |date:'Y-m-d'}} class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">In Time </label>
+                        <input type="text" value="{{obj.In_Time}}" class="form-control"  readonly>
+                    </div>    
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Out Time</label>
+                        <input type="text"  value="{{ obj.Out_Time }}" class="form-control" readonly>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Secondary In Time </label>
+                        <input type="text" value="{{obj.S_In_Time}}" class="form-control"  readonly>
+                    </div>    
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Secondary Out Time</label>
+                        <input type="text"  value="{{ obj.S_Out_Time }}" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Status</label>
+                         <input type="text" value="{{obj.Status}}" class="form-control" readonly >
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="">Reason</label>
+                        <textarea name="Reason"  class="form-control" id="" cols="30" rows="1"></textarea>
+                    </div>
+                </div>
+               
+            </div>
+            <div class="card-footer text-right"> 
+                <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+             
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

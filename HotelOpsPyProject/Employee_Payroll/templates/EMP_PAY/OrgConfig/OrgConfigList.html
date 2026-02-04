@@ -1,0 +1,108 @@
+{% extends 'EMP_PAY/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    th,td{
+        font-size: 12px;
+    }
+</style>
+{% if messages %}
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+    </div>
+{% endif %}
+
+<div class="card">
+     <div class="card-header d-flex justify-content-between">
+        <div class="text-uppercase fw-bold">Organization Configuration List</div>
+        <div class=""> {% if  OrganizationID == '3' %}<a href="{% url 'AddConfig' %}" class="btn btn-primary btn-sm">Add Config</a>{% endif %}</div>
+    </div>
+    <div class="card-body">
+        {% if  OrganizationID == '3' %}
+            <form action="" method="get">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group m-3">
+                            <select name="I"  class="form-control">
+                                {% for itm in memOrg %}
+                                <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <input type="submit" class="btn btn-primary btn-sm" value="Filter">
+                            <a href="{% url 'OrgConfigList' %}" class="btn btn-primary btn-sm" >Clear Filter</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <table  id="example" class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Prefix Employee Code</th>
+                
+                    <th>Salary Cycle End Date</th>
+                    <th>Upload Format Type</th>
+                
+                    <th >Download Format</th>
+                    <th>Action</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+            {% for config in orgconfig %}
+                <tr>
+                    <td>{{config.OID_Code}}</td>
+                    <td>{{config.EndDate}}</td>
+                    
+                    <td>{{config.UploadFormatType}}</td>
+                    <td>
+                        {% if config.DownloadFormat %}
+                        <a href="{{config.DownloadFormat.url}}"   class="fa fa-eye" target="_blank"></a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        
+                        {% if  OrganizationID == '3' %} 
+                        <a href="{% url "AddConfig" %}?ID={{config.id}}"   class="fa fa-edit"></a>
+                        <a href="{% url 'ConfigDelete'%}?ID={{config.id}}" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash text-danger"></i></a>
+                                
+
+                        {% endif %}
+                    
+                    
+                    </td>
+
+                </tr>
+            {% endfor %} 
+            </tbody>
+            
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I}}";
+        $("select[name='I']").val(selectedOrganization);
+      
+    });
+</script>
+
+{% endblock content %}

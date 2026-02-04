@@ -1,0 +1,722 @@
+{% extends 'FB_Worksheet/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ 
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">F&B Worksheet Edit</div>
+               
+        <div class="card-body">
+            <form action="{%url 'FB_WorksheetEdit' mem.id %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-3">
+                    <select class="form-control "  name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">February</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>
+                        
+                    </select>
+    
+                </div>
+            <lable  class="col-sm-1"> Year</lable>
+            <div  class="col-sm-3">
+                <select class="form-control" name="EntryYear" data-val="{{mem.EntryYear}}" name="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+    
+                </div>
+            
+        </div>
+               
+                <br/>
+                <br>
+               
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th> </th>
+                        <th>Breakfast-Food Internal Covers</th>
+                        <th>Breakfast-Food External Covers</th>
+                        <th>Breakfast-Beverage Internal Covers</th>
+                        <th>Breakfast-Beverage External Covers</th>
+                        
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                        <td><input type="text" class="form-control calc" name="Amount_{{ forloop.counter0 }}"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="Amount1_{{ forloop.counter0 }}"/>
+                            <input name="BTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>    
+                        <td><input type="text" class="form-control calc" name="Amount2_{{ forloop.counter0 }}"/>
+                            <input name="BBTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="Amount3_{{ forloop.counter0 }}"/>
+                            <input name="BExTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>    
+                    </tr>
+    
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+
+                    <br>
+                </table> 
+                
+                
+                <br>
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th> </th>
+                        <th>Breakfast-Food Average Check</th>
+                        <th>Breakfast-Food Average Check</th>
+                        <th>Breakfast-Beverage Average Check</th>
+                        <th>Breakfast-Beverage Average Check</th>
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                        <td><input type="text" class="form-control calc" name="BVCAmount_{{ forloop.counter0 }}"/>
+                            <input name="BVCTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BVCAmount1_{{ forloop.counter0 }}"/>
+                            <input name="BVC1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BBAAmount1_{{ forloop.counter0 }}"/>
+                            <input name="BBATitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BBAAmount2_{{ forloop.counter0 }}"/>
+                            <input name="BBA2TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                    </tr>   
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                </table>                          
+                <br>
+                  
+                <br>
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th> </th>
+                        <th>Breakfast-Food Revenue</th>
+                        <th>Breakfast-Food Revenue</th>
+                        <th>Breakfast-Beverage Revenue</th>
+                        <th>Breakfast-Beverage Revenue</th>
+                       
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                        <td><input type="text" class="form-control calc" name="BFRAmount_{{ forloop.counter0 }}"/>
+                            <input name="BFRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        
+                        <td><input type="text" class="form-control calc" name="BFRAmount1_{{ forloop.counter0 }}"/>
+                            <input name="BFR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BBRAmount_{{ forloop.counter0 }}"/>
+                            <input name="BBRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BBR1Amount_{{ forloop.counter0 }}"/>
+                            <input name="BBR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                     
+                    </tr>   
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                </table>                          
+                <br>
+
+                <br>
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th> </th>
+                        <th>Launch-Food Internal Covers</th>
+                        <th>Launch-Food External Covers</th>
+                        <th>Launch-Beverage Internal Covers</th>
+                        <th>Launch-Beverage External Covers</th>                       
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                        <td><input type="text" class="form-control calc" name="FIAmount_{{ forloop.counter0 }}"/>
+                            <input name="FITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        
+                        <td><input type="text" class="form-control calc" name="FEAmount_{{ forloop.counter0 }}"/>
+                            <input name="FETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BIAmount_{{ forloop.counter0 }}"/>
+                            <input name="BITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="BEAmount_{{ forloop.counter0 }}"/>
+                            <input name="BETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                     
+                    </tr>   
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                </table>                          
+                <br>
+                {% comment %} Launch Food Average Check  Table {% endcomment %}
+                <br>
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th> </th>
+                        <th>Launch-Food Average Check</th>
+                        <th>Launch-Food Average Check</th>
+                        <th>Launch-Beverage Average Check</th>
+                        <th>Launch-Beverage Average Check</th>                       
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                        <td><input type="text" class="form-control calc" name="LFAAmount_{{ forloop.counter0 }}"/>
+                            <input name="LFATitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        
+                        <td><input type="text" class="form-control calc" name="LFAAmount1_{{ forloop.counter0 }}"/>
+                            <input name="LFA1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="LFBAmount_{{ forloop.counter0 }}"/>
+                            <input name="LFBTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                        <td><input type="text" class="form-control calc" name="LFBAmount1_{{ forloop.counter0 }}"/>
+                            <input name="LFB1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                        </td>  
+                     
+                    </tr>   
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                </table>                          
+                <br>
+               
+                  {% comment %} Launch Food Revenue Table {% endcomment %}
+                  <br>
+                  <table id="title" class= "table table-bordered " >
+                      <thead>
+                          <th> </th>
+                          <th>Launch-Food Revenue</th>
+                          <th>Launch-Food Revenue</th>
+                          <th>Launch-Beverage Revenue</th>
+                          <th>Launch-Beverage Revenue</th>                       
+                      </thead>
+                      {% for x in mem1%}
+                      <tr>                
+                          <td>{{x.FB_Worksheet_Master.title}}</td> 
+  
+                          <td><input type="text" class="form-control calc" name="FRAmount_{{ forloop.counter0 }}"/>
+                              <input name="FRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          
+                          <td><input type="text" class="form-control calc" name="FRAmount1_{{ forloop.counter0 }}"/>
+                              <input name="FR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BRAmount_{{ forloop.counter0 }}"/>
+                              <input name="BRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BRAmount1_{{ forloop.counter0 }}"/>
+                              <input name="BR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                       
+                      </tr>   
+                      </tr>
+                      {% if forloop.last %}
+                      <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                      {% endif %}
+                      {% endfor %}
+                  </table>                          
+                  <br>
+                  {% comment %} Dinner Food Internal Covers {% endcomment %}
+
+                  <br>
+                  <table id="title" class= "table table-bordered " >
+                      <thead>
+                          <th> </th>
+                          <th>Dinner Food Internal Covers</th>
+                          <th>Dinner Food External Covers</th>
+                          <th>Dinner Beverage Internal Covers</th>
+                          <th>Dinner Beverage External Covers</th>                       
+                      </thead>
+                      {% for x in mem1%}
+                      <tr>                
+                          <td>{{x.FB_Worksheet_Master.title}}</td> 
+  
+                          <td><input type="text" class="form-control calc" name="DIAmount_{{ forloop.counter0 }}"/>
+                              <input name="DITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          
+                          <td><input type="text" class="form-control calc" name="DEAmount_{{ forloop.counter0 }}"/>
+                              <input name="DETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BIAmount_{{ forloop.counter0 }}"/>
+                              <input name="BITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BEAmount_{{ forloop.counter0 }}"/>
+                              <input name="BETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                       
+                      </tr>   
+                      </tr>
+                      {% if forloop.last %}
+                      <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                      {% endif %}
+                      {% endfor %}
+                  </table>
+                    {% comment %} Dinner Food Average Covers {% endcomment %}       
+                    
+                  <br>
+                  <table id="title" class= "table table-bordered " >
+                      <thead>
+                          <th> </th>
+                          <th>Dinner Food Average Check</th>
+                          <th>Dinner Food Average Check</th>
+                          <th>Dinner Beverage InternAverageal Check</th>
+                          <th>Dinner Beverage InternAverageal Check</th>                       
+                      </thead>
+                      {% for x in mem1%}
+                      <tr>                
+                          <td>{{x.FB_Worksheet_Master.title}}</td> 
+  
+                          <td><input type="text" class="form-control calc" name="DFAAmount_{{ forloop.counter0 }}"/>
+                              <input name="DFTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          
+                          <td><input type="text" class="form-control calc" name="DFAmount1_{{ forloop.counter0 }}"/>
+                              <input name="DF1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BFAmount_{{ forloop.counter0 }}"/>
+                              <input name="BFTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                          <td><input type="text" class="form-control calc" name="BFAmount1_{{ forloop.counter0 }}"/>
+                              <input name="BF1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                          </td>  
+                       
+                      </tr>   
+                      </tr>
+                      {% if forloop.last %}
+                      <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                      {% endif %}
+                      {% endfor %}
+                  </table>    
+                    {% comment %} Dinner Food Revenue  {% endcomment %}   
+                    <br>
+                    <table id="title" class= "table table-bordered " >
+                        <thead>
+                            <th> </th>
+                            <th>Dinner Food Revenue</th>
+                            <th>Dinner Food Revenue</th>
+                            <th>Dinner Beverage Revenue</th>
+                            <th>Dinner Beverage Revenue</th>                       
+                        </thead>
+                        {% for x in mem1%}
+                        <tr>                
+                            <td>{{x.FB_Worksheet_Master.title}}</td> 
+    
+                            <td><input type="text" class="form-control calc" name="FRAmount_{{ forloop.counter0 }}"/>
+                                <input name="FRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            
+                            <td><input type="text" class="form-control calc" name="FRAmount1_{{ forloop.counter0 }}"/>
+                                <input name="FR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            <td><input type="text" class="form-control calc" name="DRAmount_{{ forloop.counter0 }}"/>
+                                <input name="DRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            <td><input type="text" class="form-control calc" name="DRAmount1_{{ forloop.counter0 }}"/>
+                                <input name="DR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                         
+                        </tr>   
+                        </tr>
+                        {% if forloop.last %}
+                        <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                        {% endfor %}
+                    </table>    
+                      {% comment %} Super Food Internal /External  {% endcomment %}         
+                      <br>
+                    <table id="title" class= "table table-bordered " >
+                        <thead>
+                            <th> </th>
+                            <th>Super Food Internal Covers</th>
+                            <th>Super Food External Covers</th>
+                            <th>Super Beverage Internal Covers</th>
+                            <th>Super Beverage External Covers</th>                       
+                        </thead>
+                        {% for x in mem1%}
+                        <tr>                
+                            <td>{{x.FB_Worksheet_Master.title}}</td> 
+    
+                            <td><input type="text" class="form-control calc" name="SIAmount_{{ forloop.counter0 }}"/>
+                                <input name="SITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            
+                            <td><input type="text" class="form-control calc" name="SEAmount_{{ forloop.counter0 }}"/>
+                                <input name="SETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            <td><input type="text" class="form-control calc" name="SBIAmount_{{ forloop.counter0 }}"/>
+                                <input name="SBITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                            <td><input type="text" class="form-control calc" name="SBEAmount_{{ forloop.counter0 }}"/>
+                                <input name="SBETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                            </td>  
+                         
+                        </tr>   
+                        </tr>
+                        {% if forloop.last %}
+                        <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                        {% endfor %}
+                    </table>      
+                       {% comment %} Super Food Average {% endcomment %}            
+                       <br>
+                       <table id="title" class= "table table-bordered " >
+                           <thead>
+                               <th> </th>
+                               <th>Super Food Average Check</th>
+                               <th>Super Food Average Check</th>
+                               <th>Super Beverage Average Check</th>
+                               <th>Super Beverage Average Check</th>                       
+                           </thead>
+                           {% for x in mem1%}
+                           <tr>                
+                               <td>{{x.FB_Worksheet_Master.title}}</td> 
+       
+                               <td><input type="text" class="form-control calc" name="ACAmount_{{ forloop.counter0 }}"/>
+                                   <input name="ACTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               
+                               <td><input type="text" class="form-control calc" name="ACAmount1_{{ forloop.counter0 }}"/>
+                                   <input name="AC1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="BCAmount_{{ forloop.counter0 }}"/>
+                                   <input name="BCTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="BCAmount1_{{ forloop.counter0 }}"/>
+                                   <input name="BC1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                            
+                           </tr>   
+                           </tr>
+                           {% if forloop.last %}
+                           <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                           {% endif %}
+                           {% endfor %}
+                       </table> 
+
+                       {% comment %} # For Eleven table (Super Food Revenue View)   {% endcomment %}
+                       <br>
+                       <table id="title" class= "table table-bordered " >
+                           <thead>
+                               <th> </th>
+                               <th>Super Food Revenue</th>
+                               <th>Super Food Revenue</th>
+                               <th>Super Beverage Revenue</th>
+                               <th>Super Beverage Revenue</th>                       
+                           </thead>
+                           {% for x in mem1%}
+                           <tr>                
+                               <td>{{x.FB_Worksheet_Master.title}}</td> 
+       
+                               <td><input type="text" class="form-control calc" name="SRAmount_{{ forloop.counter0 }}"/>
+                                   <input name="SRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               
+                               <td><input type="text" class="form-control calc" name="SRAmount1_{{ forloop.counter0 }}"/>
+                                   <input name="SR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="BRAmount_{{ forloop.counter0 }}"/>
+                                   <input name="BRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="BRAmount1_{{ forloop.counter0 }}"/>
+                                   <input name="BR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                            
+                           </tr>   
+                           </tr>
+                           {% if forloop.last %}
+                           <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                           {% endif %}
+                           {% endfor %}
+                       </table> 
+
+                       {% comment %} # For Twelve table (Other Food Internal View)   {% endcomment %}
+                       <br>
+                       <table id="title" class= "table table-bordered " >
+                           <thead>
+                               <th> </th>
+                               <th>Others Food Internal Cover</th>
+                               <th>Others Food External Cover</th>
+                               <th>Others Beverage  Internal Cover</th>
+                               <th>Others Beverage External Cover</th>                       
+                           </thead>
+                           {% for x in mem1%}
+                           <tr>                
+                               <td>{{x.FB_Worksheet_Master.title}}</td> 
+       
+                               <td><input type="text" class="form-control calc" name="OIAmount_{{ forloop.counter0 }}"/>
+                                   <input name="OITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               
+                               <td><input type="text" class="form-control calc" name="OETitleID_{{ forloop.counter0 }}"/>
+                                   <input name="OETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="OBIAmount_{{ forloop.counter0 }}"/>
+                                   <input name="OBITitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                               <td><input type="text" class="form-control calc" name="OBEAmount_{{ forloop.counter0 }}"/>
+                                   <input name="OBETitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                               </td>  
+                            
+                           </tr>   
+                           </tr>
+                           {% if forloop.last %}
+                           <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                           {% endif %}
+                           {% endfor %}
+                       </table> 
+                     {% comment %} # For Thirteen table (Other Food Average View)   {% endcomment %}
+
+                     <br>
+                     <table id="title" class= "table table-bordered " >
+                         <thead>
+                             <th> </th>
+                             <th>Others Food Average Check</th>
+                             <th>Others Food Average Check</th>
+                             <th>Others Beverage  Average Check</th>
+                             <th>Others Beverage Average Check</th>                       
+                         </thead>
+                         {% for x in mem1%}
+                         <tr>                
+                             <td>{{x.FB_Worksheet_Master.title}}</td> 
+     
+                             <td><input type="text" class="form-control calc" name="OAAmount_{{ forloop.counter0 }}"/>
+                                 <input name="OATitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                             </td>  
+                             
+                             <td><input type="text" class="form-control calc" name="OAAmount1_{{ forloop.counter0 }}"/>
+                                 <input name="OA1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                             </td>  
+                             <td><input type="text" class="form-control calc" name="OBAmount_{{ forloop.counter0 }}"/>
+                                 <input name="OBTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                             </td>  
+                             <td><input type="text" class="form-control calc" name="OBAmount1_{{ forloop.counter0 }}"/>
+                                 <input name="OB1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                             </td>  
+                          
+                         </tr>   
+                         </tr>
+                         {% if forloop.last %}
+                         <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                         {% endif %}
+                         {% endfor %}
+                     </table> 
+         {% comment %} # For Fourteen table (Other Food Internal View) {% endcomment %}
+         <br>
+         <table id="title" class= "table table-bordered " >
+             <thead>
+                 <th> </th>
+                 <th>Others Food Revenue</th>
+                 <th>Others Food Revenue</th>
+                 <th>Others Beverage Revenue</th>
+                 <th>Others Beverage Revenue</th>                       
+             </thead>
+             {% for x in mem1%}
+             <tr>                
+                 <td>{{x.FB_Worksheet_Master.title}}</td> 
+
+                 <td><input type="text" class="form-control calc" name="OFRAmount_{{ forloop.counter0 }}"/>
+                     <input name="OFRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                 </td>  
+                 
+                 <td><input type="text" class="form-control calc" name="OFR1Amount_{{ forloop.counter0 }}"/>
+                     <input name="OFR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                 </td>  
+                 <td><input type="text" class="form-control calc" name="OBRAmount_{{ forloop.counter0 }}"/>
+                     <input name="OBRTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                 </td>  
+                 <td><input type="text" class="form-control calc" name="OBR1Amount_{{ forloop.counter0 }}"/>
+                     <input name="OBR1TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                 </td>  
+              
+             </tr>   
+             </tr>
+             {% if forloop.last %}
+             <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+             {% endif %}
+             {% endfor %}
+         </table> 
+         {% comment %} # For Fifteen table (Other Food Internal View)  {% endcomment %}
+         <br>
+         <table id="title" class= "table table-bordered " >
+             <thead>
+                 <th> </th>
+                 <th>Captures Rates Breakfast</th>              
+             </thead>
+             {% for x in mem1%}
+             <tr>                
+                 <td>{{x.FB_Worksheet_Master.title}}</td> 
+                 <td><input type="text" class="form-control calc" name="CRBAmount_{{ forloop.counter0 }}"/>
+                     <input name="CRBTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                 </td>               
+             </tr>   
+             </tr>
+             {% if forloop.last %}
+             <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+             {% endif %}
+             {% endfor %}
+         </table> 
+              {% comment %} # For Sixteen table (Other Food Internal View)  {% endcomment %}
+              <br>
+              <table id="title" class= "table table-bordered " >
+                  <thead>
+                      <th> </th>
+                      <th>Captures Rates Launch</th>              
+                  </thead>
+                  {% for x in mem1%}
+                  <tr>                
+                      <td>{{x.FB_Worksheet_Master.title}}</td> 
+                      <td><input type="text" class="form-control calc" name="CRLAmount_{{ forloop.counter0 }}"/>
+                          <input name="CRLTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                      </td>               
+                  </tr>   
+                  </tr>
+                  {% if forloop.last %}
+                  <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                  {% endif %}
+                  {% endfor %}
+              </table> 
+              {% comment %} # For Seventeen table (Other Food Internal View)  {% endcomment %}
+              <br>
+              <table id="title" class= "table table-bordered " >
+                  <thead>
+                      <th> </th>
+                      <th>Captures Rates Dinner</th>              
+                  </thead>
+                  {% for x in mem1%}
+                  <tr>                
+                      <td>{{x.FB_Worksheet_Master.title}}</td> 
+                      <td><input type="text" class="form-control calc" name="CRDAmount_{{ forloop.counter0 }}"/>
+                          <input name="CRDTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                      </td>               
+                  </tr>   
+                  </tr>
+                  {% if forloop.last %}
+                  <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                  {% endif %}
+                  {% endfor %}
+              </table> 
+        
+{% comment %} # For Eighteen table (Other Food Internal View)  {% endcomment %}
+<br>
+<table id="title" class= "table table-bordered " >
+    <thead>
+        <th> </th>
+        <th>Captures Rates Supper</th>              
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td><input type="text" class="form-control calc" name="CRSAmount_{{ forloop.counter0 }}"/>
+            <input name="CRSTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+        </td>               
+    </tr>   
+    </tr>
+    {% if forloop.last %}
+    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+    {% endif %}
+    {% endfor %}
+</table> 
+{% comment %} # For Nighteen table (Other Food Internal View)  {% endcomment %} 
+<br>
+<table id="title" class= "table table-bordered " >
+    <thead>
+        <th> </th>
+        <th>Captures Rates Others</th>              
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_Worksheet_Master.title}}</td> 
+        <td><input type="text" class="form-control calc" name="CROAmount_{{ forloop.counter0 }}"/>
+            <input name="CROTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+        </td>               
+    </tr>   
+    </tr>
+    {% if forloop.last %}
+    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+    {% endif %}
+    {% endfor %}
+</table> 
+                   {% comment %} # For Twenteen table (Other Food Internal View)  {% endcomment %}
+                   <br>
+                   <table id="title" class= "table table-bordered " >
+                       <thead>
+                           <th> </th>
+                           <th>Captures Rates All Meal Types</th>              
+                       </thead>
+                       {% for x in mem1%}
+                       <tr>                
+                           <td>{{x.FB_Worksheet_Master.title}}</td> 
+                           <td><input type="text" class="form-control calc" name="CRAMTAmount_{{ forloop.counter0 }}"/>
+                               <input name="CRAMTTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.FB_Worksheet_Master.id}}" type="text"/>
+                           </td>               
+                       </tr>   
+                       </tr>
+                       {% if forloop.last %}
+                       <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                       {% endif %}
+                       {% endfor %}
+                   </table> 
+                  <br>
+                <div class = "card-footer text-right">
+                <button class="btn btn-success" type="submit" id="new1">Edit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}
+
+

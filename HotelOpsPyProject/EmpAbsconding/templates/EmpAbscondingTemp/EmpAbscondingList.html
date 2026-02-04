@@ -1,0 +1,104 @@
+{% extends 'EmpAbscondingTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+    }
+
+    .card .card-body {
+        padding: 16px !important;
+    }
+
+    .card .card-header {
+        margin-bottom: -20px !important;
+    }
+    
+	#clear, #filter{
+		padding-block: 8px;
+	}
+</style>
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold ">Absconding</span></div>
+        </div>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+
+        <div class="col-md-12">
+            <form method="GET" class="row g-2">
+                <div class="col-md-4">
+                    <select name="I" class="form-control ">
+                        <option value="">Select</option>
+                        {% for itm in memorg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.OrganizationName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="col-md-3 d-flex justify-items-start align-items-center gap-2">
+                    <button type="submit" class="btn btn-primary" id='filter'>
+                        <i class="fa fa-filter"></i> Filter
+                    </button>
+                
+                    <a href="{% url 'EmpAbscondingList' %}" class="btn btn-danger" id='clear'>
+                        Clear
+                    </a>
+                </div>
+            </form>  
+        </div>
+
+          <table class="table table-striped custom-table mb-0 datatable dataTable no-footert" >
+              <thead>
+                  <tr class="active" style="background-color:#8e9ebc">
+                      <th class="EmpCode">Emp Code</th>
+                      <th class="Name">Name</th>
+                      <th class="Designation">Designation</th>
+                      <th class="Department">Department</th>
+                      <th class="Date">Joining Date</th>
+                      <th class="Date">Date of Absconding</th>
+                      {% comment %} <th class="Remarks">Remarks</th> {% endcomment %}
+                      <th class="Action">Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for i in Abscondings %}
+                      <tr>
+                          <td>{{ i.Emp_Code }}</td>
+                          <td>{{ i.Name }}</td>
+                          <td>{{ i.Designation }}</td>
+                          <td>{{ i.Dept }}</td>
+                          <td>{{ i.DOJ }}</td>
+                          <td>{{ i.Date_Of_Absconding }}</td>
+                          {% comment %} <td>{{ i.Remarks }}</td> {% endcomment %}
+                          <td>
+                              <div class="btn btn-group">
+                                  <a href="{% url 'EmpAbscondingEntry' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&DepartmentName={{ i.Dept }}&Page=EmpAbscondingList&OID={{i.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                  {% comment %} <a href="{% url 'EmpAbscondingDelete' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                                  &nbsp;
+                                  <a href="{% url 'EmpAbscondingPDF' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" target="_blank" class="btn btn-danger text-white btn-sm">View</a>
+                              </div>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          
+      </div>
+  </div>
+
+  <script>
+         var selectedOrganization = "{{ I }}";
+            $("select[name='I']").val(selectedOrganization);
+
+  </script>
+{% endblock %}

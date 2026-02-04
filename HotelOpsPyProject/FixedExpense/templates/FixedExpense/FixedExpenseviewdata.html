@@ -1,0 +1,186 @@
+
+{% load static %}
+{% comment %} {% load humanize %} {% endcomment %}
+
+{% block content %}
+
+<style>
+    
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      
+      background-color:#1a64b3;
+        color:#fff
+    }
+    .sh th{
+        background-color:#dedede;
+        color:#434568;
+
+    }
+
+    {% comment %} {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      } {% endcomment %}
+     
+      .noborder td{
+        border-width:0px;
+      }
+      td,th{
+border-color: lightcyan;
+
+      }
+  </style>
+
+    <div class="container1">
+        
+            <table class="noborder">
+                <tr>
+                    <td width="200px">
+                        <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+                    </td>
+                    <td style="text-align:right">  
+                        <h2 style="font-size:18px">Fixed Expense Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+                    </td>    
+                             
+                </tr>
+            </table>
+            <br>
+       <br/>
+        <div class="card-body">
+            <form action="{%url 'FixedExpenseView' mem.id %}" method = "post">
+                {% csrf_token %}                
+          
+              </div>                                                        
+            </form>
+        </div>
+    </div>
+    
+    <table id="title" style="width:100%" class= "table table-bordered " >
+        <thead>
+            <tr>
+            <th width="40%">Title</th>
+            
+            <th width="20%" align="right">Amount</th>
+            <th width="20%">Applicable</th>
+            <th width="20%">Remarks</th>
+            </tr>
+        </thead>
+        
+        {% for x in Resob %}
+            {%if x.is_ST_true %}
+            {% if  x.IsFirst %}
+                <tr class="sh">
+                    <th>
+                       Total
+                    </th>
+                    <th align="right">
+                        {{x.Amount}} 
+                        
+                    </th>
+                    <th class="sh" width="20%"></th>
+                    <th class="sh" width="20%"></th>
+                </tr>
+                {% if x.is_Last %}
+                <tr >
+                    <td>
+                       
+                    </td>
+                    <td>
+                       
+                    </td>
+                    <td width="20%"></td>
+                    <td width="20%"></td>
+                </tr>
+              
+                {% endif %}
+                <tr >
+                    <th>
+                        {{ x.FixedExpenseMaster.FixedExpenseDepartmentMaster.title }}
+                    </th>
+                    <th>
+                      
+                    </th>
+                    <th width="20%"></th>
+                    <th width="20%"></th>
+                </tr>
+                {% endif %}
+              
+                
+                {% else %}
+               
+                {% endif %}
+            {%if x.is_HT_true and x.IsFirst %}
+            
+                <tr>
+                    <th colspan="4">
+                        {{ x.FixedExpenseMaster.FixedExpenseDepartmentMaster.title }}
+                    </th>
+                </tr>
+                {% endif %}    
+            {% if x.is_AI_true %}
+                <tr>
+    
+                    <td>{{ x.FixedExpenseMaster.title }} </td>
+                    <td align="right">{{ x.Amount  }}
+                      
+                    
+
+
+                    </td>
+                    <td align="right">{{ x.Isapplicable }}</td>
+                    <td width="20%" align="right">{{ x.Remakrs }}</td>
+                </tr>
+           {% endif %}    
+
+           
+       
+
+        
+        {% endfor %}
+        
+
+        <tr>
+            <td  align="right" ><strong>Grand Total:</strong></td>
+            <td  align="right"><strong>{{ grand_total }}</strong></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            
+        </tr>
+    </table>
+</div>
+<script>
+
+    $(function(){
+        DoCal();
+        
+        $("input[name*='Amount_']").blur(function(){
+            DoCal();
+        })      
+    })
+    var DoCal=function(){
+
+        var TotalAmount=0;
+            $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+            $("input[name='Total']").val(TotalAmount.toFixed(2))
+    }
+</script>
+
+{% endblock content %}
+
+

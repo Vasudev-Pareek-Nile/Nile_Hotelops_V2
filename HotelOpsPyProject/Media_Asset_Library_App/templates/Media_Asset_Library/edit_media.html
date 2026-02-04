@@ -1,0 +1,121 @@
+{% extends 'Media_Asset_Library/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<div class="container">
+    <div class="card-header">Edit</div>
+    <br>
+    <button class="btn btn-primary btn-sm" onclick="history.back()">Go Back</button>
+    <br>
+    
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-6">
+            <div class="card">
+                <form method='POST' action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="media_file">Media:</label>
+                                <input name="media_file" id="media_file" type="file" class="form-file">
+                                <img class="m-3" id="media_preview" src="{{ media.Thumbnail.url }}" alt="Previous Media" style="max-width: 200px; max-height: 200px;">
+                               
+                            </div>
+                            
+                            <div class="form-group m-3">
+                                <label>Title:</label>
+                                <input required name="title"  value="{{media.Title}}" type="text" placeholder="Enter Title" class="form-control">
+                            </div>
+                            <div class="form-group m-3">
+                                <label>Descriptions:</label>
+                                <textarea  required name="descriptions"   placeholder="Enter Description" class="form-control" cols="30" rows="3">{{ media.Descriptions }}</textarea>
+                                
+                            </div>
+                            
+                        </div>
+                    
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label>Expiration Date:</label>
+                                <input required name="expiration_date" type="date" class="form-control" value="{{ media.Expiration_Date|date:'Y-m-d' }}">
+                            </div>
+                            <div class="form-group m-3">
+                                <label>Upload Date:</label>
+                                <input required name="upload_date" type="date" class="form-control" value="{{ media.Upload_Date|date:'Y-m-d' }}">
+                            </div>
+                            
+                            
+                            <div class="form-group m-3">
+                                <label>Upload By:</label>
+                                <input required name="upload_by" readonly type="text" class="form-control" value="{{media.Upload_By}}">
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="for_category">Category:</label>
+                                <select name="category" id="categorySelected" class="form-control" >
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group m-3">
+    <label for="for_hotel">For Hotels:</label>
+   
+    <select name="for_hotel" id="organizationSelect" class="form-control">
+        {% for itm in memOrg %}
+            <option value="{{ itm.OrganizationID }}">
+                {{ itm.Organization_name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+                            
+                        </div>
+                       
+                    </div>
+                
+                    <button type='submit' class="btn btn-primary m-3 btn-sm">Edit</button>
+                </form>
+                
+              
+            </div>
+    
+        </div>
+        
+        
+    </div>  
+    
+</div><script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ media.For_Hotels }}";
+        $("#organizationSelect").val(selectedOrganization);
+
+        var selectedcategory = "{{ media.category.id }}";
+        $("#categorySelected").val(selectedcategory);
+        
+       
+        $("#media_file").change(function () {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#media_preview').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    });
+</script>
+  
+{% endblock content %}

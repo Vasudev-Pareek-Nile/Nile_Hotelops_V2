@@ -1,0 +1,252 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Document</title>
+ </head>
+ <style>
+     body{
+ 
+         font-size: 10px;
+         font-weight: bold;
+     }
+     .tableborder{
+         border: 1px solid black;
+     }
+ </style>
+ <body>
+    <div class="container">
+ 
+ 
+ 
+      
+     <table  class="tableborder" CELLPADDING="4" >
+         <thead>
+             <tr> 
+                     <td colspan="6">
+                         <table width="100%" >
+                             <tr>
+                  
+ 
+                                 <th width="130" align="left" >
+                                <img  src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{org_Details.OrganizationLogo}}"  height="100">
+                                 </th>
+                                 <th style="text-align: center;" >
+                                     {{org_Details.OrganizationName}}
+                                      <br>
+                                      {{org_Details.Address}}
+                                      <br>
+                                      Payslip For the month of {{month}} - {{year}}
+                                 </th>
+                              
+                             </tr>
+                         </table>
+                     </td>
+             </tr>
+            
+         </thead>
+         <tbody>
+             <tr>
+                 <td  width="95" class="Bold" >Name</td>
+                 <td  width="120" colspan="4">{{salary.Emp_Name  }}</td>
+                 <!-- <td width="70"  class="Bold" ></td>
+                 <td width="70"  class="Bold" ></td> -->
+                 <!-- <td width="120">{{salary.ProvidentFundNumber}}</td> -->
+                 <td width="90  " class="Bold" >UAN No</td>
+                 <td  width="80"></td>
+             </tr>
+      
+      
+      
+             <tr>
+      
+                <td class="Bold" >Emp. Code</td>
+                <td >{{salary.EmployeeCode}}</td>
+                <td class="Bold" >DOB</td>
+                <td >01-01-2025</td> 
+                <td class="Bold" >doj</td>
+                <td >01-01-2025</td>
+                <td class="Bold" >ESI No</td>
+                <td></td>
+             </tr>
+            <tr>
+                <td class="Bold" >Designation</td>
+                <td colspan="2">{{salary.Desingation}}</td>
+
+                <td class="Bold" >Total Paid Days</td>
+                <td colspan="2">{{salary.total_no_Days_in_month}}</td>
+                 
+                <td class="Bold" >Bank A/C No</td>
+                <td colspan="2"></td>
+
+             </tr>
+            <tr>
+                <td class="Bold" >Designation</td>
+                <td colspan="2">{{salary.Desingation}}</td>
+
+
+                <td class="Bold" >Total Paid Days</td>
+                <td colspan="2">{{salary.total_no_Days_in_month}}</td>
+                <td class="Bold" >Pay Mode</td>
+                <td colspan="2"></td>
+
+             </tr>
+          <tr>
+                <td class="Bold" >Department</td>
+                <td >{{salary.Department}}</td>
+
+                <td class="Bold" >DOJ</td>
+                <td >{{salary.DOJ}}</td> 
+                <td class="Bold" >Total Paid Days</td>
+                <td >{{salary.total_no_Days_in_month}}</td>
+                <td class="Bold">Bank  Name</td>
+                 <td >{{salary.BankName}}</td>    
+               
+             </tr>
+               <tr>
+                <td  class="Bold" >DOB</td>
+                <td >{{salary.DOB}}</td>
+                 
+                 <td class="Bold" >Present Days</td>
+                 <td >{{salary.no_of_days}}</td>
+
+                 <td class="Bold">Branch Name</td>
+                 <td >{{salary.BankBranch}}</td>
+               
+                 
+             </tr>
+           
+              <tr class="Bold">
+                 <td >Salary Heads</td>
+                 <td >Fixed</td>
+                 <td >Earning Heads</td>
+                 <td  >Earned</td>
+                 <td >Deductions</td>
+                 <td >Variable</td>
+             </tr>
+           <tr>
+                 <td >Basic</td>
+                 <td >{{formatted.fixed_basic}}</td>
+                 <td >Basic</td>
+                 <td >{{formatted.Earned_Basic}}</td>
+                 <td >ESIC(0.75% of TE)</td>
+                 <td >{{formatted.ESIC}}</td>
+                
+             </tr>
+              <tr>
+                       
+                 <td >HRA</td>
+                 <td >{{formatted.fixed_HRA}}</td>
+                 <td >HRA</td>
+                 <td >{{formatted.Earned_HRA}}</td>
+                 <td >EPFO(12 % of BE)</td>
+                 <td >{{formatted.EPFO}}</td>
+                
+                 
+             </tr>
+ 
+         
+             <tr>
+                    
+                     <td >Conveyance Allowance</td>
+                     <td >{{formatted.ConveyanceAllowance}} </td>
+                     <td  >Arrear</td>
+                     <td >{{formatted.Arrear}}</td>
+                     <td   >PT</td>
+                     <td >{{formatted.PT}}</td>
+                 
+             
+             
+             </tr>
+             
+             <tr>
+                 <td>CCA</td>
+                 <td >{{formatted.CCA}}</td>
+                 <td >Reward/Incentive</td>
+                 <td >{{formatted.RewardIncentive}}</td>
+                 <td >Meals</td>
+                 <td >{{formatted.Meals}}</td>
+             
+             </tr>
+             <tr>
+                <td>Other Allowance</td>
+                <td >{{formatted.OtherAllowance}}</td>
+                <td>Total Allowance</td>
+                <td >{{formatted.Earned_Total_Allowance}}</td>
+                
+                <td >Accommodation</td>
+                <td >{{formatted.Accommodation}}</td>
+             </tr>
+         
+      
+             <tr>
+             
+                 <td colspan="4" rowspan="3"></td>   
+                 <td width="90">Advance/Loan</td>
+                 <td width="80">{{formatted.AdvanceLoan}}</td>
+             </tr>
+ 
+             
+           <tr>
+                
+                 <td width="90">Tax Deduction</td>
+                 <td width="80">{{formatted.TaxDeduction}}</td>
+             </tr>
+ 
+              
+             <tr>
+               
+                 <td  width="90">Other Deduction</td>
+                 <td width="80">{{formatted.OtherDeduction}}</td>
+             </tr>    
+  
+            <tr class="Bold">
+                     <td >Gross Salary</td>
+                     <td >{{formatted.gross_salary}}</td>
+                     <td>Total Earnings</td> 
+                     <td  >{{formatted.Total_Earning}}</td>
+                     <td class="Bold">Total Deductions</td>
+                     <td> {{formatted.Total_Deduction}}</td>
+             </tr>
+              <tr class="Bold">
+                  <td colspan="2"></td>   
+                 
+                 <td class="Bold">Net Pay</td>
+                 <td >{{formatted.Net_salary}}</td>
+                 <td colspan="2"></td>
+                
+             </tr>
+             
+ 
+       
+             <tr>
+                 <td class="Bold" colspan="6" style="text-align: center;">Amount In Words :- Rupees {{salary.Net_salary_In_Words}}.</td>
+                
+             </tr>
+             
+             <tr>
+                     <td colspan="6">
+                         Leave Balance-
+                         {% for leave in Leave_Balance  %}
+                             
+                         {{leave.Leave_Type_Master.Type}}:{{leave.Balance}},
+ 
+                     
+                         {% endfor %}
+                     </td>
+              <tr> 
+             <tr>
+                 <td style="text-align: center;" colspan="6">*** THIS IS COMPUTER GENERATED PAYSLIP DOES NOT REQUIRE SIGNATURE ***</td>
+             </tr>      
+         </tbody>
+     </table>
+    </div>
+ </body>
+ </html>
+ 
+ 
+ 
+ 
+ 
+ 

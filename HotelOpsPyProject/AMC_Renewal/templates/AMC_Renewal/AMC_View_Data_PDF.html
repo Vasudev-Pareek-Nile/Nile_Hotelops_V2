@@ -1,0 +1,208 @@
+{% load custom_filters %}
+{% load encryption_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Report</title>
+    <style>
+        @page {
+            margin: 10mm;
+        }
+        body {
+            font-family: "Arial Nova", sans-serif;
+            line-height: 1.4;
+        }
+        .report-header {
+            text-align: center;
+            font-weight: bold;
+        }
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            width: 100%;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            padding: 4px 8px;
+            text-align: left;
+        }
+        .bold-text {
+             font-weight: bold; 
+        }
+        .total-leave {
+            font-weight: bold;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .underline {
+            /* text-decoration: underline; */
+            margin-left: 50px;
+        } 
+        .spacer {
+            height: 10px;
+        }
+        .ReportDateContainer{
+            display:flex;
+            justify-content: space-between;
+        }
+        .light-color{
+            color:#1762ec;
+            font-weight: bolder;
+        }
+
+        .Pending{
+            color:#ffa500;
+        }
+        .RejectedReturn{
+            color:#ff0000;
+        }
+        .Approved{
+            color:#008000;
+        }
+
+        .LineColor{
+            border-top: 1px solid #0aa485;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+          <tr>
+              
+            <td style="text-align: center;width:600px">
+              <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                  <tr>
+                    <td><p style="text-align: center; font-size:18px; margin-bottom:-20px;">{{organization_logo}}</p>
+                        <p style="text-align: center; margin-top:-3px;">Equipment AMC Renewal Approval</p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style="text-align: right;">
+              {% if organization_logos %}
+                <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 80px; height: auto;">
+              {% else %}
+                <p>No logo available</p>
+              {% endif %}
+            </td>
+          </tr>
+        </table>
+</header>
+<br>
+
+<hr class="LineColor">
+
+<div class="table-container">
+    <table>
+        <tbody>
+            {% for profile in equipment_data %}
+            <tr>
+                <td><strong>Serial Number:</strong> <span class="light-color"> {{ profile.SerailNumber|default:" " }}</span></td>
+                <td><strong>Description:</strong> <span class="light-color"> {{ profile.Descriptions|default:" " }}</span></td>
+                <td><strong>Capacity:</strong> <span class="light-color">{{ profile.Capacity|default:" " }} </span></td>
+            </tr>
+            <tr>
+                <td><strong>Model:</strong> <span class="light-color">{{ profile.ModelNumber|default:" " }} </span></td>
+                <td><strong>Make:</strong> <span class="light-color">{{ profile.Make|default:" " }} </span></td>
+                <td><strong>Yearly Expense:</strong> <span class="light-color">{{ profile.YearlyExpense|default:" " }}</td>
+            </tr>
+            <tr>
+                <td><strong>Unit Amount:</strong> <span class="light-color">{{ profile.UnitAmount|default:" " }} </span></td>
+                <td><strong>Hotel Name:</strong> <span class="light-color">{{ profile.HTL|default:" " }} </span></td>
+                <td><strong>Department:</strong> <span class="light-color">{{ profile.Department|default:" " }} </span></td>
+            </tr>
+            <tr>
+                <td><strong>Commissioning Date:</strong> <span class="light-color">{{ profile.CommissioningDate|default:" " }} </span></td>
+                <td><strong>Location:</strong> <span class="light-color">{{ profile.Area|default:" " }} </span></td>
+                <td><strong>Responsible Person:</strong> <span class="light-color">{{ profile.ResponsiblePerson|default:" " }} </span></td>
+                {% comment %} <td><strong>AMC Amount:</strong> <span class="light-color">{{ profile.AMC_Amount|default:" " }} </span></td>
+                <td><strong>AMC Type:</strong> <span class="light-color">{{ profile.AMCType|default:" " }} </span></td> {% endcomment %}
+            </tr>
+            <tr>
+                <td><strong>Warranty Start Date:</strong> <span class="light-color">{{ profile.WarrantyStartDate|default:" " }} </span></td>
+                <td><strong>Warranty End Date:</strong> <span class="light-color">{{ profile.WarrantyEndDate|default:" " }} </span></td>
+                <td><strong>Warranty Status:</strong> <span class="light-color">{{ profile.Status|default:" " }} </span></td>
+            </tr>
+            <tr>
+                <td><strong>AMC Start Date:</strong> <span class="light-color">{{ profile.AMC_Start_Date|default:" " }} </span> </td>
+                <td><strong>AMC End Date:</strong> <span class="light-color">{{ profile.AMC_End_Date|default:" " }} </span></td>
+                <td><strong>AMC Status:</strong> 
+                    {% comment %} <span class="light-color">{{ profile.Final_Status|default:" " }} </span> {% endcomment %}
+                        {{ profile.AStatus|default:" " }} 
+                </td>
+            </tr>
+            <tr>
+                {% comment %} <td><strong>Location:</strong> <span class="light-color">{{ profile.Area|default:" " }} </span></td>
+                <td><strong>Responsible Person:</strong> <span class="light-color">{{ profile.ResponsiblePerson|default:" " }} </span></td> {% endcomment %}
+                <td><strong>AMC Amount:</strong> <span class="light-color">{{ profile.AMC_Amount|default:" " }} </span></td>
+                <td><strong>AMC Type:</strong> <span class="light-color">{{ profile.AMCType|default:" " }} </span></td>
+                <td><strong>Schedule of Servicing:</strong> <span class="light-color">{{ profile.Scheduleofservicing|default:" " }} </span></td>
+            </tr>
+
+            <tr>
+                <td><strong>FC Status:</strong>
+                    <span class="{% if profile.FC_Status == "Pending" %}Pending{% elif profile.FC_Status == "Approved" %}Approved{% else %}RejectedReturn{% endif %}">
+                    {% if profile.FC_Status == "Return" or profile.FC_Status == "Rejected" %} {{ profile.FC_Status|default:" " }}: <br/> {{ profile.Remarks|default:" " }}{% else %} {{ profile.FC_Status|default:" " }}{% endif %}
+                    </span>
+                </td>
+
+                <td><strong>GM Status:</strong>
+                    <span class="{% if profile.GM_Status == "Pending" %}Pending{% elif profile.GM_Status == "Approved" %}Approved{% else %}RejectedReturn{% endif %}">
+                    {% if profile.GM_Status == "Return" or profile.GM_Status == "Rejected" %} {{ profile.GM_Status|default:" " }}: <br/> {{ profile.Remarks|default:" " }}{% else %} {{ profile.GM_Status|default:" " }}{% endif %}
+                    </span>
+                </td>
+
+                <td><strong>CEO Status:</strong>
+                    <span class="{% if profile.CEO_Status == "Pending" %}Pending{% elif profile.CEO_Status == "Approved" %}Approved{% else %}RejectedReturn{% endif %}">
+                    {% if profile.CEO_Status == "Return" or profile.CEO_Status == "Rejected" %} {{ profile.CEO_Status|default:" " }}: <br/> {{ profile.Remarks|default:" " }}{% else %} {{ profile.CEO_Status|default:" " }}{% endif %}
+                    </span>
+                </td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- <tr><td ><br/></td></tr>  -->
+
+
+<hr style="background-color: #0aa485;">
+<footer style="border-top: 1px solid #0aa485;">
+    <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+            {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+    </table>
+</footer>
+
+</body>
+</html>

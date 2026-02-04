@@ -1,0 +1,70 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container col-md-12" >
+    <div class="card">
+        <div class="card-header">Update Attendance</div>
+       
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Date</label>
+                        <input type="date" readonly value={{obj.Date |date:'Y-m-d'}} class="form-control" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">In Time</label>
+                        <input type="time" value={{obj.In_Time}} class="form-control" name="in" readonly >
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Out Time</label>
+                        <input type="time" value={{obj.Out_Time}} class="form-control" name="Out"  readonly>
+                    </div>    
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Reason</label>
+                        <textarea readonly name="Reason"  class="form-control" id="" cols="30" rows="1">{{req.Reason}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Current Status</label>
+                         <input type="text" readonly value="{{obj.Status}}" class="form-control" name="Status" >
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group m-3">
+                        <label for="">Status</label>
+                        <select name="Status" id="" class="form-control">
+                            <option value="">No Changes</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Week Off">Week Off</option>    
+                            {% for  leave in leave_type %}
+                            <option value="{{leave.Type}}">{{leave.Type}}</option>
+                            {% endfor %}
+                        </select> 
+                    </div>
+                </div>
+               
+               
+            </div>
+            <div class="card-footer text-right"> 
+               {% if req.Apporve_status == "0"  %}
+               
+               <button type="submit"  name="btn"  value="1" class="btn btn-primary btn-sm">Aprrove</button>
+               <button type="submit"  name="btn"  value="0" class="btn btn-danger btn-sm">Reject</button>
+              
+               {% endif %}
+             
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock content %}

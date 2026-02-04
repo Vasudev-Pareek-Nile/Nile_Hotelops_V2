@@ -1,0 +1,169 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<style>
+    table
+    {
+        font-size: 11px;
+    }
+    .text-wrap {
+        word-wrap: break-word; /* Ensures words break and wrap */
+        white-space: normal; /* Allows text to wrap onto the next line */
+        max-width: 200px; /* Adjust the width as needed */
+    }
+    
+  #example_previous a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
+
+  #example_next a{
+      display: flex !important;
+      align-items: center !important;
+      height: 38px !important;
+      width: 34.5px !important;
+      justify-content: center !important;
+  }
+</style>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">
+        Data Missing Report 
+    </div>
+    <div class="card-body">
+        <form method="GET" class="row g-2">
+            <div class="col-md-4">
+                <select name="OrganizationID" class="form-control">
+                    {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selected_org_id %}selected{% endif %}>
+                        {{ itm.OrganizationName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-3">
+                <select name="Department" class="form-control">
+                    <option value="AllDepartment" {% if selected_department == "AllDepartment" or not selected_department %}selected{% endif %}>All Departments</option>
+                    {% for department in Departments %}
+                    <option value="{{ department.DepartmentName }}" {% if selected_department == department.DepartmentName %}selected{% endif %}>
+                        {{ department.DepartmentName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-4 d-flex justify-items-start align-items-center gap-2" style="margin-left:15px;">
+                <button type="submit" class="btn mr-4 btn-primary" style="padding-inline:24px; padding-block:8px;">
+                    Filter 
+                </button>
+            
+                <a href="{% url "DataMissingReport" %}" class="btn btn-danger ml-2" style="padding-inline:24px; padding-block:8px;">
+                    Clear
+                </a>
+            </div>
+        </form>  
+
+        <div class="col-md-12">
+            <div class="mb-1" style="text-align: right;">
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Search..."
+                    style="width: 182px; display: inline-block; height: 32px;"
+                    onkeyup="searchTable()"
+                >
+            </div>
+        </div>
+
+        <table id="example" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th>Sr#</th>
+                    <th>Code</th>
+                
+                    <th width="150">Name</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Date of Joining</th>
+                
+                    <th>Status</th>
+                    <th>Completion</th>
+                    <th width="350" >Data Missing Report</th>
+                    <th>Action</th>
+
+
+
+                
+                
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for employee in Empobjs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ employee.EmployeeCode }}</td>
+                
+                    <td>{{ employee.FirstName|default:"" }} {{ employee.MiddleName|default:"" }} {{ employee.LastName|default:"" }}</td>
+                    <td>{{ employee.Department }}</td>
+                    <td>{{ employee.Designation }}</td>
+                    <td>{{ employee.DateofJoining|date:'j M Y' }}</td>
+
+                
+                    <td>{{ employee.EmpStatus }}</td>
+                    <td>
+
+                        {{ employee.ProfileCompletion }} %
+                    
+                    </td>
+                    <td class="text-wrap">
+                        {% if employee.MissingFields %}
+                            {{ employee.MissingFields }}
+                        {% endif %}
+                    </td>
+                    
+                    
+                    
+                    <td>
+                        
+                        <div class="btn btn-group gap-2">
+                            <a href="{% url 'EditEmployee' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" title="Edit" aria-label="Edit" class="btn btn-warning btn-sm text-white fs-6" >
+                                <i class="fa fa-edit"></i>
+                            </a>
+                        </div>
+                        
+                    </td>
+                
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    function searchTable() {
+        const nameInput = document.getElementById("searchInput").value.toLowerCase();
+        const rows = document.getElementById("tableBody").getElementsByTagName("tr");
+
+        for (let i = 0; i < rows.length; i++) {
+            const nameCell = rows[i].getElementsByTagName("td")[2]; // Name
+
+            const nameText = nameCell ? nameCell.textContent.toLowerCase() : "";
+
+            const nameMatch = nameText.includes(nameInput);
+
+            rows[i].style.display = (nameMatch) ? "" : "none";
+        }
+    }
+</script>
+
+{% endblock content %}

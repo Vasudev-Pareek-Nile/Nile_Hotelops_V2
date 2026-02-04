@@ -1,0 +1,130 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+    #tableData tr td:not(:first-child){
+text-align: left;
+
+    }
+</style>
+          <div class="row">
+            <div class="col">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Pending Snag list Report</h5>
+                       
+                    </div>
+                    <div class="ibox-content">
+                        <form>
+                        <div class="row">
+                            <div class="col">
+
+                                <select name="I" class="form-control">
+
+                                    {% for itm in mem %}
+                                    {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                    <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                    {% endfor %}
+                                   
+                                </select>
+                            </div>
+                            {% comment %} <div class="col-2">
+                                <select class="form-control" name="EntryYear">
+                                    {% for year in years reversed%}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div> {% endcomment %}
+                            <div class="col-sm-3">
+                                <select type="text" class="form-control" name="worktype">
+                                    <option value="">Select Type of Work</option>
+                                    <option value="Electrical">Electrical</option>
+<option value="Mechanical">Mechanical</option>
+<option value="Plumbing">Plumbing</option>
+<option value="Air conditioning and refrigeration">Air conditioning and refrigeration</option>
+<option value="Kitchen equipment">Kitchen equipment</option>
+<option value="Building">Building</option>
+<option value="Fire and life safety">Fire and life safety</option>
+<option value="Sewage Treatment">Sewage Treatment</option>
+<option value="Waste disposal">Waste disposal</option>
+<option value="Repair&nbsp;&amp;&nbsp;Maintenance">Repair&nbsp;&amp;&nbsp;Maintenance</option>
+<option value="Horticulture">Horticulture</option>
+<option value="Painting and Polishing">Painting and Polishing</option>
+<option value="Landscaping">Landscaping</option>
+<option value="Carpentry">Carpentry</option>
+<option value="Civil">Civil</option>
+<option value="Interior Design">Interior Design</option>
+<option value="Area Upkeep">Area Upkeep</option>
+    
+                                </select>
+                            </div>
+                            <div class="col-1">
+                                <button class="btn btn-primary" type="submit">Filter</button>
+                            </div>
+                        </div>
+                        </form>
+                     
+                        <br/>
+                        {% comment %} {{DataRes}} {% endcomment %}
+                        <div class="row">
+                            <div class="col table-responsive">
+                                <a class="btn btn-primary" href="/PreOpeningDoc/ReportPendingTaskExport">Export</a>
+                                    <table id="tableData" class="table table-bordered">
+                                            <thead>
+                                                <tr class="active">
+                                                    <th>
+                                                        Date
+                                                    </th>
+                                                    <th>Area</th> 
+                                                    <th>Division</th> 
+                                                    <th>Title</th> 
+                                                    <th>Snag</th> 
+                                                    <th>Type of Work</th> 
+                                                    <th>Remarks</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for itm in DataRes %}
+                                                {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                                
+                                                <tr>
+                                                    {% if itm.category == "1" %}
+                                                    <th colspan="7" style="background-color: aliceblue;">{{itm.title}}</th>
+                                                    {% else %}
+                                                    <td>
+                                                        
+                                                            {{itm.Date}}
+                                                            </td>
+                                                            <td>{{itm.Area}}</td> 
+                                                            <td>{{itm.DivisionTitle}}</td> 
+                                                            <td>{{itm.SectionTitle}}</td> 
+                                                            <td>{{itm.title}}</td> 
+                                                            <td>{{itm.worktype}}</td> 
+                                                            <td>{{itm.Remarks}}</td> 
+                                                    {% endif %}
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    
+          <script>  
+            $(function(){
+
+                if (getUrlParameter("I") !=false) {
+                    $("select[name='I']").val((getUrlParameter("I")))
+                }
+                if ( getUrlParameter("worktype") !=false) {
+                    $("select[name='worktype']").val((getUrlParameter("worktype")))
+                }
+            })
+          </script>
+    {% endblock content %}

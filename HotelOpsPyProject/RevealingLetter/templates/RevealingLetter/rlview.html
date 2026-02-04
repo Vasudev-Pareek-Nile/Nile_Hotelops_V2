@@ -1,0 +1,147 @@
+
+{% load static %}
+
+
+{% block content %}
+<style>
+  
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;font-family: Arial Nova;
+    ;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;font-family: Arial Nova;
+  }
+
+
+  p {     margin: 0 !important;
+    
+    font-family: Arial Nova;font-size: 11px; }
+    .noborder,.noborder td {
+      border-width: 0px;
+      
+          }
+          
+          table,table td,table,table th{font-family: Arial Nova;font-size: 10px;padding:3px;}
+
+          h2{text-align: center;}
+</style>
+
+<DIV>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  
+  {{header | safe}}
+ 
+{{Ed.data | safe }}
+</DIV>
+
+  <table class="table table-bordered">
+    <tbody>
+      <tr>
+        <th scope="row" class="w-50">Appointment Date</th>
+        <td>{{Appointment.date_of_appointment|date:'d-m-Y'}}</td>
+      </tr>
+      <tr>
+        <th scope="row">Tenure</th>
+        <td>1 year, 11 months, 6 days</td>
+      </tr>
+      <tr>
+        <th scope="row">Confirmation Date</th>
+        <td>{{Confirmation.ConfDate|date:'d-m-Y'}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+<br>
+
+ Increment History
+ 
+
+<table class="table table-bordered m-1">
+  <thead>
+      <tr>
+          <th width= '50'>S.No</th>
+         
+          <th width= '300'>From Salary</th>
+          <th width= '300'>To Salary</th>
+
+          <th width= '150'>Effective From</th>
+          <th width= '150'>Effective To</th>
+          <th width= '300'>Source Type</th>
+
+      </tr>
+  </thead>
+  <tbody>
+      {% for record in Salaryhis %}
+      <tr>
+          <td>{{ forloop.counter }}</td>
+
+          <td>{{ record.FromSalary }}</td>
+          <td>{{ record.ToSalary }}</td>
+
+          <td>{{ record.Effective_from|date:'d-m-Y' }}</td>
+          <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y' }}{% else %}Present{% endif %}</td>
+          <td>{{ record.SourceType }}</td>
+
+          
+      </tr>
+      {% empty %}
+      <tr>
+          <td colspan="5">
+              
+              No salary  history found for employee.
+          </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+
+<br>
+Promotion History
+
+
+<table class="table table-bordered m-1">
+  <thead>
+      <tr>
+          <th width= '50'>S.No</th>
+          <th width= '300'>From Designation</th>
+          <th width= '300'>To Designation</th>
+          
+          <th width= '150'>Effective From</th>
+          <th width= '150'>Effective To</th>
+      </tr>
+  </thead>
+  <tbody>
+      {% for record in Designationhis %}
+      <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ record.FromDesignation }} - {{ record.FromDepartment }} </td>
+          <td>{{ record.ToDesignation }} - {{ record.ToDepartment }} </td>
+
+          <td>{{ record.Effective_from|date:'d-m-Y' }}</td>
+          <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y' }}{% else %}Present{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr>
+          <td colspan="5">
+              
+              No Designation  history found for employee.
+          </td>
+      </tr>
+      {% endfor %}
+  </tbody>
+</table>
+
+    {% endblock content %} 
+

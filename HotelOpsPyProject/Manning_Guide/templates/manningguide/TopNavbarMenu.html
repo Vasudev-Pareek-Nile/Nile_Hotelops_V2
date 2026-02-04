@@ -1,0 +1,191 @@
+<!-- New - Example Element Element -->
+<div class="nav-element-container d-flex gap-4">
+        <!-- New - Element -->
+        {% if request.session.UserType == 'CEO' or request.session.UserID == '20251209112591' or request.session.UserID == '20250421158544' %}
+            <!-- New - View Actual - Element -->
+
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Budget</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ViewBudget">View Budget</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetOndeta">Budget - On Roll</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetContract">Budget - Contract</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/MealCost">Budget - Meal  Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/InsuranceCost">Budget - Insurance Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/SharedServicesbudget">Budget - Shared Services</a> {% endcomment %}
+                </div>
+            </li>
+
+            <!-- New - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Actual</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ViewActual">View Actual</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Entrymealcost">Entry - Meal Cost</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryInsurancesCost">Entry - Insurance Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryActualContractCost">Entry - Contract</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntrySharedServices">Entry - Shared Services</a> {% endcomment %}
+                </div>
+            </li>
+            
+            <!-- Nav - Element -->
+            {% comment %} <li class="list-unstyled">
+                <a class="dropdown-item dropdown-item-color text-white" href="{% url 'Variance_Ceo_Report' %}">Variance Report</a>
+            </li> {% endcomment %}
+
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Report</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'Variance_Ceo_Report' %}">Variance Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'variance_details_report_experiment' %}">Detailed Variance Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/LevelWiseReport">Hotel Level Wise</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/DeparmentsWiseReport">Department Wise</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/DesignationWiseReport">Designation Wise</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/MasterLevelwise">Budget Master Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ActualMasterReport">Actual Master Report</a>
+                </div>
+            </li>
+
+            
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Master</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/laveldeta">Manage Master - Level</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/homedeta">Manage Master - On Roll</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Managecontract">Manage Master - Contract</a>
+
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/SharedServices">Manage Master -  Shared Services</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Corporate">Manage Master -  Corporate</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Module_Mapping">Module Mapping</a>
+                </div>
+            </li>
+        {% else %}
+
+        <!-- Aapka existing code yahaan aata hai -->
+        {% if request.session.UserID == '20201212178780' or  request.session.UserID  == '20221105168308' or  request.session.UserID  == '20201212175519' or request.session.UserID  == '20210309158149' %}
+
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Budget</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ViewBudget">View Budget</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetOndeta">Budget - On Roll</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetContract">Budget - Contract</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/MealCost">Budget - Meal  Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/InsuranceCost">Budget - Insurance Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/SharedServicesbudget">Budget - Shared Services</a {% endcomment %}
+                >
+                </div>
+            </li>
+
+            <!-- New - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Actual</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ViewActual">View Actual</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Entrymealcost">Entry - Meal Cost</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryInsurancesCost">Entry - Insurance Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryActualContractCost">Entry - Contract</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntrySharedServices">Entry - Shared Services</a> {% endcomment %}
+                </div>
+            </li>
+
+
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Reports</span>
+                </a>
+                <div class="dropdown-menu">
+                    {% comment %} <a class="dropdown-item dropdown-item-color text-white" href="{% url 'Variance_Ceo_Report' %}">Variance Report</a> {% endcomment %}
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'variance_details_report_experiment' %}">Details Variance Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/LevelWiseReport">Hotel Lavel Wise</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/DeparmentsWiseReport">Department Wise</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/DesignationWiseReport">Designation Wise</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/MasterLevelwise">Budget Master Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ActualMasterReport">Actual Master Report</a>
+
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/degntioncount">Hotel Budget Head Count Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetsalaryDesignation">Hotel Budget Salary Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ActualHeadCountDesignation">Hotel Actual Head Count Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ActualsalaryDesignation">Hotel Actual Salary Report</a>
+                
+                </div>
+            </li>
+
+            <!-- Nav - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Master</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/laveldeta">Manage Master - Lavel</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/homedeta">Manage Master - On Roll</a>                        
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Managecontract">Manage Master - Contract</a>
+
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/SharedServices">Manage Master -  Shared Services</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Corporate">Manage Master -  Corporate</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Module_Mapping">Module Mapping</a>
+                </div>
+            </li>
+
+        {% elif request.session.Department_Name == 'HR' or request.session.UserID  == '20221006141475' or request.session.UserID != '20251209112591' %}
+
+            <!-- New - Element -->
+            {% comment %} <li class="list-unstyled"><a href="/Manning_Guide/ViewActual" class="nav-link dropdown-main-color  text-white">View Actual</a></li> {% endcomment %}
+
+            <!-- New - Element -->
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Entry Actual</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/ViewActual">View Actual</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/Entrymealcost">Entry - Meal Cost</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryInsurancesCost">Entry - Insurance Cost</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntryActualContractCost">Entry - Contract</a>
+                    <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/EntrySharedServices">Entry - Shared Services</a> {% endcomment %}
+                </div>
+            </li>
+
+            <li class="list-unstyled"><a href="/Manning_Guide/ViewBudget" class="nav-link dropdown-main-color text-white">View Budget</a></li>
+            {% if  request.session.UserID == '20240321146677' or request.session.UserID == '20201212180048' or request.session.UserID == '20221006141475' or request.session.UserID == '20221105168308'  %}
+
+                <!-- Nav - Element -->
+                <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                    <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                        <span>Budget</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetOndeta">Budget - On Roll</a>
+                        <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/BudgetContract">Budget - Contract</a>                        
+                        <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/MealCost">Budget - Meal  Cost</a>
+                        <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/InsuranceCost">Budget - Insurance Cost</a>
+                        <a class="dropdown-item dropdown-item-color" href="/Manning_Guide/SharedServicesbudget">Budget - Shared Services</a
+                    >
+                    </div>
+                </li>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    {% comment %} {% if request.session.UserID == '20240903106516' or  request.session.UserID  == '20201212175519' or request.session.UserID  == '20210309158149' %}
+        <li class="list-unstyled">
+        </li>
+    {% endif %} {% endcomment %}
+</div>

@@ -1,0 +1,51 @@
+{% extends "PADPAPP/homebase.html" %}
+{% block content %}
+<div class="container">
+<div class="col-md-12">
+    
+
+        <div class="card">
+            <div class="card-header">Objective</div>
+            <div class="card-body">
+                <form action=""  method="post">
+                    {% csrf_token %}
+                   <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group m-3">
+                            <label for="">Level:</label>
+                            <select name="level" id="" class = "form-control">
+                              
+                                {% for Level in Levels %}
+                                <option value="{{Level.lavelname}}" {% if o_data.Level == Level.lavelname %}selected{% endif %}>{{Level.lavelname}}</option>
+                                {% endfor %}
+                            </select>      
+                        </div>
+                        <div class="form-group m-3">
+                            <label>Objective Name:</label>
+                           <input type="text" value="{{o_data.Title}}" class="form-control" name="Objective" placeholder="Enter Objective Name">
+                        </div>
+                       
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group m-3">
+                            <label for="">Definition</label>
+                            <textarea name="Definition" id="" cols="50" rows="50" placeholder="Enter Definition" class="form-control" >{{o_data.Definitions}}</textarea>
+                         </div>
+                    </div>
+                   </div>
+                    
+                    
+        
+                   
+                </div>
+                <div class="card-footer text-right"> 
+                    
+                    <input type="submit"  value="Submit" class="btn btn-primary btn-sm">
+                    
+                </div>
+            </form>
+        </div>
+    
+</div>
+</div>
+{% endblock content %}

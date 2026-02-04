@@ -1,0 +1,205 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<style>
+    .Bold {
+        font-weight: bold;
+    }
+</style>
+<div class="container">
+    <div class="card-header col-md-12 mb-3">Payroll View of {{emp_Details.0.EmpName}} {{month}} - {{year}} </div>
+    <div class="col-md-12">
+       
+
+        <form action="" method="post">
+        <table  class="table table-bordered table-sm" CELLPADDING="4" >
+            <thead>
+                <tr> 
+                        <td colspan="8">
+                            <table width="100%" >
+                                <tr>
+                     
+
+                                    <th width="130" align="left" >
+                                   <img  src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{org_Details.OrganizationLogo}}"  height="100">
+                                    </th>
+                                    <th style="text-align: center;" >
+                                        {{org_Details.OrganizationName}}
+                                         <br>
+                                         {{org_Details.Address}}
+                                         <br>
+                                         Payslip For the month of {{month}} - {{year}}
+                                    </th>
+                                 
+                                </tr>
+                            </table>
+                        </td>
+                </tr>
+               
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="Bold">Name</td>
+                    <td colspan="2">{{emp_Details.0.EmpName}}</td>
+                    <td class="Bold">DOB</td>
+                    <td colspan="2"></td>
+                    <td class="Bold">PF No.</td>
+                    <td >{{emp_Details.0.ProvidentFundNumber}}</td>
+                </tr>
+                <tr>
+                    <td class="Bold">Emp. Code</td>
+                    <td colspan="2">{{emp_Details.0.EmployeeCode}}</td>
+                    
+                    <td class="Bold">DOJ</td>
+                    <td colspan="2">{{emp_Details.0.DateofJoiningDate}}</td>
+                    <td class="Bold">ESI</td>
+                    <td>{{emp_Details.0.ESINumber}}</td>
+                </tr>
+                <tr>
+                    <td class="Bold">Designation</td>
+                    <td colspan="2">{{emp_Details.0.Designation}}</td>
+                    <td class="Bold">Total Paid Days</td>
+                    <td colspan="2">{{grid_data.total_no_Days_in_month}}</td>
+                    <td class="Bold">Bank A/C No</td>
+                    <td>{{emp_Details.0.BankAccountNumber}}</td>
+                </tr>
+                <tr>
+                    <td class="Bold">Department</td>
+                    <td colspan="2">{{emp_Details.0.Department}}</td>
+                    <td class="Bold">Total no of Days</td>
+                    <td colspan="2">{{grid_data.no_of_days}}</td>
+                    <td class="Bold">Pay Mode</td>
+                    <td>
+                        <select name="PayMode"  class="form-control">
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Cash">Cash</option>
+
+                        </select>
+                
+                    </td>
+                </tr>
+              
+                <tr>
+                    <td colspan="8"></td>
+                </tr>
+               
+                <tr class="Bold">
+                    <td>Salary</td>
+                    <td colspan="2">Fixed</td>
+                    <td>Earnings</td>
+                    <td colspan="2" >Earned</td>
+                    <td>Deductions</td>
+                    <td>Variable</td>
+                    
+                    
+                </tr>
+                <tr>
+                    <td>{{emp_sal_Det.0.Title}}</td>
+                    <td colspan="2">{{emp_sal_Det.0.Monthly}}</td>
+                    <td>{{emp_sal_Det.0.Title}}</td>
+                    <td colspan="2">{{grid_data.Earned_Basic}}</td>
+                    <td>ESIC(0.75% of GS)</td>
+                    <td>{{grid_data.ESIC}}</td>
+                   
+                </tr>
+                <tr>
+                          
+                    <td>{{emp_sal_Det.1.Title}}</td>
+                    <td colspan="2">{{emp_sal_Det.1.Monthly}}</td>
+                    <td>{{emp_sal_Det.1.Title}}</td>
+                    <td colspan="2">{{grid_data.Earned_HRA}}</td>
+                     <td>EPFO(12 % of BE)</td>
+                    <td>{{grid_data.EPFO}}</td>
+                   
+                    
+                </tr>
+                <tr class="Bold">
+
+            
+                    <td >Gross Salary</td>
+                    <td colspan="2">{{grid_data.gross_salary}}</td>
+                    <td>Total Earnings</td>
+                    <td colspan="2">{{grid_data.Total_Earning}}</td>
+                    <td >
+                        PF
+                    </td>
+                    <td >{{grid_data.Total_Deduction}}</td>
+                   
+                    
+                    
+                </tr>
+                <tr class="Bold">
+                   
+                    
+                    <td colspan="3"></td>
+    
+                    </td>
+                    <td class="Bold">Net Pay</td>
+                    <td  colspan="2">{{grid_data.Net_salary}}</td>
+                   
+                    <td class="Bold">Total Deductions</td>
+                    <td>{{grid_data.Total_Deduction}}</td>
+                </tr>
+                <tr>
+                    <td class="Bold" colspan="8" style="text-align: center;">Amount In Words :- Rupees {{grid_data.Net_salary_In_Words}}.</td>
+                   
+                </tr>
+                
+                <tr>
+                    <td colspan="8">
+                        Leave Balance-
+                        {% for leave in Leave_Balance  %}
+                               
+                        {{leave.Leave_Type_Master.Type}}:{{leave.Balance}},
+    
+                    
+                         {% endfor %}
+                    </td>
+                 <tr> 
+                <tr>
+                    <td style="text-align: center;" colspan="8">*** THIS IS COMPUTER GENERATED PAYSLIP DOES NOT REQUIRE SIGNATURE ***</td>
+                </tr>  
+            </tbody>
+        </table>
+     
+            {% csrf_token %}
+            <input type="hidden" name="G_employee_code" value="{{emp_Details.0.EmployeeCode}}" >
+            <input type="hidden" name="G_month" value="{{month_no}}" >
+            <input type="hidden" name="G_year" value="{{year}}" >
+
+            <input type="submit" class="btn btn-primary btn-sm mb-3" value="Generate Salary Slip">
+            
+        </form>
+
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>DATE</th>
+                    <th>IN</th>
+                    <th>OUT</th>
+                    <th>Duty Hours</th>
+                    <th>STATUS</th>
+                    {% comment %} <th>Actions</th> {% endcomment %}
+                  
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in attendance_data %}
+                <tr>
+                    <td>{{ record.Date|date:"j F, Y" }}</td>
+                    <td>{{ record.In_Time }}</td>
+                    <td>{{ record.Out_Time }}</td>
+                    <td>{{ record.Duty_Hour }}</td>
+                    <td>{{ record.Status }}</td>
+                    {% comment %} <td> <a href="{% url 'Update_Attendance_HR' %}?ID={{record.id}}" class="btn btn-primary btn-sm">EDIT</a></td> {% endcomment %}
+                    
+                </tr>
+                {% empty %}
+                <td colspan="5" style="text-align: center;">No Data Available</td>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,218 @@
+{% extends "HR/EmployeeDashboard/EditEmployee.html" %}
+ {% load static %} 
+{% block content %}
+
+<style>
+    .card {
+        border-radius: 5px;
+        border: 1px solid #0000004f;
+    }
+
+    .card-header{
+        margin-bottom: -20px !important;
+    }
+
+
+</style>
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+       <span class=" text-uppercase fw-bold">  Salary Information </span> 
+       <button id="editButton" class="btn btn-primary btn-sm float-right">Edit</button>
+    </div>
+
+    <form id="SalaryInfoForm" method="post" enctype="multipart/form-data">
+        <div class="card-body mb-0">
+
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12 col-md-3">
+                    <div id="employeeTable_filter" class="dataTables_filter">
+                        <label>Effective From:
+                            <input type="date" class="form-control" name="EffectiveFrom"
+                            {% if effective_obj_Update %}
+                                value="{{ effective_obj_Update.EffectiveFrom|date:'Y-m-d' }}"
+                            {% endif %}
+                            required
+                            >
+                            <input type="hidden" class="form-control" name="EffectiveID"
+                                {% if SettleID %}
+                                    value="{{ SettleID }}"
+                                {% endif %}
+                            >
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <table class="table table-bordered mt-3">
+                        <thead>
+                            <tr>
+                                <th>Components</th>
+                                <th>Per Month</th>
+                                <th>Per Annum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryTable">
+                            {% for SalaryTitle in SalaryTitles %}
+                            <tr>
+                                <td>
+                                    {% if SalaryTitle.IsBold %}
+                                    <span style="font-weight: bold;">
+                                        {{SalaryTitle.Title}}
+                                    </span>
+                                    {% else %}
+                                    <span>
+                                        {{SalaryTitle.Title}} 
+                                    </span>
+                                    {% endif %}
+                                    <input type="hidden" name="TitleID_{{forloop.counter0}}" value="{{SalaryTitle.id}}">
+                                </td>
+                                <td>
+                                    {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)"  or SalaryTitle.Title == "CTC (A+C)"     %}
+                                        <input type="number" 
+                                        step="any"
+                                        name="Permonth_{{forloop.counter0}}" 
+                                        value="{{SalaryTitle.Permonth}}" 
+                                        class="form-control perm-month"
+                                        data-index="{{forloop.counter0}}"
+                                        data-Title-Permonth ="{{SalaryTitle.Title}}_Permonth" 
+                                        readonly>
+                                    {% else %}
+                                        <input type="number" 
+                                        step="any"
+                                        name="Permonth_{{forloop.counter0}}" 
+                                        value="{{SalaryTitle.Permonth}}" 
+                                        class="form-control perm-month"
+                                        data-index="{{forloop.counter0}}"
+                                        data-type="{{SalaryTitle.Type}}"
+                                        data-Title-Permonth = "{{SalaryTitle.Title}}_Permonth">
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <input type="number" 
+                                        name="Perannum_{{forloop.counter0}}" 
+                                        value="{{SalaryTitle.Perannum}}" 
+                                        class="form-control per-annum"
+                                        data-Title-Perannum="{{SalaryTitle.Title}}_Perannum" readonly>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                                <input type="hidden" name="Total_Title" value="{{ forloop.counter0 }}"/>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            function updatePerAnnum() {
+                                let grossPerMonth = 0;
+                                let grossPerAnnum = 0;
+                                let deductionsPerMonth = 0;
+                                let deductionsPerAnnum = 0;
+                                let contributionPerMonth = 0;
+                                let contributionPerAnnum = 0;
+                    
+                                document.querySelectorAll('.perm-month').forEach(function(element) {
+                                    let index = element.getAttribute('data-index');
+                                    let type = element.getAttribute('data-type');
+                                    let permMonth = parseFloat(element.value) || 0;
+                                    let perAnnum = permMonth * 12;
+                                    document.querySelector(`input[name="Perannum_${index}"]`).value = perAnnum.toFixed(2);
+                    
+                                    if (type === 'A') {
+                                        grossPerMonth += permMonth;
+                                        grossPerAnnum += perAnnum;
+                                    } else if (type === 'B') {
+                                        deductionsPerMonth += permMonth;
+                                        deductionsPerAnnum += perAnnum;
+                                    } else if (type === 'C') {
+                                        contributionPerMonth += permMonth;
+                                        contributionPerAnnum += perAnnum;
+                                    }
+                                });
+                    
+                                // Update Gross
+                                document.querySelector('input[data-title-permonth="Gross (A)_Permonth"]').value = grossPerMonth.toFixed(2);
+                                document.querySelector('input[data-title-perannum="Gross (A)_Perannum"]').value = grossPerAnnum.toFixed(2);
+                    
+                                // Update Employee Deductions
+                                document.querySelector('input[data-title-permonth="Total Employee Deduction (B)_Permonth"]').value = deductionsPerMonth.toFixed(2);
+                                document.querySelector('input[data-title-perannum="Total Employee Deduction (B)_Perannum"]').value = deductionsPerAnnum.toFixed(2);
+                    
+                                // Update Company Contributions
+                                document.querySelector('input[data-title-permonth="Total Company Contribution (C)_Permonth"]').value = contributionPerMonth.toFixed(2);
+                                document.querySelector('input[data-title-perannum="Total Company Contribution (C)_Perannum"]').value = contributionPerAnnum.toFixed(2);
+                    
+                            
+                                // Update CTC
+                                let ctcPerMonth = grossPerMonth + contributionPerMonth;
+                                let ctcPerAnnum = grossPerAnnum + contributionPerAnnum;
+                                document.querySelector('input[data-title-permonth="CTC (A+C)_Permonth"]').value = ctcPerMonth.toFixed(2);
+                                document.querySelector('input[data-title-perannum="CTC (A+C)_Perannum"]').value = ctcPerAnnum.toFixed(2);
+                            }
+                    
+                            // Add event listeners for the input elements
+                            document.querySelectorAll('.perm-month').forEach(function(element) {
+                                element.addEventListener('input', updatePerAnnum);
+                            });
+                    
+                            // Initial calculation on page load
+                            updatePerAnnum();
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    
+        <div class="CustomFooter m-3 mt-0">
+            <button type="submit" id="saveButton" class="btn btn-primary Successpopup" style="display: none;">Save</button>
+        </div>
+    </form>
+</div>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButton = document.getElementById('editButton');
+        const saveButton = document.getElementById('saveButton');
+        const inputs = document.querySelectorAll('#SalaryInfoForm input, #SalaryInfoForm select, #SalaryInfoForm textarea');
+        
+        function toggleInputs(disabled) {
+            inputs.forEach(input => {
+                if (!input.hasAttribute('readonly')) {
+                    if (disabled) {
+                        input.setAttribute('disabled', 'disabled');
+                    } else {
+                        input.removeAttribute('disabled');
+                    }
+                }
+            });
+        }
+
+        editButton.addEventListener('click', function() {
+            if (editButton.textContent.trim() === 'Edit') {
+                editButton.textContent = 'Cancel';
+                saveButton.style.display = 'inline-block';
+                toggleInputs(false);
+            } else {
+                editButton.textContent = 'Edit';
+                saveButton.style.display = 'none';
+                toggleInputs(true);
+            }
+        });
+
+        toggleInputs(true);
+    });
+</script>
+
+
+{% endblock content %}
+
+
+
+
+

@@ -1,0 +1,275 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+ <style>
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+  .actions {
+    margin-left: 10px;
+  }
+  .actions a {
+    margin-right: 5px;
+    text-decoration: none;
+    color: blue;
+  }
+  .actions a:hover {
+    text-decoration: underline;
+  }
+  .custom-card {
+    width: 98%;
+    margin: auto;
+  }
+  .modal-dialog {
+    width: 72%;
+    max-width: 72%;
+    min-width: 720px;
+  }
+  th, td {
+    font-size: 13px;
+    font-family: 'Arial Nova', Arial, sans-serif;
+    border: 1px solid #ddd;
+  }
+  .input-small {
+    width: 70px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    text-align: center;
+  }
+  th {
+    text-align: center;
+    font-size: 13px;
+  }
+  .form-control {
+    font-size: 13px;
+  }
+
+  tr th {
+    background: #fae0cc !important;
+    /* color: #fff !important; */
+    border-color: #bdac9f !important;
+    text-transform:uppercase !important;
+  }
+
+</style> 
+
+
+<style>
+    body{
+        font-size: 13px  !important;
+        font-family: 'Arial Nova', Arial, sans-serif !important;
+        background:#fff !important;
+        }
+        h4{
+          margin-bottom:10px !important;
+          font-size:16px;
+          }
+
+          .form-control{
+      border-radius:4px;  
+  }      
+  .btn{
+      border-radius:4px;
+  }
+
+  tr th {
+    background-color: #edf0fb !important;
+    border-color: #D3D3D4 !important;
+    color: #fff !important;
+    font-size: 13px  !important;
+    font-weight: bold !important;
+  text-transform: uppercase;
+      }
+  td {        
+      background-color: #f7f9fc !important;
+  }
+
+
+  .custom-btn {
+              margin-right: 10px; 
+              padding-block: 10px;
+              color: black !important;
+              border: 1px solid #dedede !important;
+          }
+
+    .btn.active {
+      background-color: #edf0fb !important;
+      border-color: #edf0fb !important;
+      color: #ffffff !important;
+      margin-right: 10px; 
+      padding-block: 10px;
+  }
+
+  .HeaderWithColor {
+      /* background-color: #edf0fb !important; */
+      color: black;
+      border-color: #D3D3D4 !important; 
+      text-transform: uppercase !important;
+  }
+
+  table thead th {
+      background: #edf0fb  !important;
+  }
+
+      table {
+      border-radius: 5px;
+      overflow: hidden;
+  }
+
+  table thead tr:first-child th:first-child {
+          border-top-left-radius: 4px;
+  }
+
+  table thead tr:first-child th:last-child {
+          border-top-right-radius: 4px;
+  }
+
+  table tbody tr:last-child td:first-child {
+          border-bottom-left-radius: 4px;
+  }
+
+      table tbody tr:last-child td:last-child {
+              border-bottom-right-radius: 4px;
+      }
+
+  table td:not(:first-child) {
+  text-align: center;
+  }
+  .select2-dropdown {
+  z-index: 999;
+  }
+  .filter-box{
+  margin-left: -16px;
+  }
+  .card .card-header {
+  padding: 20px;
+  padding-bottom: 0px;
+  }
+  .submitfilterform{
+  margin-bottom:-5px;
+  }
+  .table th {
+  padding: 0.5rem 0.25rem !important;
+  background-color: aliceblue !important;
+  color: #076e00 !important;
+  }
+  .table td {
+  padding: 5px 5px !important;
+  font-size: 13px !important;
+  }
+</style>
+
+<div class="row">
+    <div class="col-md-12">      
+      <div class="card">
+        <div class="card-header">
+          <span class="fw-bold text-uppercase">Department Wise Report</span>
+        </div>
+        
+        <div class="card-body">
+          <form method="GET" class="submitfilterform">
+            <div class="row">
+                  <div class="col-md-5">
+                      <div class='input-block'>
+                        <select name="Department" class="form-control select2">
+                          {% for department in Departmentsfilter %}
+                            <option value="{{ department.DepartmentName }}" {% if selected_department == department.DepartmentName %}selected{% endif %}>
+                              {{ department.DepartmentName }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                    </div>
+                  </div>
+          
+                  <div class="col-md-3 filter-box">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a class="btn btn-danger" href="{% url 'DeparmentsWisePdf' %}?Department={{ selected_department }}">Export</a>
+                  </div>
+            </div>
+          </form>  
+
+          <table class="table table-bordered">
+              <thead>
+                  <tr>
+                      <th title="Hotel">Hotel</th>
+                      <th title="Budgeted CTC">Bud CTC</th>
+                      <th title="Actual CTC">Act CTC</th>
+                      <th title="Variance">Variance</th>
+                      <th title="Budgeted HC">Bud HC</th>
+                      <th title="Actual HC">Act HC</th>
+                      <th title="Variance">Variance</th>
+                      <th title="Budgeted Total CTC">Bud Total CTC</th>
+                      <th title="Actual Total CTC">Act Total CTC</th>
+                      <th title="Variance</">Variance</th>
+                  </tr>
+              </thead>
+              <tbody>
+                {% for division in divisions %}
+                {% for department in division.onrolldepartmentmaster_set.all %}
+                    {% if department.DepartmentName == selected_department %}
+                        {% comment %} {% for designation in department.onrolldesignationmaster_set.all %}
+                            <tr>
+                                <td colspan="10" style="background-color: #34444c;  text-transform: uppercase;">
+                                    {{ designation.designations }}
+                                </td>
+                            </tr> {% endcomment %}
+                            
+                            {% for hotel_name, designation_totals in designation_totals_by_hotel.items %}
+                                {% with budget_totals=budget_totals_by_hotel|get_item:hotel_name %}
+                                    <tr>
+                                        <td>{{ hotel_name }}</td>
+                                        <td >{{ budget_totals.avg_salary|formatingdata }}</td>
+                                        <td >{{ designation_totals.salary|formatingdata}}</td>
+                                        <td style=" color: {% if designation_totals.variance_avg_salary < 0 %}green{% else %}red{% endif %};">
+                                          {{ designation_totals.variance_avg_salary|formatingdata}}
+                                      </td>
+                                        <td >{{ budget_totals.head_count  }}</td>
+                                        <td >{{ designation_totals.headcount }}</td>
+                                        <td style=" color: {% if designation_totals.variance_headcount < 0 %}green{% else %}red{% endif %};">
+                                          {{ designation_totals.variance_headcount }}
+                                      </td>
+                                        <td >{{ budget_totals.budgetmultiplication_result|formatingdata }}</td>
+                                        <td >{{ designation_totals.totalsalarydeta|formatingdata}}</td>
+                                        <td style=" color: {% if designation_totals.variance_totalctc < 0 %}green{% else %}red{% endif %};">
+                                          {{ designation_totals.variance_totalctc|formatingdata }}
+                                      </td>
+                                    </tr>
+                                {% endwith %}
+                            {% endfor %}
+
+                        {% comment %} {% endfor %} {% endcomment %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+            
+            
+              
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+  
+{% endblock %}

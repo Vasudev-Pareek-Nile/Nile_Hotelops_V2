@@ -1,0 +1,92 @@
+{% extends 'parcel/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'MessageAndParcelUpdateData' %}" enctype="multipart/form-data">
+    {{ Message_Parcel_Register }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Message And Parcel Form</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Type Of Article</label>
+              {% render_field MessageAndParcelForm.Type_Of_Article class="form-control" placeholder="Type_Of_Article" value=Ed.Type_Of_Article %}
+              </div>
+              <div class="col-sm-3">
+                <label>Room No</label>
+                {% render_field MessageAndParcelForm.Room_No class="form-control" placeholder="Room_No" value=Ed.Room_No %}
+              </div>
+              <div class="col-sm-3">
+                <label>Guest Name</label>
+                {% render_field MessageAndParcelForm.Guest_Name class="form-control" placeholder="Guest_Name" value=Ed.Guest_Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Date Of Arrival</label>
+                {% render_field MessageAndParcelForm.Date_Of_Arrival class="form-control" placeholder="Date_Of_Arrival" value=Ed.Date_Of_Arrival %}
+              </div>
+              <div class="col-sm-3">
+                <label>Received From</label>
+                {% render_field MessageAndParcelForm.Received_From class="form-control" placeholder="Received_From" value=Ed.Received_From %}
+              </div>
+              <div class="col-sm-3">
+                <label>Contact No</label>
+                {% render_field MessageAndParcelForm.Contact_No class="form-control" placeholder="Contact_No" value=Ed.Contact_No %}
+              </div>
+              <div class="col-sm-3">
+                <label>Received By</label>
+                {% render_field MessageAndParcelForm.Received_By class="form-control" placeholder="Received_By" value=Ed.Received_By %}
+              </div>
+              <div class="col-sm-3">
+                <label>Date Of Delivery</label>
+                {% render_field MessageAndParcelForm.Date_Of_Delivery class="form-control" placeholder="Date_Of_Delivery" value=Ed.Date_Of_Delivery %}
+              </div>
+              <div class="col-sm-3">
+                <label>Given By</label>
+                {% render_field MessageAndParcelForm.Given_By class="form-control" placeholder="Given_By" value=Ed.Given_By %}
+              </div>
+              <div class="col-sm-3">
+                <label>Handed Over To</label>
+                {% render_field MessageAndParcelForm.Handed_Over_To class="form-control" placeholder="Handed_Over_To" value=Ed.Handed_Over_To %}
+              </div>
+             
+
+              
+             
+            </div>
+          </div>
+
+          <br/>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Remarks</label>
+              {% comment %} {% render_field MessageAndParcelForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks" value=Ed.Remarks  %} {% endcomment %}
+              <textarea name="Remarks" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Remarks}}</textarea>
+            </div>
+          </div>
+         
+       
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+   
+  {% endblock content %}

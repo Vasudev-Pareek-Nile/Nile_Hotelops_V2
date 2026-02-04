@@ -1,0 +1,324 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reference Check Form</title>
+  <style>
+    body {
+      font-size: 14px;
+        line-height: 1.5;
+        font-family: "Arial Nova";
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    
+
+    table {
+      width: 100%;
+    }
+
+    p {
+      margin-bottom: 20px;
+     
+      
+    }
+
+    b {
+      font-weight: bold;
+    }
+    @media print {
+    .pagebreak { page-break-before: always; } 
+}
+
+    ol.subclass {
+      list-style-type: decimal;
+    }
+
+    ol.childclass {
+      list-style-type: upper-alpha;
+    }
+    .custom-span {
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.custom-span.right-align {
+    text-align: right;
+}
+
+    .lower-roman {
+  list-style-type: lower-roman;
+}
+/* .overlined {
+            text-decoration: overline;
+        } */
+
+
+ 
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <table>
+      <tr>
+        <td>
+          <table>
+            <tbody>
+              <td>
+                <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100" />
+              </td>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table
+            style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+            <tbody>
+              <tr>
+                <td><strong>HOTEL MANAGEMENT AGREEMENT</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+       
+      </tr>
+    </table>
+    <br>
+    
+    <br>
+    <table>
+      <tbody>
+        <td>
+           <div style="max-width: 900px; margin: 0 auto; padding: 7px; text-align: justify;">
+          <span class="custom-span">THIS <b>HOTEL MANAGEMENT AGREEMENT</b> (this "Agreement") is made on [ ] day of -----------’
+            2024 (Effective Date) by and between</span><br><br>
+          
+    <span class="custom-span"><strong>Nile Hospitality LLP</strong></span>
+    <span class="custom-span">a limited liability partnership incorporated under the LLP Act 2008 and having its registered office at 47, Ganpati Vihar Chirag Complex Panerion Ki Madri, Udaipur 313001 acting through its Authorized Partner Mr. Vikram Singh Chauhan (authorized vide resolution dated 24-05-2018) having his residence at 47,Ganpati Vihar, Chirag Complex, Panerion Ki Madri, Udaipur - 313001 (hereinafter referred to as the <strong>Hotel Operator</strong> which expression shall unless repugnant to the context or meaning thereof shall mean and include existing partners and future partners, their respective successors, administrators, executors and assigns) of the First Part;</span>
+        <br><br>
+        <span>And</span><br><br>
+            <span  class="custom-span" ><strong>{{agreementlist.company_name}}</strong> a private limited company under the company Act 2013 and having registered office at<strong> {{agreementlist.address}}</strong> having
+            PAN:-<strong>{{agreementlist.pan_number}}</strong> acting through its Authorized Director <strong>{{agreementlist.Director_Name}} </strong>(authorized vide resolution dated [ ] (hereinafter
+            referred to as the Hotel Owner which expression shall unless repugnant to the context or meaning thereof shall mean and
+            include its successors and permitted assigns) of the Other Part.</span>
+            <p>Each of the above shall individually be referred to as Party and collectively as Parties.</p>
+
+            <p><b>RECITALS</b></p>
+             
+          
+       
+        <p style="margin: 0;">
+            A. The Hotel Owner is the owner of premises located near <strong>[{{agreementlist.Near_Location}}]</strong> which is a full-service hotel known as <strong>[{{agreementlist.Name_of_Hotel}}] </strong>(hereinafter referred to as the<strong> "Hotel Premises"</strong>). The Hotel Owner is the exclusive and legal owner and shall continue to remain the exclusive and legal owner of the Hotel Premises for the Term of this Agreement.
+        </p>
+        <p style="margin: 0;">
+            B. The Hotel Operator is engaged inter alia in the business of and has expertise in providing hotel management and operational services relating to hospitality properties.
+        </p>
+        <p style="margin: 0;">
+            C. The Hotel Owner with an intention to obtain the benefit of the Hotel Operator’s expertise in connection with the day-to-day operation of and management of the Hotel as well as overall sales to improve, desires to appoint Nile Hospitality LLP as the Hotel Operator exclusively for the Hotel. The Hotel Operator has agreed to the said appointment subject to the terms and conditions as outlined hereunder.
+        </p>
+    
+            
+            
+            <p><b>NOW, THEREFORE, for and in consideration of the premises, and other good and valuable consideration, the Parties agree
+            as follows:</b></p>
+            </div>
+        </td>
+      </tbody>
+    </table>
+    <br>
+    <div class="pagebreak">
+      <div class="container">
+        <table>
+          <tr>
+            <td>
+              <table>
+                <tbody>
+                  <td>
+                    <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100" />
+                  </td>
+                </tbody>
+              </table>
+            </td>
+            <td>
+            <table
+              style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>HOTEL MANAGEMENT AGREEMENT</strong></td>
+                </tr>
+              </tbody>
+            </table>
+
+            </td>
+      
+          </tr>
+        </table>
+        <br>
+      <div class="custom-span ">
+  <br>
+<div>
+  
+    {% for masterlist in masterlists %}
+     
+        <div style="max-width: 900px; margin: 0 auto; padding: 7px; text-align: justify;">
+        <div style="padding-top: 10px;">
+            <h3 style="text-decoration:underline">ARTICLE {{ masterlist.LoopIndex |to_roman }}:  {{ masterlist.name_artical }}</h3>
+            <div style="padding-top: 10px;" type="()" class="lower-roman">
+                {% for Sublist in masterlist.sublist %}
+                    {% if Sublist.Master_title.id == masterlist.id %}
+                        <div>
+                          <span >{{masterlist.LoopIndex}}.{{ Sublist.LoopIndex }}. &nbsp;{{ Sublist.sub_artical }}</span>
+                            <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for childlist in childlists %}
+                                    {% if childlist.Master_subartical.id == Sublist.id %}
+                                        <li>{{ childlist.child_artical }}</li>
+                                           <ul style="list-style-type: none; padding-top: 0.5px;">
+                            {% for subchild in subchild_lists %}
+                            {% if subchild.Master_childartical.id == childlist.id %}
+                            <li>{{ subchild.childsub_artical }}</li>
+                            {% endif %}
+                            {% endfor %}
+                                           </ul>
+                      
+                                        
+                                    {% endif %}
+                                {% endfor %}
+                            </ol>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+       
+    {% endfor %}
+    
+</div>
+  
+  
+</div>
+</div>
+<div class="pagebreak">
+             <table>
+      <tr>
+        <td>
+          <table>
+            <tbody>
+              <td>
+                <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100" />
+              </td>
+            </tbody>
+          </table>
+        </td>
+        <td>
+        <table
+          style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+          <tbody>
+            <tr>
+              <td><strong>HOTEL MANAGEMENT AGREEMENT</strong></td>
+            </tr>
+          </tbody>
+        </table>
+        </td>
+       
+      </tr>
+    </table>
+    <br>
+ 
+      <span class="custom-span"><strong> IN WITNESS WHEREOF, the Parties have vide their authorized representatives duly executed this Agreement the day and year first above written.</strong></span>
+        <br>
+   <br>
+     <span class="custom-span"><strong>SIGNED SEALED AND DELIVERED</strong></span>
+<br>
+    <br>
+     <span class="custom-span"><strong>FOR AND ON BEHALF OF</strong></span>
+     <br>
+    <br><br>
+
+      <span class="custom-span"><strong>____________________________</strong></span><br>
+      <p><strong>Authorized Signatory</p></strong>
+    <span class="custom-span"><strong>Mr. &nbsp;{{agreementlist.Authorized_Director}}</strong></span><br>
+    <span class="custom-span"><strong>In Presence of:</strong></span><br>
+    <table>
+      <tr>
+        <td>
+          <table
+             style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 0px; font-size: 9px; text-align: left;">
+            <tbody>
+              <td>
+                Name of Witness (1)
+              </td>
+             <td style="border: 1px solid black; padding: 10px; font-size: 10px;">{{agreementlist.Name_Witness1}}</td>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table
+            style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 9px; text-align: left;">
+            <tbody>
+              <tr>
+                <td>Signature of Witness  (1)</td>
+                <td style="border: 1px solid black; padding: 10px; font-size: 10px;">&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+       
+      </tr>
+    </table>
+    <br>
+     <table>
+      <tr>
+        <td>
+          <table
+             style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 9px; text-align: left; ">
+            <tbody>
+              <td>
+                Name of Witness (2)
+              </td>
+              <td style="border: 1px solid black; padding: 10px; font-size: 10px;">{{agreementlist.Name_Witness2}}</td>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table
+            style="border-radius: 10px;  color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 9px; text-align: left;">
+            <tbody>
+              <tr>
+                <td>Signature of Witness (2)</td>
+                <td style="border: 1px solid black; padding: 10px; font-size: 10px;">&nbsp;</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+       
+      </tr>
+    </table>
+    <br>
+   
+    
+    
+      </tbody>
+    </table>
+  
+  
+  
+
+    <p><strong>SIGNED SEALED AND DELIVERED <br>FOR AND ON BEHALF OF</strong></p>
+    <p><strong>NILE HOSPITALITY LLP</strong></p><br>
+    
+    <span class="custom-span"><strong>____________________________</strong></span><br>
+    <p><strong>Authorized Signatory</p></strong>
+    <p><strong>Mr. Vikram Singh Chauhan</strong></p>
+      </div> <!-- Another page break here -->
+      
+
+    </div>  
+    
+ 
+      </body>
+    
+      </html>

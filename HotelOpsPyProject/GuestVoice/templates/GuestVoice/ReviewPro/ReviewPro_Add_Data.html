@@ -1,0 +1,213 @@
+{% extends 'GuestVoice/GuestVoicehomebase.html' %}
+{% block content %} 
+{% load custom_filters %}
+{% load static %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <h4 class="card-title">Enter Your ReviewPro Data </h4>
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="reviewer">Reviewer</label>
+                                <input type="text" class="form-control" id="reviewer" name="reviewer" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label for="month_select" class="col-form-label">Month</label>
+                                <select id="month_select" class="form-control" name="month" required>
+                                    <option value="">Select Month</option>
+                                    <option value="January" {% if selected_month == 1 %}selected{% endif %}>January</option>
+                                    <option value="February" {% if selected_month == 2 %}selected{% endif %}>February</option>
+                                    <option value="March" {% if selected_month == 3 %}selected{% endif %}>March</option>
+                                    <option value="April" {% if selected_month == 4 %}selected{% endif %}>April</option>
+                                    <option value="May" {% if selected_month == 5 %}selected{% endif %}>May</option>
+                                    <option value="June" {% if selected_month == 6 %}selected{% endif %}>June</option>
+                                    <option value="July" {% if selected_month == 7 %}selected{% endif %}>July</option>
+                                    <option value="August" {% if selected_month == 8 %}selected{% endif %}>August</option>
+                                    <option value="September" {% if selected_month == 9 %}selected{% endif %}>September</option>
+                                    <option value="October" {% if selected_month == 10 %}selected{% endif %}>October</option>
+                                    <option value="November" {% if selected_month == 11 %}selected{% endif %}>November</option>
+                                    <option value="December" {% if selected_month == 12 %}selected{% endif %}>December</option>
+                                </select>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="review_rating">Review Rating</label>
+                                <input type="number" class="form-control" id="review_rating" name="review_rating" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="classification">Classification</label>
+                                <select id="classification" class="form-control" name="classification" required>
+                                    <option value="">Select</option>
+                                    <option value="Positive" {% if selected_Classification == "Positive" %}selected{% endif %}>Positive</option>
+                                    <option value="Neutral" {% if selected_Classification == "Neutral" %}selected{% endif %}>Neutral</option>
+                                    <option value="Negative" {% if selected_Classification == "Negative" %}selected{% endif %}>Negative</option>
+                                </select>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="cleanliness">CLEANLINESS</label>
+                                <input type="number" class="form-control" id="cleanliness" name="cleanliness" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="location">LOCATION</label>
+                                <input type="number" class="form-control" id="location" name="location" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="location_score">LOCATION - Score</label>
+                                <input type="number" class="form-control" id="location_score" name="location_score" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="room">ROOM</label>
+                                <input type="number" class="form-control" id="room" name="room" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="room_score">ROOM - Score</label>
+                                <input type="number" class="form-control" id="room_score" name="room_score" required>
+                            </div>
+                        
+                        </div>
+                        
+
+                        <!-- Right Side inputs -->
+                        <div class="col-md-4">
+
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="gri">GRI <sup>TM</sup></label>
+                                <input type="number" class="form-control" id="gri" name="gri" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="published_date">Published Date</label>
+                                <input type="date" class="form-control" id="published_date" name="published_date" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="rating_scale">Rating Scale</label>
+                                <input type="number" class="form-control" id="rating_scale" name="rating_scale" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="service">SERVICE</label>
+                                <input type="number" class="form-control" id="service" name="service" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="cleanliness_score">CLEANLINESS - Score</label>
+                                <input type="number" class="form-control" id="cleanliness_score" name="cleanliness_score" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="value">VALUE</label>
+                                <input type="number" class="form-control" id="value" name="value" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="value_score">VALUE - Score</label>
+                                <input type="number" class="form-control" id="value_score" name="value_score" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="gastronomy">GASTRONOMY</label>
+                                <input type="number" class="form-control" id="gastronomy" name="gastronomy" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="gastronomy_score">GASTRONOMY - Score</label>
+                                <input type="number" class="form-control" id="gastronomy_score" name="gastronomy_score" required>
+                            </div>
+                        
+                        </div>
+                        
+
+
+                        <!-- Right Side - 3 inputs -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="country">Country</label>
+                                <select class="form-control" id="country" name="country" required></select>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="source">Source</label>
+                                <input type="text" class="form-control" id="source" name="source" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="review_score">Review Score</label>
+                                <input type="number" class="form-control" id="review_score" name="review_score" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="service_score">SERVICE - Score</label>
+                                <input type="number" class="form-control" id="service_score" name="service_score" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="department_rating">Department Rating Scale</label>
+                                <input type="number" class="form-control" id="department_rating" name="department_rating" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="review_title">Review Title</label>
+                                <input type="text" class="form-control" id="review_title" name="review_title" required>
+                            </div>
+                        
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="review_text">Review Text:</label>
+                                <textarea rows="7" cols="5" class="form-control" id="review_text" name="review_text" placeholder="Enter message"></textarea>
+                            </div>
+                        
+                        </div>
+                        
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("country");
+
+        fetch("https://restcountries.com/v3.1/all?fields=name")
+            .then(response => response.json())
+            .then(data => {
+                console.log("the data is here", data)
+                // Sort countries alphabetically by common name
+                data.sort((a, b) => a.name.common.localeCompare(b.name.common));
+
+                // Add default option
+                select.innerHTML = '<option value="">-- Select Country --</option>';
+
+                // Populate dropdown
+                data.forEach(country => {
+                    let option = document.createElement("option");
+                    option.value = country.name.common; // Store full country name
+                    option.textContent = country.name.common; // Display full country name
+                    select.appendChild(option);
+                });
+            })
+            .catch(error => console.error("Error fetching countries:", error));
+    });
+</script>
+
+
+{% endblock content %}

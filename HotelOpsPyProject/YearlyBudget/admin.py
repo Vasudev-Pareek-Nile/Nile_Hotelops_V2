@@ -1,0 +1,6 @@
+from django.contrib import admin
+from  .models import *
+
+list_display = [Entry_Master_Year,Finance_Category,Finance_Category_Entry_Details,Market_Segment_Category,Market_Segment_Entry_Details,Business_Source_Category,Business_Source_Entry_Details,ExpensesIncludingPayroll,ExpensesIncludingPayrollEntryDetails,CostPerCover,CostPerCoverEntryDetails,CostPerOccupiedRoomNight,CostPerOccupiedRoomNightEntryDetails]
+
+admin.site.register(list_display)

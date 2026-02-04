@@ -1,0 +1,116 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+{% load encryption_filters %}
+{% if messages %}
+    <div class="cotainer">
+        <div class="container text-center">
+            {% for message in messages %} {% if message.tags == 'success' %}
+            <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+            {% else %}
+            <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+            {% endif %} {% endfor %}
+        </div>
+    </div>
+{% endif %}
+<style>
+  .table-wrapper {
+    position: relative;
+  }
+
+  .table thead th {
+    position: sticky;
+    top: 0;
+    background: white; /* or match your table header background */
+    z-index: 2;
+  }
+
+  .table thead tr.filters th {
+    top: 40px; /* height of the first header row */
+    z-index: 1;
+  }
+</style>
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">Leave Process Final</div>
+    <div class="card-body">
+      <div class="table-wrapper">
+        <table id="example" class="table table-striped custom-table mb-0 no-footer">
+          <thead>
+              <tr>
+                  <th>Process Date</th>
+                  <th>Leave Type</th>
+                  <th>Credit</th>
+                  <th>Status</th>
+                  <th>Employee Code</th>
+                  <th width="200">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for detail in details %}
+              <tr>
+                  <td>{{ detail.CreatedDateTime | date:'d-m-Y' }}</td>
+                  <td>{{ detail.Leave_Type_Master.Type }}</td>
+                  <td>{{ detail.Credit }}</td>
+                  <td>
+                  
+                      {% if type.Status %}
+                      Processed
+                  {% else %}
+                  Draft
+                  {% endif %}
+                  </td>
+                  <td>
+                      {% with detail.leave_process_details as emp_details %}
+                          {% if emp_details %}
+                              {% for emp in emp_details %}
+                              {{ emp.Emp_code }} - 
+                              {{ emp.Emp_code|get_emp_name:detail.OrganizationID }} |
+                              {% endfor %}
+                          {% else %}
+                              No employees
+                          {% endif %}
+                      {% endwith %}
+                  </td>
+                  <td>
+                      <a href="{% url 'LeaveProcessDetails' %}?ID={{detail.id}}" class="btn btn-primary btn-sm">Final Submit</a>
+                      <form method="post" action="{% url 'delete_leave_process' detail.id %}" style="display:inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this entry?');">
+                              Delete
+                          </button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+    // Populate dropdowns with unique values
+    $('.column-filter').each(function () {
+      let colIndex = $(this).data('column');
+      let values = new Set();
+
+      $('#example tbody tr').each(function () {
+        let cellText = $(this).find('td').eq(colIndex).text().trim();
+        if (cellText) {
+          values.add(cellText);
+        }
+      });
+
+      values = Array.from(values).sort();
+      for (let val of values) {
+        $(this).append(`<option value="${val}">${val}</option>`);
+      }
+    });
+  });
+</script>
+
+{% endblock %}

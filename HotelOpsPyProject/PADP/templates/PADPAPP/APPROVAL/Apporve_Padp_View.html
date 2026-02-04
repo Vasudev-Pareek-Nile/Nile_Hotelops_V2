@@ -1,0 +1,728 @@
+{% extends 'PADPAPP/homebase.html' %}
+
+
+{% block content %} 
+<style>
+    #tblObject tr td span:last-child{
+        float: right;
+    }
+    
+    #tblObject tr td input[type='checkbox']:last-child{
+        float: right;
+        margin-right: 10px;
+    }
+    #tblObject tr td input[type='checkbox']:first-child{
+        float: none;
+        margin-left: 10px;
+    }
+    .capital{
+        text-transform: uppercase
+        ;
+    }
+    tr.hide {
+    display: none;
+}
+.table-bordered > thead > tr > th, .table-bordered > thead > tr > td ,.capitalbga,.capitalobj,.capitalheader
+    
+{
+    text-transform: uppercase;
+    text-align: center;
+    background-color:#1ab394;
+    color: white;
+}
+.custom-hide {
+    background-color: #ccc;
+    color: #000; 
+}
+
+
+</style>
+<div class="container">
+    <div class="col-md-12">
+      
+        <div class="card">
+            
+            <div class="card-header ">PADP</div>
+            <div class="card-body">
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                
+                
+                            <label for="">Employee Code:</label>
+                           
+                            <input type="text" class="form-control" value="{{padp.EmployeeCode}}"  name="EmployeeCode">
+                        </div>
+                        
+                       
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                
+                
+                            <label for="">Review Date:</label>
+                           
+                            <input type="date" value="{% if padp.Review_Date %}{{padp.Review_Date|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control"  name="Review_Date" >
+                        </div>
+                        
+                       
+                    </div>
+                    <div class="col-md-4"><div class="form-group m-3">
+                        <label for="">Appraisee Name:</label>
+                        <input type="text" class="form-control" value="{{padp.Appraisee_Name}}"  name="Appraisee_Name">
+                    </div></div>
+                    <div class="col-md-4"> <div class="form-group m-3">
+                        <label for="">Aprraisee Position:</label>
+                        <input type="text" class="form-control" value="{{padp.Aprraisee_position}}"  name="Aprraisee_position">
+                    </div> </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="">Appraisee Level:</label>
+                            <input type="text"   value="{{padp.Aprraise_Level}}" class="form-control"  name="Level">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="">Appraiser Name:</label>
+                            <input type="text" class="form-control" value="{{padp.Appraisor_Name}}"  name="Appraisor_Name">
+                        </div>   
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="">Appraiser Position:</label>
+                            <input type="text" class="form-control" value="{{padp.Appraisor_Title}}"  name="Appraisor_Title">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">  <div class="form-group m-3">
+                        <label for="">Date of Joining:</label>
+                        <input type="date" value="{% if  padp.Date_Joined_Company %}{{padp.Date_Joined_Company | date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control" name="Date_Joined_Company">
+                    </div>   </div>
+                    <div class="col-md-4"> <div class="form-group m-3">
+                        <label for="">Date of Appraisal:</label>
+                        <input type="date" value="{% if  padp.Date_of_Appraisal %}{{padp.Date_of_Appraisal | date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control" class="form-control" name="Date_of_Appraisal">
+                    </div></div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="">Next Review Date:</label>
+                            <input type="date"  value="{% if  padp.month_Date_of_Review %}{{padp.month_Date_of_Review | date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control" name="month_Date_of_Review" >
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+
+                
+
+                <div class="card-header col-md-12 text-center capitalheader" style="border-radius: 5px;">Leadership Competencies</div>   
+                <br>
+                
+                            {%  for obj in objs %}
+                                
+                                {% with obj_counter=forloop.counter0 %}
+                             
+                                            <table class="table table-bordered display table-sm" id="tblObject">
+                                                <tbody>
+                                                    <tr>
+                                                        <td rowspan="3" style=" text-align: center;
+                                                        vertical-align: middle; width: 250px !important;"  class=""><strong>{{obj.Title }}</strong>
+                                                        <input name="obj_ID_{{obj_counter }}" type="hidden" value="{{obj.id}}" type="text"/>
+                                                    </td>
+                                                        <td colspan="3" class="text-center" >Realative Importance</td>
+                                                        <td  colspan="5" class="text-center">Demonstrates</td>
+                                                    </tr>
+                                                    <tr>
+                                                        
+                                                        <td rowspan="2"  align="center">L </td>
+                                                        <td rowspan="2"  align="center">M</td>
+                                                        <td rowspan="2"  align="center">H</td>
+                                                        <td>Does Not</td>
+                                                        <td>Rarely</td>
+                                                        <td>Sometimes</td>
+                                                        <td>Often</td>
+                                                        <td>Always</td>
+                                                        
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>App'ee</span>   <span> App'er</span></td>
+                                                        <td><span>App'ee</span>   <span> App'er</span></td>
+                                                        <td><span>App'ee</span>   <span> App'er</span></td>
+                                                        <td><span>App'ee</span>   <span> App'er</span></td>
+                                                        <td><span>App'ee</span>   <span> App'er</span></td>
+                                                        
+                                                    </tr>
+                                                
+                                                {% for att in obj.Attibutes  %}
+                                                
+                                                           
+                                                           
+                                                            <tr>
+                                                                <td  class="capitalbga">{{att.Title}}
+                                                                    <input name="obj_{{ obj_counter }}_Att_ID_{{ forloop.counter0 }}" type="hidden" value="{{att.id}}" type="text"/>
+
+                                                                </td>
+                                                                <td align="center">
+                                                               
+                                                                    <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_importance"  {% if att.detailatt.0.RL_L   %}checked{% endif %} value="L"> 
+                                                                </td>
+                                                                <td align="center">
+                                                                    <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_importance"  {% if att.detailatt.0.RL_M   %}checked{% endif %} value="M"> 
+                                                                </td>
+                                                                <td align="center">
+                                                                    <input type="radio" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_importance"  {% if att.detailatt.0.RL_H   %}checked{% endif %} value="H"> 
+                                                                </td>
+                                                                
+                                                                <td>
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_D_Appee" {% if att.detailatt.0.Does_NOT_Appee   %}checked{% endif %} class="A_Appee" value="1">
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_D_Appor" {% if att.detailatt.0.Does_NOT_Appor   %}checked{% endif %} class="A_Appor" value="1">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_R_Appee"  {% if att.detailatt.0.Rarely_Appee   %}checked{% endif %} class="A_Appee" value="1">
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_R_Appor"  {% if att.detailatt.0.Rarely_Appor   %}checked{% endif %} class="A_Appor" value="1">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_S_Appee"  {% if att.detailatt.0.Sometiems_Appee   %}checked{% endif %} class="A_Appee" value="1">
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_S_Appor"  {% if att.detailatt.0.Sometiems_Appor   %}checked{% endif %} class="A_Appor" value="1">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_O_Appee"  {% if att.detailatt.0.Often_Appee   %}checked{% endif %} class="A_Appee" value="1">
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_O_Appor"  {% if att.detailatt.0.Often_Appor   %}checked{% endif %} class="A_Appor" value="1">
+                                                                </td>
+                                                                <td>
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_A_Appee"  {% if att.detailatt.0.Always_Appee   %}checked{% endif %} class="A_Appee" value="1">
+                                                                    <input type="checkbox" name="obj_{{ obj_counter }}_attr_{{ forloop.counter0 }}_A_Appor"  {% if att.detailatt.0.Always_Appor   %}checked{% endif %} class="A_Appor" value="1">
+                                                                </td>
+                                                            
+                                                                
+
+                                                            </tr>   
+                                                                                
+                                                             
+                                                           
+                                                            {% if forloop.last  %}
+                                                            <input type="hidden" name="obj_{{ obj_counter }}_Total_attribute" value="{{ forloop.counter0 }}" />
+                                                            {% endif %}
+                                                
+                                                {% endfor %} 
+                                            
+                                                </tbody>                        
+                                            </table>
+                                            <table class="table table-bordered display table-sm" id="tblObject">
+                                                <tr><td colspan="9"><strong>Definition :- </strong>{{obj.Definitions}}</td></tr>
+                                            </table>
+                                            <div class="card-header col-md-4 capital" style="background-color: #1ab394;color:white;"> APPRAISEE DETAILS</div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6">
+                                                    <table class="table table-bordered display table-sm" id="tblObject">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="capitalbga" colspan="4">Effective</th>
+
+                                                            </tr>                           
+                                                        </thead>
+                                                        <tbody>
+                                                            
+                                                            {% for Effective in obj.Effectives %}
+                                                                   
+                                                                            
+                                                                        <tr>
+                                                                           
+                                                                            <td colspan="4"> 
+                                                                            
+                                                                                <input name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appee"  class="A_Appee"  value="1" {% if Effective.effdetail_Appee.0.Status == True %}checked{% endif %} type="checkbox"><span class="ml-2">{{Effective.Title}}</span>  
+                                                                                <input type="hidden" name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appee_ID" value="{{Effective.id}}">
+                                                                            
+                                                                                
+                                                                            </td>
+                                                                        </tr>
+                                                                  
+                                                                    
+                                                                    {% if forloop.last %}
+                                                                    <input type="hidden" name="obj_{{ obj_counter }}_Total_Effective_Appee" value="{{ forloop.counter0 }}" />
+                                                                    {% endif %} 
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-6">
+                                                <table class="table table-bordered display table-sm" id="tblObject" >
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="5" class="capitalbga">Ineffective</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for Ineffective in obj.Ineffectives %}
+                                                                
+                                                                    <tr>
+                                                                    
+                                                                        <td colspan="5">
+                                                                            <input name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appee" value="1" class="A_Appee" {% if Ineffective.inffdetailAppee.0.Status == True  %}checked{% endif %} type="checkbox"><span class="ml-2">{{Ineffective.Title}}</span>
+                                                                        
+                                                                            <input type="hidden" name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appee_ID" value="{{Ineffective.id}}" >
+                                                                        </td>
+                                                                    </tr>
+                                                             
+                                                                {% if forloop.last %}
+                                                                <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appee"  value="{{ forloop.counter0 }}"/>
+                                                                {% endif %} 
+                                                        {% endfor %} 
+                                                    </tbody>
+                                                    
+                                                </table>
+                                                </div>
+                                                <br>
+                                                
+                                            </div> 
+                                            <table class="table table-bordered display table-sm" id="tblObject">
+
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="9"><label>
+                                                    <strong class="capital"> Appraisee Comments:-</strong></label>
+                                                    <textarea class="form-control" value=""
+                                                    id="" name="Appraise_Comments_{{obj_counter}}" cols="30" rows="5">{{obj.LD.0.Appraise_Comments}}</textarea>
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                   
+                                                </tbody>
+                                            </table>
+                                            
+                                            <div class="card-header col-md-4 capital" style="background-color: #1ab394;color:white;">
+                                                APPRAISER DETAILS</div>
+                                            <div class="row">
+                                                
+                                                <div class="col-md-6">
+                                                    <table class="table table-bordered display table-sm" id="tblObject">
+                                                        <thead>
+                                                            <tr>
+                                                                <tr><th class="capitalbga">Effective</th></tr>
+                                                            </tr>                           
+                                                        </thead>
+                                                        <tbody>
+                                                            
+                                                            {% for Effective in obj.Effectives %}
+                                                                   
+                                                                            
+                                                                        <tr>
+                                                                            <td >
+                                                                                <input  name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appor"  value="1" class="A_Appor" {% if Effective.effdetail_Appor.0.Status == True %}checked{% endif %} type="checkbox"><span class="ml-2">{{Effective.Title}}</span>
+                                                                                <input type="hidden" name="EFF_{{forloop.counter0}}_obj_{{obj_counter}}_Appor_ID" value="{{Effective.id}}">
+                                                                            
+                                                                            </td>
+                                                                        
+                                                                        </tr>
+                                                               
+                                                                    {% if forloop.last %}
+                                                                    <input  type="hidden" name="obj_{{obj_counter}}_Total_Effective_Appor"  value="{{ forloop.counter0 }}" />
+                                                                    {% endif %} 
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="col-md-6">
+                                                <table class="table table-bordered display table-sm" id="tblObject" >
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="capitalbga">Ineffective</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for Ineffective in obj.Ineffectives %}
+                                                               
+                                                                    <tr>
+                                                                    
+                                                                        <td >
+                                                                            <input name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appor"  value="1"  class="A_Appor" {% if Ineffective.inffdetailAppor.0.Status == True %}checked
+                                                                            {% endif %} type="checkbox"><span class="ml-2">{{Ineffective.Title}}</span>
+                                                                        
+                                                                            <input type="hidden" name="Ine_{{forloop.counter0}}_obj_{{obj_counter}}_Appor_ID"  value="{{Ineffective.id}}" id="">
+                                                                        </td>
+                                                                    </tr>
+                                                            
+                                                                {% if forloop.last %}
+                                                                <input type="hidden" name="obj_{{ obj_counter }}_Total_Ineffective_Appor"  value="{{ forloop.counter0 }}"/>
+                                                                {% endif %} 
+                                                        {% endfor %} 
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                               
+                                                <br>
+                                                    
+                                            </div> 
+                                            <table class="table table-bordered display table-sm" id="tblObject">
+
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="9"><label>
+                                                    <strong class="capital"> Appraiser Comments:-</strong></label>
+                                                    <textarea class="form-control" name="Appraisor_Comments_{{obj_counter}}" id="" cols="30" rows="5">{{obj.LD.0.Appraisor_Comments}}</textarea>
+                                                    </td>
+                                                    </tr>
+                                                    
+                                                </tbody>
+                                            </table>
+                                {% if forloop.last %}
+                                <input  type="hidden" name="Total_objective" value="{{ forloop.counter0 }}"/>
+                                {% endif %}
+                                {% endwith %}
+                            {% endfor %}
+
+                    <br>
+                  
+                    
+                    <div class="card-header col-md-12 text-center capitalheader m-1" >Specific Measurable Achievable Relevant Time Bound</div>   
+                    <br>
+                    {%  for obj in objs %}
+                                
+                    {% with obj_counter=forloop.counter0 %}
+                    <div class="row m-1">
+                        <div class="card-header col-md-4 text-center capitalobj" >{{obj.Title}}</div>
+                        <input name="SPC_ID_{{obj_counter }}" type="hidden" value="{{obj.id}}" type="text"/>  
+                        <table class="table table-bordered display table-sm mt-2" id="myTable_{{obj_counter }}" >
+                            <thead>
+                                <tr>
+                                    <th class="capital">SMART GOAL</th>
+                                    <th class="capital">ACTION STEPS</th>
+                                    <th class="capital">Completion Date</th>
+                                   
+                                </tr>
+                                
+                            </thead>
+                            <tbody >
+
+                              
+                                {% for spec in obj.SPE_MEA_ACH_Detail %}
+                                <tr>
+                                    <td>
+                                        <input type="hidden" value="{{spec.id}}" name="spec_ID_[]_obj_{{obj_counter}}" >
+                                        <input type="hidden" value="0" name="spec_IsDelete_[]_obj_{{obj_counter}}" >
+                                        <textarea class="form-control" name="smart_goal[]_obj_{{obj_counter}}" cols="30" rows="5">{{ spec.SMART_GOAL}}</textarea>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control" name="action_steps[]_obj_{{obj_counter}}" cols="30" rows="5">{{ spec.ACTION_STEPS}}</textarea>
+                                    </td>
+                                    <td valign="top" align="center">
+                                      {{spec.COMPLETION_DATE}}
+                                    </td>
+                                    
+
+
+                                </tr>
+                               {% endfor %}
+                               
+                            
+                                
+                                                                     
+                            </tbody>
+                             
+
+                        </table>
+                     
+                       
+
+                      
+                        <table class="table table-bordered display table-sm mt-2">
+                            <tbody>
+                                <tr>
+                                    <td colspan="3">
+                                        <label>
+                                            <strong class="capital">Six Month Review:-</strong>
+                                        </label>
+                                        <textarea class="form-control" name="Six_Month_Review_obj_{{obj_counter}}" id="" cols="30" rows="5">{{obj.SP_MEAS_ACHI.0.Month_View}}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if forloop.last %}
+                                <input  type="hidden" name="Total_Specific" value="{{ forloop.counter0 }}"/>
+                                {% endif %}
+                    {% endwith %}
+                            {% endfor %}
+                    <div class="card-header col-md-12 text-center capitalheader m-1" >SUMMARY AND ACKNOWLEDGEMENT </div>   
+                    <br>
+                    <div class="row m-1 ">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for=""><strong>SUMMARY COMMENTS - APPRAISEE</strong></label>
+                                        <p>Summary comments and other information about the Appraisee's ambitions, personal development plans or other concerns.</p>
+                                        <textarea name="SUMMARY_APPRAISEE"  id="" cols="30" class="form-control" rows="5">{{sum_data.SUMMARY_APPRAISEE}}</textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+
+                                        <label for=""><strong>SUMMARY COMMENTS - APPRAISER</strong></label>
+                                        <p>Summary comments and other observations, including an overall assessment of the Appraisee's current performance.</p>
+                                        <textarea name="SUMMARY_APPRAISOR" id="" cols="30" class="form-control" rows="5">{{sum_data.SUMMARY_APPRAISOR}}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td colspan="5">
+                                        <label for=""><strong>Supervisor/General Manager's Rating (Contribution 75% of Supervisor/General Maneger).</strong></label>
+                                       
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <input type="radio"   name="spgm"  {% if sum_data.SP_GM_Rating_Excellent  %}checked{% endif %} value="E"> 
+                                        <label for="">Excellent</label>                       
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"    name="spgm" {% if sum_data.SP_GM_Rating_Good   %}checked{% endif %}  value="G"> 
+                                        <label for="">Good</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"   name="spgm" {% if sum_data.SP_GM_Rating_Average   %}checked{% endif %}  value="A"> 
+                                        <label for="">Average</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"   name="spgm" {% if sum_data.SP_GM_Rating_Poor   %}checked{% endif %}  value="P"> 
+                                        <label for="">Poor</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio" name="spgm"  {% if sum_data.SP_GM_Rating_Needs_Improvement   %}checked{% endif %}  value="N"> 
+                                        <label for="">Needs Improvement</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <label for=""><strong>Supervisor/General Manager's Comments (Contribution 75% of Supervisor/General Maneger).</strong></label>
+                                        <textarea name="SP_GM_Comment"   id="" cols="30" class="form-control " rows="5">{{sum_data.SP_GM_Comment}}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>    
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <td colspan="5">
+                                        <label for=""><strong>Regional Director's Rating (Contribution 25% of Regional Director).</strong></label>
+                                       
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <input type="radio"   name="rdr" {% if sum_data.RD_Rating_Excellent    %}checked{% endif %}   value="E"> 
+                                        <label for="">Excellent</label>                       
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"    name="rdr" {% if sum_data.RD_Rating_Good   %}checked{% endif %}  value="G"> 
+                                        <label for="">Good</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"   name="rdr" {% if sum_data.RD_Rating_Average   %}checked{% endif %}  value="A"> 
+                                        <label for="">Average</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio"   name="rdr" {% if sum_data.RD_Rating_Poor   %}checked{% endif %}  value="P"> 
+                                        <label for="">Poor</label>
+                                    </td>
+                                    <td align="center">
+                                        <input type="radio" name="rdr"  {% if sum_data.RD_Rating_Needs_Improvement   %}checked{% endif %}  value="N"> 
+                                        <label for="">Needs Improvement</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <label for=""><strong>Regional Director's Comments (Contribution 25% of Regional Director).</strong></label>
+                                        <textarea name="RD_Comment"   id="" cols="30" class="form-control " rows="5">{{sum_data.RD_Comment}}</textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>   
+
+                    </div>
+                    <div class="card-header col-md-12 text-center capitalheader m-1" >ACKNOWLEDGEMENT </div>   
+                    <br>
+                    <div class="row m-1">
+                        <div class="col-md-6">
+                           
+                            <div class="form-group m-3">
+                                <label for="">Appraisee:</label>
+                                <input type="text" class="form-control" value="{{sum_data.Appraisee}}"  name="Appraisee_ACK">
+                            </div>
+                              
+                        </div>
+                       
+                        <div class="col-md-6">
+                           
+                            <div class="form-group m-3">
+                                <label for="">Appraiser:</label>
+                                <input type="text" class="form-control" value="{{sum_data.Appraisor}}"  name="Appraisor_ACK">
+                            </div>
+                              
+                        </div>
+                        
+                        <div class="col-md-6">
+                           
+                            <div class="form-group m-3">
+                                <label for="">HR Manager:</label>
+                                <input type="text" class="form-control" value="{{sum_data.HR_Manager}}"  name="HR_Manager_ACK">
+                            </div>
+                              
+                        </div>
+                        
+                        <div class="col-md-6">
+                           
+                            <div class="form-group m-3">
+                                <label for="">Appraiser's Manager:</label>
+                                <input type="text" class="form-control" value="{{sum_data.Appraisor_Mgr}}"  name="Appraisor_Mgr_ACK">
+                            </div>
+                              
+                        </div>
+                       
+                    
+                    
+                    
+                    
+                        
+                    </div>
+                    <div class="card-header col-md-12 text-center capitalheader m-1" >OFFICE USE ONLY </div>   
+                    <br>
+                    <p class="m-1"><strong>To be filled by Executive Committee Member only:</strong></p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Anticipated promotionffransfer Date:</label>
+                                <input type="date" value="{% if sum_data.Anticipated_promotionffransfer_Date %}{{sum_data.Anticipated_promotionffransfer_Date|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control"  name="Anticipated_Date" >
+                            </div>
+                           
+                        </div>
+                        <div class="col-md-4">
+                           
+                            <div class="form-group m-3">
+                                <label for="">Position:</label>
+                                <input type="text" class="form-control" value="{{sum_data.Position}}"  name="Position_ACK">
+                            </div>
+                              
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Alternative Position:</label>
+                                <input type="text" class="form-control" value="{{sum_data.Alternative_Position}}"  name="Alternative_Position">
+                            </div>
+                          
+                        </div>
+                       
+            </div>
+            
+            <div class="card-footer text-right">
+               
+                {% if padp.Final_Approve == False  %}<a class="btn btn-primary btn-sm" href="{% url 'Approve_PADP' %}?ID={{padp_id}}&Status={{1}}">Approve</a>{% endif %}
+               {% if request.session.Level == "CEO"  %} <a class="btn btn-danger btn-sm" href="{% url 'Approve_PADP' %}?ID={{padp_id}}&Status={{-1}}">Return</a>{% endif %}
+                
+                
+            </div>
+        </div>
+     
+       
+    </div>
+</div>
+<br>
+<script>
+    function addRow(objCounter) {
+        var table = document.getElementById("myTable_" + objCounter).getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow(table.rows.length);
+
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+
+        var input1 = document.createElement("textarea");
+        input1.className = "form-control";
+        input1.name = "smart_goal[]_obj_" + objCounter;
+        input1.cols = "30";
+        input1.rows = "1";
+        cell1.appendChild(input1);
+
+        var input2 = document.createElement("textarea");
+        input2.className = "form-control";
+        input2.cols = "30";
+        input2.rows = "1";
+        input2.name = "action_steps[]_obj_" + objCounter;
+        cell2.appendChild(input2);
+
+        var select = document.createElement("select");
+        select.className = "form-control";
+        select.name = "status[]_obj_" + objCounter;
+
+        var option1 = document.createElement("option");
+        option1.value = "ONGOING";
+        option1.text = "ONGOING";
+        select.appendChild(option1);
+
+        var option2 = document.createElement("option");
+        option2.value = "DONE";
+        option2.text = "DONE";
+        select.appendChild(option2);
+
+        var option3 = document.createElement("option");
+        option3.value = "CONTINUOUS";
+        option3.text = "CONTINUOUS";
+        select.appendChild(option3);
+
+        cell3.appendChild(select);
+
+        var hiddenInput1 = document.createElement("input");
+        hiddenInput1.type = "hidden";
+        hiddenInput1.value = "0";
+        hiddenInput1.name = "spec_IsDelete[]_obj_" + objCounter;
+        cell1.appendChild(hiddenInput1);
+
+        var hiddenInput2 = document.createElement("input");
+        hiddenInput2.type = "hidden";
+        hiddenInput2.value = "";
+        hiddenInput2.name = "spec_ID[]_obj_" + objCounter; 
+        cell1.appendChild(hiddenInput2);
+
+        var deleteBtn = document.createElement("button");
+        deleteBtn.type = "button";
+        deleteBtn.className = "btn btn-danger btn-sm";
+        deleteBtn.onclick = function () {
+            deleteRow(newRow);
+        };
+        deleteBtn.innerText = "Delete";
+        cell4.appendChild(deleteBtn);
+    }
+
+    function deleteRow(obj) {
+    var row = $(obj).closest('tr');
+    row.find("[name*='spec_IsDelete']").val(1);
+    row.addClass('custom-hide').fadeOut();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var inputs = document.querySelectorAll('input, textarea');
+    
+    inputs.forEach(function(input) {
+        if (input.type !== 'radio' && input.type !== 'checkbox') {
+            input.setAttribute('readonly', 'true');
+        } else {
+            input.setAttribute('disabled', 'true');
+        }
+    });
+});
+
+</script>
+
+
+{% endblock %}

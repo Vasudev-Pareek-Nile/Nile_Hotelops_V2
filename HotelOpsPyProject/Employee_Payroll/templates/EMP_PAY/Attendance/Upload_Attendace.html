@@ -1,0 +1,62 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+
+{% include "EMP_PAY/Attendance/AttendanceNavbar.html" %}
+<div class="cotainer mt-2 mb-2">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+      
+<div class="card-header col-md-12 ">
+      Upload Attendance
+   
+    
+</div>
+<br>
+
+<div class="container">
+    <div class="col-md-12">
+       <form action="" method="post" enctype="multipart/form-data">
+        <div class="card">
+            <div class="card-header">Upload Attendance</div>
+
+
+            
+
+
+            <div class="card-main">
+                
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Attendance Date</label>
+                                <input type="date" class="form-control" name="Attendance_Date" value="{% now 'Y-m-d' %}">
+            
+                            </div>
+                        </div>  
+                        <div class="col-md-4">
+                                <div class="form-group m-3">          
+                                        <label for="">Upload Attendance      Upload Type: {{UploadFormatType}}       <a href="{{DownloadFormat}}"   class="fa fa-eye" target="_blank"></a>  </label> 
+                                        <input type="file" class="form-control" name="file" id=""> 
+                                </div>
+        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-sm" >
+            </div>
+        </div>
+
+       </form>
+    </div>
+</div>
+
+{% endblock content %}

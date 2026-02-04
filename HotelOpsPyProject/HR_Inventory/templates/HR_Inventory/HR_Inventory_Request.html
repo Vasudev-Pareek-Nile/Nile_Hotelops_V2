@@ -1,0 +1,138 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+
+    .CustomFooter{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white; /* optional */
+        padding: 10px;     /* optional */
+        text-align: center; /* optional */
+        z-index: 999; 
+        padding-right: 22px;
+        display: flex;
+        justify-content: end;
+        border-top: 1px solid #00000054;
+    }
+</style>
+
+
+<form method="post">
+        <div class="card">
+            <div class="col-md-12">
+                <div class="card-header text-uppercase fw-bold">HR Request</div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="employeeCode">Employee Code</label>
+                            <input type="text" required class="form-control" name="EmployeeCode" id="employeeCode" value="{{ EmployeeData.EmployeeCode }}" readonly>
+                            <input type="hidden" class="form-control" name="EmpID" id="EmpID" value="{{ EmployeeData.EmpID }}" >
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="EmployeeName">Employee Name</label> 
+                            <input type="text" class="form-control" name="EmployeeName" id="EmployeeName" value="{{ EmployeeData.EmpName }}" readonly> 
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="Department">Department</label>
+                            <input type="text" class="form-control" name="Department" id="Department" value="{{ EmployeeData.Department }}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="DesignationGrade">Designation</label>
+                            <input type="text" class="form-control" name="DesignationGrade" id="DesignationGrade" value="{{ EmployeeData.Designation }}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group m-3">
+                            <label for="ReportingtoDesigantion">Reporting To Designation</label>
+                            <input type="text" class="form-control" name="ReportingtoDesigantion" id="ReportingtoDesigantion" value="{{ EmployeeData.ReportingtoDesigantion }}" readonly>
+                        </div>
+                    </div>
+                    {% comment %} {% if Hide_Value %} {% endcomment %}
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="ReportingtoDesigantion">Issued Date</label>
+                                <input type="date" class="form-control" name="IssuedDate" id="IssuedDate" value="{% if UN.IssuedDate %}{{UN.IssuedDate|date:"Y-m-d"}}{% else %}{{date}}{% endif %}" readonly>
+                            </div>
+                        </div>
+                    {% comment %} {% endif %} {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Issued</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in uitem %}
+                            <tr>
+                                <td>
+                                    {{ u.ItemName }}
+                                    <input name="ItemID_{{ forloop.counter0 }}" type="hidden" value="{{ u.id }}" />
+                                </td>
+                                <td>
+                                    <select name="Item_Issued_{{ forloop.counter0 }}" class="form-control new-select" {% if Hide_Value %}readonly{% endif %}>
+                                        <option value="" {% if u.Item_Issued == '' %}selected{% endif %}>Select</option>
+                                        <option value="Yes" {% if u.Item_Issued == 'Yes' %}selected{% endif %}>Yes</option>
+                                        <option value="No" {% if u.Item_Issued == 'No' %}selected{% endif %}>No</option>      
+                                    </select>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                                <input type="hidden" name="Total_item" value="{{ forloop.counter }}" />
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% if Hide_Value != 'Hide' %}
+                        <div class="CustomFooter">
+                            {% csrf_token %}
+                            <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+</form>    
+
+
+
+<script>
+    function updateIssuedQuantities(selectElement) {
+        const row = selectElement.closest('tr');
+        const id = selectElement.name.split('_')[1];
+        const newValue = parseInt(row.querySelector(`select[name="New_${id}"]`).value) || 0;
+        const alteredValue = parseInt(row.querySelector(`select[name="Altered_${id}"]`).value) || 0;
+        const issuedValue = newValue + alteredValue;
+        row.querySelector(`input[name="Issued_${id}"]`).value = issuedValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const selects = document.querySelectorAll('select[name^="New"], select[name^="Altered"]');
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                updateIssuedQuantities(this);
+            });
+        });
+    });
+</script>
+
+{% endblock content %}

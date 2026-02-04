@@ -1,0 +1,188 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+     
+  </style>
+
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">F&B Banquet Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'FB_Banquetviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+</div>
+
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>FOOD REVENUE</th>
+            <th>{{mem.FoodRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Food Revenue</th>
+            <th>{{mem.TotalFoodRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>BEVERAGE REVENUE {SOFT}</th>
+            <th>{{mem.BeverageRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Revenue</th>
+            <th>{{mem.TotalBEVERAGEREVENUE}}</th>      
+        </tr>
+        <tr>
+            <th>HALL RENTAL/HIRE</th>
+            <th>{{mem.HallRental}}</th>      
+        </tr>
+        <tr>
+            <th>F&B REVENUE - MISC./OTHERS</th>
+            <th>{{mem.FB_RevenueMisc}}</th>      
+        </tr>
+        <tr>
+            <th>Total Other Income</th>
+            <th>{{mem.TotalOtherIncome}}</th>      
+        </tr>
+        <tr>
+            <th>F&B Revenue</th>
+            <th>{{mem.FB_Revenue}}</th>      
+        </tr>
+        <tr>
+            <th>Food Cost of Sales</th>
+            <th>{{mem.FoodCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Cost of Sales </th>
+            <th>{{mem.BeverageCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Beverage Cost of Sales </th>
+            <th>{{mem.BeverageCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost of F&B Sales</th>  
+            <th>{{mem.TotalCostOfFBSales}}</th>
+        </tr>
+        <tr>
+            <th>Audio Visual Equipment Cost of Sales</th>  
+            <th>{{mem.AudioVisualEquipmentCostOfSale}}</th>
+        </tr>
+        <tr>
+            <th>F&B Others Cost of Sales</th>  
+            <th>{{mem.FB_OtherCostOfSales}}</th>
+        </tr>
+        <tr>
+            <th>Total Cost of Other Rev</th>  
+            <th>{{mem.TotalCostOf_OtherRev}}</th>
+        </tr>
+        <tr>
+            <th>Total Cost of Sales</th>  
+            <th>{{mem.TotalCostOfSales}}</th>
+        </tr>
+        <tr>
+            <th>Gross Profit (Loss)</th>  
+            <th>{{mem.GrossProfit}}</th>
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+      
+    </table>
+    </div>
+    <br>
+
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FB_BanquetMaster.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+
+    <tfoot>
+        <tr>
+            <th>
+                Total Other Expenses
+            </th>
+            <th>
+                {{mem.Total_Other_Expenses}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+               Department Income (Loss)
+            </th>
+            <th>
+                {{mem.DepartmentIncome}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+</div>
+
+{% endblock content %}

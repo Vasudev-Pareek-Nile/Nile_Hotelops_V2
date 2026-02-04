@@ -1,0 +1,74 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+<style>
+         table th{
+            text-align: center;
+          text-transform: uppercase;
+        font-size: 11px; 
+  }
+       td {
+    text-align: center;
+  }
+   body{
+    font-family: arial nova;
+    /* font-size: 11px;  */
+    
+  }
+    </style>
+<div class="card">
+
+   
+      <div class="card-header"  >
+      <div class="row">
+          <div class="col-md-6" style="color: #1ab394;"><strong>AREA PROGRAM</strong></div>
+          <div class="col-md-6 text-right"><a href="{% url 'add_project' %}" class="btn btn-primary"> Add Area Program</a></div>
+      </div>  </div>
+      <br>
+      <div class="card-body">
+
+
+    <table id="example" class="table table-bordered">
+     <thead class="thead-">
+    <tr class="table-success">
+        <th>Project</th>
+        <th>Total Site Area</th>
+        <th>Height of the bulding</th>
+        <th>Total Built up area</th>
+        <th>No. of Rooms</th>
+        <th>Action</th>
+    </tr>
+</thead>
+       <tbody> 
+         {% for project_areas in project_area  %} 
+        <tr>
+          <td>{{ project_areas.project}}</td>
+          <td>{{ project_areas.total_area}} Sq Mt./acres</td>
+          <td>{{ project_areas.height_bulding }} Mts.</td>
+          <td>{{ project_areas.built_area}} Sq Mt.</td>
+          <td>{{ project_areas.no_of_room}}</td>
+          
+               
+      <td>
+            <a href="{% url 'add_project' %}?ID={{project_areas.id}}" class="fa fa-edit" style="color: blue"></a>
+           
+                                           
+            
+            <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'project_delet'  %}?ID={{project_areas.id}}">
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+ <a href="{% url 'project_pdf'  %}?ID={{project_areas.id}}"><i class="fa fa-download" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+  </div>
+  </div>
+</div>
+
+</div>
+
+
+{% endblock content %}

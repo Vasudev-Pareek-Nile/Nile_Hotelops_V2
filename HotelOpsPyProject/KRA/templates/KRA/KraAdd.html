@@ -1,0 +1,45 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+
+<div class="card">
+    <form action="" method="post">
+    <div class="card-header"><h3>New Kra Title</h3></div>
+    <div class="col-md-12">
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Title">Title</label>
+                    <textarea name="Title" id="Title" class="form-control"  required>{{ Kraobj.Title }}</textarea>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="Standard">Standard</label>
+                    <textarea name="Standard" id="Title" class="form-control"  required>{{ Kraobj.Standard }}</textarea>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label for="Type">Type</label>
+                    <select name="Type" id="type" class="form-control">
+                        <option value="Monthly"  {% if Kraobj.Type == 'Monthly' %} selected {% endif %}>Monthly</option>
+                        <option value="Quarterly"  {% if Kraobj.Type == 'Quarterly' %} selected {% endif %}>Quarterly</option>
+                        <option value="Half-Yearly"  {% if Kraobj.Type == 'Half-Yearly' %} selected {% endif %}>Half-Yearly</option>
+                        <option value="Yearly"  {% if Kraobj.Type == 'Yearly' %} selected {% endif %}>Yearly</option>
+                    </select>
+                    
+                </div>
+            </div>
+           
+        </div>
+    </div>
+    
+    <div class="card-footer text-right">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-success btn-sm" value="Submit">
+    </div>
+</form>
+           
+</div>
+
+{% endblock content %}

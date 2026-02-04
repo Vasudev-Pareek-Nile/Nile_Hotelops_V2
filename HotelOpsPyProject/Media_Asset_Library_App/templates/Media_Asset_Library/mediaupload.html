@@ -1,0 +1,276 @@
+{% extends 'Media_Asset_Library/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+<style>
+    #drop-area {
+        border: 2px dashed #ccc;
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #file-list {
+        margin-top: 20px;
+    }
+
+    .file-item img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    .progress-bar {
+        height: 20px;
+    }
+
+    .delete-btn {
+        margin-left: 10px;
+    }
+</style>
+
+<div class="container">
+   
+    <button class="btn btn-primary btn-sm" onclick="history.back()">Go Back</button>
+    <br>
+    <br>
+    
+   
+        <div class="col-md-12">
+            <div class="card">
+                <form id="uploadForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                
+                      
+                           
+                              
+                                    <div class="card-header">Upload</div>
+                                    <div class="main">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label>Title:</label>
+                                                    <input required name="title" type="text" placeholder="Enter Title" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label>Descriptions:</label>
+                                                    <textarea  required name="descriptions"  placeholder="Enter Description" class="form-control" cols="30" rows="3"></textarea>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label>Expiration Date:</label>
+                                                    <input required name="expiration_date" type="date" class="form-control" value="{{ default_expiration_date }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label>Upload Date:</label>
+                                                    <input required name="upload_date" type="date" class="form-control" value="{{ default_upload_date }}">
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">    
+                                                <div class="form-group m-3">
+                                                    <label>Upload By:</label>
+                                                    <input required name="upload_by" readonly type="text" class="form-control" value="{{ request.user }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="for_category">Category:</label>
+                                                    <select name="category" id="" class="form-control" >
+                                                        {% for category in categories %}
+                                                            <option value="{{ category.id }}">{{ category.category_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="for_hotel">For Hotels:</label>
+                                                    <select name="for_hotel" id="organizationSelect" class="form-control" >
+                                                        {% for itm in memOrg %}
+                                                            <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    
+                                                </div>
+                                    
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group m-3">
+                                                    <label for="version">Version:</label>
+                                                    <input required name="version" readonly type="text" class="form-control" value="1">
+                                                
+                                                    
+                                                </div>
+                                            </div>   
+                                    
+                                            <div class="col-md-11">
+                                                
+                                                    <div id="drop-area" class="m-2">
+                                                    
+                                                    
+                                                        
+                                                        <input type="file"  name="media_files" id="fileInput" multiple accept="image/*,video/*">
+                                                
+                                                    </div>
+                                                    <div class="loader m-2" style="display: none;">Loading...</div>
+                                                <table class="table table-bordered m-3" id="file-list">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Serial No.</th>
+                                                            <th>Filename</th>
+                                                            <th>Preview</th>
+                                                            <th>Progress</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-right">
+                                        <input type="submit" class="btn btn-primary btn-sm m-3">
+                                    </div>
+                               
+                           
+                       
+                </form>
+                
+              
+            </div>
+    
+        </div>
+        
+        
+   
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        var dropArea = $("#drop-area");
+        var fileCount = 0;
+
+        ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+            dropArea.on(eventName, preventDefaults);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+       
+        ["dragenter", "dragover"].forEach(eventName => {
+            dropArea.on(eventName, function () {
+                dropArea.addClass('highlight');
+            });
+        });
+
+
+        ["dragleave", "drop"].forEach(eventName => {
+            dropArea.on(eventName, function () {
+                dropArea.removeClass('highlight');
+            });
+        });
+
+        dropArea.on('drop', function (e) {
+            var files = e.originalEvent.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        $("#fileInput").on('change', function () {
+            var files = $(this)[0].files;
+            handleFiles(files);
+        });
+        function handleFiles(files) {
+            var fileCount = 0;
+        
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+        
+             
+                $('.loader').show();
+        
+                reader.onload = (function (currentFile) {
+                    return function (e) {
+                        fileCount++;
+                        var serialNo = fileCount;
+                        var preview = '';
+                        if (currentFile.type.match('image.*')) {
+                            preview = '<img src="' + e.target.result + '" />';
+                        } else {
+                            
+                            preview = '<video width="10" height="10" controls><source src="' + e.target.result + '" type="' + currentFile.type + '">Your browser does not support the video tag.</video>';
+                        }
+                        var progressBar = '<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>';
+                        var deleteBtn = '<button type="button" class="btn btn-danger btn-sm delete-btn"><i class="fa fa-trash"></i></button>';
+                        $("#file-list tbody").append('<tr class="file-item"><td>' + serialNo + '</td><td>' + currentFile.name + '</td><td>' + preview + '</td><td>' + progressBar + '</td><td>' + deleteBtn + '</td></tr>');
+        
+                      
+                        if (fileCount === files.length) {
+                            $('.loader').hide();
+                        }
+                    };
+                })(file);
+        
+                reader.readAsDataURL(file);
+            }
+        }
+        
+
+        $(document).on('click', '.delete-btn', function () {
+            $(this).closest('tr').remove();
+        });
+
+        $('#uploadForm').submit(function (e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+
+            $('#uploadForm input[type="submit"]').prop('disabled', true);
+
+            $.ajax({
+                url: '{% url "upload_media" %}',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            $(".progress-bar").css("width", percentComplete * 100 + "%");
+                        }
+                    }, false);
+                    return xhr;
+                },
+                success: function (data) {
+                    console.log('Upload successful');
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error occurred:', error);
+                },
+                complete: function () {
+                    $('#uploadForm input[type="submit"]').prop('disabled', false);
+
+                  
+                    var selectedOrganizationID = $('#organizationSelect').val();
+                    window.location.href = '{% url "homeMedia" %}?I=' + selectedOrganizationID;
+                }
+            });
+        });
+
+    });
+</script>
+{% endblock content %}

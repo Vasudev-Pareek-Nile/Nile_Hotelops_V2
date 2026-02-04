@@ -1,0 +1,439 @@
+{% extends "OpenPositions/homebase.html" %} {% block content %}
+
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    #salary-slider {
+        width: 100%;
+        margin-top: 5px;
+    }
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+    
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+    
+    .table th, .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+    
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+</style>
+<style>
+    .modal-md {
+        max-width: 750px; 
+    }
+    .small-font {
+        font-size: 11px;
+        
+    }
+</style>
+<style>
+    #jobDescriptionContent p {
+        text-align: justify;
+        margin: 2; /* Optional: Reset margin if needed */
+    }
+</style>
+<style>
+    .swal2-popup {
+        font-size: 14px; /* Adjust the font size */
+        width: 500px; /* Set a specific width */
+        height: 300px; /* You can set a fixed height if needed */
+    }
+    .swal2-title {
+        font-size: 16px; /* Adjust the title font size */
+    }
+    .swal2-content {
+        font-size: 14px; /* Adjust the content font size */
+    }
+    .ibox-content {
+       
+        border-style: none; 
+    }
+
+    #open-position-form label{
+        margin-top:20px;
+        margin-bottom:5px;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in messages %}
+                Swal.fire({
+                    title: '{{ message.tags|title }}',
+                    text: '{{ message }}',
+                    icon: '{{ message.tags }}',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'swal2-popup'  
+                    }
+                });
+            {% endfor %}
+        });
+    </script>
+{% endif %}
+
+
+<div class="card">
+    <div class="card-header"><strong>Add New Job</strong></div>
+</div>
+
+<div  id="ibox1">
+    <div class ="ibox-content">
+    <div class="sk-spinner sk-spinner-wave">
+        <div class="sk-rect1"></div>
+        <div class="sk-rect2"></div>
+        <div class="sk-rect3"></div>
+        <div class="sk-rect4"></div>
+        <div class="sk-rect5"></div>
+    </div>
+
+    <div class="col-md-12">
+        <form method="POST" id="open-position-form" >
+            {% csrf_token %}
+            <input type="hidden" class="form-control" name="Job_Type"  value="full_time" />
+                        
+            <div class="card">
+                {% comment %} <div class="card-header" style="color: #1ab394">
+                    <strong>Add New Job</strong>
+                </div> {% endcomment %}
+                <div class="card-body">
+                    <div class="row">
+                <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="Locations">Locations</label>
+                                                <select name="Locations" id="Locations" class="form-control">
+                                                    {% for org in memOrg %}
+                                                        <option value="{{ org.OrganizationID }}" 
+                                                                {% if org.OrganizationID == selected_location %} selected {% endif %}>
+                                                            {{ org.OrganizationName }}
+                                                        </option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label for="position-select">Position</label>
+                                <select id="position-select" name="Position" class="form-control">
+                                   
+                                    {% for Designation in Designations %}
+                                        <option value="{{ Designation.designations }}">
+                                            {{ Designation.designations }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                          
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="department-input">Department</label>
+                                <input type="text" id="department-input" name="OpenDepartment" class="form-control" readonly />
+                            </div>
+                        </div>
+                        
+                       
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="salary-input">Salary</label>
+                                <input type="text" class="form-control"  name="Salary" id="Salary" value="3000 - 60000" />
+                                <div id="slider-range"></div>
+                            </div>
+                        </div>
+                      
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="number-input">Number</label>
+                                <input type="number" class="form-control" id="number-input" name="Number" value="1" min="1" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="effective_date">Opened On</label>
+                                <input type="text" id="effective_date" class="form-control" name="Opened_On" placeholder="DD MMM YYYY" readonly />
+                            </div>
+                        </div>
+                 
+                        <div class="col-md-12 mt-5">
+                            <table class="table table-bordered" id="designation-table">
+                                <thead>
+                                    <tr>
+                                        <th style="">Department</th>
+                                        <th style="">Section Title</th>
+                                        <th style=" text-align: center;">Budget HC</th>
+                                        <th style=" text-align: center;">Actual HC</th>
+                                        <th style=" text-align: center;">Variance HC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                        <tr class="designation-row" data-designation="{{ item.designation }}" data-department="{{ item.department }}">
+                                            <td>{{ item.department }}</td>
+                                            <td>{{ item.designation }}</td>
+                                            <td style="text-align: center;">{{ item.budget_hc }}</td>
+                                            <td style="text-align: center;">{{ item.actual_hc }}</td>
+                                            <td class="variance_hc" style="text-align: center;">{{ item.variance_hc }}
+                                                <input type="hidden" class="form-control variance_hc" value="-3" name="variance_hc[]" readonly>
+                                            </td>
+                                            
+                                               
+                                            
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5">No data available for the selected designation.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+               
+                </div>
+                <!-- Display error message if any -->
+  
+               
+                <div class="card-footer text-right">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#previewModal">
+                        Preview
+                    </button>
+                    <input type="submit" id="toggleSpinners" value="Submit" class="btn btn-primary" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="previewModalLabel">Job Description Details</h5>
+                <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="jobDescriptionContent">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function(){
+        $('#toggleSpinners').on('click', function(e){
+            var form = document.querySelector('form');
+
+            if (form.checkValidity()) {
+                $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            } else {
+                e.preventDefault(); 
+                form.reportValidity(); 
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selected_location }}";
+        $("select[name='Locations']").val(selectedOrganization);
+       $("select[name='Locations']").change(function () {
+           window.location.href = "{% url 'OpenPositionAdd' %}?location=" + $(this).val(); 
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        try{
+        $('#position-select').on('change', function() {
+
+            var selectedDesignation = $(this).val();
+
+            $.ajax({
+                url: '{% url "get_job_description" %}', 
+                method: 'GET',
+                data: { 'designation': selectedDesignation },
+                success: function(data) {
+                    if (data.error) {
+                        $('#jobDescriptionContent').html('<p class="small-font">' + data.error + '</p>');
+                    } else {
+                        var htmlContent = '<h3 class="small-font"></h3>';
+                        htmlContent += '<p class="small-font" style="text-align: center;"> ' + (data.Position || 'N/A') + '</p>';
+                        htmlContent += '<p class="small-font"><strong>Job Scope:</strong><br>' + (data.Job_Scope || 'N/A') + '</p>';
+                        htmlContent += '<p class="small-font"><strong>Duties and Responsibilities:</strong><br>' + (data.Duties_Responsibilities || 'N/A') + '</p>';
+                        htmlContent += '<p class="small-font"><strong>Job Knowledge and Skills:</strong><br>' + (data.Job_Knowledge_Skills || 'N/A') + '</p>';
+
+                        $('#jobDescriptionContent').html(htmlContent);
+                    }
+                },
+            });
+        });
+    }catch(e){
+        console.log(e); }
+    });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+    function formatNumber(num) {
+        try {
+            return num.toLocaleString("en-IN");
+        } catch (e) {
+            return "";
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const salaryInput = document.getElementById('Salary');
+        const salarySlider = $("#slider-range");
+
+        
+        salarySlider.on('slide', function (event, ui) {
+            salaryInput.value = `${formatNumber(ui.values[0])} - ${formatNumber(ui.values[1])}`;
+        });
+
+        
+        salaryInput.addEventListener('input', function () {
+            const value = salaryInput.value.split(' - ').map(v => parseInt(v.replace(/,/g, ''), 10));
+            if (value.length === 2 && !isNaN(value[0]) && !isNaN(value[1])) {
+                salarySlider.slider('values', value);
+            }
+        });
+
+        
+        const positionSelect = document.getElementById('position-select');
+        const departmentInput = document.getElementById('department-input');
+        const tableRows = document.querySelectorAll('#designation-table .designation-row');
+
+        // positionSelect.addEventListener('change', function () {
+        positionSelect.addEventListener('change', function () {
+            const selectedDesignation = positionSelect.value;
+
+            tableRows.forEach(row => {
+                const designation = row.dataset.designation;
+                if (selectedDesignation === '' || selectedDesignation === designation) {
+                    row.style.display = ''; 
+                } else {
+                    row.style.display = 'none';  
+                }
+            });
+
+           
+            const filteredRow = Array.from(tableRows).find(row => row.dataset.designation === selectedDesignation);
+            departmentInput.value = filteredRow ? filteredRow.dataset.department : '';
+        });
+
+       
+        positionSelect.dispatchEvent(new Event('change'));
+    });
+
+   
+    function setDefaultDate() {
+        var dateInput = document.getElementById('effective_date');
+        if (dateInput && !dateInput.value) {
+            var today = new Date();
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var day = today.getDate();
+            var month = months[today.getMonth()];
+            var year = today.getFullYear();
+            var formattedDate = `${day} ${month} ${year}`;
+            dateInput.value = formattedDate;
+        }
+    }
+
+    
+    setDefaultDate();
+
+    $(function () {
+        $("#Position, #hotel-name").change(function () {
+            var designation = $("#Position").val();
+            fetchDataAndPopulateTable(designation);
+        });
+
+        var Min = 30000;
+        var Maxv = 40000;
+        if ($("#Salary").val() !== "") {
+            var a = $("#Salary").val().split(" - ");
+            var m = parseFloat(a[0].replace(/,/g, ""));
+            m = isNaN(m) ? 30000 : m;
+            var m1 = parseFloat(a[1].replace(/,/g, ""));
+            m1 = isNaN(m1) ? 40000 : m1;
+            Min = m;
+            Maxv = m1;
+        }
+
+        $("#slider-range").slider({
+            range: true,
+            min: 6000,
+            max: 300000,
+            values: [Min, Maxv],
+            step: 500,
+            slide: function (event, ui) {
+                $("#Salary").val(`${formatNumber(ui.values[0])} - ${formatNumber(ui.values[1])}`);
+            }
+        });
+
+        $("#Salary").val(`${formatNumber($("#slider-range").slider("values", 0))} - ${formatNumber($("#slider-range").slider("values", 1))}`);
+        $("#Salary").addClass('form-control');
+    });
+</script>
+
+{% endblock content %}

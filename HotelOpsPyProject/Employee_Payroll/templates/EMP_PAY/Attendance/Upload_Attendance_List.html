@@ -1,0 +1,70 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container">
+    
+    {% include "EMP_PAY/Attendance/AttendanceNavbar.html" %}
+    
+      
+    {% comment %} <div class="card-header col-md-12 mb-3 ">
+        Attendance Details of {{ current_month|date:"F Y" }}
+        
+    </div>    
+    
+
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+        </div>
+    </div> {% endcomment %}
+
+
+    <div class="card-header col-md-12 mb-3 ">Attendance Details</div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+        </div>
+        <div class="col-md-4 mb-3">
+            <h1 style="display: inline;"> {{ current_month|date:"F Y" }}</h1>
+
+        </div>
+        <div class="col-md-4 mb-3">
+            
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>File Name</th>
+
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Data in Data_File %}
+                    <tr>
+                        <td>{{ Data.Attendance_Date | date:'d-m-Y'}}</td>
+                        <td>{{ Data.File_Name }}</td>
+                        
+                       
+                       
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No Data Available</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+ 

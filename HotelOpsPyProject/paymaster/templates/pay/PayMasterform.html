@@ -1,0 +1,66 @@
+{% extends 'pay/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="PaymasterForm" enctype="multipart/form-data">
+    {{ Pay_Master }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p> Register Pay Master Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>PM Number</label>
+                {% render_field PayMasterForm.PM_Number class="form-control" placeholder="PM_Number" %}
+              </div>
+              <div class="col-sm-3">
+                <label>PM Date</label>
+                {% render_field PayMasterForm.PM_Date class="form-control" placeholder="PM_Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field PayMasterForm.Name class="form-control" placeholder="Name" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Amount</label>
+                {% render_field PayMasterForm.Amount class="form-control" placeholder="Amount" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Employee Name</label>
+                {% render_field PayMasterForm.Employee_Name class="form-control" placeholder="Employee_Name" %}
+              </div>
+             
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Reason</label>
+                {% render_field PayMasterForm.Reason class="form-control" rows=4 maxlength=500 placeholder="Reason" %}
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  {% endblock content %}

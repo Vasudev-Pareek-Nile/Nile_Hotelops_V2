@@ -1,0 +1,74 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+  table th,td
+  {
+      font-size: 14px;
+  } 
+</style>
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="card">
+  <div class="card-header text-uppercase fw-bold">Leave Status List</div>
+
+  <div class="card-body">
+    <table id="example" class="table table-striped">
+      <thead>
+          <tr>
+            <th>Date</th>
+            <th>Reason</th>
+            <th>Status/Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for leave_application in status %}
+            <tr>
+            
+          
+              <td>{{ leave_application.CompOff_Date |date:'d-m-Y' }}</td>
+          
+          
+              <td>{{ leave_application.Reason }}</td>
+              <td>
+              {% if leave_application.Status == "Pending" %}
+            
+                  {% if currentdate <= leave_application.Start_Date   %}
+                    <a href="{% url 'Leave_Application'  %}?ID={{leave_application.id}}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="{% url 'Leave__Appication_Cancel' leave_application.id  %}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to Cancel this?')">Cancel</a>   
+                  {% else %}
+                  <p style="color: red;">Pending From {{leave_application.ReportingtoDesigantion}}</p>
+                  {% endif %}
+              
+              {% else %}
+              {% if leave_application.Status == "Rejected" %}
+              <p style="color: red;" >Rejected <br> Reason :- {{  leave_application.Remark }}</p>
+              
+          {% elif leave_application.Status == "Approved" %}
+              <button class="btn btn-primary btn-sm">Approved</button>
+              
+          {% else %}
+          <button class="btn btn-warning btn-sm">Pending</button>
+          {% endif %}
+              {% endif %}
+            
+          </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+  {% endblock content %}

@@ -1,0 +1,67 @@
+{% extends 'groom/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="table-responsive">
+  <div >
+    <div  class="card-header">
+        Grooming Registeration List
+    </div>
+    <div>
+      <br/>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>Date</th>
+            <th>Audit Type</th>
+            <th>Name</th>
+            <th>Shoes</th>
+            <th>Shocks</th>
+            <th>Nails</th>
+            <th>Hair</th>
+            <th>Uniform</th>
+            <th>Name Badge</th>
+            <th>Brand Pin</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.Date}}</td>
+            <td>{{i.Audit_Type}}</td>
+            <td>{{i.Name}}</td>
+            <td>{{i.Shoes}}</td>
+            <td>{{i.Shocks}}</td>
+            <td>{{i.Nails}}</td>
+            <td>{{i.Hair}}</td>
+            <td>{{i.Uniform}}</td>
+            <td>{{i.Name_Badge}}</td>
+            <td>{{i.Brand_Pin}}</td>
+            <td>{{i.Remarks}}</td>
+            <td>
+              
+            <div class="btn btn-group">
+                  <a href="/groomingregisteration/GroomingEditList?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/groomingregisteration/GroomingDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/groomingregisteration/GroomingList_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+             </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  
+</div>
+
+{% endblock content %}

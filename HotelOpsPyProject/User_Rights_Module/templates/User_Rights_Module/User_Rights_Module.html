@@ -1,0 +1,146 @@
+{% extends 'User_Rights_Module/HomeBase.html' %}
+{% block content %} 
+{% load static %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-2">
+                <h5 class="mb-0 text-white">Add User Rights Access</h5>
+            </div>
+            <div class="card-body">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+
+                        <!-- Has Access -->
+                        <div class="col-md-6">
+                            <label class="form-label">Select Organization</label>
+                            <select name="Is_Access" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                            </select>
+                        </div>
+
+                        <!-- User ID -->
+                        <div class="col-md-6">
+                            <label class="form-label">User ID</label>
+                            <input type="text" class="form-control" 
+                                   name="UserID" placeholder="Enter User ID" required>
+                        </div>
+
+                        <!-- Module Name -->
+                        <div class="col-md-6">
+                            <label class="form-label">Module Name</label>
+                            <!-- <input type="text" class="form-control"  -->
+                                   <!-- name="Module_Name" placeholder="Enter Module Name" required> -->
+                                    <!-- <br> -->
+                            <textarea name="Module_Name" id="Module_Name"  style="width: 100%;"></textarea>
+                        </div>
+
+                        <!-- Has Access -->
+                        <div class="col-md-6">
+                            <label class="form-label">Has Access?</label>
+                            <select name="Is_Access" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                            </select>
+                        </div>
+
+                        <!-- Full Access -->
+                        <div class="col-md-6">
+                            <label class="form-label">Full Access?</label>
+                            <select name="Is_Full_Access" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="True">Yes</option>
+                                <option value="False">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-3">
+                        <button type="submit" class="btn btn-primary px-4">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends 'User_Rights_Module/HomeBase.html' %}
+{% block content %} 
+{% load static %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    <h4 class="card-title mb-4">Add User Rights Access</h4>
+                    
+                    <div class="row p-4">
+                        <!-- User ID -->
+                        <div class="col-md-3">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="UserID">User ID</label>
+                                <input type="text" class="form-control" id="UserID" name="UserID" required>
+                            </div>
+                        </div>
+
+                        <!-- Module Name -->
+                        <div class="col-md-3">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Module_Name">Module Name</label>
+                                <input type="text" class="form-control" id="Module_Name" name="Module_Name" required>
+                            </div>
+                        </div>
+
+                        <!-- Is Access -->
+                        <div class="col-md-3">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Is_Access">Has Access?</label>
+                                <select name="Is_Access" id="Is_Access" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="True">Yes</option>
+                                    <option value="False">No</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Full Access -->
+                        <div class="col-md-3">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Is_Full_Access">Full Access?</label>
+                                <select name="Is_Full_Access" id="Is_Full_Access" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <option value="True">Yes</option>
+                                    <option value="False">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %} {% endcomment %}

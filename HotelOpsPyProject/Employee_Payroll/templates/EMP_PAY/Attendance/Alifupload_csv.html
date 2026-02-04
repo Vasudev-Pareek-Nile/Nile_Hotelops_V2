@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+{% load Payrollcustom_filters %}
+
+<style>
+    .text-primary {
+        color: #007bff;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card card-primary">
+                <div class="card-header">Upload Attendance</div>
+                <div class="card-body">
+                    <div>
+                        <div>
+                            {% if messages %}
+                                <ul>
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                                <br>
+                                </ul>
+                            {% endif %}
+                            <!-- <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </form> -->
+
+                            <form id="csvUploadForm" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label for="fileInput">Upload FIle</label>
+                                <br>
+                                <input type="file" name="file" id="fileInput" required />
+                                <br>
+                                <br>
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </form>
+
+                            <!-- <div id="uploadResult" style="margin-top:20px;"></div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<div id="spinner" style="display:none; margin-top:10px; text-align:center;">
+  <div class="spinner-border text-primary" role="status">
+    <span class="sr-only">Loading...</span>
+  </div>
+  <p>Processing file... please wait ⏳</p>
+</div>
+
+<div id="uploadResult" style="margin-top:20px;"></div>
+
+</div>
+
+<script>
+    document.getElementById("csvUploadForm").addEventListener("submit", async function(e) {
+        e.preventDefault();  // prevent normal form submit
+
+        let formData = new FormData();
+        formData.append("file", document.getElementById("fileInput").files[0]);
+        
+        // Show spinner
+        document.getElementById("spinner").style.display = "block";
+        document.getElementById("uploadResult").innerHTML = ""; // clear old result
+
+        try {
+            let response = await fetch("{% url 'alif-upload-csv' %}", {  // Django URL name for API
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"  // Important for Django
+                }
+            });
+
+            let result = await response.json();
+
+            // Hide spinner
+            document.getElementById("spinner").style.display = "none";
+
+            // Display results
+            let uploadResult = document.getElementById("uploadResult");
+            uploadResult.innerHTML = `
+                <p><b>Status:</b> ${result.status}</p>
+                <p><b>Inserted Records:</b> ${result.inserted_records}</p>
+                ${result.errors.length > 0 ? `<p><b>Errors:</b><br>${result.errors.join("<br>")}</p>` : ""}
+            `;
+
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                uploadResult.innerHTML = "";
+            }, 10000);
+
+        } catch (err) {
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("uploadResult").innerHTML = `<p style="color:red;">Upload failed: ${err}</p>`;
+
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                document.getElementById("uploadResult").innerHTML = "";
+            }, 10000);
+        }
+    });
+</script> 
+
+{% comment %} 
+<script>
+document.getElementById("csvUploadForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let fileInput = document.getElementById("fileInput");
+    if (!fileInput.files.length) {
+        alert("Please select a file first!");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("file", fileInput.files[0]);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "{% url 'alif-upload-csv' %}", true);
+    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+
+    // Show progress bar
+    document.getElementById("progressContainer").style.display = "block";
+
+    // Update progress bar
+    xhr.upload.onprogress = function(event) {
+        if (event.lengthComputable) {
+            let percentComplete = Math.round((event.loaded / event.total) * 100);
+            let bar = document.getElementById("progressBar");
+            bar.style.width = percentComplete + "%";
+            bar.innerHTML = percentComplete + "%";
+        }
+    };
+
+    // On success
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            let result = JSON.parse(xhr.responseText);
+            document.getElementById("uploadResult").innerHTML = `
+                <p><b>Status:</b> ${result.status}</p>
+                <p><b>Inserted Records:</b> ${result.inserted_records}</p>
+                ${result.errors.length > 0 ? `<p><b>Errors:</b><br>${result.errors.join("<br>")}</p>` : ""}
+            `;
+        } else {
+            document.getElementById("uploadResult").innerHTML = `<p style="color:red;">Upload failed!</p>`;
+        }
+    };
+
+    // On error
+    xhr.onerror = function() {
+        document.getElementById("uploadResult").innerHTML = `<p style="color:red;">Request failed!</p>`;
+    };
+
+    xhr.send(formData);
+});
+</script> {% endcomment %}
+
+{% endblock content %}
+ 

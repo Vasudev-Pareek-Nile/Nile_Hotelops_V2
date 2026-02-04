@@ -1,0 +1,124 @@
+{% extends 'Policy_Data_Privacy/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    th,td{
+        font-size: 12px;
+    }
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+    }
+
+	#clear, #filter{
+		padding-block: 8px;
+	}
+
+</style>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6"><span class="text-uppercase fw-bold">Trainees Experience Letter List</span></div>
+        </div>
+    </div>
+    <!-- <br> -->
+     <div class="card-body">
+                <div class="col-md-12">
+                    <form method="GET" class="row g-4">
+                        <div class="col-md-5">
+                            <select name="I" id="organizationSelect" class="form-control">
+                                <option value="">Select Organization Name</option>
+                                {% for itm in memOrg %}
+                                <option value="{{ itm.OrganizationID }}" {% if I|stringformat:"s" == itm.OrganizationID|stringformat:"s" %}selected{% endif %}>{{ itm.OrganizationName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    
+                        <div class="col-md-4 d-flex justify-items-start align-items-center gap-2" >
+                            <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                                <i class="fa fa-filter"></i> Filter
+                            </button>
+                        
+                            <a href="{% url 'Trainees_Emp_List' %}" class="btn btn-danger" id="Clear">
+                                Clear
+                            </a>
+                        </div>
+                    </form>  
+                </div>
+
+        
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="EmpCode">Emp Code</th>
+                            <th class="Name">Name</th>
+    
+                            <th class="Designation">Designation</th>
+                            <th class="Department">Department</th>
+                            <th class="Date">Date of Joining</th>
+                            <th class="Date">Last Working Day</th>
+
+                          
+                            <th class="Signed" style="width: 204px;">Signed Document</th>
+    
+                            <th class="Action" style="width: 200px;">Action</th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        {% for ExperienceLetter in ExperienceLetters  %}
+                           <tr>
+                            <td>{{ExperienceLetter.emp_code}}</td>
+                            <td> {{ExperienceLetter.first_name}} {{ExperienceLetter.last_name}}   </td>
+                            
+
+                            <td>{{ExperienceLetter.designation}}</td>
+                            <td>{{ExperienceLetter.department}}</td>  
+                            <td>{{ExperienceLetter.date_of_joining|date:'d-m-Y'}}</td>  
+                            
+                            <td>{{ExperienceLetter.date_of_last_working|date:'d-m-Y'}}</td> 
+                            <td>
+                                
+                                <span style="position: relative; ">
+                                    {% if ExperienceLetter.file_name  %}
+                                    
+                                   <a class="btn btn-danger text-white btn-sm" href="{% url "Trainees_Repalce_File" %}?EmpID={{ExperienceLetter.EmpID}}&LOE_ID={{ExperienceLetter.id}}&Page=emplistloe&OID={{ExperienceLetter.OrganizationID}}">Delete File</a>
+                                    <a class="btn btn-primary btn-sm" href="{% url "Trainees_Download_File" %}?LOE_ID={{ExperienceLetter.id}}">Download File</a>
+                                  
+                                    {% else %}
+    
+                                    <a class="btn btn-primary btn-sm" href="{% url "Trainees_Upload_File" %}?EmpID={{ExperienceLetter.EmpID}}&LOE_ID={{ExperienceLetter.id}}&Page=emplistloe&OID={{ExperienceLetter.OrganizationID}}">Upload File</a>
+    
+                                    {% endif %} 
+                                     
+                                     
+                                    
+                            
+                                    </td>
+                                </span>
+                            </td>
+
+                            </td>
+                            <td>
+
+                                
+                                <span style="position: relative; ">
+                                  
+                                    <a class="btn btn-primary btn-sm" href="{% url 'Trainees_Emp_List' %}?EC={{ExperienceLetter.emp_code}}&EmpID={{ExperienceLetter.EmpID}}&LOE_ID={{ExperienceLetter.id}}&DepartmentName={{ ExperienceLetter.department }}&Page=emplistloe&OID={{ExperienceLetter.OrganizationID}}" shref="">Edit</a>
+                                        <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Trainees_Experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{ExperienceLetter.EmpID}}&OID={{ExperienceLetter.OrganizationID}}">View</a>
+                                    
+                                        <a class="btn btn-primary btn-sm" href="{% url "Generate_Letter_of_Trainees_Experience" %}?LOE_ID={{ExperienceLetter.id}}&EmpID={{ExperienceLetter.EmpID}}&head=False&OID={{ExperienceLetter.OrganizationID}}">Print</a>
+                                    </span> 
+                            </td>
+                           </tr>
+                           {% endfor %}
+                    </tbody>
+    
+                </table>
+        </div>
+    </div>
+{% endblock content %}

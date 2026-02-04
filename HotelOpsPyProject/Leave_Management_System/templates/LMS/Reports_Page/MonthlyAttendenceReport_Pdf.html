@@ -1,0 +1,218 @@
+{% load Payrollcustom_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monthly Attendance Report</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    {% comment %} body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+    } {% endcomment %}
+    body {
+        font-family: "DejaVuCustom";
+        font-size: 9px;
+    }
+
+    .container {
+        background-color: white;
+        padding: 20px;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    .header {
+        margin-bottom: 15px;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 5px;
+    }
+
+    .header-title {
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .header-info {
+        text-align: right;
+        font-size: 12px;
+    }
+
+    .header-subtitle {
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .divider {
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8px;
+    }
+
+    th {
+        padding: 4px 2px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 8px;
+    }
+
+    td {
+        color: #666;
+        padding: 4px 3px;
+        text-align: center;
+        font-size: 8px;
+    }
+
+    .employee-id,
+    .employee-name {
+        text-align: left;
+        padding-left: 5px;
+        white-space: nowrap;
+    }
+
+    .day-header {
+        font-size: 8px;
+    }
+
+    .day-cell {
+        min-width: 35px;
+        font-size: 8px;
+        line-height: 1.3;
+    }
+
+    .time-row {
+        font-size: 8px;
+        color: #666;
+        display: block;
+        margin-top: 1px;
+    }
+
+    .payable-col {
+        min-width: 50px;
+    }
+
+    thead {
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+    }
+
+    @page {
+        size: A3 landscape;
+        margin: 0mm 0mm 0mm 0mm;  
+
+        @bottom-center {
+            content: element(page-footer);
+        }
+    }
+
+    #page-footer {
+        position: running(page-footer);
+        font-size: 8px;
+        color: #333;
+        text-align: center;
+        border-top: 1px solid #999;
+        padding-top: 4px;
+        line-height: 1.3;
+        margin-top: 8px;
+        font-family: Tahoma, sans-serif;
+    }
+    
+    td[data-st='P'],
+    td[data-st='P'] span {
+        color: #1b8f08;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="header-top">
+            <div class="header-title">{{Org_Name.OrganizationName}}</div>
+            <div class="header-info">
+                <div>Date : {{ today|date:"d-m-Y H:i" }}</div>
+            </div>
+        </div>
+        <div class="header-subtitle">
+            Monthly Attendance Report From {{StartDate|date:'d-m-Y'}} To {{EndDate|date:"d-m-Y"}}
+        </div>
+        <div class="divider"></div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2"></th>
+                <th rowspan="2">Day <br>Weekday</th>
+                {% for day in days_FrontEnd %}
+                    <th class="day-header">{{ day.date }}<br>{{ day.weekday }}</th>
+                {% endfor %}
+                <th class="day-header">Working <br> Days</th>
+                <th class="day-header">Payable <br> Days</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rowslist %}
+            <tr>
+                <td class="employee-name" rowspan="2">{{ row.EmployeeCode }}</td>
+                <td class="employee-id" rowspan="2">{{ row.EmpName }}</td>
+
+                {% for day in days %}
+                    {% with day_value=day|stringformat:"s"|add:',5' %}
+                        <td>{{ row|get_MRI_day_index:day_value }}</td>
+                    {% endwith %}
+                {% endfor %}
+
+                <td class="payable-col" rowspan="2">{{ row.TotalWorkingDays }}</td>
+                <td class="payable-col" rowspan="2">{{ row.TotalPaidDays }}</td>
+            </tr>
+            <tr>
+                {% for day in days %}
+                    {% if day %}
+                        {% with day_value=day|stringformat:"s"|add:',4' %}
+                            <td data-st="{{ row|get_MRI_day_index:day_value }}" class="day-cell"><span class="time-row">{{ row|get_MRI_day_index:day_value }}</span></td>
+                        {% endwith %}
+                    {% else %}
+                        <td class="day-cell">-</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- ✅ Footer (appears on every page in PDF) -->
+<div id="page-footer">
+    <strong>Code Legend:</strong>
+    AB-ABSENT | AR-ATTENDANCE RECTIFICATION | BCO-BACK DATED COMPOFF | 
+    CL-CASUAL LEAVE | COF-COMPENSATORY OFF | COL-COMPOFF AS LEAVE | 
+    ID-INJURED ON DUTY | LWP-LEAVE WITHOUT PAY | ML-MATERNITY LEAVE | 
+    MPL-MANAGEMENT P L | OD-ON DUTY | OFF-WEEKLY OFF | OP-OPTIONAL LEAVE | 
+    PH-PAID HOLIDAY | PL-PRIVILEGE LEAVE | PR-PRESENT | PTL-PATERNITY LEAVE | 
+    RH-RELIGIOUS HOLIDAY | SH-SHORT LEAVE | SL-SICK LEAVE | 
+    USR-USER INTERVENTION REQUIRED | WCO-WORKED ON COMPOFF | 
+    WFF-WORKED ON WEEKLY OFF | WKH-WORKED ON PUBLIC HOLIDAY | 
+    WKL-WORKED ON LEAVE | WRH-WORKED ON RELIGIOUS HOLIDAY
+</div>
+
+</body>
+</html>

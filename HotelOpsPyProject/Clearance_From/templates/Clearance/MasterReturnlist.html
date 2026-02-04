@@ -1,0 +1,174 @@
+{% extends 'Clearance/homebase.html' %}
+
+{% block content %}
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+    <style>
+        
+      
+        body {
+          font-family: 'Arial Nova', sans-serif;
+        }
+      
+     
+      </style>
+
+
+<!-- Load jQuery and DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<div class="col-md-8 mx-auto " >
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+          <strong>Master Return List</strong>
+        </div>
+        <div class="col-md-6 text-right">
+         
+          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newItemModal">
+            New Return
+          </button>
+        </div>
+      </div>
+    </div>
+    <br>
+    <table id="example" class="table table-bordered">
+      <thead class="thead">
+        <tr class="table-success">
+          <th class="center-align">ItemTitle</th>
+          <th class="center-align">Department</th>
+          <th class="center-align">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for return in returns %}
+        <tr>
+         <td>{{return.ItemTitle}}</td>
+         <td>{{return.Department}}</td>
+         <td>
+            <span>
+                <a href="#" class="btn btn-primary btn-sm edit-btn" data-id="{{ return.id }}" data-itemtitle="{{ return.ItemTitle }}" data-department="{{ return.Department }}" style="color: white; text-decoration: none; font-size: 12px;" title="Edit">Edit</a>
+                <a
+                            onclick="return confirm('Are you sure you want to delete?')"
+                            href="{% url 'ClearanceDelete' %}?ID={{ return.id }}"
+                            class="btn btn-danger btn-sm"
+                            style="font-size: 12px; margin-right: 1px;"
+                        >Delete
+              </a>
+              </span>
+         </td>
+
+        
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newItemModal" tabindex="-1" role="dialog" aria-labelledby="newItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newItemModalLabel">Add Return Item</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'ReturnAdd' %}" id="itemForm">
+        {% csrf_token %}
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="ItemTitle">Item Name</label>
+                <input type="text" class="form-control" id="ItemTitle" name="ItemTitle" placeholder="Enter Item">
+            </div>
+            <div class="form-group">
+                <label for="Department">Department</label>
+                <input type="text" class="form-control" id="Department" name="Department" placeholder="Enter Department">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+        </div>
+    </form>
+    
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editItemModalLabel">Edit Return Item</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="{% url 'ReturnEdit' %}" id="editItemForm">
+          {% csrf_token %}
+          <div class="modal-body">
+              <input type="hidden" id="editItemId" name="id">
+              <div class="form-group">
+                  <label for="editItemTitle">Item Name</label>
+                  <input type="text" class="form-control" id="editItemTitle" name="ItemTitle">
+              </div>
+              <div class="form-group">
+                  <label for="editDepartment">Department</label>
+                  <input type="text" class="form-control" id="editDepartment" name="Department">
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+      </form>
+      
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var editButtons = document.querySelectorAll('.edit-btn');
+      var editItemModal = new bootstrap.Modal(document.getElementById('editItemModal'));
+  
+      editButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+          event.preventDefault();
+          var id = this.getAttribute('data-id');
+          var itemTitle = this.getAttribute('data-itemtitle');
+          var department = this.getAttribute('data-department');
+  
+          document.getElementById('editItemId').value = id;
+          document.getElementById('editItemTitle').value = itemTitle;
+          document.getElementById('editDepartment').value = department;
+  
+          editItemModal.show();
+        });
+      });
+    });
+  </script>
+  
+
+
+{% endblock content %}

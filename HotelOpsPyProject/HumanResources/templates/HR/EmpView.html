@@ -1,0 +1,1020 @@
+
+<!DOCTYPE html>
+{% load encryption_filters %}
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Details</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@350;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 5px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        color: white; /* Sets text color to white */
+        font-size: 11px;
+    }
+    
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #003585;
+      text-transform: uppercase;
+      font-size: 14px;
+      padding: 10px;
+      margin-bottom: 17px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+   
+  </style>
+  <style>
+    .top-margin {
+      padding-top: 8px; /* Adjust the value as needed */
+    }
+  </style>
+  <style>
+    .page-break {
+        page-break-before: always;
+    }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Employee Details </strong></td>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+
+
+    
+    <hr color="mediumseagreen">
+    
+    <br>
+    <h4 class="alert alert-primary">Personal Details</h4>
+   
+    <main>
+      <div class="main-container">
+        <table style="border-radius: 10px;  text-transform: uppercase;    text-align: center;" >
+            <tr>
+                <td style="text-align: center; width: 18%;">
+                    {% if Emppersonal  %}
+                                                          
+                    <img  src="{{PRIMG}}" alt="Profile Image Preview" style="width: 150px; height: 162px; border-radius: 50%; object-fit: cover;">
+                 
+                   
+                    {% else %}
+                   
+          
+                    {% endif %}
+                </td>
+              <td style="text-align: center;">
+                <table  class="table table-striped custom-table">
+                  <tbody>
+                    <tr>
+                      <td style="text-align: left; width:35%;"><strong>Employee Code: </strong></td>
+                      <td style="text-align: left; ">{{Emppersonal.EmployeeCode|default:"Not Present"}}</td>
+                      
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; width:35%;"><strong>Name: </strong></td>
+                        <td style="text-align: left; ">{{Emppersonal.FirstName}}&nbsp;{{Emppersonal.MiddleName}}&nbsp;{{Emppersonal.LastName}} </td>
+                        
+                      </tr>
+                      <tr>
+                        <td style="text-align: left; width:35%;"><strong>Marital Status: </strong></td>
+                        <td style="text-align: left;">{{Emppersonal.MaritalStatus|default:"Not Present"}} </td>
+                        
+                      </tr>
+                      <tr>
+                        <td style="text-align: left; width:35%;"><strong>Mobile Number: </strong></td>
+                        <td style="text-align: left;">{{Emppersonal.MobileNumber|default:"Not Present"}} </td>
+                        
+                      </tr>
+                  </tbody>
+                </table>
+              </td>
+              <td style="text-align: center;">
+                <table class="table table-striped custom-table" >
+                  <tbody>
+                    <tr>
+                      <td style="text-align: left; width:35%;"><strong>Email Address: </strong></td>
+                      <td style="text-align: left;">{{Emppersonal.EmailAddress|default:"Not Present"}} </td>
+                      
+                    </tr>
+                    <tr>
+                        <td style="text-align: left; width:35%;"><strong>Gender: </strong></td>
+                        <td style="text-align: left;">{{Emppersonal.Gender|default:"Not Present"}}</td>
+                        
+                      </tr>
+                      <tr>
+                        <td style="text-align: left; width:35%;"><strong>Date of Birth: </strong></td>
+                        <td style="text-align: left;">{{Emppersonal.DateofBirth|default:"Not Present"}} </td>
+                        
+                      </tr>
+                      <tr>
+                        <td style="text-align: left; width:35%;"><strong>Age: </strong></td>
+                        <td style="text-align: left;">{{Emppersonal.age|default:"Not Present"}} </td>
+                        
+                      </tr>
+                  </tbody>
+                </table>
+              </td>
+            
+            
+            </tr>
+          </table>
+         
+          <h4 class="alert alert-primary">Permanent Address</h4>
+          <table  class="table table-striped custom-table">
+           
+                <tr>
+                    <td style="width: 24%;" colspan="1"><strong>Address</strong></td>
+                    <td colspan="3">{{empaddress.Permanent_Address|default:"Not Present"}}</td>
+                </tr>
+                
+              
+            
+            <tr>
+                <td style="width: 24%;"><strong>City:</strong></td>
+                <td>{{empaddress.Permanent_City|default:"Not Present"}}</td>
+                <td style="width: 24%;"><strong>State:</strong></td>
+                <td>{{empaddress.Permanent_State|default:"Not Present"}}</td>
+            </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Pin code:</strong></td>
+                    <td>{{empaddress.Permanent_Pincode|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>House Phone Number :</strong></td>
+                    <td>{{empaddress.Permanent_HousePhoneNumber|default:"Not Present"}}</td>
+                </tr>
+              
+             
+            </table>
+
+           
+            <h4 class="alert alert-primary">Temporary Address</h4>
+            <table  class="table table-striped custom-table">
+             
+                  <tr>
+                      <td style="width: 24%;" colspan="1"><strong>Address</strong></td>
+                      <td colspan="3">{{empaddress.Temporary_Address|default:"Not Present"}}</td>
+                  </tr>
+                  
+                
+              
+              <tr>
+                  <td style="width: 24%;"><strong>City:</strong></td>
+                  <td>{{empaddress.Temporary_City|default:"Not Present"}}</td>
+                  <td style="width: 24%;"><strong>State:</strong></td>
+                  <td>{{empaddress.Temporary_State|default:"Not Present"}}</td>
+              </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Pin code:</strong></td>
+                      <td>{{empaddress.Temporary_Pincode|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>House Phone Number :</strong></td>
+                      <td>{{empaddress.Temporary_HousePhoneNumber|default:"Not Present"}}</td>
+                  </tr>
+                
+               
+              </table>
+            
+            <h4 class="alert alert-primary"> Identity Information</h4>
+            <table  class="table table-striped custom-table">
+             
+                
+                  
+                
+              
+              <tr>
+                <td style="width: 24%;"><strong>Aadhaar Number:</strong></td>
+                  <td>{{ empIdentity.AadhaarNumber|default:"Not Present" }}
+                  <td style="width: 24%;"><strong>PAN No:</strong></td>
+                  <td>{{empIdentity.PANNo|default:"Not Present"}}</td>
+                  
+                </td>
+              </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Driving Licence No :</strong></td>
+                      <td colspan="3">{{empIdentity.DrivingLicenceNo|default:"Not Present"}}</td>
+                      
+                  </tr>
+                
+               
+              </table>
+
+              <div class="page-break">
+              <h4 class="alert alert-primary">Qualification Information</h4>
+              <table class="table table-striped custom-table">
+                  <thead>
+                    <tr>
+                        <th style="text-align: left;">Education Type</th>
+                        <th style="text-align: left;">Degree/Course</th>
+                        <th style="text-align: left;">Name of the Institution</th>
+                        <th style="text-align: left;">Year</th>
+                        <th style="text-align: left;">Percentage</th>
+                    </tr>
+                    
+                  </thead>
+                  <tbody>
+                    {% for qualification in empqualifications %}
+                        <tr>
+                            <td>{{ qualification.EducationType|default:"Not Present" }}</td>
+                            <td>{{ qualification.Degree_Course|default:"Not Present" }}</td>
+                            <td>{{ qualification.NameoftheInstitution|default:"Not Present" }}</td>
+                            <td>{{ qualification.Year|default:"Not Present" }}</td>
+                            <td>{{ qualification.Percentage|default:"Not Present" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5">No qualifications available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              {% comment %} <h4 class="alert alert-primary ">Specailisation Course</h4>
+              <table  class="table table-striped custom-table">
+              <thead>
+                  <tr>
+                      
+                      <th>Name of the Institution</th>
+                      <th>Year</th>
+                      <th>Precentage</th>
+                  </tr>
+              </thead>  
+              <tbody>
+                  <tr>
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
+                      <td>&nbsp;</td>
+                  </tr>
+              <tbody>     
+                   
+              </table> {% endcomment %}
+                  
+             
+              <h4 class="alert alert-primary">Previous Work Information</h4>
+              <table  class="table table-striped custom-table">
+              <thead>
+                  <tr>
+                      <th style="text-align: left;">Company</th>
+                      <th style="text-align: left;">Position </th>
+                      <th style="text-align: left;">From</th>
+                      <th style="text-align: left;">To</th>
+                      
+                  </tr>
+              </thead>  
+              <tbody>
+                {% for emppreviouswork in emppreviouswork %}
+                  <tr>
+                      <td>{{emppreviouswork.Company|default:"Not Present"}}</td>
+                      <td>{{emppreviouswork.Position|default:"Not Present"}}</td>
+                      <td>{{emppreviouswork.FromDate|default:"Not Present"}}</td>
+                      <td>{{emppreviouswork.ToDate|default:"Not Present"}}</td>
+                      
+                  </tr>
+                  {% empty %}
+                        <tr>
+                            <td colspan="4">No Previous Work Information available.</td>
+                        </tr>
+                    {% endfor %}
+              <tbody>     
+                   
+              </table>
+
+              <h4 class="alert alert-primary">Work Details</h4>
+              <table  class="table table-striped custom-table">
+                  <tr>
+                    <td style="width: 24%;"><strong>Department:</strong></td>
+                    <td>{{ empworkdata.Department|default:"Not Present" }}</td>
+                    
+                      <td style="width: 24%;"><strong>Designation:</strong></td>
+                      <td>{{empworkdata.Designation|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Date of Joining:</strong></td>
+                      <td>{{empworkdata.DateofJoining|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Level :</strong></td>
+                      <td>{{empworkdata.Level|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Reporting to Designation:</strong></td>
+                      <td>{{empworkdata.ReportingtoDesignation|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Level :</strong></td>
+                      <td>{{empworkdata.ReportingtoLevel|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                    <td style="width: 24%;"><strong>Dotted Line:</strong></td>
+                    <td >{{empworkdata.DottedLine|default:"Not Present"}}</td>
+                      
+                      <td style="width: 24%;"><strong>Official Email Address:</strong></td>
+                      <td >{{empworkdata.OfficialEmailAddress|default:"Not Present"}}</td>
+                      
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Confirmation Status:</strong></td>
+                      <td>{{empworkdata.EmpStatus|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Date of Confirmation:</strong></td>
+                      <td>{{empworkdata.date|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Date of Resignation:</strong></td>
+                      <td>{{empworkdata.Resignation|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Date of Leaving the Organisation:</strong></td>
+                      <td>{{empworkdata.DateOrganisation|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Company Accomodation:</strong></td>
+                      <td>{{empworkdata.CompanyAccommodation|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Locker:</strong></td>
+                      <td>{{empworkdata.Locker|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>On Rol:</strong></td>
+                      <td>{{empworkdata.EmploymentType|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>On Contract:</strong></td>
+                      <td>{{empworkdata.EmploymentType|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Contract Start Date:</strong></td>
+                      <td>{{empworkdata.ContractStartDate|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Contract End Date:</strong></td>
+                      <td>{{empworkdata.ContractEndDate|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Date of Increment:</strong></td>
+                      <td>{{empworkdata.DateIncrement|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Promoted to:</strong></td>
+                      <td>{{empworkdata.Promoted|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Experience:</strong></td>
+                      <td colspan="3">{{empworkdata.Experience|default:"Not Present"}}</td>
+                      
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Reference Name:</strong></td>
+                      <td>{{empworkdata.ReferenceName|default:"Not Present"}}</td>
+                      <td style="width: 24%;"><strong>Covid Vaccination:</strong></td>
+                      <td>{{Emppersonal.CovidVaccination|default:"Not Present"}}</td>
+                  </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Details of Illness if any</strong></td>
+                      <td colspan="3">{{Emppersonal.DetailsofIllness|default:"Not Present"}}</td>
+                      
+                  </tr>
+                 
+                   
+              </table>
+              
+            </div>
+              <!-- Page Break -->
+              
+              
+              
+
+           
+           
+            
+           
+
+            
+            
+            
+            
+            <div class="page-break">
+            <h4 class="alert alert-primary">Bank Details</h4>
+            <table  class="table table-striped custom-table">
+                <tr>
+                    <td style="width: 24%;"><strong>Bank Account Number :</strong></td>
+                    <td >{{empbankdata.BankAccountNumber|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>IFSC Code:</strong></td>
+                    <td >{{empbankdata.IFSCCode|default:"Not Present"}}</td>
+                    
+                </tr>
+              <tr>
+                  <td style="width: 24%;"><strong>Name of Bank:</strong></td>
+                  <td>{{empbankdata.NameofBank|default:"Not Present"}}</td>
+                  <td style="width: 24%;"><strong>Bank Branch:</strong></td>
+                  <td>{{empbankdata.BankBranch|default:"Not Present"}}</td>
+              </tr>
+              
+                
+               
+              </table>
+
+            <h4 class="alert alert-primary">Salary Details
+            </h4>
+            <table class="table table-striped custom-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Components</th>
+                        <th style="text-align: left;">Per Month</th>
+                        <th style="text-align: left;">Per Annum</th>
+                    </tr>
+                </thead>
+                <tbody id="salaryTable">
+                    {% for SalaryTitle in SalaryTitles %}
+                    <tr>
+                        <td>
+                            {% if SalaryTitle.IsBold %}
+                            <span style="font-weight: bold;">
+                                {{SalaryTitle.Title }}
+                            </span>
+                            {% else %}
+                            <span>
+                                {{SalaryTitle.Title}} 
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                           
+                            {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)" or SalaryTitle.Title == "In Hand (A-B)" or SalaryTitle.Title == "CTC (A+C)"     %}
+                            {{SalaryTitle.Permonth|formatingdata}}
+                          
+                         
+                           
+                            {% else %}
+                            {{SalaryTitle.Permonth|formatingdata}}
+                          
+
+                            
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{SalaryTitle.Perannum|formatingdata}}
+                        </td>
+                    </tr>
+                   
+                    {% endfor %}
+                </tbody>
+            </table>
+            </div>
+            <h4 class="alert alert-primary">Emergency Information</h4>
+            <table  class="table table-striped custom-table">
+               
+              <tr>
+                  <td style="width: 24%;"><strong>First Name:</strong></td>
+                  <td>{{empemergencydata.FirstName}}&nbsp;{{empemergencydata.MiddleName}}&nbsp;{{empemergencydata.LastName}}</td>
+                  <td style="width: 24%;"><strong>Relation:</strong></td>
+                  <td>{{empemergencydata.Relation|default:"Not Present"}}</td>
+              </tr>
+              <tr>
+                  <td style="width: 24%;"><strong>Emergency Contact Numbe:</strong></td>
+                  <td>{{empemergencydata.EmergencyContactNumber_1|default:"Not Present"}}</td>
+                  <td style="width: 24%;"><strong>Provident Fund Number:</strong></td>
+                  <td>{{empemergencydata.ProvidentFundNumber|default:"Not Present"}}</td>
+              </tr>
+              <tr>
+                  <td style="width: 24%;"><strong>ESI Number:</strong></td>
+                  <td>{{empemergencydata.ESINumber|default:"Not Present"}}</td>
+                  <td style="width: 24%;"><strong>Blood Group:</strong></td>
+                  <td>{{empemergencydata.BloodGroup|default:"Not Present"}}</td>
+              </tr>
+              
+                
+               
+              </table>  
+            <div class="page-break">
+              <h4 class="alert alert-primary">Family Details</h4>
+              <table  class="table table-striped custom-table">
+                <tr>
+                    <td style="width: 24%;"><strong>Name of the Spouse:</strong></td>
+                    <td>{{empfamily.SpouseName|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>Date of Birth:</strong></td>
+                    <td>{{empfamily.SpouseDateofBirth|default:"Not Present"}}</td>
+                </tr>
+                  <tr>
+                      <td style="width: 24%;"><strong>Landline No :</strong></td>
+                      <td colspan="3">{{empfamily.SpouseContactNo|default:"Not Present"}}</td>
+                      
+                  </tr>
+                  <tr>
+                    <td style="width: 24%;"><strong>Spouse Age:</strong></td>
+                    <td>{{empfamily.SpouseAge|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>House Phone:</strong></td>
+                    <td>{{empfamily.HousePhone|default:"Not Present"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Mothers Name:</strong></td>
+                    <td>{{empfamily.MotherName|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>Date of Birth:</strong></td>
+                    <td>{{empfamily.MotherDateofBirth|default:"Not Present"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Mothers Age:</strong></td>
+                    <td>{{empfamily.MotherAge|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>Mobile No:</strong></td>
+                    <td>{{empfamily.MotherContactNo|default:"Not Present"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Fathers Name:</strong></td>
+                    <td>{{empfamily.FatherName|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>Date of Birth:</strong></td>
+                    <td>{{empfamily.FatherDateofBirth|default:"Not Present"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Fathers Age:</strong></td>
+                    <td>{{empfamily.FatherAge|default:"Not Present"}}</td>
+                    <td style="width: 24%;"><strong>Mobile No:</strong></td>
+                    <td>{{empfamily.FatherContactNo|default:"Not Present"}}</td>
+                </tr>
+                <tr>
+                    <td style="width: 24%;"><strong>Landline No :</strong></td>
+                    <td colspan="3">{{empfamily.LandlineNo|default:"Not Present"}}</td>
+                    
+                </tr>
+                  
+                 
+                </table>
+
+                {% if empchilddata %}
+                <h4 class="alert alert-primary">Children Information
+                </h4>
+                  <table  class="table table-striped custom-table">
+                  <thead>
+                      <tr>
+                          <th style="text-align: left;">Name</th>
+                          <th style="text-align: left;">Age </th>
+                          <th style="text-align: left;">Relation</th>
+                          
+                          
+                      </tr>
+                  </thead>  
+                  <tbody>
+                    {% for empchilddatas in empchilddata %}
+                    <tr>
+                        <td>{{ empchilddatas.Name|default:"Not Present" }}</td>
+                        <td>{{ empchilddatas.Age|default:"Not Present" }}</td>
+                        <td>{{ empchilddatas.Relation|default:"Not Present" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No Children Information available.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+                  </table>
+                  {% endif %}
+                 
+                 
+                    <h4 class="alert alert-primary">Warning Letters</h4>
+                    <table  class="table table-striped custom-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Warning Type</th>
+                               
+                                <th style="text-align: left;">Name</th>
+                                <th style="text-align: left;">Department</th>
+                                <th style="text-align: left;">Designation</th>
+                               
+                                <th style="text-align: left;">Improvements</th>
+                                <th style="text-align: left;">From Date</th>
+                                <th style="text-align: left;">To Date</th>
+                               
+                               
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for warning in warnings %}
+                                <tr>
+                                    
+                                    <td>{{ warning.type|default:"Not Present" }}</td>
+                                    {% if warning.type == 'Verbal' %}
+                                      
+                                        <td>{{ warning.data.emp_name|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.department|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.designation|default:"Not Present" }}</td>
+                                      
+                                        <td  style="width: 200px;">{{ warning.data.improvements|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.from_date |date:"d M. Y"|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.to_date |date:"d M. Y"|default:"Not Present" }}</td>
+                                     
+                                        
+                                    {% elif warning.type == 'Written' %}
+                                       
+                                        <td>{{ warning.data.name|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.department|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.designation|default:"Not Present" }}</td>
+                                      
+                                        <td  style="width: 200px;">{{ warning.data.written_warning|default:"Not Present" }}</td>
+                                       
+                                        <td>{{ warning.data.period_from |date:"d M. Y"|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.period_to |date:"d M. Y"|default:"Not Present"  }}</td>
+                                       
+                                    {% elif warning.type == 'Final' %}
+                                       
+                                        <td>{{ warning.data.name|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.department|default:"Not Present" }}</td>
+                                        <td>{{ warning.data.designation|default:"Not Present" }}</td>
+                                       
+                                        <td  style="width: 200px;">{{ warning.data.written_warning|default:"Not Present" }}</td>
+                                      
+                                        <td>{{ warning.data.improvement_period_from |date:"d M. Y"|default:"Not Present"  }}</td>
+                                        <td>{{ warning.data.improvement_period_to |date:"d M. Y"|default:"Not Present"  }}</td>
+                                      
+                                        
+                                    {% endif %}
+                                  
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="7">No warnings found</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+    
+                </div>
+
+                
+
+               
+                <h4 class="alert alert-primary" style="page-break-before: always;">Uniform Details</h4>
+                <table class="table table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;" width ="190">Uniform</th>
+                            <th style="text-align: left;">New</th>
+                            <th style="text-align: left;">Altered</th>
+                            <th style="text-align: left;">Issued</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for UnD in UnDetails %}
+                        <tr>
+                            <td>{{ UnD.UniformItemMaster.ItemName }}</td>
+                            <td>
+                                {{UnD.NewQuantity|default:"Not Present"}}
+                            </td>
+                            <td>
+                                {{UnD.AlteredQuantity|default:"Not Present"}}
+                            </td>
+                            <td>
+                               {{UnD.IssuedQuantity|default:"Not Present"}}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+               
+                <h4 class="alert alert-primary" style="page-break-before: always;">Employee File Checklist Details</h4>
+                <table class="table table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Checklist</th>
+                            <th>Received By</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for checkemp_item in checkemps %}
+                        <tr>
+                            <td>{{ checkemp_item.Checklist }}</td>
+                            <td style="width: 100px;">
+                                {% if checkemp_item.ReceivedStatus == "1" %}
+                                    Yes
+                                {% elif checkemp_item.ReceivedStatus == "0" %}
+                                    No
+                                {% else %}
+                                    {{ checkemp_item.ReceivedStatus }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No checklist data available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                
+                <h4 class="alert alert-primary" style="page-break-before: always;">Probation/Confirmation</h4>
+                <table  class="table table-striped custom-table">
+                    <tr>
+                        <td style="width: 20%;"><strong>Departmente:</strong></td>
+                        <td>{{Emp_objs.Department|default:"Not Present"}}</td>
+                        <td style="width: 20%;"><strong>Designation:</strong></td>
+                        <td>{{Emp_objs.Position|default:"Not Present"}}</td>
+                       
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;"><strong>Confirmation Date:</strong></td>
+                        <td>{{Emp_objs.ConfDate|default:"Not Present"}}</td>
+                        <td style="width: 20%;"><strong>Confirmed Status:</strong></td>
+                        <td>
+                            {% if Emp_obj.EmpConfirm %}Yes{% else %}No {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 20%;"><strong>Extended:</strong></td>
+                        <td >
+                            {% if  Emp_objs.Extended %} {{Emp_objs.Extended}} {% else %}No{% endif %}
+                        </td>
+                    </tr>
+                </table>  
+                <div>
+             
+
+                <h4 class="alert alert-primary">Increment History</h4>
+
+                <table  class="table table-striped custom-table">
+
+                   <thead>
+        <tr>
+            <th style="text-align: left;" width= '70'>S.No</th>
+           
+            <th style="text-align: left;" width= '240'>From Salary</th>
+            <th  style="text-align: left;" width= '240'>To Salary</th>
+
+            <th style="text-align: left;" width= '240'>Effective From</th>
+            <th style="text-align: left;" width= '240'>Effective To</th>
+            <th style="text-align: left;" width= '300'>Source Type</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in Salaryhis %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+
+            <td>{{ record.FromSalary|default:"Not Present" }}</td>
+            <td>{{ record.ToSalary|default:"Not Present" }}</td>
+
+            <td>{{ record.Effective_from|date:'d-m-Y'|default:"Not Present" }}</td>
+            <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y'|default:"Not Present" }}{% else %}Present{% endif %}</td>
+            <td>{{ record.SourceType }}</td>
+
+            
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">
+                
+                No salary  history found for employee.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+                </table>  
+
+
+
+
+
+                
+                <h4 class="alert alert-primary">Promotion History</h4>
+
+                <table  class="table table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;" width= '50'>S.No</th>
+                            <th style="text-align: left;" width= '300'>From Designation</th>
+                            <th style="text-align: left;" width= '300'>To Designation</th>
+                            
+                            <th style="text-align: left;" width= '150'>Effective From</th>
+                            <th style="text-align: left;" width= '150'>Effective To</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in Designationhis %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ record.FromDesignation|default:"Not Present" }} - {{ record.FromDepartment|default:"Not Present" }} </td>
+                            <td>{{ record.ToDesignation }} - {{ record.ToDepartment }} </td>
+                
+                            <td>{{ record.Effective_from|date:'d-m-Y' }}</td>
+                            <td>{% if record.Effective_to %}{{ record.Effective_to|date:'d-m-Y'|default:"Not Present" }}{% else %}Present{% endif %}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5">
+                                
+                                No Designation  history found for employee.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                 
+                </table>  
+   
+
+
+                     
+                <h4 class="alert alert-primary">Leave Details 
+                </h4>
+                <table class="table table-striped custom-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Leave Type</th>
+                            <th style="text-align: left;">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for Leave in LeaveTypes %}
+                        <tr>
+                            <td>
+                                {{ Leave.Type }}
+                               
+                            </td>
+                            <td>
+                                {{ Leave.Balance }}
+                            </td>
+                        </tr>
+                       
+                        {% endfor %}
+                        <tr><td colspan="2">Leave Details as of  {{Leave_datetime|default:"Not Present"}}</td></tr>
+                    </tbody>
+                
+                
+                </table>
+
+
+                
+
+               
+
+
+
+           </div>
+         </main>
+         <hr color="mediumseagreen">
+        
+         <footer>
+           <table style="width: 100%; font-size: 10px;">
+             <tr>
+                 <td id="datetime" style="text-align: left;">
+                   {{ current_datetime }}
+                 </td>
+                 <td style="text-align: center;">
+                     <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                         <tbody>
+                             <tr>
+                                 <td>
+                                     <p style="font-size: 10px;"></p>
+                                 </td>
+                             </tr>
+                         </tbody>
+                     </table>
+                 </td>
+                 <td style="text-align: right;">
+                     <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+                 </td>
+             </tr>
+           </table>
+         </footer>
+       </div>
+     
+       <!-- Optional JavaScript -->
+       <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+       <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      
+     </body>
+     
+     </html>
+
+           
+        
+       
+              
+              
+                
+              
+                
+              
+       
+          
+       
+      
+       
+
+       
+                
+              
+              
+                
+              
+                
+              
+       
+          
+       
+      
+       
+

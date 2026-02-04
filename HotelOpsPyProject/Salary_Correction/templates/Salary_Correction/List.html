@@ -1,0 +1,107 @@
+{% extends 'Salary_Correction/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    table td,th
+    {
+        font-size: 13px;
+    }
+</style>
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+    </div>
+</div>
+
+<div class="container">
+    
+
+    <div class="col-md-12">
+        <div class="card-header mb-2">
+            <div class="row">
+                <div class="col-md-6">Salary Correction List</div>
+                <div class="col-md-6 text-right"><a href="{% url 'Correction' %}" class="btn btn-primary btn-sm">New Request</a></div>
+            </div>
+        </div>
+        <table id="example" class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>EmployeeCode</th>
+                    <th>Name</th>
+                    <th>Date</th>
+                   
+                    <th>Current Salary</th>
+                  
+                    <th>Proposed_Salary</th>
+                    <th>Effective_Date</th>
+                    
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for Salary in Salaries %}
+                <tr>
+                    <td>{{Salary.EmployeeCode}}</td>
+                    <td>{{Salary.Name}}</td>
+                    <td>{{Salary.Date | date:'d-m-Y'}}</td>
+               
+                    <td>{{Salary.Current_Salary}}</td>
+                   
+                    <td>{{Salary.Proposed_Salary }}</td>
+                    <td>{{Salary.Effective_Date | date:'d-m-Y'}}</td>
+              
+                        <td>
+                            <a href="{% url 'Correction' %}?ID={{Salary.id}}"><i class="fa fa-edit text-primary"></i></a>
+                        
+                            <a href="{% url 'DeleteSC' %}?ID={{Salary.id}}" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash text-danger"></i></a>
+                            <a href="{% url 'ViewSC' %}?ID={{Salary.id}}"><i class="fa fa-eye text-primary"></i></a>
+                            
+                       
+                    </td>
+                </tr>
+                {% endfor  %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        var selectedOrganization = "{{ For_OrganizationID }}";
+        $("select[name='For_OrganizationID']").val(selectedOrganization);  
+        var selectedWeb = "{{ Web_Name }}";
+        $("select[name='Web_Name']").val(selectedWeb);  
+       
+    });
+    
+    
+</script>
+    
+
+  
+{% endblock content %}
+
+
+
+

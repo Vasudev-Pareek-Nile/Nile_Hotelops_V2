@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainee Experience Letter</title>
+
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            margin: 40px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .header-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .header-table img {
+            height: 120px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            text-align: justify;
+        }
+
+        .footer {
+            margin-top: 40px;
+        }
+
+        .signature-block {
+            margin-top: 60px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% if header %}
+        {{ header|safe }}
+    {% endif %}
+
+    <h2 class="title">Indemnity Form - Company Accommodation</h2>
+
+
+
+    <div class="policy">
+        {{ policy_html|safe }}
+    </div>
+
+        
+    <p><strong>Date:</strong> {{ Ed.generate_date|date:"d F Y" }}</p>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 30px; font-size: 14px;">
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Employee Name</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ Ed.prefix }} {{ Ed.first_name }} {{ Ed.last_name }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Designation</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ Ed.designation }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Department</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ Ed.department }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Date of Joining</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ Ed.date_of_joining|date:"d F Y" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Date of Completion</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ Ed.date_of_last_working|date:"d F Y" }}
+            </td>
+        </tr>
+
+        <tr>
+            <th style="border: 1px solid #000; padding: 8px; text-align: left;">Hotel / Organization</th>
+            <td style="border: 1px solid #000; padding: 8px;">
+                {{ HotelName }}
+            </td>
+        </tr>
+    </table>
+
+
+    <div class="footer">
+        <p class="signature-block">
+            {{ Ed.Hr_Name }}<br>
+            {{ Ed.Hr_Designation }}<br>
+            {{ HotelName }}
+        </p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+{% comment %} {% from Cake_Order_Form %} {% endcomment %}
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>LazyCoder || sumit</title>
+  <style type="text/css">
+    body {
+      color: #aa082e;
+      background-color: #b6bde7;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+  </style>
+
+</head>
+
+
+<body>
+  {% include "apps/navbar.html" %}
+ 
+ 
+  {% render_field  Cake_Order_Form.To %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="cakeorder" enctype="multipart/form-data">
+    {{ Cake_Order_Form }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In CakeOrder </p>
+        </div>
+
+        <div class="card-body">
+          {% comment %} <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}">
+          {% endcomment %}
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+          {% comment %} {% render_field  CakeOrderForm.OrganizationID value=d.OrganizationID class="form-control" placeholder="To"  type="hidden"%} {% endcomment %}
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>To</label>
+                {% render_field CakeOrderForm.To class="form-control" placeholder="To" %}
+              </div>
+              <div class="col-sm-3">
+                <label>From</label>
+                {% render_field CakeOrderForm.From class="form-control" placeholder="From" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Guest Name</label>
+                {% render_field CakeOrderForm.Guest_Name class="form-control" placeholder="Guest Name" %}
+              </div>
+              <div class="col-sm-3">
+                <label>To Be Prepared For</label>
+                {% render_field CakeOrderForm.To_Be_Prepared_For class="form-control" placeholder="To_Be_Prepared_For" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Size</label>
+                {% render_field CakeOrderForm.Size class="form-control" placeholder="Size" %}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field CakeOrderForm.Date required="required" class="form-control" placeholder="Date" %}
+              </div>
+             <div class="col-sm-3">
+              <label>Time</label>
+                {% render_field CakeOrderForm.Time required="required" class="form-control" placeholder="Time" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Type Of Cake</label>
+                {% render_field CakeOrderForm.Type_Of_Cake  required="required" class="form-control"  placeholder="Type_Of_Cake" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Required Time</label>
+                {% render_field CakeOrderForm.Required_Time required="required" class="form-control" placeholder="Required_Time" %}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Required Date</label>
+                {% render_field CakeOrderForm.Required_Date class="form-control" placeholder="Required_Date" %}
+              </div>
+              <div class="col-sm-3">
+                    <label>Packing</label>
+                {% render_field CakeOrderForm.Packing required="required" class="form-control" placeholder="Packing" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Message On Cake</label>
+                {% render_field CakeOrderForm.Message_On_Cake required="required" class="form-control" placeholder="Message_On_Cake" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Selling Price</label>
+                {% render_field CakeOrderForm.Selling_Price required="required" class="form-control" placeholder="Selling_Price" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Complimentory</label>
+                {% render_field CakeOrderForm.Complimentory required="required" class="form-control" placeholder="Complimentory" %}
+              </div> 
+              <div class="col-sm-3">
+                <label>Authorised By</label>
+                {% render_field CakeOrderForm.Authorised_By required="required" class="form-control" placeholder="Authorised_By" %}
+              </div> 
+
+            </div>
+          </div>
+         
+         {% comment %} <div class="text-center">Already have an account? <a href="doctorlogin">Login here</a></div> {% endcomment %}
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+  {% comment %} {% include "apps/footer.html" %} {% endcomment %}
+</body>
+
+
+</html>

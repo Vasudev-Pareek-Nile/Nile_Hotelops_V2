@@ -1,0 +1,98 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div><div class="container">
+    <div class="card-header ">Request List</div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-12">
+            <form method="get" class="d-flex">
+                <div class="form-group m-1">
+                    <select name="Status" id="" class="form-control">
+                        <option value="1" {% if Status == selectedStatus %}selected{% endif %}>Approved</option>
+                        <option value="0" {% if Status == selectedStatus %}selected{% endif %}>Pending</option>
+                        <option value="-1" {% if Status == selectedStatus %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+
+                <div class="form-group m-1">
+                    <button type="submit" class="btn btn-primary btn-sm ml-1">Filter</button>
+                    <a href="{% url 'UpdateRequestlist' %}" class="btn btn-primary btn-sm ml-1" style="width: 80px;">Clear Filter</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-12">
+            <table id="example" class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>In Time</th>
+                        <th>OUT Time</th>
+                        <th>Status</th>
+                        <th>Reason</th>
+                        <th>Approval</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reqs in att_reqs %}
+                    <tr>
+                        <td>{{reqs.Attendance_Data.Date}}</td>
+                        <td>{{reqs.Attendance_Data.In_Time}}</td>
+                        <td>{{reqs.Attendance_Data.Out_Time}}</td>
+                        <td>{{reqs.Attendance_Data.Status}}</td>
+                        <td>{{reqs.Reason}}.</td>
+                        <td>
+                            {% if reqs.Apporve_status == "0" %}
+                            <span class="btn btn-warning btn-sm">Pending</span>
+                            {% elif reqs.Apporve_status == "1" %}
+                            <span class="btn btn-primary btn-sm">Approved</span>
+                            {% else %}
+                            <span class="btn btn-danger btn-sm">Reject</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        
+       
+    });
+    
+    $(document).ready(function () {
+       
+       var selectedStatus = "{{ Apporve_status }}";
+       $("select[name='Status']").val(selectedStatus);
+       
+    
+   });
+</script>
+{% endblock content %}

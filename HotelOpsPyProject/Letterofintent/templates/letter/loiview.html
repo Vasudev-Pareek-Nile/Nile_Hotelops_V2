@@ -1,0 +1,47 @@
+
+{% load static %}
+
+
+{% block content %}
+<style>
+  *{
+    font-family: Arial Nova;
+    font-size: 12px; 
+  }
+  table td,table th{
+    padding:5px;
+  }
+
+  th,td {
+    border:1px solid #F4E6D8 !important;
+  }
+
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+  p {    
+    margin: 0 !important;
+  }
+  .noborder,.noborder td {
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+  }
+
+
+</style>
+
+{% if head == 'False' %}
+<br><br><br><br><br><br><br>
+{% endif %}
+
+<DIV>
+  {{header | safe}}
+  <p style="font-family: Arial Nova;">{{Ed.data | safe }}</p>
+</DIV>
+
+{% endblock content %} 
+

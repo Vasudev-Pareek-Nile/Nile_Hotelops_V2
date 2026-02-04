@@ -1,0 +1,147 @@
+{% extends 'TrainingAssessment/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ 
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Training Assessment Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'TrainingAssessmentEntry' %}" method = "post">
+                {% csrf_token %}
+
+                <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+        <div class="row">
+    
+            <lable  class="control-label col-sm-2">Training Date</lable>
+                 <div class="col-sm-2">
+                    <input class="form-control  datepicker" format="YYYY-MM-DD" name="TrainingDate"   value="{{mem.TrainingDate}}">
+                      </input>
+    
+                </div>
+          
+            
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label>Employee Code</label>
+                <input class="form-control " name="EmployeeCode"   value="{{mem.EmployeeCode}}"/>
+           </div>
+           <div class="col-sm-3">
+                <label>Employee Name</label>
+                <input class="form-control " name="EmployeeName"   value="{{mem.EmployeeName}}"/>
+            </div>
+
+            <div class="col-sm-3">
+                <label>Employee Designation</label>
+                <input class="form-control " name="EmployeeDesignation"   value="{{mem.EmployeeDesignation}}"/>
+            </div>
+
+     </div>
+ </div>
+
+               
+                <br/>
+                <br>
+                <br>
+                <div class="row">
+                    <div class="col-sm-10">
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th></th>
+                        <th>Status</th>
+                        
+                    </thead>
+                    {% for x in mem%}
+                    <tr>                
+                        <td>{{x.title}}</td> 
+                        <td>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                        
+                            <select type="text"  class="form-control" name="Status_{{ forloop.counter0 }}"><option>Good</option><option>Average</option><option>Poor</option> </select></td>
+                        
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+    
+                   
+                </table>
+            </div>
+        </div>
+                <br>
+               
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+</div>
+<script>
+
+    var BindEmpDetails = function () {
+        debugger;
+                var EmpCode = $("[name='EmployeeCode']").val();
+                 var O=$("[name='OrganizationID']").val();
+                $("[name='EmployeeName']").val('')
+                $("[name='EmployeeDesignation']").val('')
+                $.ajax({
+                    type: "GET",
+                    url: "https://hotelops.in/API/UserAPI/HREmployeeDataEmpCodeSelect?EmpCode=" + EmpCode + "&O="+O+"",
+                    //data: '{name: "' + $("#txtName").val() + '" }',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        try {
+                            var a = JSON.parse(response);
+                            if (a != undefined && a != name && a.length > 0) {
+                                $("[name='EmployeeName']").val(a[0].EmpName)
+                                $("[name='EmployeeDesignation']").val(a[0].Designation)
+                               
+                            }
+                            else {
+                                alert("No Employee Data found in HR Module.Make sure employee code match with HR Module data");
+                            }
+                        } catch { }
+                    }
+                });
+            }
+        
+           
+    $(function(){
+        $(".datepicker").datepicker({format:'dd/MM/yyyy', initialDate: new Date() })
+        $(".datepicker").datepicker("setDate", new Date()); 
+        $("[name='EmployeeCode']").blur(function(){BindEmpDetails();
+
+        })
+    })
+
+    var DoCal=function(){
+
+        var TotalAmount=0;
+            $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+            $("input[name='Total']").val(TotalAmount.toFixed(2))
+    }
+</script>
+
+{% endblock content %}
+
+

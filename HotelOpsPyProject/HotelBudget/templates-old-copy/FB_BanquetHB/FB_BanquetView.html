@@ -1,0 +1,356 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#F2F1EF	;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">F&B Banquet Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'HFB_BanquetView' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+<br>
+ 
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.FoodRevenueBanquet_Master.title1}}</td> 
+        <td>{{x.Amount1}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Food Revenue  
+            </th>
+            <th>
+                {{mem.FoodRevenue}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<br>
+
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem2%}
+    <tr>                
+        <td>{{x.BeverageRevenueBanquet_Master.title2}}</td> 
+        <td>{{x.Amount2}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Beverage Revenue  
+            </th>
+            <th>
+                {{mem.BeverageRevenue}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<br>
+
+
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>Room Hire Revenue</th>
+            <th>{{mem.RoomHireRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Audio Visual Revenue</th>
+            <th>{{mem.AudioVisualRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Service Charge Revenue</th>
+            <th>{{mem.ServiceChargeRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>F&B Revenue Others</th>
+            <th>{{mem.FBRevenueOthers}}</th>      
+        </tr>
+        <tr>
+            <th>Total Other Income</th>
+            <th>{{mem.TotalOtherIncome}}</th>      
+        </tr>
+        <tr>
+            <th>F&B Revenue</th>
+            <th>{{mem.FBRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Food Cost Of Sales</th>
+            <th>{{mem.FoodCostOfSales}}</th>      
+        </tr>
+
+        <tr>
+            <th>Beverage Cost Of Sales</th>
+            <th>{{mem.BeverageCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost Of F&B Sales</th>
+            <th>{{mem.TotalCostOfFbSales}}</th>      
+        </tr>
+        <tr>
+            <th>Audio Visual Cost Of Sales</th>
+            <th>{{mem.AudioVisualEquipmentCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th> F&B Others Cost Of Sale</th>
+            <th>{{mem.FBOtherCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost Of Other Sales</th>
+            <th>{{mem.TotalCostOfOtherRev}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost Of Sales</th>
+            <th>{{mem.TotalCostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Gross Profit (Loss) </th>
+            <th>{{mem.Gross_Profit}}</th>      
+        </tr>
+        <tr>
+            <th>Salary And Wages</th>
+            <th>{{mem.SalaryAndWages}}</th>      
+        </tr>
+        <tr>
+            <th>Bonuses & Incentives</th>  
+            <th>{{mem.Bonuses_and_Incentives}}</th>
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+      
+    </table>
+    </div>
+    <br>
+   
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem3%}
+    <tr>                
+        <td>{{x.FBBanquet_Master.title3}}</td> 
+        <td>{{x.Amount3}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Other Expenses
+            </th>
+            <th>
+                {{mem.Total_Other_Expenses}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+                Department Income (Loss)
+            </th>
+            <th>
+                {{mem.DepartmentIncome}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<br>
+
+ 
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotalFood =0;
+        $("input[name*='FAmount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalFood= TotalFood+a;
+            })
+        $("input[name='FoodRevenue']").val(TotalFood.toFixed(2))
+
+        var  TotalBeverage = 0;
+        $("input[name*='BAmount_']").each(function(){
+            var b = $(this).val();
+            b = parseFloat(b);
+            b = isNaN(b)?0:b;
+            TotalBeverage= TotalBeverage+b;
+         })
+         $("input[name='BeverageRevenue']").val(TotalBeverage.toFixed(2))
+
+
+         var m = $("input[name='RoomHireRevenue']").val();
+          m = parseFloat(m);
+          m = isNaN(m)?0:m;
+          var n = $("input[name='AudioVisualRevenue']").val();
+          n = parseFloat(n);
+          n = isNaN(n)?0:n;
+          var u = $("input[name='ServiceChargeRevenue']").val();
+          u = parseFloat(u);
+          u = isNaN(u)?0:u;
+          var v = $("input[name='ServiceChargeRevenue']").val();
+          v = parseFloat(v);
+          v = isNaN(v)?0:v;
+          $("input[name='TotalOtherIncome']").val((m+n+u+v).toFixed(2))
+          var TotalOtherIncome = (m+n+u+v);
+
+          
+       
+
+          $("input[name='FBRevenue']").val((TotalFood + TotalBeverage + TotalOtherIncome ).toFixed(2))
+          var FBRevenue = (TotalFood + TotalBeverage + TotalOtherIncome  );
+
+          var x = $("input[name='FoodCostOfSales']").val();
+          x = parseFloat(x);
+          x = isNaN(x)?0:x;         
+          var y = $("input[name='BeverageCostOfSales']").val();
+          y = parseFloat(y);
+          y = isNaN(y)?0:y;
+          $("input[name='TotalCostOfFbSales']").val((x+y).toFixed(2))
+          
+
+          var p = $("input[name='AudioVisualEquipmentCostOfSales']").val();
+          p = parseFloat(p);
+          p = isNaN(p)?0:p;         
+          var q = $("input[name='FBOtherCostOfSales']").val();
+          q = parseFloat(y);
+          q = isNaN(y)?0:y;
+          $("input[name='TotalCostOfOtherRev']").val((p + q).toFixed(2))
+
+
+          $("input[name='TotalCostOfSales']").val((x+y +p+q).toFixed(2))
+          var TotalCostOfSales = (x+y +p+q);
+
+          $("input[name='Gross_Profit']").val((FBRevenue - TotalCostOfSales ).toFixed(2))
+          var Gross_Profit = (FBRevenue - TotalCostOfSales );
+  
+
+        var TotSalWag=0;
+        var r = $("input[name='SalaryAndWages']").val();
+        r = parseFloat(r);
+        r = isNaN(r)?0:r;
+
+        var s = $("input[name='Bonuses_and_Incentives']").val();
+        s = parseFloat(s);
+        s = isNaN(s)?0:s;
+        TotSalWag = r+s;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+        var e = $("input[name='EmployeeBenefits']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+        $("input[name='PayrollRelatedExpenses']").val(e.toFixed(2));
+        var PayrollAndRelatedExpenses=(TotSalWag+e);
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag+e).toFixed(2));
+        var PayrollAndRelatedExpenses = (TotSalWag+e);
+
+         
+          
+        var TotalBanquetAmount =0;
+        $("input[name*='FBAmount_']").each(function(){
+                    var z = $(this).val();
+                    z = parseFloat(z);
+                    z = isNaN(z)?0:z;
+                    TotalBanquetAmount= TotalBanquetAmount+z;
+            })
+
+        $("input[name ='Total_Other_Expenses']").val(TotalBanquetAmount.toFixed(2));
+      
+        $("input[name='DepartmentIncome']").val((Gross_Profit - PayrollAndRelatedExpenses - TotalBanquetAmount).toFixed(2));
+
+    }
+</script>
+
+
+
+  {% endblock content %}

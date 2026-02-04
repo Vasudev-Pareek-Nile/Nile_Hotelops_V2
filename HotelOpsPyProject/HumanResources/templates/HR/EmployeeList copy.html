@@ -1,0 +1,248 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% load encryption_filters %}
+
+{% block content %}
+
+<style>
+    table
+    {
+        font-size: 12px;
+    }
+</style>
+<style>
+    .filter-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 8px;
+    }
+
+    .filter-container select,
+    .filter-container input {
+        min-width: 120px;
+    }
+
+    .filter-container button {
+        min-width: 80px;
+    }
+</style>
+<style>
+    .button-spacing button {
+        margin-right: 10px; /* Adjust spacing as needed */
+    }
+
+    .button-spacing button:last-child {
+        margin-right: 0; /* Remove spacing for the last button */
+    }
+</style>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<div  >
+    <h4>Employee List</h4>
+    <form method="GET">
+        <div class="row ">
+            <!-- Organization ID Dropdown -->
+            <div class="col-sm-4">
+                <select name="OrganizationID" class="form-control">
+                    
+                    {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selected_org_id %}selected{% endif %}>
+                        {{ itm.OrganizationName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+    
+            <!-- Employee Code Input -->
+            <div class="col-sm-1">
+                <input 
+                    type="text" 
+                    name="employee_code" 
+                    class="form-control" 
+                    placeholder="EmpCode" 
+                    value="{{ request.GET.employee_code }}"
+                >
+            </div>
+            
+            
+    
+            <!-- Employee Status Dropdown -->
+            <div class="col-sm-2">
+                <select name="EmpStatus" class="form-control">
+                    <option value="all" {% if selected_emp_status == "all" or not selected_emp_status %}selected{% endif %}>All</option>
+                    <option value="On Probation" {% if selected_emp_status == "On Probation" %}selected{% endif %}>On Probation</option>
+                    <option value="Not Confirmed" {% if selected_emp_status == "Not Confirmed" %}selected{% endif %}>Not Confirmed</option>
+                    <option value="Confirmed" {% if selected_emp_status == "Confirmed" %}selected{% endif %}>Confirmed</option>
+                    <option value="Resigned" {% if selected_emp_status == "Resigned" %}selected{% endif %}>Resigned</option>
+                    <option value="Terminate" {% if selected_emp_status == "Terminate" %}selected{% endif %}>Terminate</option>
+                    <option value="F&F In Process" {% if selected_emp_status == "F&F In Process" %}selected{% endif %}>F&F In Process</option>
+                    <option value="F&F Completed" {% if selected_emp_status == "F&F Completed" %}selected{% endif %}>F&F Completed</option>
+                    <option value="Absconding" {% if selected_emp_status == "Absconding" %}selected{% endif %}>Absconding</option>
+                    <option value="Left" {% if selected_emp_status == "Left" %}selected{% endif %}>Left</option>
+                    <option value="Archive" {% if selected_emp_status == "Archive" %}selected{% endif %}>Archive</option>
+                </select>
+            </div>
+    
+            <div class="col-sm-2">
+                <select name="DivisionName" class="form-control" id="division-dropdown">
+                    <option value="All">All Divisions</option>
+                    {% for division in Divisions %}
+                        <option value="{{ division.DivisionName }}" {% if division.DivisionName == selected_division %}selected{% endif %}>
+                            {{ division.DivisionName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+    
+            <!-- Department Dropdown -->
+            <div class="col-sm-2">
+                <select name="Department" class="form-control" id="department-dropdown">
+                    <option value="AllDepartment">All Departments</option>
+                    {% for department in departments_in_division %}
+                        <option value="{{ department.DepartmentName }}" {% if department.DepartmentName == selected_department %}selected{% endif %}>
+                            {{ department.DepartmentName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            
+            <script>
+                document.getElementById('division-dropdown').addEventListener('change', function () {
+                    const divisionName = this.value;
+                    const departmentDropdown = document.getElementById('department-dropdown');
+                    
+                    // Clear the department dropdown or reset to "All Departments"
+                    departmentDropdown.innerHTML = '<option value="AllDepartment">All Departments</option>';
+                
+                    // Disable the department dropdown if "AllDivision" is selected
+                    if (divisionName === "All") {
+                        departmentDropdown.disabled = true;  // Disable the dropdown
+                    } else {
+                        departmentDropdown.disabled = false; // Enable the dropdown
+                        
+                        // Fetch departments related to the selected division via AJAX
+                        fetch(`/HumanResources/get-departments/?division_name=${divisionName}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                // Clear existing options and add new options dynamically
+                                data.forEach(department => {
+                                    const option = document.createElement('option');
+                                    option.value = department.DepartmentName;
+                                    option.textContent = department.DepartmentName;
+                
+                                    // Add selected attribute if this department is the previously selected one
+                                    if (department.DepartmentName === "{{ selected_department }}") {
+                                        option.selected = true;
+                                    }
+                
+                                    departmentDropdown.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error('Error fetching departments:', error));
+                    }
+                });
+                
+            </script>
+            
+           
+    
+            
+            <div class="col-sm-0 d-flex gap-0">
+                <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fas fa-search "></i> 
+                </button>
+            </div>
+        </div>
+    </form>
+    
+</div>
+    <br>
+
+    <table id="employeeTable" class="table">
+        <thead>
+            <tr>
+                <th>Sr#</th>
+                <th>Emp Code</th>
+                {% comment %} <th>Photo</th> {% endcomment %}
+                <th>Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th style="width: 150px;">Date of Joining</th>
+                <th>Gender</th>
+                <th>Emp Status</th>
+                <th>Profile Complete</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in Empobjs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ employee.EmployeeCode }}</td>
+                <td>
+                    {% if employee.ProfileImageFileName %}
+                    <img id="ProfileImagePreview" src="{% url 'Humanview_file' %}?ID={{ employee.EmpID }}&model=EmployeePersonalDetails" alt="Profile Image Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                    <img id="ProfileImagePreview" src="{% static 'Images/avatarimg.webp' %}" alt="Profile Image Preview" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                    {% endif %}
+                </td>
+                <td>{{ employee.Prefix|default:"" }} {{ employee.FirstName|default:"" }} {{ employee.MiddleName|default:"" }} {{ employee.LastName|default:"" }}</td>
+                <td>{{ employee.Department }}</td>
+                <td>{{ employee.Designation }}</td>
+                <td>{{ employee.DateofJoining|date:'j M Y' }}</td>
+                <td>{{ employee.Gender }}</td>
+                <td>{{ employee.EmpStatus }}</td>
+                <td>{{ employee.ProfileCompletion }} %
+
+                   
+                </td>
+                <td>
+                    <div class="btn btn-group gap-2">
+
+                        
+                        <a href="{% url 'EditEmployee' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
+                        <a href="{% url 'EmpView' %}?EmpID={{employee.EmpID|encrypt_id_filter}}&OID={{selected_org_id}}" target="_blank" class="btn btn-primary btn-sm">
+                            View
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#employeeTable').DataTable({
+         
+            "pageLength": 100,    // Display 100 rows by default
+            "columnDefs": [
+                { "orderable": false, "targets": [2, 10] } // Disable sorting for Photo and Action columns
+            ]
+        });
+    });
+</script>
+
+    
+    <script>
+        function exportData() {
+            alert('Export functionality to be implemented.');
+            // Example implementation: navigate to an export URL
+            // const url = new URL(window.location.href);
+            // url.searchParams.set('export', 'true');
+            // window.location.href = url.href;
+        }
+    </script>
+{% endblock content %}

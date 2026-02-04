@@ -1,0 +1,86 @@
+{% extends 'EmpAbscondingTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    Showcause Notice
+  
+      {% comment %} <a href="{% url 'EmpAbscondingEntry' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}" 
+      class="btn btn-sm btn-primary" 
+      style="float:right; margin-left: 10px;">
+      New Absconding
+     </a> {% endcomment %}
+   
+   {% comment %} <a href="{% url 'empShowcause' %}?EC={{EC}}&EmpID={{EmpID}}" 
+      class="btn btn-sm btn-primary" 
+      style="float:right; margin-left: 10px;">
+      Show Cause Notice
+   </a> {% endcomment %}
+      </div>
+      <form method="get" class="form-inline">
+        <div class="form-group ml-4 mt-3">
+         
+            <select name="I" class="form-control mr-2">
+                <option value="">Select</option>
+                {% for itm in memorg %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                        {{ itm.OrganizationName }}
+                    </option>
+                {% endfor %}
+            </select>
+         
+
+
+
+
+            <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+            <a href="{% url 'EmpshowcausenoticeList' %}" class="btn btn-primary btn-sm ml-1">Clear Filter</a>
+        </div>
+    </form>
+    
+      <div class="card-body">
+          <table class="table table-bordered table-condensed display table-sm compact" style="font-size:11px">
+              <thead>
+                  <tr class="active" style="background-color:#8e9ebc">
+                      <th class="EmpCode">Emp Code</th>
+                      <th class="Name">Name</th>
+                      <th class="Designation">Designation</th>
+                      <th class="Department">Department</th>
+                      <th class="Date">Joining Date</th>
+                      <th class="Date">Date of Absence</th>
+                      {% comment %} <th class="Remarks">Remarks</th> {% endcomment %}
+                      <th class="Action">Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for i in showcausenotice %}
+                      <tr>
+                          <td>{{ i.Emp_Code }}</td>
+                          <td>{{ i.Name }}</td>
+                          <td>{{ i.Designation }}</td>
+                          <td>{{ i.Dept }}</td>
+                          <td>{{ i.DOJ }}</td>
+                          <td>{{ i.Date_Of_absence }}</td>
+                          {% comment %} <td>{{ i.Remarks }}</td> {% endcomment %}
+                          <td>
+                              <div class="btn btn-group">
+                                  <a href="{% url 'EmpshowcausenoticeEntry' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&DepartmentName={{ i.Dept }}&Page=EmpshowcausenoticeList&OID={{i.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                  {% comment %} <a href="{% url 'EmpAbscondingDelete' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                                  <a href="{% url 'EmpshowcausenoticePDF' %}?AID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" target="_blank" class="btn btn-success btn-sm">View</a>
+                              </div>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          
+      </div>
+  </div>
+
+  <script>
+         var selectedOrganization = "{{ I }}";
+            $("select[name='I']").val(selectedOrganization);
+
+  </script>
+{% endblock %}

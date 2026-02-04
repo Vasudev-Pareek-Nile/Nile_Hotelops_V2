@@ -1,0 +1,308 @@
+{% extends 'letter/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+ 
+
+<style>
+    form p {
+        display: inline-block;
+        width: 30%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+  {
+      visibility: hidden;
+  }
+ </style>
+ <style>
+     .trTotal {
+         font-weight: bold;
+         background-color: #f7f7f7;
+     }
+ 
+     
+     form p {
+         display: inline-block;
+         width: 30%;
+         margin-right: 10px;
+     }
+     
+ @media only screen and (max-width: 768px) {
+     /* For mobile phones: */
+     form p {
+         display: inline-block;
+         width: 100%;
+         margin-right: 10px;
+     }
+   }
+   label[for="id_data"]
+   {
+       visibility: hidden;
+   }
+  </style>
+
+<div class="card">
+    <div class="card-header">Update Employee Letter of Intent</div>
+    <form action="" method="post">
+    <div class="card-body">
+        <div style="padding: 20px;">
+
+          
+
+                     {{form.media }}
+                     {{form.as_p}}
+                     <table id="tblSal" class="table table-bordered">
+                        <thead>
+                            <tr class="active">
+                                <th>Coponents</th>
+                                <th>Per Month</th>
+                                <th>Per Annum</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                            <tfoot>
+                                
+                            </tfoot>
+                     </table>
+
+                    
+                     <input type="hidden" value="{{eds}}" id="hdnjs" />
+                     <input type="hidden" value="" id="TotalSRow" name="TotalSRow"/>
+                {%  csrf_token %}
+                <br>
+              
+                       
+        </div>  
+    </div>
+    <div class="card-footer text-right">
+        <input type="submit" class="btn btn-success btn-sm" value="Update">
+    </div>
+</form>
+           
+</div>
+
+
+
+<script>
+    var BindEmpDetails = function () 
+    {
+
+        var EmpCode = $("[name='InterviewID']").val();
+        var O=$("[name='OrganizationID']").val();
+        $("[name='emp_name']").val('')
+        $("[name='designation']").val('')
+        $("[name='department']").val('')
+        $("[name='date_of_joining']").val('')
+        $("[name='general_manager_name']").val('')
+        $("[name='ctc']").val('')
+
+        $.ajax({
+            type: "GET",
+            url: "http://hotelops.in/API/UserAPI/HRInterviewAssessmentDataSelect?ID=" + EmpCode + "&O="+O+"",
+            //data: '{name: "' + $("#txtName").val() + '" }',
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                try {
+                    var a = JSON.parse(response);
+                    if (a != undefined && a != name && a.length > 0) 
+                    {
+                        
+                        $("[name='emp_name']").val(a[0].Name)
+                        $("[name='designation']").val(a[0].position)
+                        $("[name='department']").val(a[0].Department)
+                        $("[name='general_manager_name']").val(a[0].GMName)
+                        $("[name='ctc']").val(a[0].exp_salary)
+                        var now = new Date(a[0].ProposedDOJ);
+
+                        var day = ("0" + now.getDate()).slice(-2);
+                        var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+                        var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+
+
+                        $("[name='date_of_joining']").val(today)
+                       
+                    }
+                    else {
+                        alert("No Employee Data found in HR Module.Make sure employee code match with HR Module data");
+                    }
+                } catch { }
+            }
+        });
+    }
+
+    var getUrlParameter = function getUrlParameter(sParam) 
+    {
+        var sPageURL = window.location.search.substring(1),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+            }
+        }
+        return false;
+    };
+
+    $(function () {
+
+/*
+        $(".datepicker").datepicker({ dateFormat: 'dd/M/yy' });
+        $("[name='emp_code']").blur(function(){
+                BindEmpDetails();
+
+                })
+
+if(getUrlParameter('EC')!=undefined){
+    $("[name='emp_code']").val(getUrlParameter('EC'))
+
+}
+BindEmpDetails();*/
+Bindsalgrid();
+
+    })
+
+
+
+    var Bindsalgrid=function(){
+        try{
+        var hdnjs= $("#hdnjs").val();
+        hdnjs = JSON.parse(hdnjs);
+        var Type="";
+        var ri=0;
+        $(hdnjs).each(function(index,item)
+        {
+            var d="";
+            if ((Type=="") || Type != item.Type)
+            {
+                Type = item.Type
+                if (Type.toLowerCase() == "b")
+                {
+
+                   d+='<tr data-Type="A" class="trTotal trgross"><td style="text-align:left">Gross (A) <input  type="hidden" name="['+ri+']_TitleID" value="1000"/> <input  type="hidden" name="['+ri+']_Type" value="Gross (A)"/> <input  type="hidden" name="['+ri+']_Title" value="Gross (A)"/></td><td><input type="number" name="['+ri+']_PerMonth" step="0.01" class="form-control calcs" /></td><td><input type="number" name="['+ri+']_PerAnnum" step="0.01" class="form-control" /></td></tr><tr><td colspan="2">&nbsp;</td></tr>';
+                   ri=ri+1;
+
+                }
+
+                if (Type.toLowerCase() == "c")
+                {
+
+                    d+='<tr data-Type="B" class="trTotal  tremdedu"><td style="text-align:left">Total Employee Deduction (B) <input  type="hidden" name="['+ri+']_TitleID" value="1001"/> <input  type="hidden" name="['+ri+']_Type" value="Total Employee Deduction (B)"/> <input  type="hidden" name="['+ri+']_Title" value="Total Employee Deduction (B)"/></td><td><input type="number" name="['+ri+']_PerMonth" step="0.01" class="form-control calcs" /></td><td><input type="number" name="['+ri+']_PerAnnum" step="0.01" class="form-control" /></td></tr><tr><td colspan="2">&nbsp;</td></tr>';
+                    ri=ri+1;
+                }
+            }
+           d +="<tr class='tri' data-type='"+item.Type+"'><td><input  type='hidden' name='["+ri+"]_TitleID' value='"+item.ID+"'/> <input  type='hidden' name='["+ri+"]_Type' value='"+item.Type+"'/> <input  type='hidden' name='["+ri+"]_Title' value='"+item.Title+"'/> "+item.Title+"</td>  <td><input class='form-control calcs' name='["+ri+"]_PerMonth'  value='"+item.Monthly+"'></td>  <td><input class='form-control' name='["+ri+"]_PerAnnum' value='"+item.Annum+"'></td> </tr>";
+           ri=ri+1;
+            $("#tblSal tbody").append(d)
+
+        })
+        var dd='<tr data-Type="'+Type+'" class="trTotal trempcond"><td style="text-align:left">Total Company Contribution (C) <input  type="hidden" name="['+ri+']_TitleID" value="1002"/> <input  type="hidden" name="['+ri+']_Type" value="Total Company Contribution (C)"/> <input  type="hidden" name="['+ri+']_Title" value="Total Company Contribution (C)"/></td><td><input type="number" name="['+ri+']_PerMonth" step="0.01" class="form-control calcs" /></td><td><input type="number" name="['+ri+']_PerAnnum" step="0.01" class="form-control" /></td></tr>'
+        ri=ri+1;
+        $("#tblSal tbody").append(dd)
+        var dd='<tr><td colspan="2">&nbsp;</td></tr><tr data-Type="@Type" class="trTotal trinhand"><td style="text-align:left">In Hand (A-B) <input  type="hidden" name="['+ri+']_TitleID" value="1003"/> <input  type="hidden" name="['+ri+']_Type" value="In Hand (A-B)"/> <input  type="hidden" name="['+ri+']_Title" value="In Hand (A-B)"/></td><td><input type="number" name="['+ri+']_PerMonth" step="0.01" class="form-control calcs" /></td><td><input type="number" name="['+ri+']_PerAnnum" step="0.01" class="form-control" /></td></tr>'
+        ri=ri+1;
+        $("#tblSal tbody").append(dd)
+        var dd='<tr data-Type="@Type" class="trTotal trempctc"><td style="text-align:left">CTC (A+C) <input  type="hidden" name="['+ri+']_TitleID" value="1004"/> <input  type="hidden" name="['+ri+']_Type" value="CTC (A+C)"/> <input  type="hidden" name="['+ri+']_Title" value="CTC (A+C)"/></td><td><input type="number" name="['+ri+']_PerMonth" step="0.01" class="form-control calcs" /></td><td><input type="number" name="['+ri+']_PerAnnum" step="0.01" class="form-control" /></td></tr>'
+        ri=ri+1;
+        $("#tblSal tbody").append(dd)
+        }catch(e){}
+        $("#TotalSRow").val(ri)
+
+        $(".calcs").each(function () {
+            bindcalcs($(this));
+        })
+    }
+
+
+    $(function () {
+        $(".calcs").change(function () {
+            bindcalcs($(this));
+        })
+    })
+    var bindcalcs = function (obj) {
+   
+        var a = $(obj).val();
+        a = parseFloat(a);
+        a = isNaN(a) ? 0 : a;
+        var b = a * 12;
+        $(obj).parent().parent().find("[name*='PerAnnum']").val(b.toFixed(2))
+        var ArrC = ["A", "B", "C"]
+        $(ArrC).each(function (index, item) {
+            var total = 0, totalAn = 0;
+            $("tr.tri[data-type='" + item + "']").each(function (id, it) {
+   
+                var a = $(this).find("[name*='_PerMonth']").val();
+                a = parseFloat(a);
+                a = isNaN(a) ? 0 : a;
+                total = total + a;
+   
+                var b = $(this).find("[name*='_PerAnnum']").val();
+                b = parseFloat(b);
+                b = isNaN(b) ? 0 : b;
+                totalAn = totalAn + b;
+   
+            })
+            $("tr.trTotal[data-type='" + item + "']").find("[name*='_PerMonth']").val(total.toFixed(2));
+            $("tr.trTotal[data-type='" + item + "']").find("[name*='_PerAnnum']").val(totalAn.toFixed(2));
+   
+        })
+        var gsM = $("tr.trTotal.trgross").find("[name*='PerMonth']").val();
+        gsM = parseFloat(gsM);
+        gsM = isNaN(gsM) ? 0 : gsM;
+   
+        var dedM = $("tr.trTotal.tremdedu").find("[name*='PerMonth']").val();
+        dedM = parseFloat(dedM);
+        dedM = isNaN(dedM) ? 0 : dedM;
+   
+        var EmpM = $("tr.trTotal.trempcond").find("[name*='PerMonth']").val();
+        EmpM = parseFloat(EmpM);
+        EmpM = isNaN(EmpM) ? 0 : EmpM;
+   
+   
+        var inHand = gsM - dedM;
+        var inCTC = gsM + EmpM;
+        $("tr.trTotal.trinhand").find("[name*='PerMonth']").val(inHand);
+        $("tr.trTotal.trempctc").find("[name*='PerMonth']").val(inCTC);
+   
+   
+   
+   
+   
+        var gsMA = $("tr.trTotal.trgross").find("[name*='PerAnnum']").val();
+        gsMA = parseFloat(gsMA);
+        gsMA = isNaN(gsMA) ? 0 : gsMA;
+   
+        var dedMA = $("tr.trTotal.tremdedu").find("[name*='PerAnnum']").val();
+        dedMA = parseFloat(dedMA);
+        dedMA = isNaN(dedMA) ? 0 : dedMA;
+   
+        var EmpMA = $("tr.trTotal.trempcond").find("[name*='PerAnnum']").val();
+        EmpMA = parseFloat(EmpMA);
+        EmpMA = isNaN(EmpMA) ? 0 : EmpMA;
+   
+   
+        var inHandA = gsMA - dedMA;
+        var inCTCA = gsMA + EmpMA;
+        $("tr.trTotal.trinhand").find("[name*='PerAnnum']").val(inHandA);
+        $("tr.trTotal.trempctc").find("[name*='PerAnnum']").val(inCTCA);
+    }
+</script>
+
+{% endblock content %}

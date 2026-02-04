@@ -1,0 +1,833 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% load static %}
+{% block content %} 
+{% comment %} {% extends 'EMP_PAY/NewHomeBase.html' %}
+{% block NewHomeBase %} {% endcomment %}
+
+<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
+
+<style>
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        padding-inline: 10px;
+    }
+    .card-header{
+        margin-bottom: -28px;
+    }
+    body {
+        overflow-x: hidden;
+        font-size: 14px;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    /* Make table full width */
+    #AttendanceLockTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #AttendanceLockTable thead th {
+        position: sticky;
+        top: 118px;
+        /* z-index: 10; */
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add consistent styling */
+    #AttendanceLockTable th, 
+    #AttendanceLockTable td {
+        /* padding: 10px; */
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background-color: #fff;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: transparent !important;
+        color: inherit !important;
+        border-color: #6c757d !important; /* keep same border */
+    }
+
+    .LockColor{
+        color: lightseagreen !important;
+    }
+    .LockedColor{
+        color: red !important;
+    }
+    textarea{
+        height: 44px !important;
+    }
+
+    #LockTable thead th {
+        position: sticky;
+        top: -17px !important;
+        background: white;
+        z-index: 2;
+    }
+
+    #CardBody{
+    position: relative;
+    }
+
+    #LockAllContainer{
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    }
+
+    .card-loader {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffffcc;
+        z-index: 10;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text-primary-spinner{
+        color: #3a4a93;
+    }
+
+    #HR_DashboardBtn{
+        position:absolute;
+        top: 0px;
+        right: 10px;
+    }
+
+    #profile-card {
+        position: relative;
+    }
+
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 10px !important;
+    }
+</style>
+
+
+
+<div class="card" id="profile-card"> 
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="card-body" id="CardBody">
+        <div class="d-flex justify-content-between mb-2">
+            <div class="">
+                <a href="?year={{ previous_month.year }}&month_no={{ previous_month.month }}" class="btn btn-primary btn-sm">Previous Month</a>
+            </div>
+            <div class="">
+                <span style="display: inline;" class="fw-bold text-uppercase">Attendance Lock Payroll ({{ current_month|date:"F Y" }})</span>
+            </div>
+            <div class="">
+                <a href="?year={{ next_month.year }}&month_no={{ next_month.month }}" class="btn btn-primary btn-sm">Next Month</a>
+            </div>
+        </div>
+    
+        <form method="post" id="AttendanceLockTableForm">
+            {% csrf_token %}
+            <table class="table table-bordered mt-2" id="AttendanceLockTable">
+                <thead>
+                    <tr>
+                        <th>Sr</th>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll"></th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Department</th>
+                        <th>Designation</th> 
+                        <th>Emp Status</th>
+                        <th>Status</th>
+                        {% comment %} <th>Salary Verfication</th> {% endcomment %}
+                        <th>Action</th>
+                        {% comment %} <th>Slip Generated</th> {% endcomment %}
+                    </tr>      
+                </thead>
+                <tbody id="tableBody">
+                    
+                </tbody>
+            </table>
+
+
+            <div class="card-footer d-flex justify-content-between">
+                <div class="d-flex gap-2">
+                    <div class="">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search Employee Here ..."
+                            style="width: 200px; display: inline-block; height:34px;"
+                            onkeyup="searchTable()"
+                        >
+                    </div>
+                </div>
+                
+                <div class="text-end">
+                    <button type="button" class="btn btn-sm btn-primary" id="BulkLockAction">Bulk Lock</button>
+                    <a class="btn btn-sm btn-outline-secondary">SE: 
+                        <span id="selectedCount" class="fw-bold text-secondary">0</span>
+                    </a>
+                </div>
+            </div>
+
+         </form>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="LockModal" tabindex="-1" aria-labelledby="exampleModalLgLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLgLabel">
+          Attendance Lock of
+          <strong><span id="LockEmployeeName"></span> (<span id="LockYear"></span> - <span id="LockMonth"></span>)</strong>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+      </div>
+
+      <!-- Main Modal Body -->
+      <div class="modal-body p-0 d-flex flex-column" style="height: 615px;">
+
+          <!-- Scrollable Table Section -->
+          <div id="LockModalFormTable" class="flex-grow-1 overflow-auto p-3">
+            <table class="table table-striped table-bordered" id="LockTable">
+              <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+              <!-- Data inserted by JS -->
+              <input type="hidden" id="modal-emp-code">
+              <input type="hidden" id="modal-lockid">
+              <input type="hidden" id="modal-year">
+              <input type="hidden" id="modal-month">
+              <input type="hidden" id="modal-empname">
+              <input type="hidden" id="modal-islock" value="">
+
+              <thead>
+                <tr>
+                  <th>Days</th>
+                  <th>Date</th>
+                  <th>In</th>
+                  <th>Out</th>
+                  <th>Duty Hours</th>
+                  <th>Status</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+
+        <!-- Fixed Footer Buttons (outside scrollable area) -->
+        <div id="Footer-buttons" class="border-top bg-white p-3 d-flex justify-content-end gap-2">
+          <div id="lock-buttons">
+            <button type="button" class="btn btn-primary" id="btn-lock" data-type="Lock">Lock</button>
+            <button type="button" class="btn btn-primary" id="btn-save" data-type="Save">Save</button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Modal -->
+
+
+
+
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+<script>
+  $(document).ready(function () {
+    // Get CSRF token
+    var csrftoken = $('[name=csrfmiddlewaretoken]').val() || '';
+
+    $("#btn-lock, #btn-save").off("click").on("click", function () {
+      var btnType = $(this).data("type"); 
+
+      var emp = $("#modal-emp-code").val();
+      var year = $("#modal-year").val();
+      var month_no = $("#modal-month").val();
+      var lockid = $("#modal-lockid").val();
+      var empname = $("#modal-empname").val();
+
+      $.ajax({
+        // url: "/api/Attendance_Lock_Post_API/",
+        url: "{% url 'Attendance_Lock_Post_API' %}", // Your Django API URL
+        type: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        contentType: "application/json",
+        data: JSON.stringify({
+          emp: emp,
+          year: year,
+          month_no: month_no,
+          btn: btnType,
+          lockid: lockid,
+          empname:empname
+        }),
+        success: function (data) {
+                      
+
+            const year = getUrlParam('year');
+            const month = getUrlParam('month_no');
+            loadPayrollList(year, month); 
+
+            $('#LockModal').modal('hide');
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error);
+          alert("Something went wrong");
+        }
+      });
+    });
+  });
+</script>
+
+
+<!-- Modal View and Lock  -->
+<script>
+  $(document).ready(function () {
+      // Triggered when any .open-lock-modal button is clicked
+      $(document).on("click", ".open-lock-modal", function () {
+          const emp = $(this).data("emp");
+          const empName = $(this).data("empname");
+          const year = $(this).data("year");
+          const month_no = $(this).data("month_no");
+          const isLock = $(this).data("islock");
+          const lockid = $(this).data("lockid");  // you can add this in data if needed
+
+          console.log("islock value::", isLock)
+
+          // Set values to modal hidden inputs
+          $("#modal-emp-code").val(emp);
+          $("#modal-empname").val(empName);
+          $("#modal-year").val(year);
+          $("#modal-month").val(month_no);
+          $("#modal-lockid").val(lockid || '');
+          $("#modal-islock").val(isLock);
+        
+          // Populate header
+          $("#LockEmployeeName").text(empName);
+          $("#LockYear").text(year);
+          $("#LockMonth").text(getMonthName(month_no));
+
+        // Show/hide lock buttons
+          // const Button_Container = document.getElementById('lock-buttons');
+          if (String(isLock).toLowerCase() === "false") {
+              $("#lock-buttons").show();
+              // console.log("Yesssssssss")
+          } else {
+              $("#lock-buttons").hide();
+              // console.log("Noooooooooo")
+          }
+          // Load data into modal table
+          loadAttendanceTable(emp, year, month_no, isLock);
+        //   LoadLeaveNames();
+      });
+
+      function loadAttendanceTable(emp, year, month_no, isLock) {
+          $.ajax({
+              url: "{% url 'Attendance_Lock_View_Get_Api' %}", 
+              data: { emp, year, month_no },
+              success: function (response) {
+                console.log("Entire Responce is here (Code:123)::", response)
+                  const tbody = $("#LockTable tbody");
+                  tbody.empty();
+
+                  if (response.attendance_data && response.attendance_data.length > 0) {
+                      response.attendance_data.forEach((record, index) => {
+                          const status = record.status || "";
+                          let row = `<tr>
+                              <td>${index + 1}</td>
+                              <td>${formatDate(record.date)}</td>
+                              <td>${formatTime(record.In_Time) || ""}</td>
+                              <td>${formatTime(record.Out_Time) || ""}</td>
+                              <td>${formatTime(record.Duty_Hour) || ""}</td>`;
+
+                            row += `<td>
+                                <select class="form-control status-select" 
+                                        style="width: 200px;" 
+                                        data-attid="${record.id}" 
+                                        data-current-status="${status}">
+                                    <option value="">No Changes</option>
+                                    <option value="Present" ${status === "Present" ? "selected" : ""}>Present</option>
+                                    <option value="Absent" ${status === "Absent" ? "selected" : ""}>Absent</option>
+                                    <option value="Week off" ${status === "Week off" ? "selected" : ""}>Week off</option>
+                                    <option value="Half Day Present" ${status === "Half Day Present" ? "selected" : ""}>Half Day Present</option>
+                                </select>
+                            </td>`;
+
+                            if (['Present', 'Absent', 'Week off', 'Half Day Present'].includes(status)) {
+                                row += `<td>
+                                            <textarea class="form-control remark-text d-none" 
+                                                data-attid="${record.id}" 
+                                                rows="2" 
+                                                placeholder="Remarks For Leave" 
+                                                name="RemarksTab"></textarea>
+                                        </td>`;
+                            } else {
+                                row += `<td>
+                                            <textarea class="form-control remark-text" 
+                                                data-attid="${record.id}" 
+                                                rows="2" 
+                                                placeholder="Remarks For Leave" 
+                                                name="RemarksTab">${record.Remarks}</textarea>
+                                        </td>`;
+                            }
+                            // console.log("record.Remarks is here::", record.Remarks)
+                          row += `</tr>`;
+                          tbody.append(row);
+
+                          // Disable all selects after appending, if locked
+                          if (String(isLock).toLowerCase() === "true") {
+                              $(".status-select").prop("disabled", true);
+                              $(".remark-text").prop("disabled", true);
+                          }
+                      });
+
+
+                      // Fetch leave types only after rows are created
+                    fetch("/Global_Api/Leave_Type_Data_Api/")
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status && data.Leave_Data) {
+                                document.querySelectorAll("#LockTable .status-select").forEach(select => {
+                                    const currentStatus = select.getAttribute("data-current-status") || "";
+
+                                    // Clean old appended options
+                                    select.querySelectorAll("option.leave-option").forEach(opt => opt.remove());
+
+                                    // Append leave options
+                                    data.Leave_Data.forEach(leave => {
+                                        let option = document.createElement("option");
+                                        option.value = leave.Type;
+                                        option.textContent = leave.Type;
+                                        option.classList.add("leave-option");
+                                        option.setAttribute("data-attid-leavetypeid", leave.id);
+
+                                        if (leave.Type === currentStatus) {
+                                            option.selected = true;
+                                        }
+                                        select.appendChild(option);
+                                    });
+                                });
+                            }
+                        })
+                        .catch(err => console.error("Error fetching leave data:", err));
+                    } else {
+                      tbody.append(`<tr><td colspan="6" class="text-center">No Data Available</td></tr>`);
+                  }
+                },
+                error: function () {
+                    alert("Failed to load attendance data.");
+                }
+            });
+        }
+
+        function formatDate(dateStr) {
+            const options = { day: "numeric", month: "long", year: "numeric" };
+            return new Date(dateStr).toLocaleDateString("en-IN", options);
+        }
+
+        function getMonthName(month_no) {
+            const months = ["", "January", "February", "March", "April", "May", "June", "July",
+                "August", "September", "October", "November", "December"];
+            return months[parseInt(month_no)];
+        }
+
+        function formatTime(timeStr) {
+            if (!timeStr) return "";
+            // Convert "10:05:00.0000000" → "10:05:00"
+            return timeStr.split('.')[0];
+        }
+
+    });
+
+
+    function toggleRemark(select) {
+        const selectedValue = $(select).val();
+        const textarea = $(select).closest('tr').find('.remark-text');
+        // const existingRemark = textarea.val().trim();
+
+        // Show textarea only for leave options (not Present/Absent/Week off/Half Day Present)
+        const isLeave = selectedValue !== "" && !["Present","Absent","Week off","Half Day Present"].includes(selectedValue);
+
+        if (isLeave) {
+            textarea.removeClass('d-none');
+            textarea.prop('required', true);
+        } else {
+            textarea.addClass('d-none');
+            textarea.prop('required', false);
+            textarea.val('');
+        }
+    }
+
+    // On status change
+    $(document).on('change', '.status-select', function() {
+        toggleRemark(this);
+        const attId = $(this).data('attid'); 
+        const newStatus = $(this).val(); 
+        const leaveTypeId = $(this).find('option:selected').data('attid-leavetypeid');
+
+        let remarkstext = false
+        updateStatus(attId, newStatus, leaveTypeId, remarkstext); 
+    });
+
+    // 2. When remarks are typed/blurred
+    $(document).on('blur', '.remark-text', function() {
+        const attId = $(this).data('attid');
+        // console.log("The attribute id is here::", attId)
+        const newStatus = $(this).closest('tr').find('.status-select').val();
+        const leaveTypeId = $(this).closest('tr').find('.status-select option:selected').data('attid-leavetypeid');
+
+        let remarkstext = true
+        updateStatus(attId, newStatus, leaveTypeId, remarkstext);
+    });
+    // });
+
+
+    function updateStatus(attId, newStatus, leaveTypeId, remarkstext) {
+        // const remark = $(`.remark-text[data-attid="${attId}"]`).val();
+        const textarea = $(`.remark-text[data-attid="${attId}"]:visible`);
+        const remark =  textarea.val()
+        
+
+        const isLeave = newStatus !== "" && !["Present","Absent","Week off","Half Day Present"].includes(newStatus);
+
+        // if (isLeave && remarkstext && !remark) {
+        //     alert("Please enter remarks for leave!");
+        //     textarea.focus();
+        //     return;
+        // }
+
+        $.ajax({
+            url: '/Employee_Payroll/UpdateStatus/', 
+            type: 'GET',
+            data: {
+                'Attid': attId,
+                'Status': newStatus,
+                'leaveTypeId': leaveTypeId,
+                'Remarks': remark
+            },
+            success: function(response) {
+                if (response.message) {
+                    console.log(response.message); 
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Status update failed');
+            }
+        });
+    }
+</script>
+
+
+<!-- List api for table -->
+<script>
+  function getUrlParam(key) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(key);
+  }
+
+  function loadPayrollList(year, month_no) {
+      showLoader("profile-card");
+      $.ajax({
+          url: '/Employee_Payroll/api/Employees_Payroll_List_API/', 
+          data: {
+              year: year,
+              month_no: month_no
+          },
+          success: function (response) {
+              let tbody = $('#tableBody');
+              tbody.empty(); // Clear existing rows
+
+
+              //console.log("the response is here::", response)
+
+                hideLoader("profile-card");
+
+              response.emps.forEach((emp, index) => {
+
+                    //console.log("the emp.IsLock is here::", emp.IsLock)
+
+                  let IsLockedHtmlData = emp.IsLock
+                      ? `<span class="LockedColor">Locked</span>`
+                      : `Saved`;
+
+                  let IsLockedHtml = emp.IsLock
+                      ? `
+                          <a href="#" 
+                            class="btn btn-sm btn-secondary text-white open-lock-modal" 
+                            data-emp="${emp.EmployeeCode}" 
+                            data-islock="${emp.IsLock}" 
+                            data-lockid="${emp.lockid}" 
+                            data-empname="${emp.EmpName}" 
+                            data-year="${response.year}" 
+                            data-month_no="${response.month_no}" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#LockModal">View</a>
+
+                            ${
+                            !emp.IsFC_Verified
+                                ? `
+                                    <a href="#" 
+                                        id="unlock-attendance-btn"
+                                        class="btn btn-sm btn-primary unlock-attendance-btn-class"
+                                        data-empid="${emp.EmpID}"
+                                        data-oid="${emp.OrganizationID}"
+                                        data-emp="${emp.EmployeeCode}"
+                                        data-year="${response.year}"
+                                        data-month_no="${response.month_no}"
+                                        data-lockid="${emp.lockid}"
+                                        data-islock="${emp.IsLock}"> 
+                                        Un Lock
+                                    </a>
+                                `
+                                : ''
+                            }
+                          `
+                      : `
+                          <a href="#" 
+                            class="btn btn-sm btn-primary open-lock-modal" 
+                            data-emp="${emp.EmployeeCode}" 
+                            data-islock="${emp.IsLock}" 
+                            data-lockid="${emp.lockid}" 
+                            data-empname="${emp.EmpName}" 
+                            data-year="${response.year}" 
+                            data-month_no="${response.month_no}" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#LockModal">Lock</a>
+                        `;
+
+
+                  let row = `
+                      <tr>
+                          <td>${index + 1}</td>
+                          <td><input type="checkbox" name="all_emp_codes" class="checkBox" value="${emp.EmployeeCode}" data-lockid="${emp.lockid}" data-year="${response.year}" data-month_no="${response.month_no}" data-islock="${emp.IsLock}"></td>
+                          <td>${emp.EmployeeCode}</td>
+                          <td>${emp.EmpName}</td>
+                          <td>${emp.Department}</td>
+                          <td>${emp.Designation}</td>
+                          <td>${emp.EmpStatus}</td>
+                          <td>${IsLockedHtmlData}</td>
+                          <td>${IsLockedHtml}</td>
+                      </tr>`;
+
+                  tbody.append(row);
+
+              });
+          },
+          error: function (xhr) {
+              hideLoader("profile-card");
+              alert('Failed to load data.');
+              console.error(xhr);
+          }
+      });
+  }
+
+  // Example: Load current month
+  $(document).ready(function () {
+      const currentDate = new Date();
+
+      const year = getUrlParam('year') || currentDate.getFullYear();
+      const month = getUrlParam('month_no') || (currentDate.getMonth() + 1);
+
+      loadPayrollList(year, month);
+  });
+</script>
+
+
+
+{% comment %} Search Table Input funcitonlity {% endcomment %}
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+
+{% comment %} Select All Checkbox and Counts section {% endcomment %}
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            // Select only visible checkboxes
+            $("#AttendanceLockTable tbody tr:visible .checkBox")
+                .prop("checked", $(this).prop("checked"));
+            updateSelectedCount();
+        });
+    });
+
+    $(document).on("change", ".checkBox", function () {
+        let allVisible = $("#AttendanceLockTable tbody tr:visible .checkBox").length;
+        let checkedVisible = $("#AttendanceLockTable tbody tr:visible .checkBox:checked").length;
+
+        $(".selectAll").prop("checked", allVisible > 0 && allVisible === checkedVisible);
+        updateSelectedCount();
+    });
+
+    function updateSelectedCount() {
+        let count = $("#AttendanceLockTable tbody tr:visible .checkBox:checked").length;
+        $("#selectedCount").text(count);
+    }
+</script>
+
+
+
+<!-- its here -->
+<script>
+    $(document).on("click", ".unlock-attendance-btn-class", function (e) {
+        e.preventDefault(); // prevent default anchor behavior
+        console.log("we press this button");
+
+        var csrftoken = $('[name=csrfmiddlewaretoken]').val() || '';
+        var empid = $(this).data("empid");
+        var oid = $(this).data("oid");
+        var emp = $(this).data("emp");
+        var year = $(this).data("year");
+        var month_no = $(this).data("month_no");
+        var lockid = $(this).data("lockid");
+        var empname = $(this).data("empname");
+
+        console.log("EmpCode:", emp, "Year:", year, "Month:", month_no, "LockID:", lockid, "EmpName:", empname);
+    //   showLoader("profile-card");
+
+        $.ajax({
+            url: "{% url 'Attendance_UnLock_Post_API' %}",
+            type: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            contentType: "application/json",
+            data: JSON.stringify({
+                emp: emp,
+                year: year,
+                month_no: month_no,
+                lockid: lockid,
+                empname: empname,
+                empid: empid,
+                oid: oid
+            }),
+            success: function (data) {
+                console.log("Unlocked:", data);
+                const year = getUrlParam('year');
+                const month = getUrlParam('month_no');
+
+                loadPayrollList(year, month);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+                alert("Something went wrong");
+            }
+        });
+    });
+</script>
+
+
+<!--  bulk lock -->
+  
+<script>
+    document.getElementById("BulkLockAction").addEventListener("click", function () {
+        let selectedEmployees = [];
+
+        // Loop over all checked checkboxes
+        $("#AttendanceLockTableForm input[name='all_emp_codes']:checked").each(function () {
+            let empData = {
+                emp_code: $(this).val(),
+                lockid: $(this).data("lockid"),
+                year: $(this).data("year"),
+                month_no: $(this).data("month_no"),
+                islock: $(this).data("islock")
+            };
+            selectedEmployees.push(empData);
+        });
+
+        // console.log("data is here", selectedEmployees)
+
+        // Add modal values if needed
+        // let fromDate = $("#FromDate").val();
+        // let toDate = $("#ToDateInput").val();
+
+        $.ajax({
+            url: "{% url 'Bulk_Lock_Attendence' %}",
+            method: "POST",
+            data: {
+                employees: JSON.stringify(selectedEmployees),
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+                // FromDate: fromDate,
+                // ToDate: toDate
+            },
+            success: function (data) {
+                console.log("✅ Data sent successfully");
+                console.log("Server response:", data);
+                console.log("Server response year --:", data.year);
+                console.log("Server response month --:", data.month_no);
+                loadPayrollList(data.year, data.month_no);
+            },
+            error: function (xhr) {
+                console.error("❌ Error:", xhr.responseText);
+            }
+        });
+    });
+</script>
+
+{% endblock content %} 

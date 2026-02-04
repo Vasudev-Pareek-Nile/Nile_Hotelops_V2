@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Report</title>
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: teal;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+
+<style>
+    .Yearly-First-box{
+        display: flex;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+    }
+
+    .employee-notification-icon{
+        padding: 5px;
+    }
+
+    .circle-button{
+        padding: 6px;
+        height: 45px;
+        width: 45px;
+    }
+
+    .card .card-header {
+        margin-bottom: -18px !important;
+        padding: 15px !important;
+    }
+    .card .card-header p{
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    #reportTable{
+        position: sticky;
+        top: 0px;
+        min-width: 100%;
+    }
+    #reportTable thead tr th{
+        font-size: 14px;
+    }
+
+    #reportTable tbody tr td{
+        font-size: 12px;
+    }
+
+    .standard-row {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        padding: 4px 0;
+        font-weight: bold;
+    }
+
+    #reportTable {
+        width: max-content;
+      /*  border-collapse: collapse;*/
+        border-collapse: separate;
+    }
+
+    #reportTable th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa; 
+        z-index: 10; 
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #TableCaptionBtn{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    } 
+
+    .TextRed{
+        color: red !important;
+    }
+</style>
+<style>
+    /* Scrollable container */
+#reportTableContainer {
+    max-height: 490px;
+    overflow: auto; /* both X and Y scroll */
+    position: relative;
+    margin-top: 20px;
+    border-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+}
+
+/* Freeze header row */
+#reportTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+    /* border-top: 2px solid #ccc !important; */
+}
+
+
+/* Freeze first column */
+#reportTable th:first-child,
+#reportTable td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 9; /* behind header if overlapping */
+    background-color: #fff; /* match body background */
+    min-width: 190px;
+    max-width: 300px;
+    white-space: nowrap;
+}
+/* Freeze first column */
+#reportTable th:last-child,
+#reportTable td:last-child{
+    position: sticky;
+    right: 0;
+    z-index: 9; /* behind header if overlapping */
+    background-color: #fff; /* match body background */
+    min-width: 110px;
+    max-width: 120px;
+    /* min-width: 173px;
+    max-width: 175px; */
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Ensure top-left cell (Title) appears above all */
+#reportTable thead th:first-child, #reportTable thead th:last-child  {
+    z-index: 11;
+    /* border-radius: 4px !important; */
+    /* border-top-left-radius: 25px !important; */
+
+}
+/* #reportTable thead th:last-child {
+    z-index: 11;
+} */
+
+
+/* Optional: Improve border and spacing */
+#reportTable th,
+#reportTable td {
+    border: 1px solid #dee2e6 !important;
+    white-space: nowrap;
+}
+
+.card-header{
+    margin-bottom: -28px;
+}
+
+.text-success {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #28a745bf;
+}
+
+.TextRed {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #dc3545d1;
+}
+
+.text-info {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #007bffba;
+}
+/* .hint{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+} */
+
+.TableTitle{
+    width: 190px !important;
+}
+
+/* .TitleContiner{
+    display: flex;
+} */
+.TableTitle{
+    width: 75%;
+    border-right: 1px solid #2222;
+}
+.TitleContiner{
+    display: flex;
+    gap: 10px;
+}
+.hint{
+    display: flex;
+    flex-direction: column;
+    /* gap: 20px; */
+    width: 18%;
+    text-transform: uppercase;
+    /* border-left: 1px solid #2222; */
+    /* font-weight: bold; */
+}
+
+hr {
+    margin: 13px 0 !important;
+}
+.first-half{
+    /* max-width: 200px !important;
+    min-width: 150px !important; */
+    width: 150px !important;
+}
+
+.btn, .CustomRound, .form-control{
+    border-radius: 4px !important;
+}
+
+select.form-control {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+</style>
+</head>
+<body>
+    
+    <table>
+<thead>
+<tr>
+    <th class="TableTitle">Title</th>
+    {% for month in all_months %}
+        <th>{{ month }}</th>
+    {% endfor %}
+    <th>Overall</th>
+</tr>
+</thead>
+<tbody>
+    {% for row in data %}
+    <tr>
+        <td>{{ row.Title }}</td>
+        {% for month in all_months %}
+            <td>
+                {{ row[month+"_Actual"] }}<br>
+                {{ row[month+"_Standard"] }}<br>
+                {{ row[month] }}
+            </td>
+        {% endfor %}
+        <td>{{ row.OverallRating }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+</table>
+
+</body>
+</html>

@@ -1,0 +1,208 @@
+{% extends 'Salary_Correction/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+
+<div class="container">
+    <div class="col-md-12">
+        <form action="" method="post" id="salaryCorrectionForm">
+            <div class="card">
+                <div class="card-header">Salary Correction Request</div>
+                <div class="card-main">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">EmployeeCode</label>
+                                <input type="text" required class="form-control" name="EmployeeCode" id="employeeCode" value="{{cor_obj.EmployeeCode }}" {% if cor_obj.EmployeeCode %}readonly{% endif %}>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Name</label>
+                                <input type="text" class="form-control" name="Name" value="{{cor_obj.Name }}" readonly> 
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Date</label>
+                                <input type="date" class="form-control" name="Date" value="{% if  cor_obj.Date %}{{ cor_obj.Date |date:'Y-m-d'}}{% else %}{%  now 'Y-m-d' %}{% endif %}" readonly> 
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Department</label>
+                                <input type="text" class="form-control" name="Department" value="{{cor_obj.Department}}" readonly> 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Designation</label>
+                                <input type="text" class="form-control" name="Designation" value="{{ cor_obj.Designation }}" readonly> 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Current Salary</label>
+                                <input type="text" class="form-control" name="Current_Salary" value="{{cor_obj.Current_Salary}}" readonly> 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Date Of Last Salary Review</label>
+                                <input type="date" class="form-control" name="Date_of_Last_salary_review" value="{% if cor_obj.Date_of_Last_salary_review %}{{ cor_obj.Date_of_Last_salary_review | date:'Y-m-d'}}{% else %}{%  now 'Y-m-d' %}{% endif %}" > 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Last Increment Amount</label>
+                                <input type="number" class="form-control" name="Last_Increment_Amount" value="{{cor_obj.Last_Increment_Amount}}" > 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Last Increment Slab</label>
+                                 <br>
+                                 <input type="radio"  name="Slab"  {% if  cor_obj.Last_Increment_Slab_3 %}checked{% endif %}  value="3" >
+                                <label for="">3%</label>
+                                <input type="radio" name="Slab"  {% if  cor_obj.Last_Increment_Slab_5  %}checked{% endif %}  value="5" >
+                                <label for="">5%</label>
+                                <input type="radio" name="Slab"  {% if  cor_obj.Last_Increment_Slab_8 %}checked{% endif %} value="8" >
+                                <label for="">8%</label>
+                                <input type="radio" name="Slab"  {% if  cor_obj.Last_Increment_Slab_None %}checked{% endif %}  value="None" >
+                                <label for="">None</label>
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Proposed Salary</label>
+                                <input type="number" class="form-control" name="Proposed_Salary"  value="{{cor_obj.Proposed_Salary}}" > 
+                               
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Effective Date</label>
+                                <input type="date" class="form-control" name="Effective_Date" value="{% if cor_obj.Effective_Date %}{{ cor_obj.Effective_Date | date:'Y-m-d'}}{% else %}{%  now 'Y-m-d' %}{% endif %}" > 
+                               
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group m-3">
+                                <label for="">Justification For Salary Correction Request</label>
+                                
+                               <textarea class="form-control" name="Justification_Request" id="" cols="30" rows="1">{{cor_obj.Justification_Request}}</textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary btn-sm">
+                </div>
+            </div>
+        </form>    
+    </div>
+</div> 
+
+<script>
+     $(document).ready(function () {
+        if ('{{cor_obj.EmployeeCode}}') {
+           
+            $('.btn-primary').prop('disabled', false);
+        } else {
+           
+            $('.btn-primary').prop('disabled', true);
+        } 
+     });
+    $('#employeeCode').on('blur', function () {
+        var employeeCode = $(this).val();
+        var organizationID = '{{OrganizationID}}'; 
+        if(employeeCode.trim() === '') {
+          
+            $('.btn-primary').prop('disabled', true);
+            return; 
+        } else {
+           
+            $('.btn-primary').prop('disabled', false);
+        }
+        $.ajax({
+            url: 'http://localhost:50970/api/PyAPI/HREmployeeDataEmpCodeSelect?EmpCode=' + employeeCode + '&OID=' + organizationID,
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+              
+                if (data.length > 0) {
+                    var employeeDetails = data[0];
+                    
+                    $('#salaryCorrectionForm input[name="Name"]').val(employeeDetails.EmpName);
+                    $('#salaryCorrectionForm input[name="Designation"]').val(employeeDetails.Designation);
+                    $('#salaryCorrectionForm input[name="Department"]').val(employeeDetails.Department);
+                  
+                } else {
+                    $('#salaryCorrectionForm input[name="Name"]').val('');
+                    $('#salaryCorrectionForm input[name="Designation"]').val('');
+                    $('#salaryCorrectionForm input[name="Department"]').val('');
+                 
+                    alert('Employee details not found!');
+                    $('.btn-primary').prop('disabled', true);
+                }
+            },
+            error: function () {
+                $('#salaryCorrectionForm input[name="Name"]').val('');
+                $('#salaryCorrectionForm input[name="Designation"]').val('');
+                $('#salaryCorrectionForm input[name="Department"]').val('');
+             
+                alert('Error fetching employee details.');
+                $('.btn-primary').prop('disabled', true);
+            }
+        });
+        $.ajax({
+            url: "http://localhost:50970/api/PyAPI/HREmployeeSalary?EmpCode=" + employeeCode + "&OrganizationID=" + organizationID,
+            headers: {"hotel-api-token": '{{hotelapitoken}}'}, 
+            type: 'GET',
+            dataType: 'json', 
+            success: function (data) {
+              
+                if (data.length > 0) {
+                    var employee_sal_Details = data[0];
+                   var  GROSS_A = data[0]['Monthly'] + data[1]['Monthly']  + data[2]['Monthly'] + data[3]['Monthly'] + data[4]['Monthly']
+                   var  Total_Company_Contribution_C = data[10]['Monthly'] + data[11]['Monthly']
+                   var  CTC = GROSS_A + Total_Company_Contribution_C  
+                  
+                    $('#salaryCorrectionForm input[name="Current_Salary"]').val(CTC);
+                    $('.btn-primary').prop('disabled', false);
+                  
+                } else {
+                   
+                    $('#salaryCorrectionForm input[name="Current_Salary"]').val('');
+                    $('.btn-primary').prop('disabled', true);
+                 
+                    alert('Employee details not found!');
+                }
+            },
+            error: function () {
+               
+                $('#salaryCorrectionForm input[name="Department"]').val('');
+             
+                alert('Error fetching employee details.');
+               $('.btn-primary').prop('disabled', true);
+            }
+        });
+        
+    });
+</script>
+
+
+{% endblock content %}
+
+

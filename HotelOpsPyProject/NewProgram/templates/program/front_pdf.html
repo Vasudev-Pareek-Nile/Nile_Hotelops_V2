@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      font-size: 12px;
+    }
+    
+        /* Define any custom CSS styles here */
+       
+    </style>
+  </style>
+  <body>
+    <div class="container">
+      <table style="border: none;">
+    <tr>
+        <td>
+            <table class="boder">
+                <tbody>
+                    <td>
+                        <img src="https://media.licdn.com/dms/image/C4D0BAQG71Plr9YC-QQ/company-logo_200_200/0/1630562063610/nile_hospitality_logo?e=2147483647&v=beta&t=_Zfj0NySBsYGGhJSb9MDSIYeTXGnecV0ofcF1lMstwk" height="100">
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td>
+            <table  class="boder" style="border: none; border-radius: 0px; background-color:; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                    <td style="text-align: center;">
+                        <div style="font-size: larger;">NILE Hospitality</div>
+                        <div style="font-size: 9px;">CHIRAG COMPLEX, 47, Ganpati Vihar, Pulan, Pulla Bhuwana, Panerion Ki Madri, Udaipur, Rajasthan 313002</div>
+                    </td>
+                </tbody>
+            </table>
+        </td>
+        <td></td>
+    </tr>
+</table>
+    </br>
+
+  <table style="border-collapse: collapse; width: 100%;">
+    <tr>
+        <td colspan="2" style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Name of Location :- {{FOH.location}}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Date :- {{FOH.date}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Project K.O.P. * Number :- {{FOH.project_number}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Total Hotal Keys :- {{FOH.hotel_key}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Guest Floors :- {{FOH.guest_room_floors}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Total Hotel Bays :- {{FOH.hotel_bays}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Required Parking Spaces :- {{FOH.reqvered_parking_spaces}}</td>
+    </tr>
+</table>
+<br>
+   <h4>YOUR CURRENT PROJECT SELECTIONS</h4>
+  
+   <table style="border-collapse: collapse; width: 100%;">
+    <tr>
+       <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Region :- {{FOH.Region_name}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Location Index :- {{FOH.Location_Index}}</td>
+    </tr>
+    <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Parking Required :- {{FOH.Parking_Required}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Swimming Pool :- {{FOH.Swimming_Pool}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Parking Levels :- {{FOH.Parking_Levels}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Structural System :- {{FOH.Structural_System}}
+</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Corridor Requirements :- {{FOH.Corridor_Requirements}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Security Requirements :- {{FOH.Security_Requirements}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Meeting Space :- {{FOH.Meeting_Space}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"> Feed Employees :- {{FOH.Feed_Employees}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Stairwells :- {{FOH.Stairwells}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"> Laundry Services :- {{FOH.Laundry_Services}}</td>
+    </tr>
+     <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Guest Transportation :- {{FOH.Guest_Transportation}}</td>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Uniform Maintenance and Distribution :- {{FOH.Uniform_Distribution}}</td>
+    </tr>
+</table>
+<br>
+      
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Hotel Facilities Area Summary</th>
+           
+            <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Gross Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+      {% for Fr in Fron %}
+    <tr>
+        <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ Fr.Front_admin.name}}</td>
+       
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 200px;">{{ Fr.squermitter}}</td>
+       
+    </tr>
+{% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL GUEST ROOMS & CIRCULATION:</b></td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b>{{FOH.totalroom}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<div>
+     <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for fac in Facilities %}
+                                   
+                                        <li>{{ fac.Notes_name1 }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+</div>
+<br>
+<h3>1. GUEST ROOMS & CIRCULATION</h3>
+<p>TOTAL HOTEL KEYS:-{{FOH.totalkey}}</p>
+
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">Room Type</th>
+           
+            <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Keys</th>
+             <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for ro in room %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ ro.front_perent.name }}</td>
+           <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 100px;">{{ ro.roomkey }}</td>
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 150px;">{{ ro.totalSquer }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL GUEST ROOMS & CIRCULATION</b></td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.totalkey}}</td>
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.guestroom}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<br>
+<p>Notes:</p>
+<div>
+     <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for fac in guestroom %}
+                                   
+                                        <li>{{ fac.Notes_name2 }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+</div>
+<br>
+<h3>2. LOBBY, F&B AND RELATED SUPPORT AREAS</h3>
+
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</th>
+           
+            
+             <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for sup in Suport_area %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ sup.front_subchild.Sub_name }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 150px;">{{ sup.lobbysquermeter }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL LOBBY, F&B AND RELATED SUPPORT AREAS</b></td>
+            
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.lobbytotal}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<br>
+<p>Notes:</p>
+<div>
+     <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for fac in lobbynotes %}
+                                   
+                                        <li>{{ fac.Notes_name3 }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+</div>
+
+<br>
+<h3>3. MEETING FACILITIES</h3>
+
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</th>
+           
+            
+             <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for met in metting %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ met.front_child.child_name }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 150px;">{{ met.mettingsquer }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL MEETING FACILITIES</b></td>
+            
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.mettingtotal}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<p>Notes:<p>
+    <div>
+     <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for meet in meetingnotes %}
+                                   
+                                        <li>{{ meet.Notes_name4 }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+</div>
+
+<br>
+<h3>4. ADDITIONAL GROUND FLOOR PUBLIC AREAS</h3>
+
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</th>
+           
+            
+             <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for publicss in publicareas %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ publicss.front_public_area.public2 }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 150px;">{{ publicss.public_squermeter }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL ADDITIONAL GROUND FLOOR PUBLIC SPACES</b></td>
+            
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.additionaltotal}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<p>Notes:</p>
+<div>
+     <ol style="padding-top: 20px;" type="A" class="childclass">
+                                {% for pub in publicnotes %}
+                                   
+                                        <li>{{ pub.Notes_name5 }}</li>
+                                          
+                      
+                                        
+                                   
+                                {% endfor %}
+                            </ol>
+</div>
+<br>
+<h3>5. ADMINISTRATIVE OFFICES</h3>
+
+<table id="example" class="table table-bordered" style="border-collapse: collapse; width: 100%;">
+    <thead class="thead" style="border: 1px solid #dddddd; text-align: left; padding: 4px; background-color: #f2f2f2;">
+        <tr class="table-success">
+            <th style="border: 1px solid #dddddd; text-align: left; padding: 4px;">&nbsp;</th>
+           
+            
+             <th style="border: 1px solid #dddddd; text-align: center; padding: 4px;">Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto;">
+        {% for off in offices %}
+        
+        <tr>
+
+           <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;">{{ off.front_administrative.administrative }}</td>
+           
+            <td style="border: 1px solid #dddddd; text-align: center; padding: 4px; width: 150px;"> {{ off.administartive_squermeter }}</td>
+        </tr>
+        {% endfor %}
+         <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL ADMINISTRATIVE OFFICES</b></td>
+            
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL:-</b> {{FOH.administrativetotal}}</td>
+            
+            
+        </tr>
+    </tbody>
+</table>
+<br>
+<br>
+{% comment %} <table>
+ <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;"><b>TOTAL BOH SUPPORT SERVICES</b></td>
+            
+             <td style="border: 1px solid #dddddd; text-align: left; padding: 4px; width: 150px;" ><b>TOTAL:-</b></td>
+            
+            
+        </tr>
+</table> {% endcomment %}
+    </div>
+  </body>
+</html>

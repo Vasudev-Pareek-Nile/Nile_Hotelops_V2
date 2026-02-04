@@ -1,0 +1,195 @@
+{% extends 'AdvanceSalaryForm/homebase.html' %}
+{% load static %}
+{% block content %} 
+<style>
+    form label{
+        font-weight: bold !important;
+    }
+
+    #pdfLoader {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #FC133D;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    #loaderContainer {
+        display: none; /* Ensure it's hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+</style>
+
+<div id="loaderContainer">
+    <div id="pdfLoader"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <form method="post">
+                {% csrf_token %}
+                <h4 class="card-header text-uppercase fw-bold">
+                    SALARY ADVANCE / LOAN APPLICATION FORM {{ formatted_date|default:'' }}
+                </h4>
+                <div class="card-body">
+                    <!-- SALARY ADVANCE/ LOAN APPLICATION FORM -->
+                    <div class="row">
+                        <!-- Row 1 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="EmployeeCode">Employee Code</label>
+                                <input type="text" class="form-control" id="EmployeeCode" name="EmployeeCode" value="{{ emp_code|default:'' }}" readonly>
+                                <input type="hidden" class="form-control" id="EmployeeID" name="EmployeeID" value="{{ EmpID|default:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="EmployeeName">Employee Name</label>
+                                <input type="text" class="form-control" id="EmployeeName" name="EmployeeName" value="{{ FullName|default:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Designation">Designation</label>
+                                <input type="text" class="form-control" id="Designation" name="Designation" value="{{ designation|default:'' }}" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Department">Department</label>
+                                <input type="text" class="form-control" id="Department" name="Department" value="{{ department|default:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="DateOfLoan">Date Of Loan</label>
+                                <input type="date" class="form-control" id="DateOfLoan" name="DateOfLoan" value="{{ AdvanceSalaryFormData.DateofLoan|default:today|date:"Y-m-d" }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="LoanAmountRequired">Loan Amount Required</label>
+                                <input type="number" class="form-control" id="LoanAmountRequired" name="LoanAmountRequired" value="{{ AdvanceSalaryFormData.LoanAmount|default:'' }}" required>
+                            </div>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="NoofInstallments">No. of Installments</label>
+                                <input type="text" class="form-control" id="NoofInstallments" name="NoofInstallments" value="{{ AdvanceSalaryFormData.No_Of_Installments|default:'' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="BankACNo">Bank A /C No.</label>
+                                <input type="number" class="form-control" id="BankACNo" name="BankACNo" value="{{BankAccoundNo|default:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="ReasonsforRequest">Reasons for Request</label>
+                                <textarea rows="2" class="form-control" id="ReasonsforRequest" name="ReasonsforRequest">{{ AdvanceSalaryFormData.Reasons_For_Request|default:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACCOUNTS DEPARTMENT -->
+                    <h5 class="card-header text-uppercase fw-bold">ACCOUNTS DEPARTMENT</h5>
+                    <div class="row">
+                        <!-- Row 1 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="PreviousLoanTaken">Previous Loan(s) Taken</label>
+                                <input type="number" class="form-control" id="PreviousLoanTaken" name="PreviousLoanTaken" value="{{ AdvanceSalaryFormData.Prev_Loan_Taken|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="PrevNoofInstallments">Previous No. of Installments</label>
+                                <input type="text" class="form-control" id="PrevNoofInstallments" name="PrevNoofInstallments" value="{{ AdvanceSalaryFormData.Prev_No_Of_Installments|default:'' }}" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="DuesInRepayment">Any dues in repayment</label>
+                                <input type="number" class="form-control" id="DuesInRepayment" name="DuesInRepayment" value="{{ AdvanceSalaryFormData.Dues_Repayment|default:'' }}" >
+                            </div>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="ReasonforPreviousLoan">Reason for Previous Loan(s)</label>
+                                <textarea rows="2" class="form-control" id="ReasonforPreviousLoan" name="ReasonforPreviousLoan">{{ AdvanceSalaryFormData.Reason_For_PreviousLoan|default:'' }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HUMAN RESOURCES DEPARTMENT -->
+                    <h5 class="card-header text-uppercase fw-bold">HUMAN RESOURCES DEPARTMENT</h5>
+                    <div class="row">
+                        <!-- Row 1 -->
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="CurrentSalary">Current Salary</label>
+                                <input type="text" class="form-control" id="CurrentSalary" name="CurrentSalary" value="{{ basic_salary|default:'' }}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="Recommendation">Recommendation</label>
+                                <input type="text" class="form-control" id="Recommendation" name="Recommendation" value="{{ AdvanceSalaryFormData.Recommendation|default:'' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-block mb-3">
+                                <label class="col-form-label" for="DateOfJoining">Date of Joining</label>
+                                <input type="text" class="form-control" id="DateOfJoining" name="DateOfJoining" value="{{ date_of_joining|default:'' }}" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-5">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+
+            </div>
+        </div>
+    </div>
+</div> 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let filterForm = document.querySelector("form"); // Get the first form on the page
+    
+        if (filterForm) {
+            filterForm.addEventListener("submit", function() {
+                document.getElementById("loaderContainer").style.display = "flex"; // Show loader on filter submit
+            });
+        }
+    });
+</script>
+
+
+{% endblock content %}

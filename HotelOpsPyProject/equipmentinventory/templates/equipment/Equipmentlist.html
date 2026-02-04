@@ -1,0 +1,63 @@
+{% extends 'equipment/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="table-responsive">
+  <div >
+    <div  class="card-header">
+        Equipment And Trolley List
+    </div>
+    <div>
+      <br/>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>Date</th>
+            <th>Equipment Name</th>
+            <th>Brand Name</th>
+            <th>Model No</th>
+            <th>In Working Condition</th>
+            <th>Last Servicing Date</th>
+            <th>AMC Covered</th>
+            <th>Serial No</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.Date}}</td>
+            <td>{{i.Equipment_Name}}</td>
+            <td>{{i.Brand_Name}}</td>
+            <td>{{i.Model_No}}</td>
+            <td>{{i.In_Working_Condition}}</td>
+            <td>{{i.Last_Servicing_Date}}</td>
+            <td>{{i.AMC_Covered}}</td>
+            <td>{{i.Serial_No}}</td>
+            <td>{{i.Remarks}}</td>
+            <td>
+              
+            <div class="btn btn-group">
+                  <a href="/equipmentinventory/EquipmentEditList?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/equipmentinventory/EquipmentDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/equipmentinventory/EquipmentList_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+             </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  
+</div>
+
+{% endblock content %}

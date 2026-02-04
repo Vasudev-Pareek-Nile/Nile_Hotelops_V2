@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Description</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+    body {
+      font-size: 14px;
+      line-height: 1.5;
+      font-family: "Arial Nova";
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      font-size: 10px;
+      margin-top: auto; 
+    }
+
+   
+     main {
+      flex: 1;
+      padding: 20px;
+      margin: 100px 30px 60px 30px; 
+      font-size: 12px;
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    
+    @media (max-width: 600px) {
+      header, footer {
+        padding: 5px 0;
+      }
+    }
+
+    hr {
+      border: 2px solid mediumseagreen;
+      height: 0.5px;
+      border-color: mediumseagreen;
+      background-color: mediumseagreen;
+      margin: 5px 0;
+    }
+
+    .page-number:after {
+      content: counter(page);
+    }
+
+    @page {
+      size: A4;
+      margin: 20;
+    }
+
+    @media print {
+      header {
+        position: fixed;
+        top: 0;
+      }
+      footer {
+        position: fixed;
+        bottom: 0;
+      }
+      main {
+        margin-top: 100px; 
+        margin-bottom: 60px; 
+        
+      }
+    }
+  </style>
+  <style>
+    .centered {
+      text-align: center; /* Centers the text horizontally */
+      vertical-align: middle; /* Centers the text vertically */
+    }
+  </style>
+  <style>
+    .centered-cell {
+      text-align: center; /* Centers text horizontally */
+      vertical-align: middle; /* Centers text vertically */
+      padding: 20px; /* Adds padding around the content */
+      border: 1px solid #ddd; /* Optional: adds a border to the cell */
+    }
+    .centered-cell p {
+      margin: 0;
+      padding: 25px 0; 
+    }
+  </style>
+  <style>
+    .top-margin {
+      padding-top: 6px; /* Adjust the value as needed */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Job Description</strong></td>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if organization_logos %}
+            <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      
+      <div >
+          
+          <table class="table" style="border: 1px solid #ccc; padding: 2px; margin-top: 2px">
+        <tbody>
+          <tr>
+            <td class="top-margin"  style="width : 140px;"><label for="" class="label"><b>JD Title<b>&nbsp;</label></td>
+            <td colspan=3 class="top-margin">
+              <span>{{data.JD_Title}}</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label"><b>Department(s)<b>
+                
+                
+                
+                &nbsp;</label
+              ><span></span>
+            </td>
+            <td class="top-margin">
+              <span>{{data.Department}}</span>
+            </td>
+              <td class="top-margin">
+              <label for="" class="label"><b>Division<b>&nbsp;</label
+              >
+            </td> 
+            <td class="top-margin">
+              <span>{{data.Division}}</span>
+            </td>
+                     </tr>
+         
+            <tr>
+            <td class="top-margin"><label for="" class="label"><b>Position<b>&nbsp;</label></td>
+            <td colspan=3 class="top-margin">
+              <span>{{data.Position}}</span>
+            </td>
+             
+           
+          </tr>
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label"><b>Reports To<b>&nbsp;</label
+              ><span></span>
+            </td>
+            <td class="top-margin">
+              <span>{{data.Report_To}}</span>
+            </td>
+              <td class="top-margin">
+              <label for="" class="label"><b>Level/Grade<b>&nbsp;</label
+              ><span></span>
+            </td> 
+            <td class="top-margin">
+              <span>{{data.Level}}</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="top-margin"><label for="" class="label"><b>Reference No<b>&nbsp;</label></td>
+              <td colspan=3 class="top-margin">
+                <span>{{data.Reference_No}}</span>
+              </td>
+          </tr>
+        
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label"><b>Effective Date<b>&nbsp;</label
+              >
+            </td>
+            <td class="top-margin">
+              <span>{{data.Effective_Date | date:"j F Y"}}</span>
+             <!-- j: Day of the month as a numeric value without leading zeros (1 through 31). For example, 5 for the 5th day of the month.
+                  F: Full month name (e.g., January, February). This displays the full textual representation of the month.
+                  Y: Four-digit year (e.g., 2024).  -->
+            </td>
+              <td class="top-margin">
+              <label for="" class="label"><b>JD Approved By<b>&nbsp;</label
+              >
+            </td> 
+            <td class="top-margin">
+              <span>{{data.JD_Approved_By}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      <table style="border: 1px solid #ccc; padding: 2px; margin-top: 2px">
+        <tbody>
+          <tr>
+            <td class="top-margin" style="background: #f8f8f8">
+              <label for="" class="label"><b>JOB SCOPE SUMMARY</b>&nbsp;</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label">{{data.Job_Scope | safe}}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin"  style="background: #f8f8f8">
+              <label for="" class="label"><b>DUTIES & RESPONSIBILITIES</b>&nbsp;</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label">{{data.Duties_Responsibilities | safe}}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin" style="background: #f8f8f8">
+              <label for="" class="label"><b>JOB KNOWLEDGE SKILLS & ABILITIES</b>&nbsp;</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="top-margin">
+              <label for="" class="label">{{data.Job_Knowledge_Skills | safe}}</label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <br>
+      <table style="border: 1px solid #ccc; padding: 6px; margin-top: 2px">
+        <tbody>
+          <tr>
+            <td colspan=2>
+              <p>ACCEPTANCE</p>
+              <p>I acknowledge that I have read and understand the scope and responsibilities of the above mentioned Job Description</p>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan=2>
+              <span>Name :    __________________________________</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan=2>
+              <span>Signature : __________________ </span>&nbsp;&nbsp; <span>Date : _______________</span>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan=2 class="centered-cell">
+              <span >CONFIDENTIAL & PROPRIETARY</span><br>
+              <span>May not be reproduced, disclosed or distributed without the express written permission of Nile Hospitality</span><br>
+              <span>Compliance with this Job Description is subject to local laws, codes and regulations which supersede this Job Description</span>
+            </td>
+          </tr>
+           </tbody>
+      </table>
+          
+          
+        
+           
+       
+
+          
+    
+
+
+
+      </div>
+    </main>
+  
+    <br>
+    <hr color="mediumseagreen">
+    <footer class="footer">
+      <table style="width: 100%;">
+        <tr>
+          <td id="datetime" style="text-align: left;">
+            {{ current_datetime }} | User Id: 
+          </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase;  padding-top: 1px; font-size: 15px; text-align: center;">
+              <tbody
+              
+              
+              >
+                <tr>
+                  <td>
+                    <p style="font-size: 10px;"></p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            <span class="page-number">Report Generated By HotelOps</span>
+          </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+</body>
+
+</html>

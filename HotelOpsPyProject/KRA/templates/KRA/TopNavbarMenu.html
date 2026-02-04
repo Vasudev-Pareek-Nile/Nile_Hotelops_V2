@@ -1,0 +1,25 @@
+<div class="nav-element-container d-flex gap-4">
+    <!-- New - Element -->
+
+        <li class="list-unstyled"><a href="{% url 'KraEnrty' %}" class="nav-link dropdown-main-color text-white">Kra Entry</a></li>
+        <li class="list-unstyled"><a href="{% url 'TargetAssignList' %}" class="nav-link dropdown-main-color text-white">Target List</a></li>
+        <li class="list-unstyled"><a href="{% url 'KraYearlyReport' %}" class="nav-link dropdown-main-color text-white">Yearly Report</a></li>
+        
+        <!-- New - Element -->
+        {% if  request.session.UserID == '20201212178780' or request.session.UserID == '20201212180048' %}
+            <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+                <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+                    <span>Admin</span>
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'kra_page' %}">KRA</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'kra_standard' %}">Hotel Standard</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'TargetAssignList' %}">Target List</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'KraEnrty' %}">Kra Entry</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'KraYearlyReport' %}">Yearly Report</a>
+                    <a class="dropdown-item dropdown-item-color" href="{% url 'KRA_Target_Report_View' %}">Target Report</a>
+                    {% comment %} <a class="dropdown-item dropdown-item-color" href="{% url 'Bulk_TargetAssign' %}">Bulk Target Assign</a> {% endcomment %}
+                </div>
+            </li>
+        {% endif %}
+</div>

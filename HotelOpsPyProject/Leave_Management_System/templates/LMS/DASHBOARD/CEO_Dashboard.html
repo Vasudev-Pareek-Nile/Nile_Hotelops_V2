@@ -1,0 +1,142 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css">
+   <style>
+    span.fc-time {
+        display: none;
+    }
+    span[data-s="Approved"]{
+        color: #1ab394;
+      }
+      span[data-s="Rejected"] {
+        color: red;
+      }
+
+      span[data-s="Pending"] {
+        color: orange;
+      }
+
+    .st_Approved{
+        background-color: #1ab394;
+        
+
+      }
+      .st_Rejected {
+        background-color: red;
+      }
+
+      .st_Pending {
+        background-color: orange;
+      }
+   </style>
+
+    <div class="card-header col-md-12">Leave Management System(LMS) CEO Dashboard</div>
+    <br>
+    <div class="row">
+        <div class="col-md-9" id="calendar"></div> 
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Leaves
+                </div>
+                <ul class="list-group list-group-flush" id="event-listing"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
+   
+    <script>
+        // Assuming eventListing is defined somewhere in your code
+        var eventListing = $('#event-listing'); // Replace with the actual ID or selector
+    
+        var calendar = $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+           
+            events: function (start, end, timezone, callback) {
+                fetchAndRenderEvents(start, end, callback);
+            },
+            viewSkeletonRender: function (info) {
+                updateEventListing(info.view.currentStart);
+            }
+        });
+    
+        function fetchAndRenderEvents(start, end, callback) {
+            $.ajax({
+                url: '/Leave_Management_System/all_leaves_ceo/',
+                dataType: 'json',
+                data: {
+                    start: start.format(),
+                    end: end.format(),
+                },
+                success: function (response) {
+                    console.log('Events fetched successfully:', response);
+                    response.forEach(function (event) {
+                        var myclass=(event.status==1?"Approved":event.status==0?"Pending":event.status==-1?"Rejected":"" )
+                        event.className = "st_"+myclass;
+                    });
+                    callback(response);
+                    updateEventListing(calendar.fullCalendar('getDate').startOf('month'), response);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching events:', error);
+                }
+            });
+        }
+    
+        function updateEventListing(startDate, data) {
+            eventListing.empty();
+    
+            var eventsForSelectedMonth = data.filter(function (event) {
+                var eventMonth = moment(event.start).format('MM');
+                var eventYear = moment(event.start).format('YYYY');
+    
+                return (
+                    startDate === undefined ||
+                    (eventMonth === startDate.format('MM') && eventYear === startDate.format('YYYY'))
+                );
+            });
+    
+            if (eventsForSelectedMonth.length === 0) {
+                eventListing.append('<li class="list-group-item">No Events for this month</li>');
+            } else {
+                eventsForSelectedMonth.forEach(function (event) {
+                    var formattedStartDate = moment(event.start).format('DD-MM-YYYY');
+                    var formattedEndDate = moment(event.end).format('DD-MM-YYYY');
+    
+                    eventListing.append(
+                        '<li class="list-group-item lst" style="text-transform: capitalize;">' +
+                            'Leave Type: ' + event.type+ '<br>' +     
+                        'Emp Name: ' +'<br>' + event.fullname + '<br>' +
+                        'Start Date: ' + formattedStartDate + '<br>' +  'End Date: ' + formattedEndDate +"<br/>"+
+                        
+                        'Status: <span data-s='+(event.status==1?"Approved":event.status==0?"Pending":event.status==-1?"Rejected":"" )+'>' + (event.status==1?"Approved":event.status==0?"Pending":event.status==-1?"Rejected":"" )+ '</span><br>' +
+                        '</li>'
+                    );
+                });
+            }
+        }
+    
+        $("#calendar .fc-button-group button").click(function () {
+            var startDate = moment(calendar.fullCalendar('getDate').startOf('month'));
+            fetchAndRenderEvents(startDate, calendar.fullCalendar('getDate').endOf('month'), function (response) {
+                updateEventListing(startDate, response);
+            });
+        });
+    </script>
+    
+    
+    
+     {% endblock %}

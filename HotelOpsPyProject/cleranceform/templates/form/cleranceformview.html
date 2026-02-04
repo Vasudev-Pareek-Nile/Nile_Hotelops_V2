@@ -1,0 +1,83 @@
+
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Clerance Form View </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>Name</th>
+                    <td>{{Ed.Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Separation Date</th>
+                      <td>{{Ed.Separation_Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Position</th>
+                      <td>{{Ed.Position}}</td>
+                    </tr>
+                    <tr>
+                      <th>Finishing Time</th>
+                      <td>{{Ed.Finishing_Time}}</td>
+                    </tr>
+                    <tr>
+                      <th>Resignation Letter</th>
+                      <td>{{Ed.Resignation_Letter}}</td>
+                      </tr>
+                      <tr>
+                        <th>Acc Of Resign</th>
+                        <td>{{Ed.Acc_Of_Resign}}</td>
+                      </tr>
+                      <tr>
+                        <th>Notice Period Served</th>
+                        <td>{{Ed.Notice_Period_Served}}</td>
+                      </tr>
+                      <tr>
+                        <th>Notice Period Waived Off</th>
+                        <td>{{Ed.Notice_Period_Waived_Off}}</td>
+                      </tr>
+                      <tr>
+                        <th>Exit Interview By Hr</th>
+                        <td>{{Ed.Exit_Interview_By_Hr}}</td>
+                      </tr>
+                      <tr>
+                        <th>Full And Final Settlement</th>
+                        <td>{{Ed.Full_And_Final_Settlement}}</td>
+                      </tr>
+            
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %} 
+

@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+
+{% load encryption_filters %}
+
+<html>
+<head>
+
+    <style>
+            body { 
+                font-family: Arial, sans-serif; 
+                font-size: 12px; 
+            }
+            table { 
+                width: 100%; border-collapse: collapse; 
+                margin-bottom: 15px; 
+            }
+            th, td { 
+                {% comment %} border: 1px solid #000;  {% endcomment %}
+                padding: 2px; 
+                vertical-align: top; 
+            }
+            .header, .section-title { 
+                font-weight: bold; 
+                background-color: #f0f0f0; 
+            }
+            .no-border { 
+                border: none; 
+            }
+            .remarks { 
+                height: 5px; 
+            }
+            .rating-cell { 
+                width: 10%; text-align: center; 
+            }
+            
+    </style>
+
+    <style>
+
+    th {
+        text-align: center;
+        vertical-align:middle;
+    }
+  table td,table th{
+    {% comment %} border:1px solid #edf0fb  !important; {% endcomment %}
+    padding:5px;
+  }
+  h4{
+    background-color:#edf0fb;
+    color:black;
+    padding:10px;
+    text-align:center;
+  }
+  table th{
+    text-align:left;
+    background-color:#fbfbfb;
+    color:#333;
+    {% comment %} width:200px; {% endcomment %}
+  }
+
+  #PersonalDetails th{
+    width:200px;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="container register-form">
+    <div class="card card-primary">
+        <div class="card-header">
+            <h4 class="card-tittle">Interview Assessment Sheet</h4>
+        </div>
+
+        <div class="card-body">
+            {% comment %} <h1 style="text-align:center;">Interview Assessment Sheet</h1> {% endcomment %}
+            <div class="row">
+                <div class="col-sm-12" >
+                    <table style="border:0.3px solid black; border-collapse: collapse; border-spacing: 2px; border-color: gray;" id="PersonalDetails">
+                        <tr>
+                            <td><strong>Hire</strong><br>{{ AM_obj.HireFor }}</td>
+                            <td><strong>Applied For</strong><br>{{ AM_obj.OrganizationName }}</td> <!-- Replace with name if available -->
+                            <td><strong>Date of Interview</strong><br>{{ AM_obj.InterviewDate|date:"d-m-Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Position Applied For</strong><br>{{ AM_obj.position }} - {{ AM_obj.Department }}</td>
+                            <td><strong>Department</strong><br>{{ AM_obj.Department }}</td>
+                            <td><strong>Level</strong><br>{{ AM_obj.Level }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Prefix</strong><br>{{ AM_obj.Prefix }}</td>
+                            <td><strong>Name</strong><br>{{ AM_obj.Name }}</td>
+                            <td><strong>Contact Number</strong><br>{{ AM_obj.ContactNumber }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Work Experience:</strong>
+                                {% if AM_obj.workexperience == 'Fresher' %}
+                                    Fresher
+                                {% else %}
+                                    Experienced ({{ AM_obj.workexperience }})
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"><strong>Family Background:</strong><br>{{ AM_obj.familybackground }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Present Salary CTC:</strong><br>{{ AM_obj.pre_salary }}</td>
+                            <td><strong>Expected Salary CTC:</strong><br>{{ AM_obj.exp_salary }}</td>
+                            <td><strong>Proposed DOJ:</strong><br>{{ AM_obj.ProposedDOJ|date:"d-m-Y" }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>        
+        </div>
+    </div>
+
+  
+    <!-- Grid Section -->
+    <div class="grid-section">
+        <div class="row mt-5">
+            <div class="col-sm-12 mt-5">
+                <table  style="border:0.3px solid black;  border-collapse: collapse; border-spacing: 2px; border-color: gray;">
+                    <thead>
+                        <tr>
+                            <th width="230">Factor</th>
+                            {% if 'HR' in UserList %}
+                                <th>HR</th>
+                            {% endif %}
+                            {% if 'HOD' in UserList %}
+                                <th>HOD</th>
+                            {% endif %}
+                            {% if 'GM' in UserList %}
+                                <th>GM</th>
+                            {% endif %}
+                            {% if 'RD' in UserList %}
+                                <th>RD</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in MasterJSON %}
+                            {% with category.CategoryID as category_id %}
+                                {% if factor_details_dict|get:category_id %}
+                                    {% for factor in factor_details_dict|get:category_id %}
+                                        <tr>
+                                            <td>
+                                                {{ category.Title }}
+                                                <br>
+                                                {% if category.Item %}
+                                                    <ul>
+                                                        {% for item in category.Item %}
+                                                            {% if item.ItemType == 'li' %}
+                                                                <li>{{ item.Title }}</li>
+                                                            {% endif %}
+                                                            {% if item.ItemType == 'checkbox' %}
+                                                                {% for option in item.ItemOption %}
+                                                                
+                                                                        {% if option in factor.factor %}
+                                                                            {{ option }} ✓
+                                                                        {% else %}
+                                                                            {{ option }}
+                                                                        {% endif %}
+                                                                
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                            {% if item.ItemType == 'label' %}
+                                                                <li>{{ item.Title }}</li>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                {% endif %}
+                                            </td>
+
+                                            {% if 'HR' in UserList %}
+                                            <td style="text-align: top;">
+                                                <span>
+                                                    Rating: {{ factor.hr_rating }}<br>
+                                                    Remarks: {{ factor.hr_remarks }}
+                                                </span>
+                                            </td>
+                                            
+                                            {% endif %}
+                                            {% if 'HOD' in UserList %}
+                                                <td>
+                                                    <span>
+                                                        Rating: {{ factor.hod_rating }}<br>
+                                                        Remarks: {{ factor.hod_remarks }}
+                                                    </span>
+                                                </td>
+                                            {% endif %}
+                                            {% if 'GM' in UserList %}
+                                                <td>
+                                                <span>
+                                                    Rating: {{ factor.gm_rating }}<br>
+                                                    Remarks: {{ factor.gm_remarks }}
+                                                </span>
+                                                </td>
+                                            {% endif %}
+                                            {% if 'RD' in UserList %}
+                                                <td>
+                                                    <span>
+                                                        Rating: {{ factor.rd_rating }}<br>
+                                                        Remarks: {{ factor.rd_remarks }}
+                                                    </span>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>        
+        </div>
+    </div>
+</div>
+</body>
+</html>

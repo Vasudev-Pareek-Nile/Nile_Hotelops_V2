@@ -1,0 +1,586 @@
+{% extends 'YearlyBudget/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+ <style>
+    table th:first-child{
+      min-width: 170px;
+      
+    }
+    table td{
+      min-width: 40px;
+      
+    }
+  
+  th,td{
+      font-size: 12px;
+  }
+
+
+
+  
+   </style>
+   
+ 
+  
+<div class="card">
+    <div class="card-header fw-bold">Yearly Budget </div>
+    <hr>
+    <div class="card-body">
+    <form method="get">
+      <div class="row">
+        <div class="col-md-3">
+          <label for="EntryYear">Year:</label>
+          <select class="form-control selChange calc" name="EntryYear" id="EntryYear">
+            {% for i in CYear %}
+              <option value="{{ i }}" {% if i == selectedEntryYear %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="I">Organization:</label>
+          <select class="form-control selChange" name="I" id="I">
+            {% for itm in memOrg %}
+              <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                {{ itm.Organization_name }}
+              </option>
+            {% endfor %}
+          </select>
+       </div>
+
+      <div class="col-sm-1 mt-4">
+        <button type="submit" class="btn btn-primary">Filter</button>
+      </div>
+                      
+
+    </div>
+    </form>
+    <div id="tblEntry" class="" >
+      <form action="" method="post">
+          <input type="hidden" name="OrganizationID" value="{{I}}"/>
+          <!-- <br> -->
+          <h4 class="card-header fw-bold">Revenue</h4>  
+          <!-- <hr> -->
+          <!-- <div > -->
+      
+                
+            
+              <!-- <br> -->
+                  <div class="card-header fw-bold">Finance</div>
+                  <!-- <br> -->
+                  <div style="overflow:auto">
+                  <table id="" class="tblcontainer table table-bordered" style="min-width:1500px">
+                      <thead >
+                      <tr>
+                          <th>Catgory</th>
+                          <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                          
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in finance_category %}
+                                    <tr data-p-title="{{i.Finance_category}}" data-r-index="{{ forloop.counter0 }}">
+                                      <td>
+                                        {% if i.Finance_category == "Occupancy" or i.Finance_category == "Rooms Profitability"  or i.Finance_category == "F&B Profitability" or i.Finance_category == "GOP" %}
+                                          {{i.Finance_category}} (%)
+                                        {%else%}
+                                          {{i.Finance_category}}
+                                        {%endif%}
+
+                                        <input name="Finance_categoryID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                                        
+                                      </td>
+                                      
+                                      <td><input class="form-control" name="finance_category_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="finance_category_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                                      
+                                    
+      
+      
+                                      
+                                    </tr>
+                      
+                                    {% if forloop.last %}
+                                    <input  type="hidden" name="Total_finance_category_item" value="{{ forloop.counter0 }}"/>
+                                    {% endif %}
+                              {% endfor %}
+      
+                      
+                    
+                  </tbody>
+      
+                  
+                </table> 
+              </div>
+      
+                <br>
+                <div class="card-header fw-bold">Market Segment (Room Nights)</div>
+                <br>
+                <div style="overflow:auto">
+                <table class="table table-bordered" class="tblcontainer table table-bordered" style="min-width:1500px" id="">
+                  <thead>
+                      <tr>
+                          <th>Catgory</th>
+                          <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                          
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in market_segment_category %}
+                                    <tr data-p-title="{{i.market_segment_category}}">
+                                      <td>{{i.market_segment_category}}
+                                        <input name="market_segment_categoryID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                                        
+                                      </td>
+                                      
+                                      <td><input class="form-control" name="market_segment_category_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                                      <td><input class="form-control" name="market_segment_category_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                                      
+                                    
+      
+      
+                                      
+                                    </tr>
+                      
+                                    {% if forloop.last %}
+                                    <input  type="hidden" name="Total_market_segment_category_item" value="{{ forloop.counter0 }}"/>
+                                    {% endif %}
+                              {% endfor %}
+      
+                      
+                    
+                  </tbody>
+      
+                  
+                </table> 
+              </div>
+                <br>
+                <div class="card-header fw-bold">Business Source (Revenue)</div>
+                <br>
+                <div style="overflow:auto">
+              <table class="tblcontainer table table-bordered" style="min-width:1500px" id="" >
+                <thead>
+                    <tr>
+                        <th>Catgory</th>
+                        <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for i in business_source_category %}
+                                  <tr data-p-title="{{i.business_source_category}}">
+                                    <td>{{i.business_source_category}}
+                                      <input name="business_source_categoryID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                                      
+                                    </td>
+                                    
+                                    <td><input class="form-control" name="business_source_category_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="business_source_category_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                                    
+                                  
+    
+    
+    
+                                    
+                                  </tr>
+                    
+                                  {% if forloop.last %}
+                                  <input  type="hidden" name="Total_business_source_category_item" value="{{ forloop.counter0 }}"/>
+                                  {% endif %}
+                            {% endfor %}
+    
+                    
+                  
+                </tbody>
+    
+                
+              </table> 
+            </div>
+               <br>
+               <div class="card-header fw-bold">Expenses Including Payroll</div>
+               <br>
+               <div style="overflow:auto">
+              <table class="tblcontainer table table-bordered" style="min-width:1500px" id="" >
+                <thead>
+                    <tr>
+                        <th>Catgory</th>
+                        <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for i in Expenses %}
+                                  <tr data-p-title="{{i.Title}}">
+                                    <td>{{i.Title}}
+                                      <input name="ExpenseID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                                      
+                                    </td>
+                                    
+                                    <td><input class="form-control" name="Expense_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="Expense_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                                    
+                                  
+    
+    
+    
+                                    
+                                  </tr>
+                    
+                                  {% if forloop.last %}
+                                  <input  type="hidden" name="Total_Expense_item" value="{{ forloop.counter0 }}"/>
+                                  {% endif %}
+                            {% endfor %}
+    
+                    
+                  
+                </tbody>
+    
+                
+              </table> 
+              </div>
+              <br>
+              <div class="card-header fw-bold">Cost Per Cover</div>
+              <br>
+              <div style="overflow:auto">
+                <table class="tblcontainer table table-bordered" style="min-width:1500px" id="" >
+                  <thead>
+                      <tr>
+                          <th>Catgory</th>
+                          <th>Jan</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
+                            <th>Apr</th>
+                            <th>May</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Aug</th>
+                            <th>Sep</th>
+                            <th>Oct</th>
+                            <th>Nov</th>
+                            <th>Dec</th>
+                          
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in CostCover %}
+                        <tr data-p-title="{{i.Title}}">
+                          <td>{{i.Title}}
+                            <input name="CostCoverID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                            
+                          </td>
+                          
+                          <td><input class="form-control" name="CostCover_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                          <td><input class="form-control" name="CostCover_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                        </tr>
+                        {% if forloop.last %}
+                        <input  type="hidden" name="Total_CostCover_item" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                    {% endfor %}
+                  </tbody>
+      
+                  
+                </table> 
+              </div>
+            <br>
+            <div class="card-header fw-bold">Cost Per Occupied Room Night</div>
+            <br>
+            <div style="overflow:auto">
+              <table class="tblcontainer table table-bordered" style="min-width:1500px" id="" >
+                <thead>
+                    <tr>
+                        <th>Catgory</th>
+                        <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for i in CostOccupied %}
+                                  <tr data-p-title="{{i.Title}}">
+                                    <td>{{i.Title}}
+                                      <input name="CostOccupiedID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                                      
+                                    </td>
+                                    
+                                    <td><input class="form-control" name="CostOccupied_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                                    <td><input class="form-control" name="CostOccupied_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                                    
+                                  
+
+
+
+                                    
+                                  </tr>
+                    
+                                  {% if forloop.last %}
+                                  <input  type="hidden" name="Total_CostOccupied_item" value="{{ forloop.counter0 }}"/>
+                                  {% endif %}
+                            {% endfor %}
+
+                    
+                  
+                </tbody>
+
+                
+              </table> 
+            </div>
+            </div>
+      
+            
+            
+            <br>
+            <div class="card-header fw-bold">Engineering</div>
+            <br>
+            <div style="overflow:auto">
+              <table class="tblcontainer table table-bordered" style="min-width:1200px" id="" >
+                <thead>
+                    <tr>
+                        <th>Catgory</th>
+                        <th>Jan</th>
+                          <th>Feb</th>
+                          <th>Mar</th>
+                          <th>Apr</th>
+                          <th>May</th>
+                          <th>Jun</th>
+                          <th>Jul</th>
+                          <th>Aug</th>
+                          <th>Sep</th>
+                          <th>Oct</th>
+                          <th>Nov</th>
+                          <th>Dec</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                  {% for i in engineering_category %}
+                      <!-- <tr data-p-title="{{i.Title}}">
+                        <td>{{i.Title}}
+                          <input name="Engineering_CategoryID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                        </td> -->
+
+                      <tr data-p-title="{{i.Engineering_category}}" data-r-index="{{ forloop.counter0 }}">
+                        <td>
+                          {{i.Engineering_category}}
+                          <input name="Engineering_categoryID_{{ forloop.counter0 }}" type="hidden" value="{{i.id}}" type="text"/>
+                        </td>
+                        
+                        <td><input class="form-control" name="Engineering_Category_Month_1_{{ forloop.counter0 }}" value="{{i.Month_1}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_2_{{ forloop.counter0 }}" value="{{i.Month_2}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_3_{{ forloop.counter0 }}" value="{{i.Month_3}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_4_{{ forloop.counter0 }}" value="{{i.Month_4}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_5_{{ forloop.counter0 }}" value="{{i.Month_5}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_6_{{ forloop.counter0 }}" value="{{i.Month_6}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_7_{{ forloop.counter0 }}" value="{{i.Month_7}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_8_{{ forloop.counter0 }}" value="{{i.Month_8}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_9_{{ forloop.counter0 }}" value="{{i.Month_9}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_10_{{ forloop.counter0 }}" value="{{i.Month_10}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_11_{{ forloop.counter0 }}" value="{{i.Month_11}}" type="number" step="0.01"></td>
+                        <td><input class="form-control" name="Engineering_Category_Month_12_{{ forloop.counter0 }}" value="{{i.Month_12}}" type="number" step="0.01"></td>
+                      </tr>
+        
+                      {% if forloop.last %}
+                      <input  type="hidden" name="Total_Engineering_item" value="{{ forloop.counter0 }}"/>
+                      {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table> 
+            </div>
+            </div>
+                        
+      
+              {%  csrf_token %}
+                      
+                            
+              <div class="card-footer text-right">
+                  <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+              </div>
+              </div>  
+          
+        </form>
+      </div>
+    
+  </div>
+</div>
+</div>
+</div>
+      
+<script>
+  
+$(function(){
+$(".selChange").change(function(){
+
+  SetFilterDisplay();
+})
+
+$("tr[data-p-title='Room Revenue'] input,tr[data-p-title='Food and Beverage Revenue'] input,tr[data-p-title='MOD Revenue'] input").blur(function(){
+  try{
+    //debugger;
+    index =$(this).attr('name').split('_')[3]
+    rowindex =$(this).attr('name').split('_')[4]
+    calTotalRevenue(index,rowindex);
+  }catch(e){}
+
+})
+
+$("tr[data-p-title='Total Revenue'] input").attr('readonly','readonly')
+
+})  
+var calTotalRevenue =function(index,rowindex){
+  //var a= "finance_category_Month_"+index+"_"+rowindex+"";
+  //debugger;
+  //console.log($("[name='finance_category_Month_"+index+"_"+rowindex+"']").val())
+  var rowindex =$("tr[data-p-title='Room Revenue']").attr('data-r-index')
+  var RoomRevenue =$("[name='finance_category_Month_"+index+"_"+rowindex+"']").val();
+  RoomRevenue = parseFloat(RoomRevenue);
+  RoomRevenue = isNaN(RoomRevenue)?0:RoomRevenue;
+
+
+  rowindex =$("tr[data-p-title='Food and Beverage Revenue']").attr('data-r-index')
+  var FBRevenue =$("[name='finance_category_Month_"+index+"_"+rowindex+"']").val();
+  FBRevenue = parseFloat(FBRevenue);
+  FBRevenue = isNaN(FBRevenue)?0:FBRevenue;
+
+  rowindex =$("tr[data-p-title='MOD Revenue']").attr('data-r-index')
+  var MODRevenue =$("[name='finance_category_Month_"+index+"_"+rowindex+"']").val();
+  MODRevenue = parseFloat(MODRevenue);
+  MODRevenue = isNaN(MODRevenue)?0:MODRevenue;
+  var TotalRevenue = RoomRevenue+FBRevenue+MODRevenue;
+  rowindex =$("tr[data-p-title='Total Revenue']").attr('data-r-index')
+  $("[name='finance_category_Month_"+index+"_"+rowindex+"']").val(TotalRevenue)
+    
+
+
+}
+var SetFilterDisplay=function(){
+
+$("#tblEntry").css('display','none')
+
+  }
+
+
+  $(document).ready(function () {
+    var selectedOrganization = "{{ I }}";
+    $("select[name='I']").val(selectedOrganization);
+    var selectedEntryYear = "{{ EntryYear }}";
+    $("select[name='EntryYear']").val(selectedEntryYear);
+}); 
+</script>
+
+{% endblock content %}

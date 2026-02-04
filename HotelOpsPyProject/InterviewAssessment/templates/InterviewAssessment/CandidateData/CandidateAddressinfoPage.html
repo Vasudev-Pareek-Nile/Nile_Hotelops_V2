@@ -1,0 +1,335 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .strike{
+       color: red;
+   }
+</style>
+   <div class="card m-3">
+    <div class="card-header">
+        <h3>Address Information</h3>
+    </div>
+    <form action="" method="post" enctype="multipart/form-data">
+        
+        <div class="main">
+            <div class="card-header m-3">
+                <h3>Permanent Address</h3>
+            </div>
+            <div class="row m-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Address <span class="strike">*</span></label>
+                        <textarea id="Permanent_Address" name="Permanent_Address" class="form-control" required>{{Addressinfo.Permanent_Address}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Pincode <span class="strike">*</span></label>
+                        <input type="text" id="Permanent_Pincode" name="Permanent_Pincode" class="form-control" value="{{Addressinfo.Permanent_Pincode}}" required oninput="validateInput(this)">
+
+
+                        <script>
+                        function validateInput(input) {
+                            // Remove any non-digit characters
+                            input.value = input.value.replace(/\D/g, '');
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>City <span class="strike">*</span></label>
+                        <input type="text" id="Permanent_City" name="Permanent_City" class="form-control" value="{{Addressinfo.Permanent_City}}" required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>State <span class="strike">*</span></label>
+                         <select id="Permanent_State" name="Permanent_State" class="form-control" required>
+                            <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                            <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                            <option value="ASSAM">ASSAM</option>
+                            <option value="BIHAR">BIHAR</option>
+                            <option value="CHHATTISGARH">CHHATTISGARH</option>
+                            <option value="GOA">GOA</option>
+                            <option value="GUJARAT">GUJARAT</option>
+                            <option value="HARYANA">HARYANA</option>
+                            <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                            <option value="JHARKHAND">JHARKHAND</option>
+                            <option value="KARNATAKA">KARNATAKA</option>
+                            <option value="KERALA">KERALA</option>
+                            <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                            <option value="MAHARASHTRA">MAHARASHTRA</option>
+                            <option value="MANIPUR">MANIPUR</option>
+                            <option value="MEGHALAYA">MEGHALAYA</option>
+                            <option value="MIZORAM">MIZORAM</option>
+                            <option value="NAGALAND">NAGALAND</option>
+                            <option value="ODISHA">ODISHA</option>
+                            <option value="PUNJAB">PUNJAB</option>
+                            <option value="RAJASTHAN">RAJASTHAN</option>
+                            <option value="SIKKIM">SIKKIM</option>
+                            <option value="TAMIL NADU">TAMIL NADU</option>
+                            <option value="TELANGANA">TELANGANA</option>
+                            <option value="TRIPURA">TRIPURA</option>
+                            <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                            <option value="UTTARAKHAND">UTTARAKHAND</option>
+                            <option value="WEST BENGAL">WEST BENGAL</option>
+                            <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                            <option value="CHANDIGARH">CHANDIGARH</option>
+                            <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+                            <option value="DELHI">DELHI</option>
+                            <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                            <option value="LADAKH">LADAKH</option>
+                            <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                            <option value="PUDUCHERRY">PUDUCHERRY</option>
+                            
+                        </select>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="row m-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>House Phone Number <span class="strike">*</span></label>
+                        <input type="text" id="Permanent_HousePhoneNumber" name="Permanent_HousePhoneNumber" class="form-control" value="{{Addressinfo.Permanent_HousePhoneNumber}}" required>
+                        <span id="Permanent_HousePhoneNumberError" style="color:red;"></span>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Checkbox to copy data -->
+            <div class="m-3">
+                <input type="checkbox" id="copyAddressCheckbox" onclick="copyAddress()"> 
+                <label for="copyAddressCheckbox">Copy Permanent Address to Temporary Address</label>
+            </div>
+        
+            <div class="card-header m-3">
+                <h3>Temporary Address</h3>
+            </div>
+            <div class="row m-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Address <span class="strike">*</span></label>
+                        <textarea id="Temporary_Address" name="Temporary_Address" class="form-control" required>{{Addressinfo.Temporary_Address}}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Pincode <span class="strike">*</span></label>
+                        <input type="text" id="Temporary_Pincode" name="Temporary_Pincode" class="form-control" value="{{Addressinfo.Temporary_Pincode}}" required oninput="validateInput(this)">
+                  
+                        
+                    
+                        <script>
+                        function validateInput(input) {
+                            // Remove any non-digit characters
+                            input.value = input.value.replace(/\D/g, '');
+                        }
+                        </script>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>City <span class="strike">*</span></label>
+                        <input type="text" id="Temporary_City" name="Temporary_City" class="form-control" value="{{Addressinfo.Temporary_City}}" required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>State <span class="strike">*</span></label>
+                       
+                        <select id="Temporary_State" name="Temporary_State" class="form-control" required>
+                            <option value="">-- Select State --</option>
+                            <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                            <option value="ARUNACHAL PRADESH">ARUNACHAL PRADESH</option>
+                            <option value="ASSAM">ASSAM</option>
+                            <option value="BIHAR">BIHAR</option>
+                            <option value="CHHATTISGARH">CHHATTISGARH</option>
+                            <option value="GOA">GOA</option>
+                            <option value="GUJARAT">GUJARAT</option>
+                            <option value="HARYANA">HARYANA</option>
+                            <option value="HIMACHAL PRADESH">HIMACHAL PRADESH</option>
+                            <option value="JHARKHAND">JHARKHAND</option>
+                            <option value="KARNATAKA">KARNATAKA</option>
+                            <option value="KERALA">KERALA</option>
+                            <option value="MADHYA PRADESH">MADHYA PRADESH</option>
+                            <option value="MAHARASHTRA">MAHARASHTRA</option>
+                            <option value="MANIPUR">MANIPUR</option>
+                            <option value="MEGHALAYA">MEGHALAYA</option>
+                            <option value="MIZORAM">MIZORAM</option>
+                            <option value="NAGALAND">NAGALAND</option>
+                            <option value="ODISHA">ODISHA</option>
+                            <option value="PUNJAB">PUNJAB</option>
+                            <option value="RAJASTHAN">RAJASTHAN</option>
+                            <option value="SIKKIM">SIKKIM</option>
+                            <option value="TAMIL NADU">TAMIL NADU</option>
+                            <option value="TELANGANA">TELANGANA</option>
+                            <option value="TRIPURA">TRIPURA</option>
+                            <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                            <option value="UTTARAKHAND">UTTARAKHAND</option>
+                            <option value="WEST BENGAL">WEST BENGAL</option>
+                            <option value="ANDAMAN AND NICOBAR ISLANDS">ANDAMAN AND NICOBAR ISLANDS</option>
+                            <option value="CHANDIGARH">CHANDIGARH</option>
+                            <option value="DADRA AND NAGAR HAVELI AND DAMAN AND DIU">DADRA AND NAGAR HAVELI AND DAMAN AND DIU</option>
+                            <option value="DELHI">DELHI</option>
+                            <option value="JAMMU AND KASHMIR">JAMMU AND KASHMIR</option>
+                            <option value="LADAKH">LADAKH</option>
+                            <option value="LAKSHADWEEP">LAKSHADWEEP</option>
+                            <option value="PUDUCHERRY">PUDUCHERRY</option>
+                            
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>House Phone Number <span class="strike" required>*</span></label>
+                        <input type="text" id="Temporary_HousePhoneNumber" name="Temporary_HousePhoneNumber" class="form-control" value="{{Addressinfo.Temporary_HousePhoneNumber}}" required>
+                        <span id="Temporary_HousePhoneNumberError" style="color:red;"></span>
+                   
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+            <input type="submit" id="toggleSpinners" class="btn btn-primary btn-sm" value="Next">
+        </div>
+    </form>
+   </div>
+
+
+
+
+<script>
+    document.getElementById('Permanent_HousePhoneNumber').addEventListener('input', function () {
+    const mobile = this.value;
+    const regex = /^[6-9]\d{9}$/;
+    const mobileError = document.getElementById('Permanent_HousePhoneNumberError');
+
+    if (!regex.test(mobile)) {
+        mobileError.textContent = "Invalid mobile number";
+    } else {
+        mobileError.textContent = "";
+    }
+});
+
+function copyAddress() {
+    if (document.getElementById('copyAddressCheckbox').checked) {
+        // Copy permanent address fields to temporary address
+        document.getElementById('Temporary_Address').value = document.getElementById('Permanent_Address').value;
+        document.getElementById('Temporary_Pincode').value = document.getElementById('Permanent_Pincode').value;
+        document.getElementById('Temporary_City').value = document.getElementById('Permanent_City').value;
+        document.getElementById('Temporary_State').value = document.getElementById('Permanent_State').value;
+        document.getElementById('Temporary_HousePhoneNumber').value = document.getElementById('Permanent_HousePhoneNumber').value;
+    } else {
+        // Clear temporary address fields if checkbox is unchecked
+        document.getElementById('Temporary_Address').value = '';
+        document.getElementById('Temporary_Pincode').value = '';
+        document.getElementById('Temporary_City').value = '';
+        document.getElementById('Temporary_State').value = '';
+        document.getElementById('Temporary_HousePhoneNumber').value = '';
+    }
+}
+{% comment %} 
+$(document).ready(function() {
+    // Event listener for permanent pincode field
+    $('#Permanent_Pincode').on('keyup', function() {
+        updateAddressFields('Permanent_Pincode', 'Permanent');
+    });
+
+    // Event listener for temporary pincode field
+    $('#Temporary_Pincode').on('keyup', function() {
+        updateAddressFields('Temporary_Pincode', 'Temporary');
+    });
+
+    // Function to update city and state based on pincode
+    function updateAddressFields(pincodeInputId, addressType) {
+        const pincode = $(`#${pincodeInputId}`).val();
+
+        if (pincode.length >= 6) {  // Ensure the pincode is at least 6 digits long
+            $.ajax({
+                url: '/InterviewAssessment/get_location/',  // API endpoint to fetch location data
+                type: 'GET',
+                data: {
+                    pincode: pincode
+                },
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);  // Display error message if any
+                    } else {
+                        // Update the city and state dropdowns based on the API response
+                        $(`#${addressType}_City`).val(data.city);  // Set the city value
+                        const stateDropdown = $(`#${addressType}_State`);
+                        stateDropdown.val(data.state);  // Set the state value in dropdown
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);  // Log any AJAX errors
+                }
+            });
+        }
+    }
+}); {% endcomment %}
+$(document).ready(function() {
+    // Event listener for permanent pincode field
+    $('#Permanent_Pincode').on('keyup', function() {
+        updateAddressFields('Permanent_Pincode', 'Permanent');
+    });
+
+    // Event listener for temporary pincode field
+    $('#Temporary_Pincode').on('keyup', function() {
+        updateAddressFields('Temporary_Pincode', 'Temporary');
+    });
+
+    // Function to update city and state based on pincode
+    function updateAddressFields(pincodeInputId, addressType) {
+        const pincode = $(`#${pincodeInputId}`).val();
+
+        if (pincode.length >= 6) {  // Ensure the pincode is at least 6 digits long
+            $.ajax({
+                url: '/InterviewAssessment/get_location/',  // API endpoint to fetch location data
+                type: 'GET',
+                data: {
+                    pincode: pincode
+                },
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);  // Display error message if any
+                    } else {
+                        // Update the city and state dropdowns based on the API response
+                        $(`#${addressType}_City`).val(data.city);  // Set the city value
+                        const stateDropdown = $(`#${addressType}_State`);
+                        stateDropdown.val(data.state);  // Set the state value in dropdown
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);  // Log any AJAX errors
+                }
+            });
+        }
+    }
+
+    // Trigger the function on page load for both permanent and temporary pincodes
+    if ($('#Permanent_Pincode').val().length >= 6) {
+        updateAddressFields('Permanent_Pincode', 'Permanent');
+    }
+    if ($('#Temporary_Pincode').val().length >= 6) {
+        updateAddressFields('Temporary_Pincode', 'Temporary');
+    }
+});
+
+</script>
+
+{% endblock content %}
+
+
+
+
+

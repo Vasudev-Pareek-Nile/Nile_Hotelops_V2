@@ -1,0 +1,113 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .strike{
+      color: red;
+  }
+</style>
+
+   <div class="card m-3">
+    <div class="card-header">
+        <h3>Bank Information</h3>
+    </div>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="main">
+            <div class="row m-3">
+                            
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Bank Account Number<span class="strike">*</span></label>
+                    <input type="text" name="BankAccountNumber"  value = "{{Bankinfo.BankAccountNumber}}" id="" class="form-control"  required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>IFSC Code<span class="strike">*</span></label>
+                        <input type="text" name="IFSCCode" id="ifsc_code" value="{{Bankinfo.IFSCCode}}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Name of Bank<span class="strike">*</span></label>
+                        <input type="text" name="NameofBank" id="name_of_bank" value="{{Bankinfo.NameofBank}}" class="form-control" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Bank Branch<span class="strike">*</span></label>
+                        <input type="text" name="BankBranch" id="bank_branch" value="{{Bankinfo.BankBranch}}" class="form-control" required>
+                    </div>
+                </div>
+                
+                
+                
+                
+            </div>
+        
+                
+           
+        </div>
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+            <input type="submit" id="toggleSpinners" class="btn btn-primary btn-sm" value="Next">
+        </div>
+    </form>
+   </div>
+
+
+
+
+
+
+   <script>
+    $(document).ready(function() {
+       
+        $('#ifsc_code').on('keyup', function() {
+            var ifscCode = $(this).val().trim();  
+
+         
+            if (ifscCode) {
+               
+                $.ajax({
+                    url: '/InterviewAssessment/get_ifsc_details/',  
+                    type: 'GET',  
+                    data: { ifsc_code: ifscCode },  
+                    success: function(data) {
+                       
+                        console.log(data);
+                        
+                      
+                        if (data.error) {
+                            console.error(data.error);  
+                          
+                        } else {
+                          
+                            $('#name_of_bank').val(data['Bank Name'] || '');
+                            $('#bank_branch').val(data['Branch'] || '');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching IFSC details:', error);
+                    }
+                });
+            } else {
+               
+                $('#name_of_bank').val('');
+                $('#bank_branch').val('');
+            }
+        });
+    });
+</script>
+
+
+
+
+{% endblock content %}
+
+
+
+
+

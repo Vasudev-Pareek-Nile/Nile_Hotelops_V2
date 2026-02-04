@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trainee Experience Letter</title>
+
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            margin: 40px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .header-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .header-table img {
+            height: 120px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: underline;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            text-align: justify;
+        }
+
+        .footer {
+            margin-top: 40px;
+        }
+
+        .signature-block {
+            margin-top: 60px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% if header %}
+        {{ header|safe }}
+    {% endif %}
+
+    <h2 class="title">EXPERIENCE LETTER</h2>
+    
+    <p><strong>Date:</strong> {{ Ed.generate_date|date:"d F Y" }}</p>
+
+    <div class="content">
+        <p>
+            This is to certify that <strong>{{ Ed.prefix }} {{ Ed.first_name }} {{ Ed.last_name }}</strong> 
+            was associated with <strong>{{ HotelName }}</strong> as a 
+            <strong>{{ Ed.designation }}</strong> in the 
+            <strong>{{ Ed.department }}</strong> Department.
+        </p>
+
+        <p>
+            He joined the organization on <strong>{{ Ed.date_of_joining|date:"d F Y" }}</strong> 
+            and completed his training on <strong>{{ Ed.date_of_last_working|date:"d F Y" }}</strong>.
+            During his tenure, he demonstrated sincerity, dedication, and a keen interest in learning.
+        </p>
+
+        <p>
+            We wish him all the best in his future career endeavors.
+        </p>
+    </div>
+
+    <div class="footer">
+        <p class="signature-block">
+            {{ Ed.Hr_Name }}<br>
+            {{ Ed.Hr_Designation }}<br>
+            {{ HotelName }}
+        </p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% extends 'IRD/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+ 
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'IRDCleranceUpdateData' %}" enctype="multipart/form-data">
+    {{ IRD_Clerance }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In IRD Clerance List</p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+              {% render_field IRDCleranceForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <label>Clerance Time</label>
+                  {% comment %} {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite" %} {% endcomment %}
+                  <textarea name="Clerance_time" class="form-control" rows=4 maxlength=500 placeholder="Clerance_time">{{Ed.Clerance_time}}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="row">
+            <div class="col-sm-12">
+              <label>Remarks</label>
+              {% comment %} {% render_field VisitorPassForm.Purpose_Of_Visite class="form-control" rows=4 maxlength=500 placeholder="Purpose_Of_Visite" %} {% endcomment %}
+              <textarea name="Remarks" class="form-control" rows=4 maxlength=500 placeholder="Remarks">{{Ed.Remarks}}</textarea>
+            </div>
+          </div>
+         
+       
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+   
+  {% endblock content %}

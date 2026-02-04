@@ -1,0 +1,136 @@
+{% extends 'TravelAgentProductivity/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+    }
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Travel Agent Productivity Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'TravelAgentEdit' mem.id %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-3">
+                    <select class="form-control "  name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">February</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>                        
+                    </select>  
+                </div>
+            <lable  class="col-sm-1"> Year</lable>
+            <div  class="col-sm-3">
+                <select class="form-control" name="EntryYear" value ="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>    
+                </div>
+
+            
+            
+        </div>
+               
+                <br/>
+                <br>
+               
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                        <th>Agent Name</th>
+                        <th>Room Nights</th>
+                        <th>Revenue </th>
+                        <th>ARR</th>
+                   
+                        
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>      
+                        <td>{{x.TravelAgentMaster.title}}</td> 
+    
+                        <td><input type="text"  class="form-control" value="{{x.RoomNights}}" name="RoomNights_{{ forloop.counter0 }}"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.TravelAgentMaster.id}}" type="text"/>
+                        </td>
+                        <td><input type="text"  class="form-control" value="{{x.RoomRevenue}}" name="RoomRevenue_{{ forloop.counter0 }}"/>
+                        </td>
+                        <td><input type="text"   class="form-control" value="{{x.ARR}}" name="ARR_{{ forloop.counter0 }}"/>
+                        </td>
+                    
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+                    
+    
+                </table>                          
+                <br>
+               
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+
+  
+    <script>
+    
+        $(function(){
+    
+            $("input[name*='RoomNights_'],input[name*='RoomRevenue_']").blur(function(){
+                DoCal();
+    
+            })      
+        })
+    
+        var DoCal=function(){
+    
+            
+            $("input[name*='RoomNights_']").each(function(){
+                debugger;
+                    var RN = $(this).val();
+                    RN = parseFloat(RN);
+                    RN = isNaN(RN)?0:RN;
+    
+                    var RV = $(this).parent().parent().find("[name*='RoomRevenue_']").val();
+                    RV = parseFloat(RV);
+                    RV = isNaN(RV)?0:RV;
+    
+                    var ARR=0;
+                    if(RN>0){
+    
+                        ARR = RV/RN;
+                    }
+                    $(this).parent().parent().find("[name*='ARR_']").val(ARR.toFixed(2));  
+                    
+            })
+    
+    }
+    </script> 
+  
+
+{% endblock content %}

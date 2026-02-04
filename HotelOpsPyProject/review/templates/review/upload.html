@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Excel File</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Optional Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+         body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            height: 450px;
+            width: 550px !important;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h4 {
+            background-color: #fff;
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-control {
+            border-radius: 4px;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+        }
+        
+    </style>
+</head>
+<body>
+    {% include 'review/navbar.html' %}
+    <h4 class="mb-4">Upload Excel File</h4>
+    <div class="container mt-4">
+       
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.non_field_errors }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.OrganizationID.id_for_label }}" class="form-label">{{ form.OrganizationID.label }}</label>
+                <select name="{{ form.OrganizationID.name }}" id="{{ form.OrganizationID.id_for_label }}" class="form-control">
+                    {% for value, display in organization_choices %}
+                        <option value="{{ value }}">{{ display }}</option>
+                    {% endfor %}
+                </select>
+                {{ form.OrganizationID.errors }}
+            </div>
+        
+            <div id="file-upload-section">
+                <div class="form-group">
+                    <label for="{{ form.file.id_for_label }}" class="form-label">{{ form.file.label }}</label>
+                    <input type="file" name="{{ form.file.name }}" id="{{ form.file.id_for_label }}" class="form-control">
+                    {{ form.file.errors }}
+                </div>
+                <div class="form-group" id="second-file-group">
+                    <label for="{{ form.second_file.id_for_label }}" class="form-label">{{ form.second_file.label }}</label>
+                    <input type="file" name="{{ form.second_file.name }}" id="{{ form.second_file.id_for_label }}" class="form-control">
+                    {{ form.second_file.errors }}
+                </div>
+            </div>
+        
+            <div class="form-group">
+                <label for="{{ form.date.id_for_label }}" class="form-label">{{ form.date.label }}</label>
+                <input type="date" name="{{ form.date.name }}" id="{{ form.date.id_for_label }}" class="form-control" value="{{ form.date.value }}">
+                {{ form.date.errors }}
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+        
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+    const orgSelect = document.getElementById('{{ form.OrganizationID.id_for_label }}');
+    const secondFileGroup = document.getElementById('second-file-group');
+
+    function updateFileFields() {
+        const selectedOrgId = orgSelect.value;
+        
+        if (selectedOrgId) {
+            fetch(`/check-review-software/${selectedOrgId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.reviewSoftware === 'reviewPro' || data.reviewSoftware === 'Rankly' ) {
+                        secondFileGroup.style.display = 'none';
+                    } else {
+                        secondFileGroup.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    orgSelect.addEventListener('change', updateFileFields);
+
+    // Initialize on page load
+    updateFileFields();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('{{ form.date.id_for_label }}').value = today;
+        });
+        </script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #000000; /* Ensuring all text is black */
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #dddddd;
+            padding-bottom: 20px;
+        }
+        .header img {
+            height: 80px;
+            margin-right: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #000000; /* Ensuring header text is black */
+            flex: 1;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #000000; /* Ensuring content text is black */
+            line-height: 1.6;
+        }
+        .content p {
+            margin: 0 0 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #dddddd;
+            font-size: 12px;
+            color: #000000; /* Ensuring footer text is black */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Probation Upcoming Soon</h1>
+        </div>
+        <div class="content">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Probation Date</th>
+                      
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employee in employee_list %}
+                    <tr>
+                        <td>{{ employee.EmpName }}</td>
+                        <td>{{ employee.pDate|date:"d-m-Y" }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>Thank you!</p>
+            <hr>
+        </div>
+        <div class="footer">
+            <p>&copy; {{ today|date:"Y" }} Your Company. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

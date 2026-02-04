@@ -1,0 +1,112 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+  </style>
+  
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Rental Other Income - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>    
+                     
+        </tr>
+    </table>
+    <br>
+<br/>
+<div class="card-body">
+    <form action="{%url 'Rental_Incomeviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+  
+      </div>                                                        
+    </form>
+</div>
+</div>
+
+  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.Rental_Other_IncomeMaster.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+
+    <tfoot>
+        <tr>
+            <th>
+                Rental And Other Income
+            </th>
+            <th>
+                {{mem.Rental_And_OtherIncome}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+</div>
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+    
+    var DoCal=function(){
+
+     
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+        })
+
+                    
+        $("input[name ='Rental_And_OtherIncome']").val(TotalAmount.toFixed(2))
+        var Rental_And_OtherIncome = TotalAmount;
+
+    }
+   
+</script>
+
+  {% endblock content %}

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-size: 12px;
+        }
+        ol {
+            list-style: none;
+            counter-reset: item;
+        }
+        li {
+            counter-increment: item;
+            margin-bottom: 5px;
+        }
+        li::before {
+            content: counter(item, upper-alpha);
+            margin-right: 5px;
+            font-weight: bold;
+            border: 1px solid black;
+            border-radius: 50%;
+            padding: 5px;
+        }
+        .tablebordered {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        .tablebordered th, .tablebordered td {
+            text-align: left;
+            
+        }
+        .tablebordered th{
+            width: 270px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <table>
+            <tr>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr>
+
+                                <td>
+                                    <img src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg"  height="100">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table style="border-radius: 10px; background-color: #1ab394;color: white; text-transform: uppercase;font-weight: bold; padding-top:3px; font-size: 15px; text-align: center;"> 
+                        <tbody>
+                           <tr>
+
+                            <td style="text-align: center !important;">Salary Correction Request</td>
+                           </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td></td>
+            </tr>
+        </table>
+        <table class="tablebordered" style="border: 1px solid #ccc;padding: 4px; margin-top: 20px;">
+            <tbody>
+            <tr>
+                <th>Date</th>
+                <td>{{cor_obj.Date |date:'d-m-Y'}}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{cor_obj.Name}}</td>
+            </tr>
+            <tr>
+                <th>Employee Code</th>
+                <td>{{cor_obj.EmployeeCode}}</td>
+            </tr>
+            <tr>
+                <th>Department</th>
+                <td>{{cor_obj.Department}}</td>
+            </tr>
+            <tr>
+                <th>Designation</th>
+                <td>{{cor_obj.Designation}}</td>
+            </tr>
+            <tr>
+                <th>Current Salary</th>
+                <td>{{formatted_Current_Salary}}</td>
+            </tr>
+            <tr>
+                <th>Date of Last Salary Review</th>
+                <td>{{cor_obj.Date_of_Last_salary_review |date:'d-m-Y'}}</td>
+            </tr>
+            <tr>
+                <th>Last Increment Amount</th>
+                <td>{{formatted_Last_Increment_Amount}}</td>
+            </tr>
+            <tr>
+                <th>Last Increment Slab</th>
+                <td>
+                    {% if cor_obj.Last_Increment_Slab_3 == True  %}&#10004;{% else %}&#10006;{% endif %}
+                    <label for="">3%</label>
+                    {% if cor_obj.Last_Increment_Slab_5 == True  %}&#10004;{% else %}&#10006;{% endif %}
+                    <label for="">5%</label>
+                    {% if cor_obj.Last_Increment_Slab_8 == True  %}&#10004;{% else %}&#10006;{% endif %}
+                    <label for="">8%</label>
+                </td>
+            </tr>
+            <tr>
+                <th>Proposed Salary</th>
+                <td>{{formatted_Proposed_Salary}}</td>
+            </tr>
+            <tr>
+                <th>Effective Date</th>
+                <td>{{cor_obj.Effective_Date |date:'d-m-Y'}}</td>
+            </tr>
+            <tr>
+                <th>Justification for Salary Correction Request</th>
+                <td>{{cor_obj.Justification_Request}}</td>
+            </tr>
+           </tbody>
+        </table>
+    </div>
+</body>
+</html>

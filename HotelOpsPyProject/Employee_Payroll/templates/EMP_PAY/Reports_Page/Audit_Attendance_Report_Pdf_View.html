@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Attendance Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .header {
+            {% comment %} border-bottom: 2px solid black; {% endcomment %}
+            padding-block: 15px;
+            padding-inline: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }   
+
+        .header-left p,
+        .header-right p {
+            margin: 0px 5px;
+            font-size: 12px;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+
+        thead {
+            background-color: #f3f4f6;
+        }
+
+        th {
+            padding: 8px 6px;
+            text-align: left;
+            border-right: 1px solid #d1d5db;
+            border-bottom: 1px solid black;
+            font-weight: bold;
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        td {
+            padding: 6px;
+            border-right: 1px solid #e5e7eb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .text-red {
+            color: #dc2626;
+        }
+
+        .text-blue {
+            color: #2563eb;
+        }
+
+        .footer {
+            padding: 15px;
+            border-top: 1px solid #d1d5db;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        @page {
+            size: A4;
+            margin: 1cm;
+
+            @top-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-size: 10px;
+                color: #444;
+            }
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            .footer {
+                display: none;
+            }
+
+            @page {
+                margin: 1cm;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .header-right {
+                text-align: left;
+            }
+
+            table {
+                font-size: 10px;
+            }
+
+            th, td {
+                padding: 4px;
+            }
+        }
+        .ModifiedStatus{
+           color: red !important;
+        }
+        .Remarks{
+            width: 200px !important;
+            max-width: 200px !important;
+            min-width: 200px !important;
+        }
+    </style>
+
+    <style>
+        body {
+            font-family: "DejaVuCustom";
+            font-size: 9px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <p>{{Org_Name.OrganizationName}}</p>
+                <p>Audit Trail Attendance Report From {{StartDate|date:'d-m-Y'}} To {{EndDate|date:"d-m-Y"}}</p>
+            </div>
+            <div class="header-right">
+                <p>Date : {{ today|date:"d-m-Y H:i" }}</p>
+                {% comment %} <p>Page: counter(page) Of counter(pages)</p> {% endcomment %}
+                <p></p>
+            </div>
+        </div>
+        <br>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Emp Code</th>
+                        <th>Employee Name</th>
+                        <th>Date</th>
+                        <th>Actual</th>
+                        <th class="ModifiedStatus">Modified</th>
+                        <th>Modified Date</th>
+                        <th class="Remarks">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in emps %}
+                        {% for record in emp.attendance_records %}
+                            <tr>
+                                {% if forloop.first %}
+                                    <td rowspan="{{ emp.attendance_records|length }}"  style="vertical-align: top;">{{ emp.EmployeeCode }}</td>
+                                    <td rowspan="{{ emp.attendance_records|length }}"  style="vertical-align: top;">{{ emp.EmpName }}</td>
+                                {% endif %}
+                                <td>{{ record.Date }}</td>
+                                <td>{{ record.ActualStatus }}</td>
+                                <td class="ModifiedStatus">{{ record.Status }}</td>
+                                <td>{{ record.ModifyDateTime|date:"d-m-Y H:i" }}</td>
+                                <td class="Remarks">{{ record.Remarks|default:"" }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% empty %}
+                        <tr><td colspan="6" style="text-align:center;">No records found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+</body>
+</html>

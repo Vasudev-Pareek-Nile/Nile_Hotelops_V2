@@ -1,0 +1,95 @@
+{% extends 'PADPAPP/homebase.html' %}
+<style>
+    table th,td{
+        font-size: 11px;
+    }
+</style>
+{% block content %} 
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+<div class="row">
+
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">Attribute Master List</div> 
+           
+            <div class="card-body">
+                <div class="text-right mb-4">
+                    <a href= "{% url 'Objective_Master_List'%}" class="btn btn-primary btn-sm">Master</a>
+                    <a class="btn btn-sm btn-primary" href="{% url 'Attribute_Master_Add' %}?O_ID={{O_ID}}"><i class="fa fa-plus"></i> Add Attribute</a>
+                </div>
+                <div class="table-responsive mb-0">
+                    <table id="example" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Objective Master</th>
+                                 
+                            <th>Attribute</th>
+                            <th align = "center">High</th>
+                            <th align = "center">Medium</th>
+                            <th align = "center">Low</th>
+                            
+                
+                            <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for  att in attr  %}
+                            <tr>
+                                <td>{{att.Objective_Master.Title}}</td>
+                                <td>{{att.Title }}</td>
+                                <td align = "center"> {% if att.RL_H %}&#10004{% else %}&#10006{% endif %}</td>
+                                <td align = "center">{% if att.RL_M %}&#10004{% else %}&#10006{% endif %}</td>
+                                <td align = "center">{% if att.RL_L %}&#10004{% else %}&#10006{% endif %}</td>
+                               
+                              
+                                <td>
+                                    <a href="{% url 'Attribute_Master_Add' %}?ID={{att.id}}&O_ID={{O_ID}}"><i class="fa fa-edit text-primary"></i></a>
+                                
+                                    <a href="{% url 'Attribute_Master_Delete'%}?ID={{att.id}}&O_ID={{O_ID}}" onclick="return confirm('Are you sure you want to delete this?')"><i class="fa fa-trash text-danger"></i></a>
+                                    
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+
+
+
+<script>
+    $(document).ready(function() {
+        
+        var table = $("#example").DataTable({
+            "paging": true,
+            "searching": true,
+            "order": [],
+           
+        });
+
+        
+       
+    });
+    
+    
+</script>
+
+{% endblock %}

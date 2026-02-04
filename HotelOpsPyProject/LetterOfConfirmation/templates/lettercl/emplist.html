@@ -1,0 +1,154 @@
+{% extends 'lettercl/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    {% comment %} th,td{
+        font-size: 12px;
+    } {% endcomment %}
+    table thead th{
+        text-transform:uppercase;
+        font-size:14px;
+        
+    }
+</style>
+{% if message %}
+    {% for message in messages %} 
+        {% if message.tags == 'success' %}
+            <div class="container text-center mt-3">
+                <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+                <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+            </div>
+        {% endif %} 
+    {% endfor %}
+{% endif %}
+
+<div class="card">
+    <div class="card-header"><span class="text-uppercase fw-bold"> Employee Confirmation Letter List </span></div>
+
+ <div class="card-body">
+    <div class="" style="text-align: right;">
+        <input
+            type="text"
+            id="searchInput"
+            class="form-control mb-2"
+            placeholder="Search ..."
+            style="width: 200px; display: inline-block;"
+            onkeyup="searchTable()"
+        >
+  </div>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Confirmation  Date</th>
+            <th>Appointment  Date</th>
+            
+            <th>Designation</th>
+            <th>Department</th>
+            <th  width="150">File Upload</th>
+            <th width="200">Actions</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody">
+    {% for empdetail in empdetails %}
+        <tr>
+            <td>{{empdetail.first_name}}</td>
+            <td>{{empdetail.last_name}}</td>
+            <td>{{empdetail.date_of_confirmation | date:'d-m-Y'}}</td>
+            <td>{{empdetail.date_of_appointment | date:'d-m-Y'}}</td>
+
+            
+            <td>{{empdetail.designation}}</td>
+            <td>{{empdetail.department}}</td>
+
+            <td>
+              
+                    {% if empdetail.file_name  %}
+                    
+                   <a class="btn btn-danger btn-sm text-white mb-2" href="{% url "repalce_filecl" %}?EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}&OID={{empdetail.OrganizationID}}&Page=emplistcl">Delete File</a>
+                   <br/>
+                    <a class="btn btn-primary btn-sm" href="{% url "download_filecl" %}?LOC_ID={{empdetail.id}}&OID={{empdetail.OrganizationID}}">Download File</a>
+                  
+                    {% else %}
+
+                    <a class="btn btn-primary btn-sm" href="{% url "upload_filecl" %}?EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}&OID={{empdetail.OrganizationID}}&Page=emplistcl">Upload File</a>
+
+                    {% endif %} 
+                     
+                     
+                    
+            
+                 
+             
+            </td>
+            
+            
+                        <td>
+                            <a href="{% url 'entryempcl' %}?ID={{empdetail.id}}&EC={{empdetail.emp_code}}&EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}&DepartmentName={{ empdetail.department }}&Page=emplistcl&OID={{empdetail.OrganizationID}}"   class="btn btn-primary btn-sm">Edit</a>
+                                    
+                            {% comment %} <a href="{% url 'generate_Confirmation_Letter' %}?ID={{empdetail.id}}&EC={{EC}}&EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}" target="_blank"   class="btn btn-primary btn-sm">View </a> {% endcomment %}
+                            <a 
+                                href="#" 
+                                onclick="showview(this)" 
+                                data-href="{% url 'generate_Confirmation_Letter' %}?ID={{empdetail.id}}&EC={{EC}}&EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}" 
+                                class="btn btn-primary btn-sm">
+                                View
+                            </a>
+
+                            <a href="{% url 'generate_Confirmation_Letter' %}?ID={{empdetail.id}}&EC={{EC}}&EmpID={{empdetail.EmpID}}&LOC_ID={{empdetail.id}}&head=False"   target="_blank"  class="btn btn-primary btn-sm">Print </a>
+                
+                            
+                
+            
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+
+    
+    <br>
+    
+    
+    <br>
+
+</div>
+</div>
+
+<script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+
+
+
+{% endblock content %}

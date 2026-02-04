@@ -1,0 +1,220 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="loader" style="display: none; text-align: center; padding: 20px;">
+                Loading...
+           </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadLink" class="btn btn-primary" href="#" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+   <div class="card m-3">
+    <div class="card-header">
+        <h3>Document Information</h3>
+    </div>
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="main">
+            <div class="row m-3">
+    
+                <table id="DocviousinformationsTable" class="table table-bordered" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Attachment</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for Doc in Documents %}
+                        <tr id="Docrow{{ Doc.id }}">
+                            <td>
+                                <select class="form-control" name="Title[]" required>
+                                    <option value="Resume" {% if Doc.Title == "Resume" %}selected{% endif %}>Resume</option>
+                                    <option value="Aadhaar Card" {% if Doc.Title == "Aadhaar Card" %}selected{% endif %}>Aadhaar Card</option>
+                                    <option value="Pan Card" {% if Doc.Title == "Pan Card" %}selected{% endif %}>Pan Card</option>
+                                    <option value="Voter ID" {% if Doc.Title == "Voter ID" %}selected{% endif %}>Voter ID</option>
+                                    <option value="Passport" {% if Doc.Title == "Passport" %}selected{% endif %}>Passport</option>
+                                    <option value="Driving License" {% if Doc.Title == "Driving License" %}selected{% endif %}>Driving License</option>
+                                    <option value="Ration Card" {% if Doc.Title == "Ration Card" %}selected{% endif %}>Ration Card</option>
+                                    <option value="Birth Certificate" {% if Doc.Title == "Birth Certificate" %}selected{% endif %}>Birth Certificate</option>
+                                    <option value="Medical Fitness Certificate" {% if Doc.Title == "Medical Fitness Certificate" %}selected{% endif %}>Medical Fitness Certificate</option>
+                                    <option value="Police Verification" {% if Doc.Title == "Police Verification" %}selected{% endif %}>Police Verification</option>
+                                    <option value="PF Nomination Form" {% if Doc.Title == "PF Nomination Form" %}selected{% endif %}>PF Nomination Form</option>
+                                    <option value="PF Declaration Form" {% if Doc.Title == "PF Declaration Form" %}selected{% endif %}>PF Declaration Form</option>
+                                    <option value="Gratuity Form" {% if Doc.Title == "Gratuity Form" %}selected{% endif %}>Gratuity Form</option>
+                                    <option value="Other" {% if Doc.Title == "Other" %}selected{% endif %}>Other</option>
+                                </select>
+                                
+                            </td>
+                            <td>
+                               
+                                
+                                <input type="file" class="form-control file-input" accept="application/pdf" name="AttachmentDocumenstsFile[]" data-id="FID_{{ Doc.id }}" {% if Doc.FileName %} {% else %}required {%endif%}>
+                                {% if Doc.FileTitle %}
+                                Previous Document
+                                <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ Doc.id }}&model=EmployeeDocumentsInfoData" 
+                                class="btn btn-primary btn-sm ml-2"
+                                onclick="showEduDetails(this)"
+                                >
+                               <span class="fa fa-eye"></span>
+                                </a>
+                                {% endif %}
+                              
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeDocumentRow('{{ Doc.id }}')">REMOVE</button>
+                                <input type="hidden" name="Doc_ids[]" value="{{ Doc.id }}">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-right">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="addDocumentRow()">ADD</button>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                
+                <input type="hidden" id="removedDocIds" name="removed_Doc_ids[]">    
+                
+                
+        </div>
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+            <input type="submit" id="toggleSpinners" class="btn btn-primary btn-sm" value="Final Submit">
+        </div>
+    </form>
+   </div>
+
+   <script>
+    var showEduDetails = function(obj) {
+        var hurl = $(obj).attr('data-href');
+
+        // Show the modal
+        $(".modalPr").modal('show');
+
+        // Show the loader
+        $(".modalPr .loader").show();
+
+        // Hide the iframe initially
+        $(".modalPr iframe").hide();
+
+        // Set the iframe source
+        $(".modalPr iframe").attr('src', hurl);
+
+        // Wait for the iframe to load
+        $(".modalPr iframe").on('load', function() {
+            // Hide the loader and show the iframe once the content is loaded
+            $(".modalPr .loader").hide();
+            $(this).show();
+        });
+    }
+</script>
+
+<script>
+    let newDocCount = 0;  
+    var handleFileChange =function(){
+        if($(this).parent().find("input[type='hidden'][name='FID[]']").length>0){
+    
+        }
+        else{
+            var fid = $(this).attr('data-id');
+            if(fid==undefined || fid==null){
+                fid="New";
+    
+            }
+            var inp ="<input type='hidden'  name='FID[]' value='"+fid+"'/>";
+            $(this).parent().append(inp)
+        }
+    }
+    document.querySelectorAll('.file-input').forEach(function(fileInput) {
+        fileInput.addEventListener('change', handleFileChange);
+    });
+    function addDocumentRow() {
+        var table = document.getElementById('DocviousinformationsTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+        newDocCount++;
+        var newId = 'new_' + newDocCount;  
+    
+        newRow.id = 'Docrow' + newId;
+        newRow.innerHTML = `
+            <td>
+                <select class="form-control" name="Title[]" required>
+                    <option>Resume</option>
+                    <option>Aadhaar Card</option>
+                    <option>Pan Card</option>
+                    <option>Voter ID</option>
+                    <option>Passport</option>
+                    <option>Driving License</option>
+                    <option>Ration Card</option>
+                    <option>Birth Certificate</option>
+                    <option>Medical Fitness Certificate</option>
+                    <option>Police Verification</option>
+                    <option>PF Nomination Form</option>
+                    <option>PF Declaration Form</option>
+                    <option>Gratuity Form</option>
+                    <option>Other</option>
+                </select>
+            </td>
+            <td>
+             
+               <input type="file" class="form-control file-input" name="AttachmentDocumenstsFile[]" data-id="FID_${newId}" required>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeDocumentRow('${newId}')">REMOVE</button>
+                <input type="hidden" name="Doc_ids[]" value="${newId}">
+            </td>
+        `;
+        newRow.querySelector('.file-input').addEventListener('change', handleFileChange);  
+    }
+    
+    function removeDocumentRow(DocId) {
+        var row = document.getElementById('Docrow' + DocId);
+        
+        if (row) {
+            row.parentNode.removeChild(row);
+            addRemovedDocId(DocId);
+        }
+    }
+    
+    function addRemovedDocId(DocId) {
+        var removedDocIdsInput = document.getElementById('removedDocIds');
+        var removedDocIds = removedDocIdsInput.value.split(',').filter(id => id); 
+    
+        if (!removedDocIds.includes(DocId)) {
+            removedDocIds.push(DocId);
+            removedDocIdsInput.value = removedDocIds.join(',');
+        }
+    }
+    
+</script>
+
+
+{% endblock content %}
+
+
+
+
+

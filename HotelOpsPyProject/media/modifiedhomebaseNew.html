@@ -1,0 +1,195 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-layout="horizontal" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none" data-layout-mode="orange" data-layout-width="fluid" data-layout-position="fixed" data-layout-style="default">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PADP HotelOps</title>
+    <!-- jQuery -->
+    <script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
+
+    <script src="{% static 'assets/js/moment.min.js' %}"></script>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/img/favicon.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+
+    <!-- Feather CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/feather.css' %}">
+
+    <!-- Fontawesome CSS -->
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/plugins/fontawesome/css/all.min.css' %}">
+
+    <!-- Lineawesome CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/line-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/material.css' %}">
+    <!-- Datetimepicker CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-datetimepicker.min.css' %}">
+
+    <!-- Select2 CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/select2.min.css' %}">
+    <!-- Datatable CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/dataTables.bootstrap4.min.css' %}">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <script>
+        var DoMenuActive = function () {
+            try { $(".submenu[data-m-t='Gen']").addClass('active'); } catch (e) { }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="main-wrapper">
+
+        <div class="header">
+
+            <div class="header-left">
+                <a href="{{request.session.HomeURL}}"class="logo">
+                    <img style="max-height:60px" src="{{ request.session.OrganizationLogo}}" alt="Logo">
+                </a>
+                <a href="{{request.session.HomeURL}}"class="logo collapse-logo">
+                    <img src="{{ request.session.OrganizationLogo}}" alt="Logo">
+                </a>
+                <a href="{{request.session.HomeURL}}"class="logo2">
+                    <img src="{{ request.session.OrganizationLogo}}" width="40" height="40" alt="Logo">
+                </a>
+            </div>
+
+            <a id="toggle_btn" href="javascript:void(0);">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+
+            <div class="page-title-box">
+                <div class="nav-element-container d-flex justify-content-between align-items-center">
+                    <ul class="nav-element-container d-flex gap-4">
+						{% include APP_TEMPLATES.Open_position|add:"/TopNavbarMenu.html" %}
+                        
+                    </ul>
+                </div>
+            </div>
+
+            <a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa-solid fa-bars"></i></a>
+
+            <ul class="nav user-menu">
+                <li class="list-unstyled">
+                    <div class="top-nav-search">
+                        <a href="javascript:void(0);" class="responsive-search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </a>
+                        <form autocomplete="off">
+                            <input class="form-control top-search" id="" type="text" placeholder="Search here">
+                        </form>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown has-arrow main-drop">
+                    <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+
+                        <span>{{ request.session.FullName }}</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a>
+                        <a class="dropdown-item" onclick="javascript:EvntDairyOpenWindow.close()" href="{{request.session.Logout}}">Log Out</a>
+
+                    </div>
+                </li>
+            </ul>
+
+            <div class="dropdown mobile-user-menu">
+
+
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis-vertical"></i></a>
+                <div class="dropdown-menu dropdown-menu-right">
+
+
+                    <a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a>
+                    <a class="dropdown-item" onclick="javascript:EvntDairyOpenWindow.close()" href="{{request.session.Logout}}">Log Out</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-inner slimscroll">
+                <div id="sidebar-menu" class="sidebar-menu">
+					{% include 'UniversalHome_Base/sidenavbar.html' %}
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-wrapper">
+            <div class="content container-fluid pb-0">
+				{% block content %}{% endblock %}
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
+            </div>
+        </div>
+        <!-- /Page Wrapper -->
+    </div>
+    <!-- /Main Wrapper -->
+    <!-- Bootstrap Core JS -->
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+    <!-- Feather Icon JS -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+
+    <!-- Slimscroll JS -->
+    <script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Theme Settings JS -->
+    <!-- Datatable JS -->
+    <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/js/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Custom JS -->
+    <link rel="stylesheet" href="{% static 'https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css' %}">
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
+    <!-- Bootstrap Core JS
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+
+    Slimscroll JS -->
+    <!-- Select2 JS -->
+    <script src="{% static 'assets/js/select2.min.js' %}"></script>
+
+    <!-- Datetimepicker JS -->
+
+    <script src="{% static 'assets/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+    <!-- Theme Settings JS -->
+    <script src="{% static 'assets/js/layout.js' %}"></script>
+    <script src="{% static 'assets/js/theme-settings.js' %}"></script>
+    <script src="{% static 'assets/js/greedynav.js' %}"></script>
+    <!-- Custom JS -->
+
+    <script src="{% static 'assets/js/app.js' %}"></script>
+
+</body>
+</html>

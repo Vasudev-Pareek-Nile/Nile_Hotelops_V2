@@ -1,0 +1,88 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+<div class="">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+          <strong>AREA PROGRAM FOH</strong>
+        </div>
+        <div class="col-md-12 text-right">
+          <a href="{% url 'Front_ad' %}" class="btn btn-primary"> Add Facilities</a>
+          <a href="{% url 'admin_list' %}" class="btn btn-primary">
+            Add GUEST</a
+          >
+           <a href="{% url 'admin_subchild_list' %}" class="btn btn-primary">
+            Add LOBBY </a
+          >
+           <a href="{% url 'admin_child_list' %}" class="btn btn-primary">
+            Add MEETING</a
+          >
+           <a href="{% url 'publicarea_list' %}" class="btn btn-primary">
+            Public Area </a
+          >
+            <a href="{% url 'administrative_list' %}" class="btn btn-primary">
+            Administrative </a
+          >
+           <a href="{% url 'notes1_list' %}" class="btn btn-primary">
+           Facilities Notes</a
+          >
+           <a href="{% url 'Notes2_list' %}" class="btn btn-primary">
+            Room Notes </a
+          >
+           <a href="{% url 'notes3_list' %}" class="btn btn-primary">
+            Lobby Notes</a
+          >
+          <a href="{% url 'notes4_list' %}" class="btn btn-primary">
+            Meeting Notes</a
+          >
+           <a href="{% url 'notes5_list' %}" class="btn btn-primary">
+           Public Notes</a
+          >
+        </div>
+      </div>
+    </div>
+<div class="card-body">
+  <table id="example" class="table table-bordered">
+    <thead class="thead-">
+      <tr class="table-success">
+        <th>Title</th>
+        <th>Name</th>
+
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for Fronts in Front %}
+      <tr>
+        <td>{{ Fronts.Title}}</td>
+        <td>{{ Fronts.name}}</td>
+
+        <td>
+          <a
+            href="{% url 'Front_ad' %}?ID={{Fronts.id}}"
+            class="fa fa-edit"
+            style="color: black"
+          ></a>
+
+          <a
+            onclick="return confirm('Are you sure you want to delete? ')  "
+            href="{% url 'front_delet'  %}?ID={{Fronts.id}}"
+          >
+            <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+            <span style="color: red"></span>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+    <br />
+    
+  </div>
+</div>
+
+
+{% endblock content %}

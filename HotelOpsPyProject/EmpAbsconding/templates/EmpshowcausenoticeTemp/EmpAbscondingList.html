@@ -1,0 +1,50 @@
+{% extends 'EmpAbscondingTemp/homebase.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="table-responsive">
+    <div>
+      <div class="card-header">Employee Absconding List</div>
+      <div>
+        <br />
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr style="background-color: #bbbbbb;">
+              <th>Name</th>
+              <th>Emp Code</th>
+              <th>Date Of Joining</th>
+              <th>Department</th>
+              <th>Designation</th>
+              <th>Date Of Termination</th>
+              <th>Warning Latter Issued</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          {% if key1 %}
+            <tbody>
+              {% for i in key1 %}
+                <tr>
+                  <td>{{ i.Name }}</td>
+                  <td>{{ i.Emp_Code }}</td>
+                  <td>{{ i.DOJ }}</td>
+                  <td>{{ i.Dept }}</td>
+                  <td>{{ i.Designation }}</td>
+                  <td>{{ i.Date_Of_Termination }}</td>
+                  <td>{{ i.IsWarningIssued }}</td>
+
+                  <td>
+                    <div class="btn btn-group">
+                      <a href="/EmpAbsconding/EmpAbscondingEdit?id={{ i.id }}" class="btn btn-primary btn-sm">Edit</a>
+                      <a href="/EmpAbsconding/EmpAbscondingDelete?id={{ i.id }}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                      <a href="/EmpAbsconding/EmpAbscondingPDF?id={{ i.id }}" class="btn btn-primary btn-sm">View</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Cake Order View </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>To</th>
+                    <td>{{Ed.To}}</td>
+                    </tr>
+                    <tr>
+                      <th>Date</th>
+                      <td>{{Ed.Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>From</th>
+                      <td>{{Ed.From}}</td>
+                    </tr>
+                    <tr>
+                      <th>Time</th>
+                      <td>{{Ed.Time}}</td>
+                    </tr>
+                    <tr>
+                      <th>Guest Name</th>
+                      <td>{{Ed.Guest_Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>To Be Prepared For</th>
+                      <td>{{Ed.To_Be_Prepared_For}}</td>
+                    </tr>
+                    <tr>
+                      <th>Size</th>
+                      <td>{{Ed.Size}}</td>
+                    </tr>
+                    <tr>
+                      <th>Type Of Cake</th>
+                      <td>{{Ed.Type_Of_Cake}}</td>
+                    </tr>
+                    <tr>
+                      <th>Required Date</th>
+                      <td>{{Ed.Required_Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Required Time</th>
+                      <td>{{Ed.Required_Time}}</td>
+                    </tr>
+                    <tr>
+                      <th>Packing</th>
+                      <td>{{Ed.Packing}}</td>
+                    </tr>
+                    <tr>
+                      <th>Selling Price</th>
+                      <td>{{Ed.Selling_Price}}</td>
+                    </tr>
+                    <tr>
+                      <th>Message On Cake</th>
+                      <td>{{Ed.Message_On_Cake}}</td>
+                    </tr>
+                    <tr>
+                      <th>Complimentory</th>
+                      <td>{{Ed.Complimentory}}</td>
+                    </tr>
+                    <tr>
+                      <th>Authorised By</th>
+                      <td>{{Ed.Authorised_By}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %} 

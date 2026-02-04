@@ -1,0 +1,1122 @@
+
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+<style>
+    
+.d-flex {
+    display: flex;
+    align-items: center;
+}
+
+.me-2 {
+    margin-right: 0.5rem; 
+}
+
+
+*[readonly] {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+
+label{
+    margin-top:20px;
+    margin-bottom:5px;
+}
+
+.hide-column {
+    display: none;
+}
+
+th, td {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  td {
+    text-wrap: auto !important;
+}
+  
+</style>
+
+<div class="card">
+    <div class="card-header"><strong>Interview Assessment</strong></div>
+</div>
+<div class=" ">
+    <form method="post" enctype="multipart/form-data">
+
+        <div class="card">
+            {% comment %} <div class="card-header">
+             <h5>Interview Assessment</h5>
+            </div> {% endcomment %}
+            <div class="card-body">
+                <!-- <form enctype="multipart/form-data" > -->
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="hire">Hire</label>
+                            <select id="hire" name="hire" class="form-control"   required readonly>
+                                <option value="New" {% if AM_obj.HireFor == "New" %}selected{% endif %}>New</option>
+                                <option value="Replacement" {% if AM_obj.HireFor == "Replacement" %}selected{% endif %}>Replacement</option>
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label for="appliedFor">Applied For:</label>
+                            <select name="appliedFor" class="form-control"  required readonly>
+                               {% for org in orgs %}
+                               
+                               <option value="{{org.OrganizationID}}">{{org.OrganizationName}}</option>
+                               {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="dateOfInterview">Date of Interview:</label>
+                            <input type="date" id="dateOfInterview" name="dateOfInterview" class="form-control"  required readonly value="{% if AM_obj %}{{AM_obj.InterviewDate | date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}">
+                        </div>
+                    </div>
+                   
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="positionAppliedFor">Position Applied For:</label>
+                            <select id="positionAppliedFor" name="positionAppliedFor" class="form-control"  required readonly>
+                                <option value="">Select Position</option>
+                                {% for Designation in Designations %}
+                                <option 
+                                value="{{ Designation.designations }}" 
+                                {% if AM_obj.position == Designation.designations and AM_obj.Department == Designation.OnRollDepartmentMaster.DepartmentName %}selected{% endif %}
+                                data-department="{{ Designation.OnRollDepartmentMaster.DepartmentName }}" 
+                                data-level="{{ Designation.Lavel }}"
+                            >
+                                {{ Designation.designations }} - {{ Designation.OnRollDepartmentMaster.DepartmentName }}
+                            </option>
+                                            {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="department">Department:</label>
+                            <input type="text" name="department" class="form-control"  required readonly id="department">
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="level">Level:</label>
+                            <input type="text" name="level" class="form-control"  required readonly id="level">
+                        </div>
+                    </div>
+                        
+                    <input type="hidden" id="usertype" value="{{UserType}}">
+                   
+                    
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label for="Prefix">Prefix:</label>
+                            <select class="form-control"  required id="prefix" name = "Prefix" readonly>
+                                <option value = '' {% if AM_obj.Prefix == "" %}selected{% endif %}>Select</option>
+                                <option value="Mr." {% if AM_obj.Prefix == "Mr." %}selected{% endif %}>Mr.</option>
+                                <option value="Mr." {% if AM_obj.Prefix == "Ms." %}selected{% endif %}>Ms.</option>
+
+                                <option value="Miss." {% if AM_obj.Prefix == "Mrs." %}selected{% endif %}>Mrs.</option>
+                                <option value="Mrs." {% if AM_obj.Prefix == "Miss." %}selected{% endif %}>Miss.</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" name = "name" value="{{AM_obj.Name}}" class="form-control"  required  readonly placeholder="Full Name">
+                            
+                            <input type="hidden" name="ResumeID" id="ResumeID">
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="contactNumber">Contact Number:</label>
+                            <input 
+                                type="text" 
+                                id="contactNumber" 
+                                class="form-control"  required  readonly
+                                placeholder="Contact Number"
+                                name = "contactNumber"
+                                value="{{AM_obj.ContactNumber}}"
+                            >
+                            <small id="contactNumberError" class="form-text text-danger" style="display:none;">Please enter a valid Indian mobile number (10 digits, starting with 6, 7, 8, or 9).</small>
+                        </div>
+                        
+                        
+                        {% comment %} <div class="form-group col-md-4">
+                            <label>Work Experience:</label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-2">
+                                    <input type="radio" class="form-check-input" id="fresherRadio" name="experienceType" value="fresher" onclick="toggleExperience('fresher')" readonly>
+                                    <label class="form-check-label" for="fresherRadio">Fresher</label>
+                                </div>
+                                
+                                <div class="form-check me-2">
+                                    <input type="radio" class="form-check-input" id="experiencedRadio" name="experienceType" value="experience" onclick="toggleExperience('experienced')">
+                                    <label class="form-check-label" for="experiencedRadio">Experienced</label>
+                                </div>
+                                
+                                <div id="experienceInputs" style="display: inline;">
+                                    <input type="number" class="form-control d-inline-block me-2" id="experienceYears" name="Years" placeholder="Years" style="width: auto; display: inline;" readonly>
+                                    <input type="number" class="form-control d-inline-block" id="experienceMonths" name="Months" placeholder="Months" style="width: auto; display: inline;" readonly>
+                                  
+                                </div>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="col-lg-4">
+                            <label>Work Experience:</label>
+                            <div class="d-flex align-items-center">
+                                <div class="form-check me-2">
+                                    <input type="radio" class="form-check-input" id="fresherRadio" name="experienceType" value="Fresher" onclick="toggleExperience('fresher')" {% if Department != 'hr' %}disabled{% endif %}>
+                                    <label class="form-check-label" for="fresherRadio">Fresher</label>
+                                </div>
+                        
+                                <div class="form-check me-2">
+                                    <input type="radio" class="form-check-input" id="experiencedRadio" name="experienceType" value="experience" onclick="toggleExperience('experienced')" {% if Department != 'hr' %}disabled{% endif %} style="margin-top: 23px;">
+                                    <label class="form-check-label" for="experiencedRadio">Experienced</label>
+                                </div>
+                                {% if AM_obj.workexperience != 'Fresher'  %}
+                                <div id="experienceInputs" style="display: inline;">
+                                    <select   class="form-control d-inline-block me-2" id="experienceYears" name="Years" style="width: 67px;font-size: 11px;" disabled>
+                                        <option value="">Yrs</option>
+                                        <option value="0">0</option>
+                                        
+                                        <option value="1">1</option>
+
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                        <option value="32">32</option>
+                                        <option value="33">33</option>
+                                        <option value="34">34</option>
+                                        <option value="35">35</option>
+                                        <option value="36">36</option>
+                                        <option value="37">37</option>
+                                        <option value="38">38</option>
+                                        <option value="39">39</option>
+                                        <option value="40">40</option>
+                                        <option value="41">41</option>
+                                        <option value="42">42</option>
+                                        <option value="43">43</option>
+                                        <option value="44">44</option>
+                                        <option value="45">45</option>
+                                        <option value="46">46</option>
+                                        <option value="47">47</option>
+                                        <option value="48">48</option>
+                                        <option value="49">49</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                    <span class="">Yrs</span>
+                        
+                                    <select   class="form-control d-inline-block" id="experienceMonths" name="Months" style="width: 67px;font-size: 11px;" disabled>
+                                        <option value="">Mth</option>
+                                       
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                    </select>
+                                    <span class="">Mth</span>
+                                </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                        
+                        
+                        
+                    </div>
+                    <div class="row">
+                        
+                        <div class="form-group col-md-12">
+                            <label for="familyBackground">Family Background:</label>
+                            <textarea rows="5" id="familyBackground" name = "familyBackground"  class="form-control"  required readonly>{{AM_obj.familybackground}}</textarea>
+                        </div>
+                       
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-lg-4">
+                            <label for="presentSalary">Present Salary CTC:</label>
+                            <input type="number" id="presentSalary" name = "presentSalary"  value="{{AM_obj.pre_salary}}"  class="form-control"  required placeholder="Present Salary CTC" readonly>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="expectedSalary">Expected Salary CTC:</label>
+                            <input type="number" id="expectedSalary" name = "expectedSalary"  value="{{AM_obj.exp_salary}}"  class="form-control"  required placeholder="Expected Salary CTC" readonly>
+                        </div>
+                        <div class="col-lg-4">
+                            <label for="proposedDoj">Proposed DOJ:</label>
+                            <input type="date" id="proposedDoj" name = "proposedDoj"   class="form-control"  required value="{% if AM_obj %}{{AM_obj.ProposedDOJ | date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" readonly>
+                        </div>
+                       
+                    </div>
+                    <div class="row">
+<div class="col-sm-12">
+                    <table class="table table-striped table-bordered ">
+                        
+                        <thead>
+                            <tr>
+                                <th class="factor-column">FACTORS</th>
+                                <th class="hr-column">HR</th>
+                                <th class="hod-column">HOD</th>
+                                <th class="gm-column">GM</th>
+                                <th class="rd-column">Regional Director</th>
+                            </tr>
+                        </thead>
+                        <tbody id="factors-table-body">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td >Final</td>
+                                <td class="tfoot-hr">
+                                    <select name="hr_final_rating" class="form-control"  required >
+                                        <option value="" {% if AM_obj.hr_as == "" %}selected{% endif %}>Approved/Rejected</option>
+                                        <option {% if AM_obj.hr_as == "Approved" %}selected{% endif %}>Approved</option>
+                                        <option {% if AM_obj.hr_as == "Rejected" %}selected{% endif %}>Rejected</option>
+                                    </select>
+                                    <label>Remarks</label>
+                                    <textarea name="hr_final_reamark"  class="form-control"  required >{{AM_obj.hr_as_remarks}}</textarea>
+                                </td>
+                                <td class="tfoot-hod">
+                                    <select name="hod_final_rating" class="form-control"  required >
+                                        <option value="" {% if AM_obj.hod_as == "" %}selected{% endif %}>Approved/Rejected</option>
+                                        <option {% if AM_obj.hod_as == "Approved" %}selected{% endif %}>Approved</option>
+                                        <option {% if AM_obj.hod_as == "Rejected" %}selected{% endif %}>Rejected</option>
+                                    </select>
+                                    <label>Remarks</label>
+                                    <textarea name="hod_final_reamark"  class="form-control"  required >{{AM_obj.hod_as_remarks}}</textarea>
+                                </td>
+                                <td class="tfoot-gm">
+                                    <select name="gm_final_rating" class="form-control"  required >
+                                        <option value="" {% if AM_obj.gm_as == "" %}selected{% endif %}>Approved/Rejected</option>
+                                        <option {% if AM_obj.gm_as == "Approved" %}selected{% endif %}>Approved</option>
+                                        <option {% if AM_obj.gm_as == "Rejected" %}selected{% endif %}>Rejected</option>
+                                    </select>
+                                    <label>Remarks</label>
+                                    <textarea name="gm_final_reamark"  class="form-control"  required >{{AM_obj.gm_as_remarks}}</textarea>
+                                </td>
+                                <td class="tfoot-rd">
+                                    <select name="rd_final_rating" class="form-control"  required >
+                                        <option value="" {% if AM_obj.rd_as == "" %}selected{% endif %}>Approved/Rejected</option>
+                                        <option {% if AM_obj.rd_as == "Approved" %}selected{% endif %}>Approved</option>
+                                        <option {% if AM_obj.rd_as == "Rejected" %}selected{% endif %}>Rejected</option>
+                                    </select>
+                                    <label>Remarks</label>
+                                    <textarea name="rd_final_reamark"  class="form-control"  required >{{AM_obj.rd_as_remarks}}</textarea>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+    
+                </div>
+
+            </div>  
+
+    
+                    <div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header d-flex justify-content-between">
+                                    <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                                    <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                                    <div id="filePreviewFallback" style="display:none;">
+                                        <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a id="downloadLink" target="_blank" class="btn btn-primary" href="#" download>Download</a>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        
+                    <div class="form-row align-items-center">
+                        <div class="form-group col-md-4 mb-2">
+                           
+                    
+                            {% if AM_obj.FileName %}
+                            <div class="mt-2">
+                                <label class="form-label">Previous Resume:</label>
+                                <a href="{% url 'view_file' %}?ID={{ AM_obj.id }}&model=Assessment_Master" 
+                                   class="btn btn-primary btn-sm ml-2"
+                                   data-toggle="modal" 
+                                   data-target="#fileModal"
+                                   data-file-name="{{ AM_obj.FileTitle }}">
+                                   {{ AM_obj.FileTitle }}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                        
+
+
+                      
+                    
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <!-- {% csrf_token %}
+
+                <input type="submit" class="btn btn-primary"> -->
+            </div>
+        </div>
+
+
+    <!-- </form> -->
+</div>
+    
+<script>
+
+    $(function(){
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+              this.style.height = 'auto'; // Reset the height
+              this.style.height = `${this.scrollHeight}px`; // Adjust height to fit content
+            });
+        
+            // Initialize the height on page load
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+          });
+        })
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-toggle="modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+
+                const fileUrl = this.getAttribute('href');
+                const fileName = this.getAttribute('data-file-name');
+                
+                const filePreview = document.getElementById('filePreview');
+                
+                
+                // Set iframe URL and download link
+                filePreview.src = fileUrl;
+                $("#fileModal #downloadLink").attr('href',fileUrl)
+                
+                // Display fallback if iframe fails to load
+                filePreview.addEventListener('error', function() {
+                    filePreview.style.display = 'none';
+                    filePreviewFallback.style.display = 'block';
+                });
+            });
+        });
+    });
+    
+   
+var workExperience = "{{AM_obj.workexperience}}";
+
+document.addEventListener("DOMContentLoaded", function() {
+    var yearsInput = document.getElementById("experienceYears");
+    var monthsInput = document.getElementById("experienceMonths");
+    var fresherRadio = document.getElementById("fresherRadio");
+    var experiencedRadio = document.getElementById("experiencedRadio");
+
+    if (workExperience.includes("Years") || workExperience.includes("Months")) {
+        var years = workExperience.match(/(\d+) Years/);
+        var months = workExperience.match(/(\d+) Months/);
+
+        if (years) {
+            yearsInput.value = years[1];
+        } else {
+            yearsInput.value = 0;
+        }
+
+        if (months) {
+            monthsInput.value = months[1];
+        } else {
+            monthsInput.value = 0;
+        }
+
+        experiencedRadio.checked = true;
+    } else {
+        yearsInput.value = 0;
+        monthsInput.value = 0;
+        fresherRadio.checked = true;
+    }
+
+    toggleExperience(experiencedRadio.checked ? 'experienced' : 'fresher');
+});
+
+function toggleExperience(type) {
+    var experienceInputs = document.getElementById("experienceInputs");
+    var presentSalary = document.getElementById("presentSalary");
+    var presentDesignation = document.getElementById("Presentdesignation");
+
+    if (type === 'fresher') {
+        experienceInputs.style.display = "none";
+        document.getElementById("experienceYears").value = '';
+        document.getElementById("experienceMonths").value = '';
+
+        presentSalary.removeAttribute("required");
+        presentDesignation.removeAttribute("required");
+    } else if (type === 'experienced') {
+        experienceInputs.style.display = "inline";
+        presentSalary.setAttribute("required", "required");
+        presentDesignation.setAttribute("required", "required");
+    }
+}
+
+// Initialize the display on page load
+window.onload = function() {
+    toggleExperience(experiencedRadio.checked ? 'experienced' : 'fresher');
+};
+
+
+    $(document).ready(function () {
+        var selectedOrganization = "{{ appliedFor }}";
+       
+        $("select[name='appliedFor']").val(selectedOrganization);
+       
+    });
+
+
+
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const resumeID = getQueryParam('OPI');
+
+        document.getElementById('ResumeID').value = resumeID;
+
+
+function toggleExperience(active) {
+    var experienceInputs = document.getElementById("experienceInputs");
+
+    if (active === 'fresher') {
+        experienceInputs.style.display = "none";
+    } else if (active === 'experienced') {
+        experienceInputs.style.display = "inline";
+    }
+}
+
+window.onload = function() {
+    toggleExperience('experienced');
+};
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const contactNumberInput = document.getElementById('contactNumber');
+    const errorElement = document.getElementById('contactNumberError');
+    const mobileRegex = /^[789]\d{9}$/;
+
+    contactNumberInput.addEventListener('keyup', function() {
+        const value = contactNumberInput.value;
+        
+        if (mobileRegex.test(value)) {
+            errorElement.style.display = 'none';
+        } else {
+            errorElement.style.display = 'block';
+        }
+    });
+});
+
+
+
+</script>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var UserType = '{{UserType}}'.toLowerCase();
+    var Department = '{{Department}}'.toLowerCase(); 
+   
+    
+    var factorDetails = {{ factor_details|safe }};
+    
+    var MasterJSON = [
+{
+    "CategoryID": 1,
+    "Title": "EDUCATIONAL BACKGROUND",
+    "Item": [
+        {
+            "ItemID": 1,
+            "Title": "",
+            "ItemType": "checkbox",
+            "ItemOption": ["10Th Pass", "12Th Pass", "Bachelor", "Masters", "Diploma"]
+        }
+    ]
+},
+{
+    "CategoryID": 2,
+    "Title": "KNOWLEDGE",
+    "Item": [
+        {
+            "ItemID": 2,
+            "Title": "",
+            "ItemType": "checkbox",
+            "ItemOption": ["Technical", "Hotel", "Current Awareness", "Software Knowledge"]
+        }
+    ]
+},
+{
+    "CategoryID": 3,
+    "Title": "WORK/RELATED EXPERIENCE",
+    "Item": [
+        {
+            "ItemID": 3,
+            "Title": "Total experience in relevant area.",
+            "ItemType": "label",
+        }
+    ]
+},
+{
+    "CategoryID": 4,
+    "Title": "COMMUNICATION",
+    "Item": [
+        {
+            "ItemID": 4,
+            "Title": "",
+            "ItemType": "checkbox",
+            "ItemOption": ["Speech", "Non-Verbal", "Clarity", "Coherence"]
+        }
+    ]
+},
+{
+    "CategoryID": 5,
+    "Title": "PERSONALITY",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "As a new entrant in Team Meetings would you prefer to listen and execute or like to pitch in?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "How would you deal with unreasonable guests without compromising the organization?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 7,
+            "Title": " How would you deal with a non performing team member who is part of an assignment you are coordinating?",
+            "ItemType": "li",
+        }
+    ]
+},
+{
+    "CategoryID": 6,
+    "Title": "ATTITUDE",
+    "Decription":"Ability to maintain positive approach towards Work and people",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "your teammate is struggling and with overwork and your supervisor asks you to pitch in over and above your load.how will you approach this?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "your teammate is struggling and with overwork and your supervisor asks you to pitch in over and above your load.how will you approach this? <br/> your teammate is struggling and with overwork and your supervisor asks you to pitch in over and above your load.how will you approach this?",
+            "ItemType": "li",
+        },
+    ]
+},
+{
+    "CategoryID": 7,
+    "Title": "POTENTIAL",
+    "Decription": "To ascertain future growth & career development",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "Where do you see yourself in the next 5 years?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "And how do you see yourself getting there and what are you willing to sacrifice to do so ?",
+            "ItemType": "li",
+        },
+    ]
+},
+{
+    "CategoryID": 8,
+    "Title": "GROOMING",
+    "Decription": "Is suitably groomed to cater to our requirements",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "Why do you think grooming is important? in every job and particularly our industry?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "Why do you think grooming is important? in every job and particularly our industry?",
+            "ItemType": "li",
+        },
+    ]
+},
+{
+    "CategoryID": 9,
+    "Title": "LEADERSHIP ABILITY",
+    "Decription": "Displays appropriate leadership qualities",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "Your junior has been wrongly accused by a guest and that has gone viral.how will you protect him?",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "Your Unit managing an event is falling apart and things are getting messy.How will you pull the situation back to manageable or rather try and exceed expectation?",
+            "ItemType": "li",
+        },
+    ]
+},
+{
+    "CategoryID": 10,
+    "Title": "ANALYTICAL ABILITY",
+    "Decription": "Possess skills to visualize & analyze",
+    "Item": [
+        {
+            "ItemID": 5,
+            "Title": "Imagine a restaurant with capacity of 50 reduced to 20 in these COVID-19 times. You have overbooked. How will you deal with it",
+            "ItemType": "li",
+        },
+        {
+            "ItemID": 6,
+            "Title": "There is a lockdown announced last minute and you have guests who cannot leave and others arriving how will you deal with that ?",
+            "ItemType": "li",
+        },
+    ]
+}
+];
+
+
+var tableBody = document.getElementById('factors-table-body');
+    var table = document.querySelector('.table.table-bordered');
+
+    MasterJSON.forEach(function(category) {
+        var row = document.createElement('tr');
+        row.setAttribute('data-categoryid', category.CategoryID);
+
+        var factorCell = document.createElement('td');
+        factorCell.className = 'factor-column';
+        var content = '<input type="hidden" value="' + category.CategoryID + '" name="categoryID_' + category.CategoryID + '"> <strong>' + category.Title + '</strong><br>';
+
+        category.Item.forEach(function(item) {
+            if (item.ItemType === 'checkbox') {
+                content += '<div style="">' + 
+                    item.ItemOption.map(function(option) {
+                        var isChecked = factorDetails[category.CategoryID] && factorDetails[category.CategoryID].factor.includes(option);
+                        return '<label style="margin-right: 10px;"><input name="factor_' + category.CategoryID + '" type="checkbox"  disabled value="' + option + '"' + (isChecked ? ' checked' : '') + '> ' + option + '</label><br/>';
+                    }).join('') + 
+                '</div>';
+            } else if (item.ItemType === 'label') {
+                content += '<span>' + item.Title + '</span><br>';
+            } else if (item.ItemType === 'li') {
+                content += '<li>' + item.Title + '</li>';
+            }
+        });
+
+        factorCell.innerHTML = content;
+
+        function createRatingAndRemarks(categoryID, role) {
+            var rating = factorDetails[categoryID] ? factorDetails[categoryID][role + '_rating'].toLowerCase() : '';
+            var remarks = factorDetails[categoryID] ? factorDetails[categoryID][role + '_remarks'] : '';
+
+            return '<b>Rating :</b> <select name="' + role + '_rating_' + categoryID + '" class="form-control"  required >' +
+                    '<option value="">Select</option>' +
+                    '<option' + (rating === 'unsatisfactory' ? ' selected' : '') + '>Unsatisfactory</option>' +
+                    '<option' + (rating === 'average' ? ' selected' : '') + '>Average</option>' +
+                    '<option' + (rating === 'good' ? ' selected' : '') + '>Good</option>' +
+                    '<option' + (rating === 'outstanding' ? ' selected' : '') + '>Outstanding</option>' +
+                    '<option' + (rating === 'n/a' ? ' selected' : '') + '>N/A</option>' +
+                    '</select> ' +
+                    '<b>Remarks :</b> <textarea name="' + role + '_remarks_' + categoryID + '" class="form-control"   required >' + remarks + '</textarea>';
+        }
+
+        var hrCell = document.createElement('td');
+        var hodCell = document.createElement('td');
+        var gmCell = document.createElement('td');
+        var rdCell = document.createElement('td');
+
+        hrCell.className = 'hr-column';
+        hodCell.className = 'hod-column';
+        gmCell.className = 'gm-column';
+        rdCell.className = 'rd-column';
+
+        hrCell.innerHTML = createRatingAndRemarks(category.CategoryID, 'hr');
+        hodCell.innerHTML = createRatingAndRemarks(category.CategoryID, 'hod');
+        gmCell.innerHTML = createRatingAndRemarks(category.CategoryID, 'gm');
+        rdCell.innerHTML = createRatingAndRemarks(category.CategoryID, 'rd');
+
+        row.appendChild(factorCell);
+        row.appendChild(hrCell);
+        row.appendChild(hodCell);
+        row.appendChild(gmCell);
+        row.appendChild(rdCell);
+
+        tableBody.appendChild(row);
+    });
+
+   
+
+});
+
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var positionDropdown = $('#positionAppliedFor');
+        var usertypeInput = $('#usertype');
+      
+
+        
+        var AmID = '{{AM_obj.id}}';
+        var selectedOptionValue = '{{AM_obj.position}}';
+        var OrganizationID = '{{OrganizationID}}'
+        var department = '';
+        var level = '';
+
+        if (AmID) {
+            var positionDropdownElement = document.getElementById('positionAppliedFor');
+            
+            for (var i = 0; i < positionDropdownElement.options.length; i++) {
+                if (positionDropdownElement.options[i].value === selectedOptionValue) {
+                    positionDropdownElement.selectedIndex = i;
+                    department = positionDropdownElement.options[i].getAttribute('data-department') || '';
+                    level = positionDropdownElement.options[i].getAttribute('data-level') || '';
+                    break;
+                }
+            }
+
+            updateDepartmentAndLevel.call(positionDropdownElement);
+
+            if (department && level) {
+                fetchGridData(department, level);
+            }
+        }    
+
+        if (selectedOptionValue) {
+            var positionDropdownElement = document.getElementById('positionAppliedFor');
+            
+            for (var i = 0; i < positionDropdownElement.options.length; i++) {
+                if (positionDropdownElement.options[i].value === selectedOptionValue) {
+                    positionDropdownElement.selectedIndex = i;
+                    department = positionDropdownElement.options[i].getAttribute('data-department') || '';
+                    level = positionDropdownElement.options[i].getAttribute('data-level') || '';
+                    break;
+                }
+            }
+
+            updateDepartmentAndLevel.call(positionDropdownElement);
+
+            if (department && level) {
+                fetchGridData(department, level);
+            }
+        }    
+
+        function updateDepartmentAndLevel() {
+            var selectedOption = $(this).find('option:selected');
+            var department = selectedOption.data('department');
+            var level = selectedOption.data('level');
+
+            $('#department').val(department ? department : '');
+            $('#level').val(level ? level : '');
+
+            fetchGridData(department, level);
+        }
+
+      
+        function fetchGridData(department, level) {
+            var encodedDepartment = encodeURIComponent(department);
+            $.ajax({
+                url: `/InterviewAssessment/LevelWiseGrid/?Level=${level}&Department=${encodedDepartment}&OrganizationID=${OrganizationID}`,
+                method: 'GET',
+                dataType: 'json',
+                headers: {
+                    'hotel-api-token': '{{hotelapitoken}}'
+                },
+                success: function (data) {
+                    updateColumnVisibility(data);
+                    console.log(data)
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching grid data:', error);
+                }
+            });
+        }
+        function fetchGridFoundHOD(department, level) {
+          
+            return new Promise((resolve, reject) => {
+                var encodedDepartment = encodeURIComponent(department);
+                $.ajax({
+                    url: `/InterviewAssessment/LevelWiseGrid/?Level=${level}&Department=${encodedDepartment}&OrganizationID=${OrganizationID}`,
+                    method: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'hotel-api-token': '{{hotelapitoken}}'
+                    },
+                    success: function (data) {
+                        resolve(data);  
+                    console.log(data)
+
+                    },
+                    error: function (xhr, status, error) {
+                        reject(error);  
+                    }
+                });
+            });
+        }
+
+
+
+        function updateColumnVisibility(gridData) {
+            var hrColumns = $('.hr-column');
+            var hodColumns = $('.hod-column');
+            var gmColumns = $('.gm-column');
+            var rdColumns = $('.rd-column');
+
+            var tfoothr = $('.tfoot-hr');
+            var tfoothod = $('.tfoot-hod');
+            var tfootgm = $('.tfoot-gm');
+            var tfootrd = $('.tfoot-rd');
+
+            var visibleUserTypes = gridData.map(function(item) {
+                return item.UserType.toLowerCase();
+            });
+
+            function setVisibility(columns, shouldShow) {
+                columns.each(function () {
+                    if (shouldShow) {
+                        $(this).removeClass('hide-column');
+                    } else {
+                        $(this).addClass('hide-column');
+                    }
+                });
+            }
+
+            setVisibility(hrColumns, visibleUserTypes.includes('hr'));
+            setVisibility(hodColumns, visibleUserTypes.includes('hod'));
+            setVisibility(gmColumns, visibleUserTypes.includes('gm'));
+            setVisibility(rdColumns, visibleUserTypes.includes('rd'));
+
+            setVisibility(tfoothr, visibleUserTypes.includes('hr'));
+            setVisibility(tfoothod, visibleUserTypes.includes('hod'));
+            setVisibility(tfootgm, visibleUserTypes.includes('gm'));
+            setVisibility(tfootrd, visibleUserTypes.includes('rd'));
+        }
+
+        async  function updateInputAvailability() {
+                    var usertype = usertypeInput.val().toUpperCase();
+                  
+                    var Department = '{{Department}}';
+                    var HrData = '{{HrData}}'; 
+                   
+
+
+                   
+
+                    var hrInputs = document.querySelectorAll('.hr-column select, .hr-column textarea');
+                    var hodInputs = document.querySelectorAll('.hod-column select, .hod-column textarea');
+                    var gmInputs = document.querySelectorAll('.gm-column select, .gm-column textarea');
+                    var rdInputs = document.querySelectorAll('.rd-column select, .rd-column textarea');
+
+                    var tfoothrInputs = document.querySelectorAll('.tfoot-hr select, .tfoot-hr textarea');
+                    var tfoothodInputs = document.querySelectorAll('.tfoot-hod select, .tfoot-hod textarea');
+                    var tfootgmInputs = document.querySelectorAll('.tfoot-gm select, .tfoot-gm textarea');
+                    var tfootrdInputs = document.querySelectorAll('.tfoot-rd select, .tfoot-rd textarea');
+
+                  
+                    // function disableInputs(inputs) {
+                    //     inputs.forEach(function (input) {
+                    //         $(input).attr("readonly", "readonly") 
+                    //                 .removeAttr("required")      
+                    //                 .addClass('readonly');       
+                    //     });
+                    // }
+                    // function enableInputs(inputs) {
+                    //     inputs.forEach(function (input) {
+                    //         $(input).removeAttr("readonly")  
+                    //                 .attr("required", true)  
+                    //                 .removeClass('readonly'); 
+                    //     });
+                    // }
+                    function disableInputs(inputs) {
+                            inputs.forEach(function (input) {
+                                if (input.tagName.toLowerCase() !== 'textarea') { 
+                                    $(input).removeAttr("required"); // Only remove 'required' for non-textarea inputs
+                                }
+                                $(input).attr("readonly", "readonly")
+                                        .addClass('readonly');
+                            });
+                        }
+
+                        function enableInputs(inputs) {
+                            inputs.forEach(function (input) {
+                                if (input.tagName.toLowerCase() !== 'textarea') {
+                                    $(input).attr("required", true); // Only add 'required' for non-textarea inputs
+                                }
+                                $(input).removeAttr("readonly")
+                                        .removeClass('readonly');
+                            });
+                            $("td[class*='tfoot'] textarea:not([class*='readonly'])").attr('required','required')
+                        }
+
+
+
+
+                    disableInputs(hrInputs);
+                    disableInputs(hodInputs);
+                    disableInputs(gmInputs);
+                    disableInputs(rdInputs);
+                    disableInputs(tfoothrInputs);
+                    disableInputs(tfoothodInputs);
+                    disableInputs(tfootgmInputs);
+                    disableInputs(tfootrdInputs);
+
+                    if (Department === 'hr' && usertype === 'HOD') {
+                        console.log("Dept =",Department)
+                        console.log("usertype =",usertype)
+                        console.log(HrData)
+                        if (HrData === 'None') {
+                            enableInputs(hrInputs);
+                            enableInputs(tfoothrInputs);
+                            disableInputs(hodInputs);
+                            disableInputs(tfoothodInputs);
+                        } else {
+                            enableInputs(hrInputs);
+                            enableInputs(tfoothrInputs);
+                            try {
+                                let hodobj = await fetchGridFoundHOD(department, level);
+                               
+                                
+                                if (hodobj && Array.isArray(hodobj)) {
+                                    const hasHOD = hodobj.some(item => item.UserType.toUpperCase() === 'HOD');
+                                    
+                                    if (hasHOD) {
+                                        enableInputs(hodInputs);
+                                        enableInputs(tfoothodInputs);
+                                    } 
+                                } 
+                            } catch (error) {
+                                console.error('Error fetching HOD data:', error);
+                            }
+
+
+                        }
+                    } else if (usertype === 'HOD') {
+                        enableInputs(hodInputs);
+                        enableInputs(tfoothodInputs);
+                    } else if (usertype === 'GM') {
+                        enableInputs(gmInputs);
+                        enableInputs(tfootgmInputs);
+                    } else if (usertype === 'RD') {
+                        enableInputs(rdInputs);
+                        enableInputs(tfootrdInputs);
+                    }
+                   
+
+
+
+                        if (usertype === "HOD" && Department === 'hr') {
+                            var hrInputs = document.querySelectorAll('.hr-column select, .hr-column textarea');
+                            var tfoothrInputs = document.querySelectorAll('.tfoot-hr select, .tfoot-hr textarea');
+                           
+                             
+                            disableInputs(hrInputs);
+                            disableInputs(tfoothrInputs);
+                          
+                        } 
+                        else if (usertype === "HOD") {
+                            var hodInputs = document.querySelectorAll('.hod-column select, .hod-column textarea');
+                            var tfoothodInputs = document.querySelectorAll('.tfoot-hod select, .tfoot-hod textarea');
+                            disableInputs(hodInputs);
+                            disableInputs(tfoothodInputs);
+                        } 
+                        else if (usertype === "GM") {
+                            var gmInputs = document.querySelectorAll('.gm-column select, .gm-column textarea');
+                            var tfootgmInputs = document.querySelectorAll('.tfoot-gm select, .tfoot-gm textarea');
+                            disableInputs(gmInputs);
+                            disableInputs(tfootgmInputs);
+                        } 
+                        else if (usertype === "RD") {
+                            var rdInputs = document.querySelectorAll('.rd-column select, .rd-column textarea');
+                            var tfootrdInputs = document.querySelectorAll('.tfoot-rd select, .tfoot-rd textarea');
+                            disableInputs(rdInputs);
+                            disableInputs(tfootrdInputs);
+                        }
+                        return ;    
+                       
+                      
+                       
+                   
+                }
+
+                $('#positionAppliedFor').on('change', function() {
+                    updateDepartmentAndLevel.call(this);
+                });
+
+                updateInputAvailability(); 
+                $("table select,table textarea").each(function(indx,item){
+                    try{
+                    var value = $(item).val()
+                  var label = $("<p>").text(value);
+
+$(item).replaceWith(label);
+                    }catch(e){}
+
+                })
+
+                    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+
+
+

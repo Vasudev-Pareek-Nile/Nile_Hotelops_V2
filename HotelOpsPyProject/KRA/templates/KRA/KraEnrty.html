@@ -1,0 +1,460 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+
+<style>
+    .card{
+    /* #KraEnteryPostForm{ */
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+    }
+
+</style>
+
+<style>
+    /* Make table full width */
+    #KraEnteryPostTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #KraEnteryPostTable thead th {
+        position: sticky;
+        top: 118px;
+        z-index: 10;
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add consistent styling */
+    #KraEnteryPostTable th, 
+    #KraEnteryPostTable td {
+        /* padding: 10px; */
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+        background-color: #fff;
+    }
+
+    /* Optional: fix table responsiveness */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    /* Disable horizontal scroll on page if desired */
+    body {
+        overflow-x: hidden;
+    }
+</style>
+
+
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">KRA Entry</div>
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row">
+                <!-- Organization Field -->
+                 
+                <div class="col-md-5">
+                    <div class="form-group"> 
+                        <!-- <input type="text"  class="form-control" value="{{ orgs }}">   -->
+                         
+                        <select class="form-control select2" id="I" name="I" onchange="submitForm('org')">
+                            {% for org in orgs %}
+                                <option value="{{ org.OrganizationID }}"  {% if org.OrganizationID == I %}selected{% endif %}>{{ org.OrganizationName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- Employee Field -->
+                <div class="col-md-3">
+                    <div class="form-group ml-3">
+                        
+                        <!-- <input type="text" class="form-control" value="{{ Employee }}" readonly> -->
+                          <div class="form-group">
+                        <select class="form-control" name="employee" id="employee" onchange="submitForm()">
+                            <option value="">Select</option>
+                            {% for Emp in Emps %}
+                                <option value="{{ Emp.EmployeeCode }}" {% if Emp.EmployeeCode == selected_employee %}selected{% endif %}>{{ Emp.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    </div>
+                </div>
+            
+                <!-- Year Dropdown -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control" id="year" name="year" onchange="submitForm()">
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if year == 2024 %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            
+                <!-- Month Dropdown -->
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <select class="form-control" id="month" name="month" onchange="submitForm()">
+                            <option value="1" {% if current_month == '1' %}selected{% endif %}>January</option>
+                            <option value="2" {% if current_month == '2' %}selected{% endif %}>February</option>
+                            <option value="3" {% if current_month == '3' %}selected{% endif %}>March</option>
+                            <option value="4" {% if current_month == '4' %}selected{% endif %}>April</option>
+                            <option value="5" {% if current_month == '5' %}selected{% endif %}>May</option>
+                            <option value="6" {% if current_month == '6' %}selected{% endif %}>June</option>
+                            <option value="7" {% if current_month == '7' %}selected{% endif %}>July</option>
+                            <option value="8" {% if current_month == '8' %}selected{% endif %}>August</option>
+                            <option value="9" {% if current_month == '9' %}selected{% endif %}>September</option>
+                            <option value="10" {% if current_month == '10' %}selected{% endif %}>October</option>
+                            <option value="11" {% if current_month == '11' %}selected{% endif %}>November</option>
+                            <option value="12" {% if current_month == '12' %}selected{% endif %}>December</option>
+                        </select>
+                    </div>
+                </div>
+
+            
+                <!-- Hidden Submit Button -->
+                <div class="form-group" style="display: none;">
+                    <button type="submit" class="btn btn-primary" id="filterButton">Filter</button>
+                </div>
+            
+            </div>
+            
+        </form>
+        
+        
+        <form action="" method="post" id="KraEnteryPostForm">
+            <table class="table table-bordered mt-2" id="KraEnteryPostTable">
+                <thead>
+                    <tr>
+                        <th>KRA</th>
+                        <th>definition</th>
+                        <th>Standard</th>
+                        <!-- <th>Hotel Standard</th> -->
+                        <th>Actual</th>
+                        <th>Status</th>
+                        <!-- <th>Source</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Kr in Kraobjs %}
+                    <tr>
+                        <td>{{Kr.Task}}</td>
+                        
+                        <td>{{Kr.Defination }}</td>
+                        <td>
+                            {{Kr.Standard}}
+                            <input type="hidden" name="Standard_{{ Kr.id }}" value="{{ Kr.Standard }}">
+                        </td>
+                        <!-- <td>{{Kr.Standard}}</td> -->
+                        <td>
+                            <!-- Acutal:  -->
+                            <div id="ActualInputWrapper_{{ Kr.id }}">
+                                <input type="text" class="form-control" name="ActualValue_{{ Kr.id }}" id="ActualFieldValue_{{ Kr.id }}" value="{% if Kr.ActualValue == 'None' %}{% else %}{{ Kr.ActualValue }}{% endif %}">
+                            </div>
+
+                            <!-- <input type="text" class="form-control" name="ActualValue_{{ Kr.id }}" id="ActualFieldValue_{{ Kr.id }}"  value="{{ Kr.ActualValue }}" {% if Kr.EnableEntry == 1 %}readonly{% endif %}> -->
+                            <!-- Compare with: -->
+                            <input type="hidden" class="form-control" name="CompareWithValue_{{ Kr.id }}" id="CompareWithValue_{{ Kr.id }}"  value="{{ Kr.CompareWithValue }}">
+                            <input type="hidden" class="form-control" name="ValueType_{{ Kr.id }}" id="ValueType_{{ Kr.id }}"  value="{{ Kr.Select_Value_Type }}">
+                            <input type="hidden" class="form-control" name="ComparisonType_{{ Kr.id }}" id="ComparisonType_{{ Kr.id }}"  value="{{ Kr.ComparisonType }}">
+                        </td> 
+                        <td>
+                            <select name="actual_{{ Kr.id }}" class="form-control" disabled>
+                                <option {% if Kr.Actual == "" %}selected{% endif %} value="">Select</option>
+                                <option {% if Kr.Actual == "Exceeds Expectation" %}selected{% endif %} value="Exceeds Expectation">Exceeds Expectation</option>
+                                <option {% if Kr.Actual == "Met" %}selected{% endif %} value="Met">Met</option>
+                                <option {% if Kr.Actual == "Not Met" %}selected{% endif %} value="Not Met">Not Met</option>
+                                <option {% if Kr.Actual == None or Kr.Actual == "N/A" %}selected{% endif %} value="N/A">N/A</option>
+                            </select>
+
+                            <!-- Hidden input to actually submit value -->
+                            <input type="hidden" name="actual_{{ Kr.id }}" value="{{ Kr.Actual }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        
+            <div class="card-footer text-end">
+                {% csrf_token %}
+                <input type="hidden" name="month"  id="month"  value="{{selected_month}}">
+                <input type="hidden" name="year"  id="year" value="{{selected_year}}">
+
+                <input type="submit" class="btn btn-primary btn-sm" name="SaveEntry" value="Save Entry">
+                <input type="submit" class="btn btn-primary btn-sm" name="FinalSubmit" value="Final Submit">
+            </div>
+        </form>
+    </div>
+</div>
+
+     
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("Success"); // Note: 'Success' is capitalized in your URL
+        const message = urlParams.get("message");
+        const action = urlParams.get("action");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+
+                    // Optional style adjustment
+                    // if (action === 'edit') {
+                    //     successText.classList.add('text-primary');
+                    // } else if (action === 'submit') {
+                    //     successText.classList.add('text-success');
+                    // }
+                }
+
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+
+            // ✅ Remove only specific params from URL
+            urlParams.delete("Success");
+            urlParams.delete("success");  // optional, covers both cases
+            urlParams.delete("message");
+            urlParams.delete("action");
+    
+            const newQuery = urlParams.toString();
+            const newUrl = window.location.pathname + (newQuery ? "?" + newQuery : "");
+            window.history.replaceState({}, document.title, newUrl); 
+        }
+    });
+</script> 
+
+
+
+<script>
+    $(document).ready(function () {
+        $("input[id^='ValueType_']").each(function () {
+            const id = $(this).attr('id').split('_')[1]; // Extract Kr.id
+            const valueType = $(this).val().toLowerCase(); // Normalize input type
+            const inputField = $("#ActualFieldValue_" + id);
+
+
+            const wrapper = $("#ActualInputWrapper_" + id);
+            const currentValue = $("#ActualFieldValue_" + id).val();
+
+            if (valueType === 'text') {
+                // Replace input with dropdown
+                const dropdown = `
+                    <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">
+                        <option value="">Select</option>
+                        <option value="Pass" ${currentValue === 'Pass' ? 'selected' : ''}>Pass</option>
+                        <option value="Fail" ${currentValue === 'Fail' ? 'selected' : ''}>Fail</option>
+                        <option value="Received" ${currentValue === 'Received' ? 'selected' : ''}>Received</option>
+                        <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
+                    </select>`;
+                wrapper.html(dropdown);
+                evaluateStatus(id);
+            }
+
+            // Attach input handler
+            inputField.off('input').on('input', function () {
+                let inputVal = $(this).val();
+
+                if (valueType === 'number') {
+                    // Only allow digits
+                    inputVal = inputVal.replace(/[^0-9]/g, '');
+                } 
+                else if (valueType === 'decimal') {
+                    // Allow digits and only one dot
+                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                } 
+                else if (valueType === 'percentage') {
+                    // Remove all '%' first
+                    inputVal = inputVal.replace(/%/g, '');
+                    // Allow only digits and single dot
+                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                    
+                    // Only append % if the input is not empty and user isn't deleting
+                    if (inputVal !== '' && !inputVal.endsWith('%')) {
+                        inputVal += '%';
+                    }
+
+                    // Restore cursor position before %
+                    setTimeout(() => {
+                        const newPos = inputVal.length - 1; // before %
+                        this.setSelectionRange(newPos, newPos);
+                    }, 0);
+                } 
+                else if (valueType === 'text') {
+                    // Only allow alphabets and spaces
+                    inputVal = inputVal.replace(/[^a-zA-Z ]/g, '');
+                }
+
+                $(this).val(inputVal);
+
+                evaluateStatus(id);
+            });
+        });
+    });
+</script>
+
+
+<script>
+function evaluateStatus(idSuffix) {
+    const input = document.getElementById("ActualFieldValue_" + idSuffix);
+    const compareInput = document.getElementById("CompareWithValue_" + idSuffix);
+    const valueTypeInput = document.getElementById("ValueType_" + idSuffix);
+    const comparisonTypeInput = document.getElementById("ComparisonType_" + idSuffix);
+    const selectInput = document.querySelector(`select[name="actual_${idSuffix}"]`);
+    const hiddenInput = document.querySelector(`input[type="hidden"][name="actual_${idSuffix}"]`);
+
+    const actualValue = input ? input.value.trim() : '';
+    const compareValue = compareInput ? compareInput.value.trim() : '';
+    const valueTypeValue = valueTypeInput ? valueTypeInput.value.trim().toLowerCase() : '';
+    const comparisonTypeValue = comparisonTypeInput ? comparisonTypeInput.value.trim().toLowerCase() : '';
+
+    const actualNum = parseFloat(actualValue.replace('%', ''));
+    const compareNum = parseFloat(compareValue.replace('%', ''));
+
+    let status = '';
+
+    if (comparisonTypeValue === 'lower') {
+        if (actualValue === '') {
+            status = 'N/A';
+        } else if (actualNum < compareNum) {
+            status = 'Exceeds Expectation';
+        } else if (actualNum === compareNum) {
+            status = 'Met';
+        } else {
+            status = 'Not Met';
+        }
+    } else if (comparisonTypeValue === 'higher') {
+        if (actualValue === '') {
+            status = 'N/A';
+        } else if (actualNum > compareNum) {
+            status = 'Exceeds Expectation';
+        } else if (actualNum === compareNum) {
+            status = 'Met';
+        } else {
+            status = 'Not Met';
+        }
+    } else if (comparisonTypeValue === 'equal') {
+        if (valueTypeValue === 'text') {
+            // Case-insensitive string comparison
+            if (actualValue.toLowerCase() === compareValue.toLowerCase()) {
+                status = 'Met';
+            } else if (actualValue === '') {
+                status = 'N/A';
+            } else {
+                status = 'Not Met';
+            }
+        } else {
+            if (actualValue === compareValue) {
+                status = 'Met';
+            } else if (actualValue === '') {
+                status = 'N/A';
+            } else {
+                status = 'Not Met';
+            }
+        }
+    }
+
+    if (selectInput) {
+        selectInput.value = status;
+    }
+    if (hiddenInput) {
+        hiddenInput.value = status;
+    }
+}
+</script>
+
+
+
+
+<script>
+    document.querySelectorAll('input[id^="ActualFieldValue_"]').forEach(input => {
+        input.addEventListener('change', () => {
+            console.log("Changed value:", input.value);
+        });
+    });
+
+
+    function submitForm() {
+        document.getElementById("year").value = document.getElementById("year").value;
+        document.getElementById("month").value = document.getElementById("month").value;
+        
+        document.getElementById("filterForm").submit();
+        // console.log('month = ',   document.getElementById("year").value)
+        // console.log('month  = ',     document.getElementById("month").value)
+    }
+
+
+    $(document).ready(function () {
+        var selectedYear = "{{ selected_year }}";
+        $("select[name='year']").val(selectedYear);
+        var selected_month = "{{ selected_month }}";
+        $("select[name='month']").val(selected_month);
+        
+        // $(document).ready(function () {
+        $('.select2').select2();
+        // });
+    }); 
+
+</script>
+{% endblock content %}

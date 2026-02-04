@@ -1,0 +1,324 @@
+{% extends "OpenPositions/homebase.html" %} 
+{% block content %}
+
+<style>
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+    #salary-slider {
+        width: 100%;
+        margin-top: 5px;
+    }
+    .table {
+        width: 100%;
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        color: #212529;
+    }
+    
+
+</style>
+<style>
+    .modal-md {
+        max-width: 750px; 
+    }
+    .small-font {
+        font-size: 11px;
+        
+    }
+</style>
+<style>
+    #jobDescriptionContent p {
+        text-align: justify;
+        margin: 2; /* Optional: Reset margin if needed */
+    }
+</style>
+<style>
+    .swal2-popup {
+        font-size: 14px; /* Adjust the font size */
+        width: 500px; /* Set a specific width */
+        height: 300px; /* You can set a fixed height if needed */
+    }
+    .swal2-title {
+        font-size: 16px; /* Adjust the title font size */
+    }
+    .swal2-content {
+        font-size: 14px; /* Adjust the content font size */
+    }
+    .ibox-content {
+       
+        
+        border-style: none; 
+       
+    }
+
+    #edit-position-form label{
+        margin-top:20px;
+        margin-bottom:5px;
+    }
+
+</style>
+
+
+<div class="card">
+    <div class="card-header"><strong>Edit Job Position</strong></div>
+</div>
+
+<div>
+    <div class="col-md-12">
+        <form method="POST" id="edit-position-form">
+            {% csrf_token %}
+
+            <div class="card">
+                {% comment %} <div class="card-header" style="color: #1ab394">
+                    <strong>Edit Job Position</strong>
+                </div> {% endcomment %}
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="Locations">Location</label>
+                                <select id="Locations" name="Locations" class="form-control">
+                                    {% for itm in memOrg %}
+                                        <option value="{{ itm.OrganizationID }}" {% if open_position.Locations|stringformat:"s" == itm.OrganizationID|stringformat:"s" %}selected{% endif %}>
+                                            {{ itm.OrganizationName }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="position-select">Position</label>
+                                <select id="position-select" name="Position" class="form-control">
+                                    {% for Designation in Designations %}
+                                        <option value="{{ Designation.designations }}" {% if open_position.Position == Designation.designations %}selected{% endif %}>
+                                            {{ Designation.designations }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="department-input">Department</label>
+                                <input type="text" id="department-input" name="OpenDepartment" class="form-control" readonly value="{{ open_position.OpenDepartment }}" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label>Level</label>
+                                <input id="Level-input" name="OpenLevel" type="text" class="form-control" value="{{ open_position.OpenLevel }}" readonly>
+                            </div>
+                        </div> 
+                        <input type="hidden" class="form-control" name="Job_Type"  value="{{ open_position.Job_Type }}" />
+                        
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="salary-input">Salary</label>
+                                <input type="text" class="form-control" name="Salary" id="Salary" value="{{ open_position.Salary }}" />
+                                <div id="slider-range"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1">
+                            <div class="form-group">
+                                <label for="number-input">Number</label>
+                                <input type="number" class="form-control" id="number-input" name="Number" value="{{ open_position.Number }}" min="1" required />
+                            </div>
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="effective_date">Opened On</label>
+                                <input type="text" id="effective_date" class="form-control" name="Opened_On" placeholder="DD MMM YYYY" readonly value="{{ open_position.Opened_On }}" />
+                            </div>
+                        </div>
+                
+                        <div class="col-md-12 mt-3">
+                            <table class="table table-striped custom-table no-footer" id="designation-table">
+                                <thead>
+                                    <tr>
+                                        <th style="">Department</th>
+                                        <th style="">Section Title</th>
+                                        <th style=" text-align: center;">Budget HC</th>
+                                        <th style=" text-align: center;">Actual HC</th>
+                                        <th style=" text-align: center;">Variance HC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in table_data %}
+                                        <tr class="designation-row" data-designation="{{ item.designation }}" data-department="{{ item.department }}" data-level="{{ item.level }}">
+                                            <td>{{ item.department }}</td>
+                                            <td>{{ item.designation }}</td>
+                                            <td style="text-align: center;">{{ item.budget_hc }}</td>
+                                            <td style="text-align: center;">{{ item.actual_hc }}</td>
+                                            <td class="variance_hc" style="text-align: center;">{{ item.variance_hc }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="5">No data available for the selected designation.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if error_message %}
+                            <div class="alert alert-danger">{{ error_message }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'OpenPositionList' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#effective_date').datepicker({
+            format: 'dd/mm/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const positionSelect = document.getElementById('position-select');
+        const tableRows = document.querySelectorAll('#designation-table .designation-row');
+
+        positionSelect.addEventListener('change', function () {
+            const selectedDesignation = positionSelect.value;
+
+            tableRows.forEach(row => {
+                const designation = row.dataset.designation;
+                if (selectedDesignation === '' || selectedDesignation === designation) {
+                    row.style.display = ''; 
+                } else {
+                    row.style.display = 'none';  
+                }
+            });
+        });
+
+        // Trigger the change event to filter rows on page load
+        positionSelect.dispatchEvent(new Event('change'));
+    });
+</script>
+<script>
+    function formatNumber(num) {
+        try {
+            return num.toLocaleString("en-IN");
+        } catch (e) {
+            return "";
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const salaryInput = document.getElementById('Salary');
+        const salarySlider = $("#slider-range");
+
+        
+        salarySlider.on('slide', function (event, ui) {
+            salaryInput.value = `${formatNumber(ui.values[0])} - ${formatNumber(ui.values[1])}`;
+        });
+
+        
+        salaryInput.addEventListener('input', function () {
+            const value = salaryInput.value.split(' - ').map(v => parseInt(v.replace(/,/g, ''), 10));
+            if (value.length === 2 && !isNaN(value[0]) && !isNaN(value[1])) {
+                salarySlider.slider('values', value);
+            }
+        });
+
+        
+        const positionSelect = document.getElementById('position-select');
+        const departmentInput = document.getElementById('department-input');
+        const levelInput = document.getElementById('Level-input');
+        const tableRows = document.querySelectorAll('#designation-table .designation-row');
+
+        positionSelect.addEventListener('change', function () {
+            const selectedDesignation = positionSelect.value;
+
+            tableRows.forEach(row => {
+                const designation = row.dataset.designation;
+                if (selectedDesignation === '' || selectedDesignation === designation) {
+                    row.style.display = ''; 
+                } else {
+                    row.style.display = 'none';  
+                }
+            });
+
+           
+            const filteredRow = Array.from(tableRows).find(row => row.dataset.designation === selectedDesignation);
+            console.log("Filter row is here:", filteredRow)
+            departmentInput.value = filteredRow ? filteredRow.dataset.department : '';
+            levelInput.value = filteredRow ? filteredRow.dataset.level : '';
+        });
+
+       
+        positionSelect.dispatchEvent(new Event('change'));
+    });
+
+   
+    function setDefaultDate() {
+        var dateInput = document.getElementById('effective_date');
+        if (dateInput && !dateInput.value) {
+            var today = new Date();
+            var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var day = today.getDate();
+            var month = months[today.getMonth()];
+            var year = today.getFullYear();
+            var formattedDate = `${day} ${month} ${year}`;
+            dateInput.value = formattedDate;
+        }
+    }
+
+    
+    setDefaultDate();
+
+    $(function () {
+        $("#Position, #hotel-name").change(function () {
+            var designation = $("#Position").val();
+            fetchDataAndPopulateTable(designation);
+        });
+
+        var Min = 30000;
+        var Maxv = 40000;
+        if ($("#Salary").val() !== "") {
+            var a = $("#Salary").val().split(" - ");
+            var m = parseFloat(a[0].replace(/,/g, ""));
+            m = isNaN(m) ? 30000 : m;
+            var m1 = parseFloat(a[1].replace(/,/g, ""));
+            m1 = isNaN(m1) ? 40000 : m1;
+            Min = m;
+            Maxv = m1;
+        }
+
+        $("#slider-range").slider({
+            range: true,
+            min: 6000,
+            max: 300000,
+            values: [Min, Maxv],
+            step: 500,
+            slide: function (event, ui) {
+                $("#Salary").val(`${formatNumber(ui.values[0])} - ${formatNumber(ui.values[1])}`);
+            }
+        });
+
+        $("#Salary").val(`${formatNumber($("#slider-range").slider("values", 0))} - ${formatNumber($("#slider-range").slider("values", 1))}`);
+        $("#Salary").addClass('form-control');
+    });
+</script>
+{% endblock %}

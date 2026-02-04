@@ -1,0 +1,426 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+<form method="post" action="{% url 'FinalSettlementUpdateData' %}" enctype="multipart/form-data">
+  {{ Full_and_Final_Settltment }}
+
+  {% csrf_token %}
+  <div class="container register-form">
+    <div class="card card-primary">
+      <div class="card-header">
+        <p>Update In Full and Final Settlement List</p>
+      </div>
+     
+      <div class="card-body">
+        <input  type="hidden" name="ID" value="{{Ed.id}}">
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field FullandFinalSettlementForm.Name class="form-control"  value=Ed.Name %}
+              </div>
+              <div class="col-sm-3">
+                <label>Employee Code</label>
+                {% render_field FullandFinalSettlementForm.Emp_Code class="form-control" value=Ed.Emp_Code %}
+              </div>
+              <div class="col-sm-3">
+                <label>Date Of Joining</label>
+                {% render_field FullandFinalSettlementForm.DOJ class="form-control" value=Ed.DOJ %}
+              </div>
+              <div class="col-sm-3">
+                <label>Date Of Leaving</label>
+                {% render_field FullandFinalSettlementForm.Date_Of_Leaving class="form-control"  value=Ed.Date_Of_Leaving %}
+              </div>
+              <div class="col-sm-3">
+                <label>Department</label>
+                {% render_field FullandFinalSettlementForm.Dept class="form-control" value=Ed.Dept %}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Designation</label>
+                {% render_field FullandFinalSettlementForm.Designation  class="form-control"  value=Ed.Designation %}
+              </div>
+             <div class="col-sm-3">
+              <label>Absconding</label>
+                {% render_field FullandFinalSettlementForm.Absconding  class="form-control"  value=Ed.Absconding %}
+              </div>
+              <div class="col-sm-3">
+                <label>Notice Days Served</label>
+                {% render_field FullandFinalSettlementForm.Notice_Days_Served  class="form-control"  value=Ed.Notice_Days_Served %}
+              </div>
+              <div class="col-sm-3">
+                <label>Resignation</label>
+                {% render_field FullandFinalSettlementForm.Resignation  class="form-control"  value=Ed.Resignation %}
+              </div>
+              <div class="col-sm-3">
+                <label>Deduction from salary PL</label>
+                {% render_field FullandFinalSettlementForm.Deduction_from_salary_PL  class="form-control"  value=Ed.Deduction_from_salary_PL %}
+              </div>
+              <div class="col-sm-3">
+                <label>Confirmed</label>
+                {% render_field FullandFinalSettlementForm.Confirmed  class="form-control" value=Ed.Confirmed %}
+              </div>
+              <div class="col-sm-3">
+                <label>Current Salary</label>
+                {% render_field FullandFinalSettlementForm.Current_Salary  class="form-control" value=Ed.Current_Salary  %}
+              </div>
+              <div class="col-sm-3">
+                <label>Terminated</label>
+                {% render_field FullandFinalSettlementForm.Terminated  class="form-control"  value=Ed.Terminated %}
+              </div>
+              <div class="col-sm-3">
+                <label>Laid Off</label>
+                {% render_field FullandFinalSettlementForm.Laid_Off  class="form-control"  value=Ed.Laid_Off %}
+              </div>
+            </div>
+        </div>
+
+              <br>
+
+          
+            <div class="">
+                <h4 class="text-centre">
+                   LEAVE SUMMARY
+                </h4>
+                <div class="row" >
+               
+                 
+                     <div class="col-sm-3">
+                       <label>LS Period</label>
+                         {% render_field FullandFinalSettlementForm.LS_Period  class="form-control" value=Ed.LS_Period  %}
+                       </div> 
+                     <div class="col-sm-3">
+                        <label>LS Opening Balance</label>
+                        {% render_field FullandFinalSettlementForm.LS_Opening_Balance  class="form-control" value=Ed.LS_Opening_Balance  %}
+                     </div> 
+                     <div class="col-sm-3">
+                       <label>LS Leaved Earned</label>
+                       {% render_field FullandFinalSettlementForm.LS_Leaved_Earned  class="form-control" value=Ed.LS_Leaved_Earned  %}
+                     </div>
+                     <div class="col-sm-3">
+                       <label>LS Leaved Availed</label>
+                       {% render_field FullandFinalSettlementForm.LS_Leaved_Availed  class="form-control"  value=Ed.LS_Leaved_Availed %}
+                     </div>
+                     <div class="col-sm-3">
+                       <label>LS PL Bal</label>
+                       {% render_field FullandFinalSettlementForm.LS_PL_Bal  class="form-control"  value=Ed.LS_PL_Bal %}
+                     </div>
+                 
+                
+                </div>
+              
+            </div>
+
+            <br>
+
+
+            <div class="">
+              <h4 class="text-centre">
+                PL PAYMENT
+              </h4>
+              <div class="row" >
+             
+               
+                   <div class="col-sm-3">
+                      <label>PL Total PL</label>
+                      {% render_field FullandFinalSettlementForm.PL_Total_PL  class="form-control"  value=Ed.PL_Total_PL %}
+                   </div> 
+                   <div class="col-sm-3">
+                     <label>PL Basic Salary</label>
+                     {% render_field FullandFinalSettlementForm.PL_Basic_Salary  class="form-control"  value=Ed.PL_Basic_Salary %}
+                   </div>
+                   <div class="col-sm-3">
+                     <label>PL Rate</label>
+                     {% render_field FullandFinalSettlementForm.PL_Rate  class="form-control" value=Ed.PL_Rate  %}
+                   </div>
+                   <div class="col-sm-3">
+                     <label>PL Amount</label>
+                     {% render_field FullandFinalSettlementForm.PL_Amount  class="form-control" value=Ed.PL_Amount  %}
+                   </div>
+               
+              
+              </div>
+            
+          </div>
+           
+
+
+          <br>
+
+
+          <div class="">
+            <h4 class="text-centre">
+              NOTICE PERIOD PAY
+            </h4>
+            <div class="row" >
+           
+             
+                 <div class="col-sm-3">
+                    <label>NPP Total Notice Pay Days</label>
+                    {% render_field FullandFinalSettlementForm.NPP_Total_Notice_Pay_Days  class="form-control"  value=Ed.NPP_Total_Notice_Pay_Days %}
+                 </div> 
+                 <div class="col-sm-3">
+                   <label>NPP Gross</label>
+                   {% render_field FullandFinalSettlementForm.NPP_Gross  class="form-control"  value=Ed.NPP_Gross %}
+                 </div>
+                 <div class="col-sm-3">
+                   <label>NPP Rate</label>
+                   {% render_field FullandFinalSettlementForm.NPP_Rate  class="form-control"  value=Ed.NPP_Rate %}
+                 </div>
+                 <div class="col-sm-3">
+                   <label>NPP Net Amount Paid</label>
+                   {% render_field FullandFinalSettlementForm.NPP_Net_Amount_Paid  class="form-control"  value=Ed.NPP_Net_Amount_Paid %}
+                 </div>
+             
+            
+            </div>
+          
+        </div>
+
+
+        <br>
+
+
+        <div class="">
+          <h4 class="text-centre">
+            GRATUITY PAYMENT
+          </h4>
+          <div class="row" >
+         
+           
+               <div class="col-sm-3">
+                  <label>GP No Of Years</label>
+                  {% render_field FullandFinalSettlementForm.GP_No_Of_Years  class="form-control" value=Ed.GP_No_Of_Years  %}
+               </div> 
+               <div class="col-sm-3">
+                 <label>GP Last Basics</label>
+                 {% render_field FullandFinalSettlementForm.GP_Last_Basics  class="form-control" value=Ed.GP_Last_Basics  %}
+               </div>
+               <div class="col-sm-3">
+                 <label>GP Graturity Days</label>
+                 {% render_field FullandFinalSettlementForm.GP_Graturity_Days  class="form-control"  value=Ed.GP_Graturity_Days %}
+               </div>
+               <div class="col-sm-3">
+                 <label>GP Graturity Payments</label>
+                 {% render_field FullandFinalSettlementForm.GP_Graturity_Payments  class="form-control"  value=Ed.GP_Graturity_Payments %}
+               </div>
+           
+          
+          </div>
+        
+      </div>
+
+      <br>
+
+              <div class=""> 
+               
+                  <h4 class="text-centre">
+                       FULL AND FINAL PAYMENT SUMMARY
+                  </h4>
+  
+               
+                
+            <div class="row">
+              <div class="col-sm-3">
+                <label>FFPS Pending Salary</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Pending_Salary  class="form-control" value=Ed.FFPS_Pending_Salary  %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS PL</label>
+                {% render_field FullandFinalSettlementForm.FFPS_PL  class="form-control"  value=Ed.FFPS_PL %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Gratuity</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Gratuity  class="form-control" value=Ed.FFPS_Gratuity %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Grand Total</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Grand_Total  class="form-control"  value=Ed.FFPS_Grand_Total %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Deductions</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Deductions  class="form-control"  value=Ed.FFPS_Deductions %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Uniform Deductions</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Uniform_Deductions  class="form-control" value=Ed.FFPS_Uniform_Deductions  %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Payable Amount</label>
+                {% render_field FullandFinalSettlementForm.FFPS_Payable_Amount  class="form-control"  value=Ed.FFPS_Payable_Amount %}
+              </div>
+            </div>
+
+            <br>
+        
+            
+            <br>
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Audited By</label>
+                {% render_field FullandFinalSettlementForm.AuditedBy  class="form-control"   %}
+              </div>
+              <div class="col-sm-3">
+                <label>FFPS Status</label>
+                {% render_field FullandFinalSettlementForm.FinalStatus  class="form-control"   %}
+              </div>
+              <div class="col-sm-3">
+                <label>Payment Status</label>
+                {% render_field FullandFinalSettlementForm.PaymentStatus  class="form-control"   %}
+              </div>
+            </div>
+
+            <div id='divpaymentStatus' class="hide">
+              <br>
+              <div class="row">
+                <div class="col-sm-3">
+                  <label>Payment Amount</label>
+                  {% render_field FullandFinalSettlementForm.PaymentPaidAmount  class="form-control"   %}
+                </div>
+                <div class="col-sm-3">
+                  <label>Payment Date</label>
+                  {% render_field FullandFinalSettlementForm.PaymentPaidDate  class="form-control"   %}
+                </div>
+                <div class="col-sm-3">
+                  <label>Payment Remarks</label>
+                  {% render_field FullandFinalSettlementForm.PaymentRemarks  class="form-control"   %}
+                </div>
+              </div>
+              <br/>
+  
+            </div>
+            <br/>
+
+              {% comment %} <br/>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <label>Remarks</label>
+                       {% render_field EquipmentInventoryForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks" %}
+                   </div>
+    
+                </div>
+          </div> {% endcomment %}
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <script>
+        $(function(){
+                $("select").each(function(){
+                   $(this).val($(this).find("option[selected]").val())
+                })
+    
+        })
+       </script>
+
+
+       <script>
+        var BindEmpDetails = function () {
+    debugger;
+            var EmpCode = $("[name='Emp_Code']").val();
+            if(EmpCode!=undefined && EmpCode!="" && EmpCode!="false" ){
+    var O=$("[name='OrganizationID']").val();
+            $("[name='Name']").val('')
+            $("[name='Designation']").val('')
+            $("[name='Department']").val('')
+            $("[name='DOJ']").val('')
+            $.ajax({
+                type: "GET",
+                url: "https://hotelops.in/API/UserAPI/HREmployeeDataEmpCodeSelect?EmpCode=" + EmpCode + "&O="+O+"",
+                //data: '{name: "' + $("#txtName").val() + '" }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    try {
+                        var a = JSON.parse(response);
+                        if (a != undefined && a != name && a.length > 0) {
+                            $("[name='Name']").val(a[0].EmpName)
+                            $("[name='Designation']").val(a[0].Designation)
+                            $("[name='Dept']").val(a[0].Department)
+    var now = new Date(a[0].DateofJoining);
+    
+    var day = ("0" + now.getDate()).slice(-2);
+    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+    
+    var today = now.getFullYear()+"-"+(month)+"-"+(day) ;
+    
+    
+    $("[name='DOJ']").val(today)
+                           
+                        }
+                        else {
+                            alert("No Employee Data found in HR Module.Make sure employee code match with HR Module data");
+                        }
+                    } catch { }
+                }
+            });
+        }else{
+          $("[name='Emp_Code']").val('');
+    
+        }
+      }
+    
+       
+    
+        var getUrlParameter = function getUrlParameter(sParam) {
+          var sPageURL = window.location.search.substring(1),
+              sURLVariables = sPageURL.split('&'),
+              sParameterName,
+              i;
+    
+          for (i = 0; i < sURLVariables.length; i++) {
+              sParameterName = sURLVariables[i].split('=');
+    
+              if (sParameterName[0] === sParam) {
+                  return typeof sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+              }
+          }
+          return false;
+      };
+    
+        $(function () {
+          $("#divpaymentStatus").addClass('hide')
+          if($(this).val()=="Paid"){
+              $("#divpaymentStatus").removeClass('hide')
+    
+          }
+          $("[name='PaymentStatus']").change(function(){
+            $("#divpaymentStatus").addClass('hide')
+              if($(this).val()=="Paid"){
+                  $("#divpaymentStatus").removeClass('hide')
+    
+              }
+    
+          })
+    
+            $("[name='DOJ']").datepicker({ dateFormat: 'dd/MM/yy' });
+            $("[name='Emp_Code']").blur(function(){BindEmpDetails();
+    
+            })
+    
+       
+    
+    
+    
+    if(getUrlParameter('EC')!=undefined){
+      $("[name='Emp_Code']").val(getUrlParameter('EC'))
+    
+    }
+    BindEmpDetails();
+    
+      })
+    </script>
+    
+  {% endblock content %}

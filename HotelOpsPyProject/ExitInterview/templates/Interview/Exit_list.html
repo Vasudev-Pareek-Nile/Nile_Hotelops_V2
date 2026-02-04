@@ -1,0 +1,144 @@
+{% extends "interview/homebase.html" %} 
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1900px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+<style>
+    table th {
+      text-align: center;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    
+    td {
+      text-align: center;
+      font-size: 12px;
+    }
+  
+    body {
+        font-family: 'Arial Nova', sans-serif;
+    }
+  
+    #example {
+      font-size: 10px;
+      padding: 5px;
+    }
+  
+    .text-danger {
+      color: red;
+    }
+
+  table thead th{
+    text-transform:uppercase;
+    font-size:14px;
+}
+	#clear, #filter{
+		padding-block: 8px;
+	}
+
+  </style>
+
+
+
+
+<body>
+<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+          <span class="text-uppercase fw-bold">Exit Interview List</span>
+    </div>
+   
+    <div class="card-body">
+      <form method="GET" action="{% url 'Exit_list' %}">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="form-group">
+                <select name="hotel" class="form-control">
+                    {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selectedOrganizationID %}selected{% endif %}>
+                            {{ itm.OrganizationName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+          </div>
+          <div class="col-md-2">
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary" id="filter">
+                <i class="fa fa-filter"></i> Filter
+              </button>
+
+              <a href="{% url 'Exit_list' %}" class="btn btn-danger" id="Clear">
+                Clear
+            </a>
+            </div>
+          </div>
+        </div>
+    </form>
+
+    <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
+        <thead >
+          <tr >
+            <th >Emp Code</th>
+            <th >Name</th>
+            <th >Position</th>
+            <th >Joining Date</th>
+            <th >Leaving Date</th>
+            <th >Notice Period</th>
+            <th >Resign/Tarmination</th>
+            <th >Action</th>
+          </tr>
+        </thead>
+       
+      </tbody>
+      {% for exitinterview in exitinterviews %}
+      <tr>
+          <td>{{ exitinterview.Employee_Code }}</td>
+          <td>{{ exitinterview.EmpName }}</td>
+          <td>{{ exitinterview.Job_Title }}</td>
+          <td>{{ exitinterview.DateofJoining }}</td>
+          <td>{{ exitinterview.DateofLeaving }}</td>
+          <td>{{ exitinterview.NoticePeriod }}</td>
+          <td>
+            {% if exitinterview.Resign %}
+                {{ exitinterview.Resign }}
+            {% endif %}
+            {% if exitinterview.Termination %}
+                {{ exitinterview.Termination }}
+            {% endif %}
+        </td>
+          <td class="d-flex gap-2">
+            <a href="{% url 'Exit_Edit'  %}?EC={{exitinterview.Employee_Code}}&EmpID={{exitinterview.EmpID}}&OID={{exitinterview.OrganizationID}}&id={{exitinterview.id}}&Page=Exit_list" class="btn btn-primary btn-sm">Edit</a>
+            <a href="{% url 'exit_detail' exit_id=exitinterview.id %}"  class="btn btn-primary btn-sm">
+                View
+            </a>  
+        </td>
+      </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+</body>
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel']").val(selectedOrganization);
+       
+    });
+</script>
+
+
+{% endblock content %}

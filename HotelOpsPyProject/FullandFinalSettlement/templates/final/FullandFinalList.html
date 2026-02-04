@@ -1,0 +1,363 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .modal#statusSuccessModal .modal-content, 
+    .modal#statusErrorsModal .modal-content {
+        border-radius: 30px;
+    }
+    .modal#statusSuccessModal .modal-content svg, 
+    .modal#statusErrorsModal .modal-content svg {
+        width: 100px; 
+        display: block; 
+        margin: 0 auto;
+    }
+    .modal#statusSuccessModal .modal-content .path, 
+    .modal#statusErrorsModal .modal-content .path {
+        stroke-dasharray: 1000; 
+        stroke-dashoffset: 0;
+    }
+    .modal#statusSuccessModal .modal-content .path.circle, 
+    .modal#statusErrorsModal .modal-content .path.circle {
+        -webkit-animation: dash 0.9s ease-in-out; 
+        animation: dash 0.9s ease-in-out;
+    }
+    .modal#statusSuccessModal .modal-content .path.line, 
+    .modal#statusErrorsModal .modal-content .path.line {
+        stroke-dashoffset: 1000; 
+        -webkit-animation: dash 0.95s 0.35s ease-in-out forwards; 
+        animation: dash 0.95s 0.35s ease-in-out forwards;
+    }
+    .modal#statusSuccessModal .modal-content .path.check, 
+    .modal#statusErrorsModal .modal-content .path.check {
+        stroke-dashoffset: -100; 
+        -webkit-animation: dash-check 0.95s 0.35s ease-in-out forwards; 
+        animation: dash-check 0.95s 0.35s ease-in-out forwards;
+    }
+
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100%{
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @keyframes dash { 
+        0% {
+            stroke-dashoffset: 1000;}
+        100% {
+            stroke-dashoffset: 0;
+        }
+    }
+    @-webkit-keyframes dash-check { 
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    @keyframes dash-check {
+        0% {
+            stroke-dashoffset: -100;
+        }
+        100% {
+            stroke-dashoffset: 900;
+        }
+    }
+    .box00{
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+
+<style>
+    .evo-searchFilters a {
+        border: 1px solid #958a79;
+        padding: 5px;
+        margin: 5px 5px;
+        display: inline-block;
+        background: #f9f9f9;
+    }
+    .bar-success {
+        background-color: #5cb85c;
+    }
+    .bar-info {
+        background-color: #5bc0de;
+    }
+    .bar-warning {
+        background-color: #f0ad4e;
+    }
+    .bar-danger {
+        background-color: #d9534f;
+    }
+    .avatar-preview img {
+        max-width: 30px;
+        border-radius: 75px;
+    }
+    .row {
+        margin-top: 5px;
+    }
+    .structFilter {
+        display: flow-root;
+    }
+    .bootstrap-table .caret {
+        display: none !important;
+    }
+    #table thead th{
+        text-transform:uppercase;
+    }
+
+    #clear, #filter{
+		padding-block: 8px;
+	}
+
+	table {
+		border: 0.5px solid #b0afaf75;
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+	}
+
+	table th, table td {
+		border: 0.5px solid #b0afaf75;
+	}
+
+
+	.btn-primary, .btn-danger, .btn-Warning{
+		border-radius: 5px;
+	}
+	
+
+    .card .card-body {
+        padding: 16px !important;
+    }
+
+    .card .card-header {
+        margin-bottom: -20px !important;
+    }
+    .CustomFooter{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white; /* optional */
+        padding: 10px;     /* optional */
+        text-align: center; /* optional */
+        z-index: 999; 
+        padding-right: 111px;
+        display: flex;
+        justify-content: end;
+        border-top: 1px solid #00000054;
+    }
+
+</style>
+
+
+<div class="card">
+    <div class="card-header">
+        <span class="text-uppercase fw-bold">Full and Final List</span>
+    </div>
+    <!-- <br> -->
+    <div class="card-body">
+        <div class="col-md-12">
+            <form method="GET" class="row g-2">
+                <div class="col-md-3">
+                    <select name="I" class="form-control">
+                        <option value="">Select</option>
+                        {% for itm in memorg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.OrganizationName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="D" class="form-control">
+                        <option value="">Select</option>
+                        {% for dt in depts %}
+                            <option value="{{ dt.Department }}" {% if dt.Department == Department %}selected{% endif %}>
+                                {{ dt.Department }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="col-md-3 d-flex justify-items-start align-items-center gap-2">
+                    <button type="submit" class="btn btn-primary" id="filter">
+                        <i class="fa fa-filter"></i> Filter
+                    </button>
+                
+                    <a href="{% url 'FullandFinalList' %}" class="btn btn-danger" id="clear">
+                        Clear
+                    </a>
+                </div>
+            </form>  
+        </div>
+
+
+        <table id="table" class="table table-striped " style="font-size: smaller">
+            <thead>
+                <tr class="active" style="background-color: #8e9ebc">
+                    <th >Sr</th>
+                    <th style="vertical-align: middle">Emp Code</th>
+                    <th style="vertical-align: middle">Name</th>
+                    <th style="vertical-align: middle">Department</th>
+                    <th style="vertical-align: middle">Designation</th>
+                    <th class="noPrint">Date Of Leaving</th>
+                    <th width="100px" class="noPrint">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if fanfs %}
+                    {% for fanf in fanfs %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ fanf.Emp_Code }}</td>
+                            <td>{{ fanf.Name }}</td>
+                            <td>{{ fanf.Dept }}</td>
+                            <td>{{ fanf.Designation }}</td>
+                            <td>{{ fanf.Date_Of_Leaving }}</td>
+                            <td>
+                              
+                                <div class="btn-group">
+                                    <a href="{% url 'FullandFinalEntry' %}?EC={{fanf.Emp_Code}}&EmpID={{fanf.EmpID_Resolved}}&FID={{fanf.id}}&Page=FullandFinalList&OID={{fanf.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                    {% comment %} <a href="{% url 'FullandFinalDelete' %}?EC={{EC}}&EmpID={{EmpID}}&FID={{fanf.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                                    &nbsp;
+                                    <a href="{% url 'FullandFinalPdfView' %}?EC={{EC}}&EmpID={{fanf.EmpID}}&FID={{fanf.id}}" target="_blank" class="btn btn-danger btn-sm text-white">View</a>
+                                </div>
+                            </td>    
+                            </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6">No data available</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+     
+<!-- Modals For Success and Error -->
+<div class="container  p-5">
+	<div class="row">
+		<div class="modal fade" id="statusErrorsModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="#3a4a93" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" /> 
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="34.4" y1="37.9" x2="95.8" y2="92.3" />
+							<line class="path line" fill="none" stroke="#3a4a93" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" x1="95.8" y1="38" x2="34.4" y2="92.2" /> 
+						</svg> 
+						<h4 class="text-danger mt-3">Error !!</h4> 
+						{% comment %} <p class="mt-3" id="errorMessageText">Something went wrong while submitting the form.</p> {% endcomment %}
+                        <p class="mt-3" id="errorMessageText">
+                            {{ error_message|default:"Something went wrong while submitting the form." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 btn-danger" data-bs-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+
+		<div class="modal fade" id="statusSuccessModal" tabindex="-1" role="dialog" data-bs-backdrop="static" data-bs-keyboard="false"> 
+			<div class="modal-dialog modal-dialog-centered modal-sm" role="document"> 
+				<div class="modal-content"> 
+					<div class="modal-body text-center p-lg-4"> 
+						<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130.2 130.2">
+							<circle class="path circle" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-miterlimit="10" cx="65.1" cy="65.1" r="62.1" />
+							<polyline class="path check" fill="none" stroke="{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}" stroke-width="6" stroke-linecap="round" stroke-miterlimit="10" points="100.2,40.2 51.5,88.8 29.8,67.5 " /> 
+						</svg> 
+						<h4 class="mt-3" style="color:{% if 'deleted' in success_message|lower %}#ff0000{% else %}#3a4a93{% endif %}">Congrats!</h4> 
+						{% comment %} <p class="mt-3" id="successMessageText">Travel Details submitted successfully.</p> {% endcomment %}
+                        <p class="mt-3 {% if 'deleted' in success_message|lower %}text-danger{% endif %}" id="successMessageText">
+                            {{ success_message|default:"Details submitted successfully." }}
+                        </p>
+						<button type="button" class="btn btn-sm mt-3 {% if 'deleted' in success_message|lower %}btn-danger{% else %}btn-primary{% endif %}" data-dismiss="modal">Ok</button> 
+					</div> 
+				</div> 
+			</div> 
+		</div>
+	</div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+
+        var selectedDepartment = "{{ D }}";
+        $("select[name='D']").val(selectedDepartment);
+    });
+</script>
+
+   
+
+
+{% comment %} Modal Show {% endcomment %}
+<script>
+    window.addEventListener("load", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSuccess = urlParams.get("Success"); // Note: 'Success' is capitalized in your URL
+        const message = urlParams.get("message");
+        const action = urlParams.get("action");
+
+        if (isSuccess && ['true', '1', 'yes'].includes(isSuccess.toLowerCase())) {
+            const successModalElement = document.getElementById("statusSuccessModal");
+            const successText = document.getElementById("successMessageText");
+
+            if (successModalElement) {
+                if (successText && message) {
+                    successText.textContent = decodeURIComponent(message);
+
+                    // Optional style adjustment
+                    // if (action === 'edit') {
+                    //     successText.classList.add('text-primary');
+                    // } else if (action === 'submit') {
+                    //     successText.classList.add('text-success');
+                    // }
+                }
+
+                const successModal = new bootstrap.Modal(successModalElement);
+                successModal.show();
+            }
+
+            // ✅ Remove only specific params from URL
+            urlParams.delete("Success");
+            urlParams.delete("success");  // optional, covers both cases
+            urlParams.delete("message");
+            urlParams.delete("action");
+    
+            const newQuery = urlParams.toString();
+            const newUrl = window.location.pathname + (newQuery ? "?" + newQuery : "");
+            window.history.replaceState({}, document.title, newUrl); 
+        }
+    });
+</script>
+
+{% endblock content %}

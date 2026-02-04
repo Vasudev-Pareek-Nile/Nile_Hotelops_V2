@@ -1,0 +1,28 @@
+{% comment %} <li class="list-unstyled"><a href="/Master/Product" class="nav-link text-white">Home</a></li> {% endcomment %}
+<div class="nav-element-container d-flex gap-4">
+    <li class="list-unstyled"><a class="nav-link text-white" href= "{% url 'InterviewAssessmentList' %}">Interview Assessment</a></li>
+    {% comment %} {% if request.session.UserID == '20231203199257'  or request.session.UserID == '20201212175519'  or  request.session.UserID == '20201212180048'  or request.session.UserID == '20201212178780' %} {% endcomment %}
+    {% if request.session.UserID == '20231203199257'  or request.session.UserID == '20201212175519'  or  request.session.UserID == '20201212180048'  or request.session.UserID == '20201212178780' or request.session.UserID == '20240903106516'  %}
+                    
+                    
+    {% comment %} <li class="dropdown">
+        <a href="#" class="dropdown-toggle nav-link text-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Admin <span class="caret"></span>
+        </a>
+        <div class="dropdown-menu" >
+            <a class="dropdown-item" href="{% url 'UserTypeList' %}">User Type</a>
+            <a class="dropdown-item" href="{% url 'DepartmentLevelConfigList' %}">Department Level Configure</a>
+        </div>
+    </li> {% endcomment %}
+
+    <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+        <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+            <span>Admin</span>
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item dropdown-item-color" href="{% url 'UserTypeList' %}">User Type</a>
+            <a class="dropdown-item dropdown-item-color" href="{% url 'DepartmentLevelConfigList' %}">Department Level Configure</a>
+        </div>
+    </li>
+    {% endif %}
+</div>

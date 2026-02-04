@@ -1,0 +1,271 @@
+{% extends 'letterloa/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+ 
+
+<style>
+    form p {
+        display: inline-block;
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+{
+    visibility: hidden;
+}
+label{
+    padding-top: 14px;
+    margin-bottom:5px;
+}
+ </style>
+
+<div class="card">
+    <div class="card-header"><span class="text-uppercase fw-bold">New Employee Appointment Letter</span></div>
+
+    <form action="" method="post">
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row">
+        
+                    <!-- Emp code -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="emp_code">Emp code:</label>
+                            <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ Appointmentobj.emp_code|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Prefix -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="prefix">Prefix:</label>
+                            <input type="text" name="prefix" id="prefix" class="form-control" value="{{ Appointmentobj.prefix|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- First Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name:</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ Appointmentobj.first_name|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Last Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ Appointmentobj.last_name|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Mobile Number -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="mobile_number">Mobile Number:</label>
+                            <input type="text" name="mobile_number" id="mobile_number" class="form-control" value="{{ Appointmentobj.mobile_number|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Email -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ Appointmentobj.email|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Date of Appointment -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_appointment">Date of Appointment:</label>
+                            <input type="date" name="date_of_appointment" id="date_of_appointment" class="form-control" value="{% if Appointmentobj.date_of_appointment  %}{{Appointmentobj.date_of_appointment|date:'Y-m-d'}}{% else %}{{Appointmentobj.date_of_joining|date:'Y-m-d'}}{% endif %}" >
+                        </div>
+                    </div>
+        
+                    <!-- Date of Joining -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_joining">Date of Joining:</label>
+                            <input type="date" name="date_of_joining" id="date_of_joining" class="form-control" value="{% if  Appointmentobj.date_of_joining %}{{Appointmentobj.date_of_joining|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" readonly >
+                        </div>
+                    </div>
+        
+                    <!-- Department -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="department">Department:</label>
+                            <input type="text" name="department" id="department" class="form-control" value="{{ Appointmentobj.department|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="designation">Designation:</label>
+                            <input type="text" name="designation" id="designation" class="form-control" value="{{ Appointmentobj.designation|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Reporting to Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="reporting_to_designation">Reporting to Designation:</label>
+                            <input type="text" name="reporting_to_designation" id="reporting_to_designation" class="form-control" value="{{ Appointmentobj.Reporting_to_designation|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Level -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="level">Level:</label>
+                            <input type="text" name="level" id="level" class="form-control" value="{{ Appointmentobj.level|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Basic Salary -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="basic_salary">Basic Salary:</label>
+                            <input type="number" name="basic_salary" id="basic_salary" class="form-control" value="{{ Appointmentobj.basic_salary|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Address -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                                <textarea name="address" id="address" class="form-control" cols="1" readonly>{{ Appointmentobj.address|default_if_none:'' }}</textarea>
+                        </div>
+                    </div>
+        
+                    
+                                            <!-- HR Designation -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="hr_designation">HR Designation:</label>
+                                <select class="form-control" name="Hr_Designation" id="Hr_Designation" required>
+                                    <option value="">Select</option>
+                                    {% for HRManagerName in HRManagerNames %}
+                                        <option value="{{ HRManagerName.designations }}" 
+                                                {% if Appointmentobj.Hr_Designation == HRManagerName.designations %} selected {% endif %} 
+                                                data-hrname="{{ HRManagerName.EmployeeName }}">
+                                            {{ HRManagerName.designations }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- HR Name -->
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="hr_name">HR Name:</label>
+                                <input type="text" name="Hr_Name" id="Hr_Name" class="form-control" 
+                                    value="{{ Appointmentobj.Hr_Name|default_if_none:'' }}" readonly>
+                            </div>
+                        </div>
+
+        
+                    
+                        <!-- Issuing Manager Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_designation">Issuing Designation</label>
+                            <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                                <option value="">Select</option>
+                                {% for ManagerName in ManagerNames %}
+                                    <option value="{{ ManagerName.designations }}" {% if Appointmentobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                        {{ ManagerName.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Issuing Manager Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_manager_name">Issuing Manager Name</label>
+                            <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ Appointmentobj.Issuing_manager_name }}" required readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    
+    {% csrf_token %}
+
+        <div class="CustomFooter">
+            <input type="submit" class="btn btn-primary" value="{% if Update %}Update{% else %}Submit{% endif %}">
+        </div>
+    </form>
+</div>
+{% comment %} 
+<script>
+   
+    function updateDesignation() {
+        const select = document.getElementById("Issuing_manager_name");
+        const selectedOption = select.options[select.selectedIndex];
+        const designation = selectedOption.getAttribute("data-designation");
+        document.getElementById("Issuing_designation").value = designation ? designation : '';
+    }
+
+ 
+    document.addEventListener("DOMContentLoaded", function() {
+        updateDesignation();
+    });
+
+   
+    document.getElementById("Issuing_manager_name").addEventListener("change", updateDesignation);
+</script> {% endcomment %}
+
+<script>
+    function updateManagerName() {
+        const select = document.getElementById("Issuing_designation");
+        const selectedOption = select.options[select.selectedIndex];
+        const fullName = selectedOption.getAttribute("data-fullname");
+        document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateManagerName();
+    });
+
+    document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+
+<script>
+    // Function to update the HR Name based on the selected designation
+    function updateHRName() {
+        const designationSelect = document.getElementById("Hr_Designation");
+        const selectedOption = designationSelect.options[designationSelect.selectedIndex];
+        const hrName = selectedOption.getAttribute("data-hrname");
+
+        // Update the HR Name input field
+        document.getElementById("Hr_Name").value = hrName ? hrName : '';
+    }
+
+    // Add event listeners to update the HR Name on page load and when the selection changes
+    document.addEventListener("DOMContentLoaded", function() {
+        updateHRName(); // Set the initial value
+    });
+
+    document.getElementById("Hr_Designation").addEventListener("change", updateHRName);
+</script>
+
+
+
+
+{% endblock content %}

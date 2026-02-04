@@ -1,0 +1,151 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<div class="container col-md-12" >
+    
+    <div class="card mx-auto">
+        <div class="card-header">Leave Config Details</div>
+        
+        <form action=""  method="post">
+            {% csrf_token %}
+           
+            
+
+          <div class="row">
+                  
+
+            <div class="col-md-6">
+                <div class="form-group m-3">
+                        <label for="">Leave Type:</label>
+                        {% if config  is not None %}
+                        <input type="text" readonly value="{{config.Leave_Type_Master.Type}}" class="form-control">    
+                        <input type="hidden" value="{{config.Leave_Type_Master.id}}" name="Leave_type" >
+                        {% endif %}
+                        {% if type is not None  %}
+                        <input type="text" readonly value="{{type.Type}}" class="form-control"> 
+                        <input type="hidden" value="{{type.id}}"  name="Leave_type" >   
+                        
+                        {% endif %}
+                        
+                </div>
+                <div class="form-group m-3">
+                  
+                   
+                 
+                    
+                    
+                    
+
+                   
+
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="MBalance" {% if config.Monitor_Balance or not config.id %}checked{% endif %} >
+                                    <label>Monitor Balance</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="CFWD" {% if config.Carry_FWD or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Carry Forward</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="Ecash" {% if config.Encash or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Encash</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="Monthly" {% if config.IsMonthly or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Monthly</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="IsDate" {% if config.IsDate or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Is Date</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="Confirmed" {% if config.IsConfirmed or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Confirmed</label>
+                                </td>
+                               
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <input type="checkbox" name="IsAutoCredit" {% if config.IsAutoCredit or not config.id %}checked{% endif %} >
+                                    <label class="ml-2" >Is Auto Credit</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+               
+                </div>
+                <div class="form-group m-3">
+                    <label>Financial Year Start Date: </label>
+                    <input type="date" name="FSD" value="{% if config.Financial_Year_Start_Date %}{{ config.Financial_Year_Start_Date|date:'Y-m-d' }}{% else %}{{ DefaultFinancial_Year_Start_Date|date:'Y-m-d' }}{% endif %}" class="form-control">
+                </div>
+                <div class="form-group m-3">
+                    <label>Financial Year End Date: </label>
+                    <input type="date" name="FED" value="{% if config.Financial_Year_End_Date %}{{ config.Financial_Year_End_Date|date:'Y-m-d' }}{% else %}{{ DefaultFinancial_Year_End_Date|date:'Y-m-d' }}{% endif %}" class="form-control">
+                </div>
+                
+                <div class="form-group m-3">
+                    <label>Yearly Leave:</label>
+                    <input type="number" class="form-control" id="yearlyLeave" name="YLeave" value="{{config.YearlyLeave}}">
+                </div>
+                
+            </div>
+            
+            <div class="col-md-6">
+                <div class="form-group m-3" >
+                    <label>How many time user can take Leave in a Year:</label>
+                    <input type="number" class="form-control" name="ATimes" value="{{config.Appn_Times}}">
+                </div>
+                <div class="form-group m-3" >
+                    <label>Apply Max:</label>
+                    <input type="number" class="form-control" name="AMax" value="{{config.Apply_Max}}">
+                </div>
+                <div class="form-group m-3" >
+                    <label>Apply Min:</label>
+                    <input type="number" class="form-control" name="AMin" value="{{config.Apply_Min}}">
+                </div>
+                {% comment %} <div class="form-group m-3" >
+                    <label>Overdaft:</label>
+                    <input type="number" class="form-control" name="Odaft" value="{{config.Overdaft}}">
+                </div> {% endcomment %}
+                <div class="form-group m-3" >
+                    <label>Maximum Accumulation:</label>
+                    <input type="number" class="form-control" name="Max_Accum" value="{{config.Maximum_Accumulation}}">
+                </div>
+            </div>
+          </div>
+            
+
+            <div class="card-footer text-right"> 
+                <input type="submit"  class="btn btn-primary btn-sm">
+                
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    function calculateMonthlyLeave() {
+       
+        var yearlyLeave = document.getElementById('yearlyLeave').value;
+
+      
+        var monthlyLeave = yearlyLeave / 12;
+
+      
+        document.getElementById('monthlyLeave').value = monthlyLeave.toFixed(2); 
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    
+        document.getElementById('yearlyLeave').addEventListener('input', calculateMonthlyLeave);
+    });
+</script>
+
+{% endblock %}

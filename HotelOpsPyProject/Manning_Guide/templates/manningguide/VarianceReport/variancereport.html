@@ -1,0 +1,1326 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    
+     <style>
+        .body{
+            font-family: 'Arial Nova',
+        }
+        .actions {
+            margin-left: 10px;
+        }
+
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .custom-card {
+            width: 98%;
+            margin: auto;
+        }
+        .modal-dialog{
+            width: 72%;
+            max-width: 72%;
+            min-width: 720px;
+        }
+        th, td {
+            font-size: 13px;
+            font-family: 'Arial Nova', Arial, sans-serif;
+            border: 1px solid #ddd;
+        }
+        .input-small {
+            width: 70px;
+            height: 30px;
+            border: none; 
+            background: transparent; 
+            text-align: center; 
+        }
+        th {
+            text-align: center;
+            font-size: 13px;
+        }
+        table {
+            width: 100%;
+        }
+        .center-text {
+            text-align: center;
+        }
+        .center-input {
+            display: block;
+            margin: 0 auto;
+        }
+        .form-control {
+            font-size: 13px;
+        }
+        th{
+            text-transform:uppercase;
+            text-align:center;
+            line-height:1.7;
+            vertical-align:middle
+        }
+      
+    </style>
+    <style>
+        .table-hover tbody tr:hover {
+            background-color: #dae3dc; /* Change hover color to red */
+             /* Optional: Change text color to white for better contrast */
+        }
+        .custom-checkbox {
+            width: 20px; /* Adjust width */
+            height: 11px; /* Adjust height */
+            transform: scale(2.1); /* Adjust scale factor */
+           
+        }
+        .HeaderWithColor{
+            /* background-color:#edf0fb !important;             */
+            border-color: #bdac9f !important;
+            text-transform:uppercase !important;
+        }
+        .TableThColor{
+            /* background-color:#edf0fb !important; */
+            font-size:13px; 
+            font-weight: bold !important;
+        }
+
+        .HeaderWithproperty{
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style> 
+
+ <style>
+          body{
+              font-size: 13px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+              background:#fff !important;
+             }
+             h4{
+               margin-bottom:10px !important;
+               font-size:16px;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+            padding: 7px !important;
+        }
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 13px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        .TableThColor {
+            background-color: #edf0fb !important;
+        }
+       
+        .custom-btn {
+                    margin-right: 10px; 
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+
+         .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        }
+
+        .HeaderWithColor {
+            /* background-color: #edf0fb !important; */
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        table thead th {
+            background: #edf0fb  !important;
+        }
+
+        table {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        table thead tr:first-child th:first-child {
+                border-top-left-radius: 4px;
+        }
+
+        table thead tr:first-child th:last-child {
+                border-top-right-radius: 4px;
+        }
+
+        table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 4px;
+        }
+
+            table tbody tr:last-child td:last-child {
+                    border-bottom-right-radius: 4px;
+            }
+
+          #myTable tr td:nth-child(4),#myTable tr td:nth-child(5),#myTable tr td:nth-child(6)
+          ,#myTable tr td:nth-child(10),#myTable tr td:nth-child(11),#myTable tr td:nth-child(12)
+          ,#myTable3 tr td:nth-child(4),#myTable3 tr td:nth-child(5),#myTable3 tr td:nth-child(6)
+           ,#myTable3 tr td:nth-child(7),#myTable3 tr td:nth-child(8),#myTable3 tr td:nth-child(9)
+           ,#myTable3 tr td:nth-child(10),#myTable3 tr td:nth-child(11),#myTable3 tr td:nth-child(12)
+           ,#myTable4 tr td:nth-child(4),#myTable4 tr td:nth-child(5),#myTable4 tr td:nth-child(6)
+           ,#myTable4 tr td:nth-child(10),#myTable4 tr td:nth-child(11),#myTable4 tr td:nth-child(12)
+          {
+            text-align: center !important;
+          }
+
+           #myTable2 tr td:not(:first-child), #myTable2 tr td:not(:first-child)
+           ,#myTable5 tr td:not(:first-child){
+              text-align: center !important;
+            }
+ 
+            .select2-dropdown {
+    z-index: 999;
+  }
+  .input-group-text{
+    font-size: 13px !important;
+    padding: 10px;
+  }
+    .filter-box{
+        margin-left: -16px;
+    }
+
+    .table th {
+        {% comment %} padding: 1rem -0.25rem !important; {% endcomment %}
+        padding: 0.5rem 0.25rem !important;
+        background-color: aliceblue !important;
+        color: #076e00 !important;
+    }
+
+    .table td {
+        padding: 5px 5px !important;
+        font-size: 13px !important;
+    }
+
+    .total_header_color{
+        background-color: #e9e9ea !important;
+    }
+</style>
+
+
+    {% comment %} <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> {% endcomment %}
+    {% comment %} <script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script> {% endcomment %}
+</head>
+
+
+<body>
+<div class="row ">
+    <div class="col-sm-12">
+        <span class="fw-bold text-uppercase">Variance Report</span>
+
+        <form method="get_item" class="mb-0 mt-3">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-block">
+                    <select name="hotel_name"  class="form-control select2">
+                        {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.Organization_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                </div>
+
+                <div class="col-md-1"  style="display:none">
+                    <select name="divisionname" class="form-control select" >
+                        <option value="All Division">All Division</option>
+                        {% for Divisiondata in Divisiondatas %}
+                            <option value="{{ Divisiondata.DivisionName }}" {% if Divisiondata.DivisionName == selected_division %}selected{% endif %}>
+                                {{ Divisiondata.DivisionName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 "  style="display:none">
+                    <select name="departmentname" class="form-control select">
+                        <option value="All Department">All Department</option>
+                        {% for department in Departmentsdatas %}
+                            <option value="{{ department.DepartmentName }}" {% if department.DepartmentName == selected_department %}selected{% endif %}>
+                                {{ department.DepartmentName }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3 filter-box">
+                    <div class="input-block">
+                        <div class=" align-items-center">
+                            <label class="input-group-text mb-0 ml-2" for="exclude_zero_headcount">
+                            <input type="checkbox" name="exclude_zero_headcount" class="custom-checkbox" value="0" id="exclude_zero_headcount" {% if request.get_item.exclude_zero_headcount %}checked{% endif %} style="margin-right: 7px;">
+                            Excluding 0 Head Count</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 filter-box">
+                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                    <a class="btn btn-sm btn-danger"  data-bs-toggle="modal" data-bs-target=".bd-example-modal-sm">Export</a>
+                    <button class="btn btn-sm btn-secondary" id="exportBtn">Export Excel</button>
+                </div>
+            </div>
+        </form>
+  </div> 
+</div>
+    
+
+{% if SelHotelName and SelHotelName != 'Select' %}
+    <h3>Selected Hotel:</h3>
+    <p>Hotel ID: {{ SelHotelName }}</p>
+{% endif %}
+
+        
+    
+    
+    <div class="row mb-3">
+        <div class="col-sm-12">
+            
+                <input type="hidden" name="hotel_name" value="{{ hotel_name }}" />               
+                <button class="btn btn-primary mb-2" style="padding: 5px 5px !important;">ON ROLL MANNING</button>
+                <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="myTable">
+                    <thead>
+                      
+                    </thead>
+                    <tbody>
+                        
+                    {% if divisions %}
+                        {% for division in divisions %}
+                        {%if forloop.counter0 != 0 %}
+                        <tr style="background-color:#fff !important;">
+                            <td colspan="12"  style="background-color:#fff !important;">&nbsp;</td>
+                        </tr>
+                        {%endif%}
+                        <tr >
+                            <td colspan="12" class="HeaderWithColor">{{ division.DivisionName }}</td>
+                        </tr>
+                        {% for department in division.onrolldepartmentmaster_set.all %}
+                        <tr style="{% if department.DepartmentName == division.DivisionName %}display:none;{% endif %}">
+                            <td colspan="12" style="background-color: #6a6162; text-transform: uppercase;"> {{ department.DepartmentName }}</td>
+                        </tr>
+                        <tr>
+                            <th class="TableThColor">DIV</th>
+                            <th class="TableThColor">DEPT</th>
+                            <th class="TableThColor">POSITION</th>
+                            <th class="TableThColor">BUD AVG SAL</th>
+                            <th class="TableThColor">ACT AVG SAL</th>
+                            <th class="TableThColor">VAR AVG SAL</th>
+                            <th class="TableThColor">BUD HC</th>
+                            <th class="TableThColor">ACT HC</th>
+                            <th class="TableThColor">VAR HC</th>
+                            <th class="TableThColor">BUD TOTAL CTC</th>
+                            <th class="TableThColor">ACT TOTAL CTC</th>
+                            <th class="TableThColor">VAR TOTAL CTC</th>
+                        </tr>
+                        {% for designation in department.onrolldesignationmaster_set.all %}
+                        {% with emp=employees_dict|get:department.DepartmentName|get:designation.designations %}
+                        {% with budget=budgets_dict|get:department.DepartmentName|get:designation.designations %}
+                        {% with variance=variance_dict|get:department.DepartmentName|get:designation.designations %}
+                        {% if emp.num_employees > 0 or not exclude_zero_headcount %}
+                        <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                            <td style="width: 70px;">{{ designation.Div }}</td>
+                            <td style="width: 70px;">{{ designation.Dept }}</td>
+                            <td style="width: 310px;">{{ designation.designations }}</td>
+
+                            <td style="width: 120px; text-align: right;">{{ budget.aavg_salary|formatingdata }}</td>
+                            <td style="width: 120px; text-align: right;">{{ emp.avg_salary|formatingdata }}</td>
+                            <td style=" width: 120px; text-align: right; color: {% if variance.variance_salary > 0 %}red{% elif variance.variance_salary < 0 %}green{% else %}black{% endif %};">
+                                {{ variance.variance_salary|formatingdata }}
+                            </td>
+
+                            <td style="width: 90px; text-align: center;">{{ budget.head_count|default:'0' }}</td>
+                            <td style="width: 90px; text-align: center;">{{ emp.num_employees|default:'0' }}</td>
+                            <td style="width: 90px; text-align: center; color: {% if variance.variance_head_count > 0 %}red{% elif variance.variance_head_count < 0 %}green{% else %}black{% endif %};">
+                                {{ variance.variance_head_count|default:'0' }}
+                            </td>
+                            <td style=" width: 120px; text-align: right;">{{ budget.budgetmultiplication_result|formatingdata }}</td>
+                            <td style=" width: 120px; text-align: right;">{{ emp.multiplication_result|formatingdata }}</td>
+                            <td style=" width: 120px;  color: {% if variance.variance_total_result > 0 %}red{% elif variance.variance_total_result < 0 %}green{% else %}black{% endif %};">
+                                {{ variance.variance_total_result|formatingdata }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endwith %}
+                        {% endwith %}
+                        {% endwith %}
+                    {% endfor %}
+                    
+
+                    <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}">
+                            <td class="total_header_color" colspan="3" style="text-transform: uppercase;">
+                                {{ department.DepartmentName }} Total
+                                <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                            </td>
+                            <td class="total_header_color" style="width: 120px;   text-align: center;">{{department_totals|get:department.DepartmentName|get:"aavg_salary"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="width: 120px;   text-align: center;">{{departmentemp_totals|get:department.DepartmentName|get:"total_salarymulti"|formatingdata|default:"0" }}</td></td>
+                            <td class="total_header_color" style="text-align: center; color: {% if department_variance_dict|get:division.DivisionName|get:"variance_salary_multi" < 0 %}green{% else %}red{% endif %};">
+                                {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_multi"|formatingdata|default:"0" }}
+                            </td>
+                            
+                            <td class="total_header_color" style="text-align: center;">{{department_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center;">{{departmentemp_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|variance_color }};">
+                                {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center;">{{department_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center;">{{departmentemp_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|variance_color }};">
+                                {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|formatingdata|default:"0" }}
+                            </td>
+                            
+                        </tr> 
+                        {% endfor %}
+                        
+                        <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                            <td class="total_header_color" colspan="3" style="text-transform: uppercase; ">{{ division.DivisionName }} TOTAL
+                                <input type="hidden" name="division_ID_{{ forloop.counter0 }}" value="{{ division.id }}" />
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center;">{{ divisiononroll_dict|get:division.DivisionName|get:"onrollonmultiplication_result"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="width: 120px; text-align: center;">{{ division_totals|get:division.DivisionName|get:"divisiontotal_salarymulti"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="width: 120px; text-align: center; color: {{ division_variance_dict|get:division.DivisionName|get:"variance_salary_multi"|variance_color }};">
+                                {{ division_variance_dict|get:division.DivisionName|get:"variance_salary_multi"|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center;">{{ divisiononroll_dict|get:division.DivisionName|get:"onrolldivisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center;">{{ division_totals|get:division.DivisionName|get:"divisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center; color: {{ division_variance_dict|get:division.DivisionName|get:"variance_headcount"|variance_color }};">
+                                {{ division_variance_dict|get:division.DivisionName|get:"variance_headcount"|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center;">{{ divisiononroll_dict|get:division.DivisionName|get:"onrolldivisionsalary_headcount_product"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center;">{{ division_totals|get:division.DivisionName|get:"divisionsalary_headcount_product"|formatingdata|default:"0" }}</td>
+                            <td class="total_header_color" style="text-align: center; color: {{ division_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|variance_color }};">
+                                {{ division_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|formatingdata|default:"0" }}
+                            </td>
+                        
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="12">Data not found for selected hotel.</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="12"  ><strong>&nbsp;</strong></td>
+                    </tr>
+                
+                    <tr>
+                        <td class="total_header_color" colspan="3" style="text-transform: uppercase; width: 285px;"><strong>GRAND TOTAL</strong></td>
+                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                            {{ grandtotalondatabudget|formatingdata|default:"0" }}
+                        </td>
+
+                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                            {{ grandtotalondataemp|formatingdata }}
+                        </td>
+
+                        <td class="total_header_color" style="width: 120px; text-align: center; color: {{ variance_detaavg_salary|variance_color }};">
+                            {{ variance_detaavg_salary|formatingdata }}
+                        </td>
+
+                    
+                        <td class="total_header_color" style="text-align: center;">
+                            {{ headgrandtotalondatabudget|default:"0" }}
+                        </td>
+                        <td class="total_header_color" style="text-align: center;">
+                            {{ grandtotalondataemp_headcount|default:"0" }}
+                        </td>
+
+                        <td class="total_header_color" style="text-align: center; color: {{ variance_detaheadcount|variance_color }};">
+                            {{ variance_detaheadcount }}
+                        </td>
+
+                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                            {{ orrollServicesgrandsalarydivion|formatingdata }}
+                        </td>
+
+                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                            {{ Servicesgrandsalarydivion|formatingdata }}
+                        </td>
+
+                        <td class="total_header_color" style="width: 120px; text-align: center; color: {{ variance_detatotal_ctc|variance_color }};">
+                            {{ variance_detatotal_ctc|formatingdata }}
+                        </td>
+                    </tr>
+                    
+                    
+                   </tbody>
+              </table>
+            </div>
+            </div>
+    </div>
+
+    <div class="row mb-3" >
+       <div class="col-sm-12">
+        {% comment %} <h4>DEPARTMENT TOTAL</h4> {% endcomment %}
+        <button class="btn btn-primary mb-2" style="padding: 5px 5px !important;">DEPARTMENT TOTAL</button>
+
+        <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="myTable2" >
+            <thead>
+                <tr>
+                    <th class="TableThColor" colspan="3">DEPARTMENT TOTAL</th>
+                    <th class="TableThColor">BUD AVG SAL</th>
+                    <th class="TableThColor">ACT AVG SAL</th>
+                    <th class="TableThColor">VAR AVG SAL</th>
+                    <th class="TableThColor">BUD HC</th>
+                    <th class="TableThColor">ACT HC</th>
+                    <th class="TableThColor">VAR HC</th>
+                    <th class="TableThColor">BUD TOTAL CTC</th>
+                    <th style="TableThColor fw-bold">ACT TOTAL CTC</th>
+                    <th class="TableThColor">VAR TOTAL CTC</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                {% if divisions %}
+                    {% for division in divisions %}
+                
+                        {% for department in division.onrolldepartmentmaster_set.all %}
+                    
+                    
+                            {% for designation in department.onrolldesignationmaster_set.all %}
+                        
+                            {% endfor %}
+                            <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}">
+                                <td colspan="3" style="text-transform: uppercase;">
+                                    {{ department.DepartmentName }} 
+                                    <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                                </td>
+                                <td style="width: 120px;   text-align: right;">{{department_totals|get:department.DepartmentName|get:"aavg_salary"|formatingdata|default:"0" }}</td>
+                                <td style="width: 120px;   text-align: right;">{{departmentemp_totals|get:department.DepartmentName|get:"total_salarymulti"|formatingdata|default:"0" }}</td></td>
+                                <td style="text-align: right; color: {% if department_variance_dict|get:division.DivisionName|get:"variance_salary_multi" < 0 %}green{% else %}red{% endif %};">
+                                    {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_multi"|formatingdata|default:"0" }}
+                                </td>
+                                
+                                <td style="text-align: center;">{{department_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                                <td style="text-align: center;">{{departmentemp_totals|get:department.DepartmentName|get:"total_headcount"|formatingdata|default:"0" }}</td>
+                                <td style="text-align: center; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|variance_color }};">
+                                    {{ department_variance_dict|get:division.DivisionName|get:"variance_headcount"|formatingdata|default:"0" }}
+                                </td>
+                                <td style="text-align: right;">{{department_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                                <td style="text-align: right;">{{departmentemp_totals|get:department.DepartmentName|get:"salary_headcount_product"|formatingdata|default:"0" }}</td>
+                                <td style="text-align: right; color: {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|variance_color }};">
+                                    {{ department_variance_dict|get:division.DivisionName|get:"variance_salary_headcount_product"|formatingdata|default:"0" }}
+                                </td>
+                            </tr> 
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="12">Data not found for selected hotel.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="row mb-3">
+       <div class="col-sm-12">
+                <button class="btn btn-primary mb-2" style="padding: 5px 5px !important;">CONTRACT MANNING</button>
+                <div class="table-responsive">
+                        <table class="table table-bordered custom-table" id="myTable3" >
+                            <thead>
+                                <tr>
+                                    <th class="TableThColor">DIV</th>
+                                    <th class="TableThColor">DEPT</th>
+                                    <th class="TableThColor">POSITION</th>
+                                    <th class="TableThColor">BUD AVG SAL</th>
+                                    <th class="TableThColor">ACT AVG SAL</th>
+                                    <th class="TableThColor">VAR AVG SAL</th>
+                                    <th class="TableThColor">BUD HC</th>
+                                    <th class="TableThColor">ACT HC</th>
+                                    <th class="TableThColor">Var HC</th>
+                                    <th class="TableThColor">BUD TOTAL CTC</th>
+                                    <th style="background-color: #34444c;  color: #fff; font-size: 13px;">ACT TOTAL CTC</th>
+                                    <th class="TableThColor">VAR TOTAL CTC</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if divisions %}
+                                    {% for division in contractdivisions %}
+                                        <tr>
+                                            <td colspan="12" class="HeaderWithColor"><strong>{{ division.DivisionName }}</strong></td>
+                                        </tr>
+                                        {% for department in division.contractdepartmentmaster_set.all %}
+                                            <tr>
+                                                <td colspan="12" style="background-color: #6a6162;  text-transform: uppercase;"><strong> {{ department.DepartmentName }}<strong></td>
+                                            </tr>
+                                            
+                                            {% for designation in department.contractdesignationmaster_set.all %}
+                                                {% with item=actual_dict|get:department.DepartmentName|get:designation.designations %}
+                                                    {% with itembudget=budget_dict|get:department.DepartmentName|get:designation.designations %}
+                                                        {% with variance=variance_contract_dict|get:department.DepartmentName|get:designation.designations %}
+                                                            <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                                                                <td style="width: 80px;">{{ designation.Div }}</td>
+                                                                <td style="width: 80px;">{{ department.DepartmentName }}</td>
+                                                                <td style="width: 310px;">{{ designation.designations }}</td>
+                                                                <td style="width: 120px; text-align: right;">{{ itembudget.budget_avg_salary|formatingdata }}</td>
+                                                                <td style="width:  120px;text-align: right;">{{ item.actual_avg_salary|formatingdata }}</td>
+                                                                <td style="width: 120px; text-align: right; color: {% if variance.variance_avg_salary > 0 %}red{% elif variance.variance_avg_salary < 0 %}green{% else %}black{% endif %};">
+                                                                    {{ variance.variance_avg_salary|formatingdata }}
+                                                                </td>
+                                                                <td style="width: 90px; text-align: center;">{{ itembudget.budget_head_count|default:'0' }}</td>
+                                                                <td style=" width: 90px; text-align: center;">{{ item.actual_head_count|default:'0' }}</td>
+                                                                <td style="width: 90px; text-align: center; color: {% if variance.variance_head_count > 0 %}red{% elif variance.variance_head_count < 0 %}green{% else %}black{% endif %};">
+                                                                    {{ variance.variance_head_count|default:"0" }}
+                                                                </td>
+                                                                <td style="width: 120px; text-align: right;">{{ itembudget.budget_total_ctc|formatingdata }}</td>
+                                                                <td style=" width: 120px; text-align: right;">{{ item.actual_total_ctc|formatingdata }}</td>
+                                                                <td style="width: 120px; text-align: right; color: {% if variance.variance_total_ctc > 0 %}red{% elif variance.variance_total_ctc < 0 %}green{% else %}black{% endif %};">
+                                                                    {{ variance.variance_total_ctc|formatingdata }}
+                                                                </td>
+                                                            </tr>
+                                                        {% endwith %}
+                                                    {% endwith %}
+                                                {% endwith %}
+                                            {% endfor %}
+                                                <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #d9d9d9;">
+                                                    <td class="total_header_color" colspan="3" style="text-transform: uppercase;">
+                                                        <b>{{ department.DepartmentName }} TOTAL<b>
+                                                        <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                                                    </td>
+                                                    <td class="total_header_color" style=" text-align: center;">{{ onrollContractdepartment_totals|get:department.DepartmentName|get:"Contractmultiplication_result"|formatingdata|default:"0" }}</td>
+                                                    <td class="total_header_color" style=" text-align: center;">{{ Contractdepartment_totals|get:department.DepartmentName|get:"Contractmultiplication_result"|formatingdata|default:"0" }}</td>
+                                                    <td class="total_header_color" style="text-align: center; color: {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_multiplication_result"|variance_color }};">
+                                                        {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_multiplication_result"|formatingdata|default:"0" }}
+                                                    </td>
+                                                    <td class="total_header_color" style=" text-align: center;">{{ onrollContractdepartment_totals|get:department.DepartmentName|get:"Contracthead_count"|formatingdata|default:"0" }}</td>
+                                                    <td class="total_header_color" style=" text-align: center;">{{ Contractdepartment_totals|get:department.DepartmentName|get:"Contracthead_count"|default:"0" }}</td>
+                                                    <td class="total_header_color" style="text-align: center; color: {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_head_count"|variance_color }};">
+                                                        {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_head_count"|formatingdata|default:"0" }}
+                                                    </td>
+                                                    <td class="total_header_color" style=" text-align: center;">{{ onrollContractdepartment_totals|get:department.DepartmentName|get:"salary_headcount_contract"|formatingdata|default:"0" }}</td>
+                                                    
+                                                    <td class="total_header_color" style=" text-align: center;">{{ Contractdepartment_totals|get:department.DepartmentName|get:"salary_headcount_contract"|formatingdata|default:"0" }}</td>
+                                                    <td class="total_header_color" style="text-align: center; color: {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_salary_headcount_contract"|variance_color }};">
+                                                        {{ onrolldepartment_variance_dict|get:department.DepartmentName|get:"variance_salary_headcount_contract"|formatingdata|default:"0" }}
+                                                    </td>
+                                                </tr> 
+                                        {% endfor %}    
+                                        <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                                            <td class="total_header_color" colspan="3" style="text-transform: uppercase;"><b>{{ division.DivisionName }} TOTAL<b>
+                                                <input type="hidden" name="division_ID_{{ forloop.counter0 }}" value="{{ division.id }}" />
+                                            </td>
+                                            <td class="total_header_color" style="text-align: center; width: 50px;">{{ onrollContractdivision_totals|get:division.DivisionName|get:"Contractdivisionmultiplication_result"|formatingdata|default:"0" }}</td>
+                                            <td class="total_header_color" style=" text-align: center;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisionmultiplication_result"|formatingdata|default:"0" }}</td>
+                                            <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_multiplication_result'|variance_color }};">
+                                                 {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_multiplication_result'|formatingdata|default:"0" }}
+                                            </td>
+                                            <td class="total_header_color" style=" text-align: center;">{{ onrollContractdivision_totals|get:division.DivisionName|get:"Contractdivisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                                            <td class="total_header_color" style=" text-align: center;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                                            <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_head_count'|variance_color }};">
+                                                {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_head_count'|formatingdata|default:"0" }}
+                                            </td>
+                                            <td class="total_header_color" style=" text-align: center;">{{ onrollContractdivision_totals|get:division.DivisionName|get:"Contractdivisionsalary_headcount_product"|formatingdata|default:"0" }}</td>
+                                            
+                                            <td class="total_header_color" style=" text-align: center;">{{ Contractdivision_totals|get:division.DivisionName|get:"Contractdivisionsalary_headcount_product"|formatingdata|default:"0" }}</td>
+                                            <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_salary_headcount_product'|variance_color }};">
+                                                {{ onrolldivision_variance_dict|get:division.DivisionName|get:'variance_salary_headcount_product'|formatingdata|default:"0" }}
+                                            </td>
+                                        </tr>  
+                                    {% endfor %}
+                                    {% else %}
+                                
+                                {% endif %}
+                                <tr>
+                                    <td colspan="12"  ><strong>&nbsp;</strong></td>
+                                </tr>
+                                <tr>
+                                        <td class="total_header_color" colspan="3" style="text-transform: uppercase; width: 285px;"><strong>GRAND TOTAL<strong></td>
+                                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                                            {{ budgetcontractgrandtotalondataemp|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                                            {{ enterycontractdetasgrand|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="width: 120px; text-align: center; color: {{ datavariance_detaavg_salary|variance_color }};">
+                                            {{ datavariance_detaavg_salary|formatingdata|default:"0" }}
+                                        </td>
+                                        
+                                        <td class="total_header_color" style="text-align: center;">
+                                            {{ budgetcontractgrandtotalondataemp_headcount|formatingdata|default:"0" }}
+                                        </td>
+                                        <td class="total_header_color" style="text-align: center;">
+                                            {{ enterycontractdetasheadgrandtotalon|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="text-align: center; color: {{ datavariance_detaheadcount|variance_color }};">
+                                            {{ datavariance_detaheadcount|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                                            {{ budgetcontractdatagrandsalarydivion|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="width: 120px; text-align: center;">
+                                            {{ enterycontractempgrandsalarydivion|formatingdata|default:"0" }}
+                                        </td>
+                    
+                                        <td class="total_header_color" style="width: 120px; text-align: center; color: {{ datavariance_detatotal_ctc|variance_color }};">
+                                            {{ datavariance_detatotal_ctc|formatingdata|default:"0" }}
+                                        </td>
+                                </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+    </div>
+
+<div class="row mb-3">
+       <div class="col-sm-12">
+        <button class="btn btn-primary mb-2" style="padding: 5px 5px !important;">SHARED SERVICES MANNING</button>
+
+        {% comment %} <h4>SHARED SERVICES MANNING</h4> {% endcomment %}
+           <div class="table-responsive">
+              <table class="table table-bordered custom-table" id="myTable4" >
+                <thead>
+                    <tr>
+                        <th class="TableThColor">DIV</th>
+                        <th class="TableThColor">DEPT</th>
+                        <th class="TableThColor">POSITION</th>
+                        <th class="TableThColor">BUD AVG SAL</th>
+                        <th class="TableThColor">ACT AVG SAL</th>
+                        <th class="TableThColor">VAR AVG SAL</th>
+                        <th class="TableThColor">BUD HC</th>
+                        <th class="TableThColor">ACT HC</th>
+                        <th class="TableThColor">VAR HC</th>
+                        <th class="TableThColor">BUD TOTAL CTC</th>
+                        <th style="background-color: #34444c;  color: #fff; font-size: 13px;">ACT TOTAL CTC</th>
+                        <th class="TableThColor">VAR TOTAL CTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if divisions %}
+                        {% for division in Servicedivisions %}
+                        {% comment %} <tr>
+                            <td colspan="12"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+                        </tr> {% endcomment %}
+                            <tr>
+                                <td colspan="12" class="HeaderWithColor"><strong>{{ division.DivisionName }}</strong></td>
+                            </tr>
+                            {% for department in division.servicesdepartmentmaster_set.all %}
+                                <tr>
+                                    <td colspan="12" style="background-color: #6a6162;  text-transform: uppercase;"><strong> {{ department.DepartmentName }}<strong></td>
+                                </tr>
+                              
+                                {% for designation in department.servicesdesignationmaster_set.all %}
+                                {% with item=actualservice_dict|get:department.DepartmentName|get:designation.designations %}
+                                {% with itembudget=budgetservice_dict|get:department.DepartmentName|get:designation.designations %}
+                                {% with variance=variance_shared_services_dict|get:department.DepartmentName|get:designation.designations %}
+                                <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                                    <td style="width: 80px;">{{ designation.Div }}</td>
+                                    <td style="width: 80px;">{{ designation.Dept }}</td>
+                                    <td style="width: 310px;">{{ designation.designations }}</td>
+                                    <td style="width: 120px; text-align: right;">{{ itembudget.budgetservice_avg_salary|formatingdata }}</td>
+                                    <td style="width: 120px; text-align: right;">{{ item.actualservice_avg_salary|formatingdata }}</td>
+                                    <td style="width: 120px; text-align: right; color: {% if variance.variance_avg_salary > 0 %}red{% elif variance.variance_avg_salary < 0 %}green{% else %}black{% endif %};">
+                                        {{ variance.variance_avg_salary|formatingdata }}
+                                    </td>
+                                    <td style="width: 90px; text-align: center;">{{ itembudget.budgetservice_head_count|default:'0' }}</td>
+                                    <td style=" width: 90px; text-align: center;">{{ item.actualservice_head_count|default:'0' }}</td>
+                                    <td style=" width: 90px; text-align: center; color: {% if variance.variance_head_count > 0 %}red{% elif variance.variance_head_count < 0 %}green{% else %}black{% endif %};">
+                                        {{ variance.variance_head_count|default:'0' }}
+                                    </td>
+                                    <td style=" width: 120px; text-align: right;">{{ itembudget.budgetservice_total_ctc|formatingdata }}</td>
+                                    <td style=" width: 120px; text-align: right;">{{ item.actualservice_total_ctc|formatingdata }}</td>
+                                    <td style=" width: 120px;text-align: right; color: {% if variance.variance_total_ctc > 0 %}red{% elif variance.variance_total_ctc < 0 %}green{% else %}black{% endif %};">
+                                        {{ variance.variance_total_ctc|formatingdata }}
+                                    </td>
+                                </tr>
+                                {% endwith %}
+                                {% endwith %}
+                                {% endwith %}
+                            {% endfor %}
+                              <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                                <td class="total_header_color" colspan="3" style="text-transform: uppercase;">{{ department.DepartmentName }} Total</td>
+                                <td class="total_header_color" style=" width: 120px; text-align: center;">{{ totaldepartmentservices_dict|get:department.DepartmentName|get:"TotalServicesmultiplication_result"|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 120px; text-align: center;">{{ departmentservices_dict|get:department.DepartmentName|get:"TotalServicesmultiplication_result"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 120px; text-align: center; color: {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_multiplication_result'|variance_color }};">
+                                    {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_multiplication_result'|formatingdata|default:"0" }}
+                                </td>
+                                <td class="total_header_color" style=" width: 90px; text-align: center;">{{ totaldepartmentservices_dict|get:department.DepartmentName|get:"TotalServiceshead_count"|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 90px; text-align: center;">{{ departmentservices_dict|get:department.DepartmentName|get:"TotalServiceshead_count"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 90px; text-align: center; color: {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_head_count'|variance_color }};">
+                                    {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_head_count'|formatingdata|default:"0" }}
+                                </td>
+                                <td class="total_header_color" style=" width: 120px; text-align: center;">{{ totaldepartmentservices_dict|get:department.DepartmentName|get:"TotalServicessalary_headcount_contract"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 120px; text-align: center;">{{ departmentservices_dict|get:department.DepartmentName|get:"TotalServicessalary_headcount_contract"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="width: 120px; text-align: center; color: {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_salary_headcount_contract'|variance_color }};">
+                                    {{ onrolldepartment_variance_dictss|get:department.DepartmentName|get:'variance_salary_headcount_contract'|formatingdata|default:"0" }}
+                                </td>
+                            </tr> 
+                            {% endfor %}
+                           <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                                <td class="total_header_color" colspan="3" style="text-transform: uppercase; ">{{ division.DivisionName }} TOTAL</td>
+                                <td class="total_header_color" style=" text-align: center;">{{ totaldivisionservices_dict|get:division.DivisionName|get:"Servicedivisionmultiplication_result"|formatingdata|default:"0.00" }}</td>
+                                <td class="total_header_color" style=" text-align: center;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisionmultiplication_result"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_multiplication_result'|variance_color }};">
+                                    {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_multiplication_result'|formatingdata|default:"0.00" }}
+                                </td>
+                                <td class="total_header_color" style=" text-align: center;">{{ totaldivisionservices_dict|get:division.DivisionName|get:"Servicedivisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style=" text-align: center;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisiontotal_headcount"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_head_count'|variance_color }};">
+                                    {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_head_count'|formatingdata|default:"0.00" }}
+                                </td>
+                                <td class="total_header_color" style=" text-align: center;">{{ totaldivisionservices_dict|get:division.DivisionName|get:"Servicedivisionsalary_headcount_product"|formatingdata|default:"0" }}</td>
+                                <td class="total_header_color" style=" text-align: center;">{{ divisionservices_dict|get:division.DivisionName|get:"Servicedivisionsalary_headcount_product"|formatingdata|default:"0.00" }}</td>
+                                <td class="total_header_color" style="text-align: center; color: {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_salary_headcount_product'|variance_color }};">
+                                    {{ onrolldivision_variance_dictss|get:division.DivisionName|get:'variance_salary_headcount_product'|formatingdata|default:"0.00" }}
+                                </td>
+                            </tr>  
+                        {% endfor %}
+                    {% else %}
+                      
+                    {% endif %}
+                    <tr>
+                        <td colspan="12"  ><strong>&nbsp;</strong></td>
+                    </tr>
+                    <tr style="background-color:  #95917e; color: #fff;">
+                            <td class="total_header_color" colspan="3" style="text-transform: uppercase; width: 285px;"><strong>TOTAL - SHARED SERVICES<strong></td>
+                            
+                            <td class="total_header_color" style="width: 120px; text-align: center;">
+                                {{ budgetservicegrandtotalondataemp|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center;">
+                                {{ enteryservicedetasgrand|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center; color: {{ servicedatavariance_detaavg_salary|variance_color }};">
+                                {{ servicedatavariance_detaavg_salary|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center;">
+                                {{ budgetcontractgrandtotalondataemp_headcount|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center;">
+                                {{ enteryservicedetasheadgrandtotalon|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="text-align: center; color: {{ servicedatavariance_detaheadcount|variance_color }};">
+                                {{ servicedatavariance_detaheadcount|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center;">
+                                {{ budgetcontractdatagrandsalarydivion|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center;">
+                                {{ budgetservicedatagrandsalarydivion|formatingdata|default:"0" }}
+                            </td>
+                            <td class="total_header_color" style="width: 120px; text-align: center; color: {{ servicedatavariance_detatotal_ctc|variance_color }};">
+                                {{ servicedatavariance_detatotal_ctc|formatingdata|default:"0" }}
+                            </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+      <div class="row mb-2">
+       <div class="col-sm-12">
+         <div class="table-responsive">
+            <table class="table table-bordered" id="myTable5" >
+                <thead>
+                    {% comment %} <tr>
+                        <td colspan="12" style="background-color: #f3f3f3;" ><strong>&nbsp;</strong></td>
+                    </tr> {% endcomment %}
+                    <tr>
+                        <th class="TableThColor">DIV</th>
+                        <th class="TableThColor">DEPT</th>
+                        <th class="TableThColor">POSITION</th>
+                        <th class="TableThColor">BUD AVG SAL</th>
+                        <th class="TableThColor">ACT AVG SAL</th>
+                        <th class="TableThColor">VAR AVG SAL</th>
+                        <th class="TableThColor">BUD HC</th>
+                        <th class="TableThColor">ACT HC</th>
+                        <th class="TableThColor">VAR HC</th>
+                        <th class="TableThColor">BUD TOTAL CTC</th>
+                        <th class="TableThColor">ACT TOTAL CTC</th>
+                        <th class="TableThColor">VAR TOTAL CTC</th>
+                    </tr>
+                    
+                    <tr >
+                        <td colspan="3" style="text-transform: uppercase; width: 310px;  "><strong>TOTAL ON ROLL<strong></td>
+                            
+                            <td style="width: 120px; text-align: right;">
+                                {{ grandtotalondatabudget|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ grandtotalondataemp|formatingdata }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right; color: {{ variance_detaavg_salary|variance_color }};">
+                                {{ variance_detaavg_salary|formatingdata }}
+                            </td>
+        
+                           
+                            <td style="text-align: center;">
+                                {{ headgrandtotalondatabudget|default:"0" }}
+                            </td>
+                            <td style="text-align: center;">
+                                {{ grandtotalondataemp_headcount|default:"0" }}
+                            </td>
+        
+                            <td style="text-align: center; color: {{ variance_detaheadcount|variance_color }};">
+                                {{ variance_detaheadcount }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ orrollServicesgrandsalarydivion|formatingdata }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ Servicesgrandsalarydivion|formatingdata }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right; color: {{ variance_detatotal_ctc|variance_color }};">
+                                {{ variance_detatotal_ctc|formatingdata }}
+                            </td>
+                            
+                       
+                    </tr>
+                    
+                    <tr >
+                        <td colspan="3" style="text-transform: uppercase; width: 310px;"><strong>TOTAL - CONTRACT<strong></td>
+                           
+                            <td style="width: 120px; text-align: right;">
+                                {{ budgetcontractgrandtotalondataemp|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ enterycontractdetasgrand|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right; color: {{ datavariance_detaavg_salary|variance_color }};">
+                                {{ datavariance_detaavg_salary|formatingdata|default:"0" }}
+                            </td>
+
+                            <td style="text-align: center;">
+                                {{ budgetcontractgrandtotalondataemp_headcount|formatingdata|default:"0" }}
+                            </td>
+                            <td style="text-align: center;">
+                                {{ enterycontractdetasheadgrandtotalon|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="text-align: center; color: {{ datavariance_detaheadcount|variance_color }};">
+                                {{ datavariance_detaheadcount|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ budgetcontractdatagrandsalarydivion|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right;">
+                                {{ enterycontractempgrandsalarydivion|formatingdata|default:"0" }}
+                            </td>
+        
+                            <td style="width: 120px; text-align: right; color: {{ datavariance_detatotal_ctc|variance_color }};">
+                                {{ datavariance_detatotal_ctc|formatingdata|default:"0" }}
+                            </td>
+                    </tr>
+                    <tr>
+                       
+                            <td colspan="3" style="text-transform: uppercase; width: 310px;"><strong>TOTAL - SHARED SERVICES<strong></td>
+                              
+                                    
+                                <td style="width: 120px; text-align: right;">
+                                    {{ budgetservicegrandtotalondataemp|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="width: 120px; text-align: right;">
+                                    {{ enteryservicedetasgrand|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="width: 120px; text-align: right; color: {{ servicedatavariance_detaavg_salary|variance_color }};">
+                                    {{ servicedatavariance_detaavg_salary|formatingdata|default:"0" }}
+                                </td>
+                                
+            
+                               
+                                <td style="text-align: center;">
+                                    {{ budgetcontractgrandtotalondataemp_headcount|formatingdata|default:"0" }}
+                                </td>
+                                <td style="text-align: center;">
+                                    {{ enteryservicedetasheadgrandtotalon|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="text-align: center; color: {{ servicedatavariance_detaheadcount|variance_color }};">
+                                    {{ servicedatavariance_detaheadcount|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="width: 120px; text-align: right;">
+                                    {{ budgetcontractdatagrandsalarydivion|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="width: 120px; text-align: right;">
+                                    {{ budgetservicedatagrandsalarydivion|formatingdata|default:"0" }}
+                                </td>
+            
+                                <td style="width: 120px; text-align: right; color: {{ servicedatavariance_detatotal_ctc|variance_color }};">
+                                    {{ servicedatavariance_detatotal_ctc|formatingdata|default:"0" }}
+                                </td>
+                        
+                    </tr>
+                    <tr >
+                        <td colspan="3" style="text-transform: uppercase; width: 310px;"><strong>TOTAL - CAFETERIA MEAL COST<strong></td>
+                        <td style="width: 110px;text-align: right; "><b>&nbsp;<b></td>
+                        <td style="width: 110px; text-align: right;  ">&nbsp;</td>
+                        <td style="width: 110px; text-align: right; "><b><b></td>
+                        <td style="width: 110px; text-align: center; ">&nbsp;</td>
+                        <td style="width: 110px; text-align: center; ">&nbsp;</td>
+                        <td style="width: 110px;  text-align: center;">&nbsp;</td>
+                        <td style="width: 110px; text-align: right; ">{{budgetmeal|formatingdata}}</td>
+                        <td style="width: 110px; text-align: right; ">{{Entrymealcost|formatingdata}}</td>
+                        <td style="width: 110px; text-align: right; color: {{ varicanmealcoast|variance_color }};">
+                            {{ varicanmealcoast|formatingdata }}
+                        </td>
+                    </tr>
+                    <tr >
+                        <td colspan="3" style="text-transform: uppercase; width: 310px;"><strong>TOTAL - EMPLOYEE INSURANCE COST<strong></td>
+                        <td style="width: 110px; text-align: right; "><b>&nbsp;<b></td>
+                        <td style="width: 110px; text-align: right; ">&nbsp;</td>
+                        <td style="width: 110px; text-align: right; "><b>&nbsp;<b></td>
+                        <td style="width: 110px; ">&nbsp;</td>
+                        <td style="width: 110px; ">&nbsp;</td>
+                        <td style="width: 110px; ">&nbsp;</td>
+                        <td style="width: 110px; text-align: right; ">{{Insurance_cost|formatingdata}}</td>
+                        <td style="width: 110px; text-align: right; ">{{EntryInsurance_cost|formatingdata}}</td>
+                        <td style="width: 110px; text-align: right; color: {{ varinceinsurancecoast|variance_color }};">
+                            {{ varinceinsurancecoast|formatingdata }}
+                        </td>
+                    </tr>
+                    {% comment %} <tr>
+                        <td colspan="13"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+                    </tr> {% endcomment %}
+                  
+                </thead>
+            </table>
+         </div>
+           
+           
+        </div>
+    </div>
+
+    <!-- Modal -->
+<div class="modal fade bd-example-modal-sm" tabindex="-1" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Select Report Sections</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- checkboxes here -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="onRollCheckbox">
+                    <label class="form-check-label" for="onRollCheckbox">
+                        On Roll
+                    </label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="contractCheckbox">
+                    <label class="form-check-label" for="contractCheckbox">
+                        Contract
+                    </label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="sharedServicesCheckbox">
+                    <label class="form-check-label" for="sharedServicesCheckbox">
+                        Shared Services
+                    </label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="cafeteriaCheckbox">
+                    <label class="form-check-label" for="cafeteriaCheckbox">
+                        Cafeteria Meal Cost
+                    </label>
+                    <br>
+                    <input class="form-check-input" type="checkbox" id="insuranceCheckbox">
+                    <label class="form-check-label" for="insuranceCheckbox">
+                        Employees Insurance Cost
+                    </label>
+                </div>
+                <!-- Error message -->
+                <div id="error-message" style="color: red; display: none; margin-top: 10px;">
+                    Please tick at least one checkbox.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="#" id="exportLink" class="btn btn-primary">Export</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Select Report Sections</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onRollCheckbox">
+                        <label class="form-check-label" for="onRollCheckbox">
+                            On Roll
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="contractCheckbox">
+                        <label class="form-check-label" for="contractCheckbox">
+                            Contract
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="sharedServicesCheckbox">
+                        <label class="form-check-label" for="sharedServicesCheckbox">
+                            Shared Services
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="cafeteriaCheckbox">
+                        <label class="form-check-label" for="cafeteriaCheckbox">
+                            Cafeteria Meal Cost
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="insuranceCheckbox">
+                        <label class="form-check-label" for="insuranceCheckbox">
+                            Employees Insurance Cost
+                        </label>
+                    </div>
+                    <!-- Error message -->
+                    <div id="error-message" style="color: red; display: none; margin-top: 10px;">
+                        Please tick at least one checkbox.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="#" id="exportLink" class="btn btn-primary">Export</a>
+                </div>
+            </div>
+        </div>
+    </div> 
+{% comment %} </div> {% endcomment %}
+    
+    <script>
+        
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        const exportLink = document.getElementById('exportLink');
+        const errorMessage = document.getElementById('error-message');
+    
+       
+        function validateCheckboxes() {
+            return Array.from(checkboxes).some(checkbox => checkbox.checked);
+        }
+    
+        
+        exportLink.addEventListener('click', function (e) {
+            if (!validateCheckboxes()) {
+                e.preventDefault(); 
+                errorMessage.style.display = 'block'; // Show error message
+            }
+        });
+    
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                if (validateCheckboxes()) {
+                    errorMessage.style.display = 'none'; // Hide error message
+                }
+            });
+        });
+    </script>
+    
+    
+
+{% comment %} <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> {% endcomment %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.2/xlsx.full.min.js"></script>
+
+
+<script>
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        try {
+            var wb = XLSX.utils.book_new(); 
+
+            function applyStyles(ws, styles, numCols) {
+                for (let col = 0; col < numCols; col++) {
+                    const cellRef = XLSX.utils.encode_cell({ c: col, r: 0 });
+                    if (!ws[cellRef]) ws[cellRef] = {};
+                    ws[cellRef].s = styles.header;
+                }
+
+                let rowIndex = 1;
+                $('#myTable tr, #myTable2 tr, #myTable3 tr, #myTable4 tr, #myTable5 tr').each(function() {
+                    const divisionRow = $(this).find('strong').first();
+                    if (divisionRow.length) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.division;
+                        }
+                    } else if ($(this).find('td').first().text().includes('Total')) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.totalRow;
+                        }
+                    }
+                    rowIndex++;
+                });
+            }
+
+            
+            var ws1 = XLSX.utils.table_to_sheet(document.getElementById('myTable'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws1, "ON ROLL MANNING");
+
+            var ws2 = XLSX.utils.table_to_sheet(document.getElementById('myTable2'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws2, "DEPARTMENT TOTAL");
+
+            var ws3 = XLSX.utils.table_to_sheet(document.getElementById('myTable3'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws3, "CONTRACT MANNING");
+
+            var ws4 = XLSX.utils.table_to_sheet(document.getElementById('myTable4'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws4, "SHARED SERVICES MANNING");
+
+            var ws5 = XLSX.utils.table_to_sheet(document.getElementById('myTable5'));
+            ws1['!cols'] = Array(12).fill({ wpx: 110 });
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+            XLSX.utils.book_append_sheet(wb, ws5, "TOTAL");
+
+
+            
+            XLSX.writeFile(wb, 'VarianceReport.xlsx');
+            console.log('Exported successfully!');
+        } catch (error) {
+            console.error('Error exporting file:', error);
+        }
+    });
+</script>
+
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+        $('select').select2();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const exportLink = document.getElementById('exportLink');
+        const selectedOrganizationID = "{{ selectedOrganizationID }}";  
+        const selectedDivision = "{{ selected_division }}";  
+        const selectedDepartment = "{{ selected_department }}";  
+
+        function updateExportLink() {
+            const onRoll = document.getElementById('onRollCheckbox').checked;
+            const contract = document.getElementById('contractCheckbox').checked;
+            const sharedServices = document.getElementById('sharedServicesCheckbox').checked;
+            const cafeteria = document.getElementById('cafeteriaCheckbox').checked;
+            const insurance = document.getElementById('insuranceCheckbox').checked;
+
+            let url = "{% url 'variancepdf' %}?";
+            const params = [];
+
+            if (onRoll) params.push('include_on_roll=true');
+            else params.push('include_on_roll=false');
+
+            if (contract) params.push('include_contract=true');
+            else params.push('include_contract=false');
+
+            if (sharedServices) params.push('include_shared_services=true');
+            else params.push('include_shared_services=false');
+
+            if (cafeteria) params.push('include_cafeteria=true');
+            else params.push('include_cafeteria=false');
+
+            if (insurance) params.push('include_insurance=true');
+            else params.push('include_insurance=false');
+
+            
+            params.push(`hotel_name=${encodeURIComponent(selectedOrganizationID)}`);
+            params.push(`divisionname=${encodeURIComponent(selectedDivision)}`);
+            params.push(`departmentname=${encodeURIComponent(selectedDepartment)}`);
+
+            exportLink.href = url + params.join('&');
+        }
+
+        
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            checkbox.addEventListener('change', updateExportLink);
+        });
+
+       
+
+
+
+
+        updateExportLink();
+    });
+</script>
+
+
+
+</html>
+{% endblock content %}

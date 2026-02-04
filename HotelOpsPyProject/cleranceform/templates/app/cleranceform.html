@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+{% comment %} {% from Cake_Order_Form %} {% endcomment %}
+{% load widget_tweaks %}
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>LazyCoder || sumit</title>
+  <style type="text/css">
+    body {
+      color: #aa082e;
+      background-color: #b6bde7;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    a:link {
+      text-decoration: none;
+    }
+
+    .note {
+      text-align: center;
+      height: 80px;
+      background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+      color: #fff;
+      font-weight: bold;
+      line-height: 80px;
+    }
+
+    .form-content {
+      padding: 5%;
+      border: 1px solid #ced4da;
+      margin-bottom: 2%;
+    }
+
+    .form-control {
+      border-radius: 1.5rem;
+    }
+
+    .btnSubmit {
+      border: none;
+      border-radius: 1.5rem;
+      padding: 1%;
+      width: 20%;
+      cursor: pointer;
+      background: #0062cc;
+      color: #fff;
+    }
+    .row div{
+      margin-top:5px;
+    }
+    td.rb div div {
+        display: inline-block;
+        margin-right: 10px;
+    }
+  </style>
+
+</head>
+
+
+<body>
+  {% include "app/navbar.html" %}
+ 
+ 
+  {% render_field  clearnce_form. %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'cleranceform' %}  enctype="multipart/form-data">
+    {{ clearnce_form }}
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In Clerance Form </p>
+        </div>
+
+        <div class="card-body">
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field ClearanceForm.Name class="form-control" placeholder="Name"  %}
+              </div>
+              <div class="col-sm-3">
+                <label>Separation Date</label>
+                {% render_field ClearanceForm.Separation_Date class="form-control" placeholder="Separation_Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Position</label>
+                {% render_field ClearanceForm.Position class="form-control" placeholder="Position" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Finishing Time</label>
+                {% render_field ClearanceForm.Finishing_Time class="form-control" placeholder="Finishing_Time" %}
+              </div>
+
+            </div>
+<br/>
+            <div class='row'>
+                <div class="col-sm-12">
+                    <br>
+                    <b>YOUR FINAL PAY CANNOT BE CLEARED WITHOUT THE FOLLOWING ITEMS HAVING BEEN
+                        RETURNED AND THIS FORM COMPLETED AND APPROVED</b>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>Resignation letter</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Resignation_Letter  rows=2 placeholder="Resignation_Letter" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Acc Of Resign</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Acc_Of_Resign  rows=2 placeholder="Acc_Of_Resign" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Notice Period Served</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Notice_Period_Served  rows=2 placeholder="Notice_Period_Served" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Notice Period Waived Off</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Notice_Period_Waived_Off  rows=2 placeholder="Notice_Period_Waived_Off" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Exit Interview By Hr</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Exit_Interview_By_Hr  rows=2 placeholder="Exit_Interview_By_Hr" %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Full And Final Settlement</td>
+                            <td class="rb">
+                                {% render_field ClearanceForm.Full_And_Final_Settlement  rows=2 placeholder="Full_And_Final_Settlement" %}
+                            </td>
+                        </tr>
+
+                
+
+                    </table>
+                    <div class='row'>
+                        <div class="col-sm-12">
+                            <br>
+                            <b>Return of Hotel Property</b>
+                        </br>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <tr>
+                           <td>Uniform_Returned</td>
+                           <td class="rb">
+                            <input type="text"  rows=2 placeholder="Uniform_Returned" >
+                           </td>
+                        </tr>
+                        <tr>
+                          <td>LockerClear_LockerKey</td>
+                           <td class="rb">
+                            <input type="text"  rows=2 placeholder="LockerClear_LockerKey" >
+                            </td>
+                        </tr>
+                        <tr>
+                          <td>ID_InsuranceCard</td>
+                          <td class="rb">
+                            <input type="text"  rows=2 placeholder="ID_InsuranceCard" >
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Name_Badge</td>
+                          <td class="rb">
+                            <input type="text"  rows=2 placeholder="Name_Badge" >
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Employee_Handbook</td>
+                          <td class="rb">
+                            <input type="text"  rows=2 placeholder="Employee_Handbook" >
+                           </td>
+                        </tr>   
+                        <tr>
+                           <td>CUG_Sim_Card</td>
+                           <td class="rb">
+                            <input type="text"  rows=2 placeholder="CUG_Sim_Card" >
+                           </td>
+                        </tr>
+                        <tr>
+                           <td>Cash_Floats</td>
+                           <td class="rb">
+                            <input type="text"  rows=2 placeholder="Cash_Floats" >
+                           </td>
+                        </tr>
+                        <tr>
+                          <td>Cash_Advance</td>
+                          <td class="rb">
+                            <input type="text"  rows=2 placeholder="Cash_Advance" >
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>City_Ledger</td>
+                          <td class="rb">
+                            <input type="text"  rows=2 placeholder="City_Ledger" >
+                          </td>
+                        </tr>
+                        <tr>
+                            <td>Material</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Material" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Computer</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Computer" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Email_Id_Locked</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Email_Id_Locked" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mobile</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Mobile" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Key_Returned</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Key_Returned" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Hotel_Keys</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Hotel_Keys" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Gate_Pass</td>
+                            <td class="rb">
+                            <input type="text"  rows=2 placeholder="Gate_Pass" >
+                            </td>
+                        </tr>
+                    </table>
+
+
+                </div>
+            </div>
+         {% comment %} <div class="text-center">Already have an account? <a href="doctorlogin">Login here</a></div> {% endcomment %}
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+
+  <script>
+    $(function(){
+            $("input[type='radio']").each(function(){
+                    if($(this).val()==""){
+                            $(this).parent().remove()
+
+                    }
+
+            })
+
+    })
+  </script>
+  {% comment %} {% include "apps/footer.html" %} {% endcomment %}
+</body>
+
+
+</html>

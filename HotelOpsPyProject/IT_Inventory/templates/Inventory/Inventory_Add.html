@@ -1,0 +1,460 @@
+{% extends "Inventory/homebase.html" %} {% block content %}
+
+ <section class="pt-0">
+  <div class="container vstack gap-5">
+                    
+<div class="tab-pane" >
+    <div class="card border mb-4" style="max-width: 100%;">
+       
+        <div class="card-header bg-transparent border-bottom" style="color: #1ab394">
+            <h4 class="card-header-title"> IT Inventory Add </h4>
+        </div>
+
+
+      <br>
+      <div class="container">
+            {% comment %} {% if  request.session.UserID == "20210206173426" or request.session.UserID == '20201212175519' %}
+                <div class="m-1 col-md-3">
+                    <label for="organization" class="form-label">Select Organization</label>
+                        <!-- Show dropdown for Nile users -->
+                        <select name="OrganizationID" id="organization" class="form-control select2">
+                            <option value="All" {% if selectedOrganizationID == "All" %}selected{% endif %}>All</option>
+                            {% for itm in orgs %}
+                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID|stringformat:"s" == selectedOrganizationID %}selected{% endif %}>
+                                    {{ itm.OrganizationName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            {% endif %} {% endcomment %}
+            <div class="d-flex">
+                <div class="form-group m-2">
+                    <input type="radio" id="hardware" name="choice" value="hardware" checked>
+                    <label for="hardware">Hardware</label>
+                </div>
+                <div class="form-group m-2">
+                    <input type="radio" id="software" name="choice" value="software">
+                    <label for="software">Software</label>
+                </div>
+            </div>
+        </div>
+        
+        <form class="card-body" id="mainForm"  method="POST">
+            {% csrf_token %}
+        <div class="form-group m-3">
+            <input type="hidden" class="form-control" value="" name="SetInventoryType" id="SetInventoryType" >
+        </div>
+
+        <div id="hardwareForm" >
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Type </label>
+                               <select  name="type" class="form-control">
+                                    <option value="">Select Type</option>
+                                    {% for Category in Categorys %}
+                                        <option value="{{ Category.Category_Type }}" {% if Category.Category_Type == inventorys.type %} selected {% endif %}>{{ Category.Category_Type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+
+                            <div class="form-group m-3">
+                                <label class="form-label">Model No <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" value="{{inventorys.Model_No}}" name="Model_No" placeholder=""  >
+                            </div>
+                           
+                            <div class="form-group m-3">
+                                <label class="form-label">Commissioning Date</label>
+                                <input type="date" id="" class="form-control " value="{{ inventorys.Commissioning_Date }}" name="Commissioning_Date" >
+                            </div>
+
+                            <div class="form-group m-3">
+                                <label class="form-label">IP</label>
+                                 <input type="text" class="form-control" value="{{ inventorys.ip }}" name="ip" placeholder=""  >
+                            </div>           
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Description  <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" value="{{inventorys.Description}}" name="Description" placeholder="" >
+                            </div>
+                           <div class="form-group m-3">
+                                <label class="form-label">Serial No<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" value="{{inventorys.SerialNo}}" name="SerialNo" placeholder=""  >
+                               
+                            </div>
+                                
+                            
+                           <div class="form-group m-3">
+                                <label class="form-label">Configuration</label>
+                                
+                                <textarea name="Remarks" style="width: 100%;" class="form-control" cols="30"  rows="1">{{inventorys.Remarks}}</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Make </label>
+                              
+                                  <select name="Make" class="form-control">
+                                    <option value="">Select Make Type</option>
+                                    {% for company in companys %}
+                                        <option value="{{ company.Company_name }}" {% if company.Company_name == inventorys.Make %} selected {% endif %}>{{ company.Company_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                              <div class="form-group m-3">
+                                <label class="form-label">Area  </label>
+                                  
+                                <select name="Area" class="form-control">
+                                    <option value="">Select Area </option>
+                                    {% for area in Areas %}
+                                        <option value="{{ area.Area_name }}" {% if area.Area_name == inventorys.Area %} selected {% endif %}>{{ area.Area_name }}</option>
+                                    {% endfor %}
+                                </select>
+                              </div>
+                              <div class="form-group m-3">
+                                <label class="form-label">Computer Name</label>
+                                
+                                 <input type="text" class="form-control" value="{{ inventorys.computer_name }}" name="computer_name" placeholder=""  >
+                            </div>
+                             
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-header bg-transparent border-bottom" style="color: #1ab394">
+                <h4 class="card-header-title">Warranty Details</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Warranty Start<span class="text-danger">*</span></label>
+                                <input type="date" id="Warrantystart"  value="{{inventorys.Warrantiy_start}}" class="form-control " name="Warrantiy_start" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Warranty End<span class="text-danger">*</span></label>
+                                <input type="date" id="WarrantyEnd" value="{{ inventorys.Warrantiy_end }}" class="form-control " name="Warrantiy_end" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Warranty Status</label>
+                                <select class="form-control" id="warrantyStatus" name="Warrantiy_Status">
+                                    <option value="">Select Status</option>
+                                    <option value="N/A"{% if inventorys.Warrantiy_Status == "N/A" %}selected{% endif %}>N/A</option>
+                                    <option value="Under Warranty"{% if inventorys.Warrantiy_Status == "Under Warranty" %}selected{% endif %}>Under Warranty</option>
+                                    <option value="Expired"{% if inventorys.Warrantiy_Status == "Expired" %}selected{% endif %}>Expired</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-header bg-transparent border-bottom" style="color: #1ab394">
+                <h4 class="card-header-title">AMC Details</h4>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Type</label>
+                                <select class="form-control" name="amctype">
+                                    <option value="">Select </option>
+                                        <option value="Comprehensive"{% if inventorys.amctype == "Comprehensive" %}selected{% endif %}>Comprehensive</option>
+                                        <option value="Non Comprehensive"{% if inventorys.amctype == "Non Comprehensive" %}selected{% endif %}>Non Comprehensive </option>
+                                        <option value="On Call"{% if inventorys.amctype == "On Call" %}selected{% endif %}>On Call</option>
+                                        <option value="Hotel Team"{% if inventorys.amctype == "Hotel Team Team" %}selected{% endif %}>By Hotel </option>
+                                        <option value="No AMC"{% if inventorys.amctype == "No AMC Required" %}selected{% endif %}>No AMC Required</option>
+                                </select>
+                            </div>
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Status</label>
+                                <select class="form-control" name="AMC_Status">
+                                    <option value="">Select Status</option>
+                                    <option value="N/A" {% if inventorys.AMC_Status == "N/A" %}selected{% endif %}>N/A</option>
+                                    <option value="Under Warranty" {% if inventorys.AMC_Status == "Under Warranty" %}selected{% endif %}>Under Warranty</option>
+                                    <option value="Expired" {% if inventorys.AMC_Status == "Expired" %}selected{% endif %}>Expired</option>
+                                </select>
+                            </div>
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Yearly Expense</label>
+                                <input type="text" class="form-control" value="{{inventorys.hardware_AMC_Yearly_Expense}}" name="hardware_AMC_Yearly_Expense" id="hardware_amc" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Start</label>
+                                <input type="date" class="form-control " value="{{inventorys.amcstart}}" id="AMCstart" name="amcstart" placeholder="">
+                            </div>
+                            <div class="form-group m-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="text" class="form-control" name="hardware_quantity" value="{{inventorys.hardware_quantity}}" id="hardware_quantity" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC End</label>
+                                <input type="date" class="form-control " value="{{inventorys.amcend}}"  id="AMCEnd" name="amcend" placeholder="">
+                            </div>
+                            <div class="form-group m-3">
+                                <label class="form-label">Per Unit Price</label>
+                                <input type="text" class="form-control" value="{{inventorys.hardware_unit_price}}" name="hardware_unit_price" id="hardware_unit_price" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end mt-4">
+                <input type="submit" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div id="softwareForm" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">Software Type </label>
+                                <select  name="softwaretype" class="form-control">
+                                    <option value="">Select Software Type </option>
+                                    {% for software_type in software_types %}
+                                        <option value="{{ software_type.software_name }}" {% if inventorys.softwarename %} selected {% endif %}>{{ software_type.software_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                 <label class="form-label">Software Name </label>
+                                 <input type="text" class="form-control" value="{{ inventorys.softwarename }}" name="softwarename" placeholder=""  >
+                             </div>
+                        </div>
+                             
+                        <div class="col-md-4">
+                              <div class="form-group m-3">
+                                 <label class="form-label">Quantity</label>
+                                 <input type="text" class="form-control" value="{{ inventorys.Quantity }}" name="Quantity" placeholder=""  >
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 
+             </div>
+                <div class="card-header bg-transparent border-bottom" style="color: #1ab394">
+                    <h4 class="card-header-title"> AMC Details </h4>
+                </div>   
+             
+               <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Type  </label>
+                                 <select class="form-control" name="software_AMC_Type">
+                                    <option value="">Select </option>
+                                    <option value="Comprehensive"{% if inventorys.software_AMC_Type == "Comprehensive" %}selected{% endif %}>Comprehensive</option>
+                                    <option value="Non Comprehensive"{% if inventorys.software_AMC_Type == "Non_Comprehensive" %}selected{% endif %}>Non Comprehensive </option>
+                                    <option value="On Call"{% if inventorys.software_AMC_Type == "On_Call" %}selected{% endif %}>On Call</option>
+                                     <option value="Hotel Team"{% if inventorys.software_AMC_Type == "Hotel_Team" %}selected{% endif %}>By Hotel Team</option>
+                                      <option value="No AMC"{% if inventorys.software_AMC_Type == "No_AMC" %}selected{% endif %}>No AMC Required</option>
+                                  
+                                </select>
+                            </div>
+                             <div class="form-group m-3">
+                                <label class="form-label">AMC Status </label>
+                                <select class="form-control" name="software_AMC_Status">
+                                    <option value="">Select Status</option>
+                                    <option value="N/A"{% if inventorys.software_AMC_Status == "N/A" %}selected{% endif %}>N/A</option>
+                                    <option value="Under Warranty"{% if inventorys.software_AMC_Status == "Under Warranty" %}selected{% endif %}>Under Warranty</option>
+                                    <option value="Expired"{% if inventorys.software_AMC_Status == "Expired" %}selected{% endif %}>Expired</option>
+                                </select>
+                            </div>
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC Yearly Expense</label>
+                                <input type="text" class="form-control" value="{{inventorys.software_AMC_Yearly_Expense}}" name="software_AMC_Yearly_Expense" id="software_amc" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group m-3">
+                                <label class="form-label">AMC Start<span class="text-danger">*</span></label>
+                                <input type="date" class="form-control " id="AMCstart" value="{{inventorys.software_AMC_Start}}" name="software_AMC_Start" placeholder="" >
+                            </div>
+                               
+                            <div class="form-group m-3">
+                                <label class="form-label">Quantity</label>
+                                <input type="text" class="form-control" value="{{inventorys.Software_Quantity}}" name="software_quantity" id="software_quantity" placeholder="">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label class="form-label">AMC End<span class="text-danger">*</span></label>
+                                <input type="date" class="form-control " id="AMCEnd" value="{{inventorys.software_AMC_end}}" name="software_AMC_end" placeholder="">
+                            </div>
+
+                            <div class="form-group m-3">
+                                <label class="form-label">Per Unit Price</label>
+                                <input type="text" class="form-control" value="{{inventorys.Software_unit_price}}" name="software_unit_price" id="software_unit_price" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+                 
+                            
+         <div class="d-flex justify-content-end mt-4">
+            
+            <input type="submit" class="btn btn-primary" />
+         </div>
+     </form>
+ </div>
+</div>
+</div>
+</section>
+
+ <script>
+
+    
+    $('#warrantyStatus').change(function() {
+        var status = $(this).val();
+        if (status === 'Expired') {
+            
+            disableAMCInputs();
+        } else {
+            
+            enableAMCInputs();
+        }
+    });
+
+    
+    function disableAMCInputs() {
+        $('#AMCstart, #AMCEnd, #hardware_quantity, #hardware_unit_price, #hardware_amc, [name="amctype"], [name="AMC_Status"]').prop('disabled', true);
+    }
+
+   
+    function enableAMCInputs() {
+        $('#AMCstart, #AMCEnd, #hardware_quantity, #hardware_unit_price, #hardware_amc, [name="amctype"], [name="AMC_Status"]').prop('disabled', false);
+    }
+
+    
+    $('#warrantyStatus').change();
+</script>
+
+
+  <script>
+     const Inventory_Type = "{{inventorys.Inventory_Type}}"
+
+     const hardwareRadio = document.getElementById('hardware');
+     const softwareRadio = document.getElementById('software');
+     const hardwareForm = document.getElementById('hardwareForm');
+     const softwareForm = document.getElementById('softwareForm');
+     const SetInventoryType = document.getElementById('SetInventoryType');
+
+     hardwareRadio.addEventListener('click', () => {
+         hardwareForm.style.display = 'block';
+         softwareForm.style.display = 'none';
+         SetInventoryType.value = "Hardware"
+     });
+
+     softwareRadio.addEventListener('click', () => {
+         hardwareForm.style.display = 'none';
+         softwareForm.style.display = 'block';
+         SetInventoryType.value = "Software"
+     });
+
+
+     // Set initial InventoryType on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        if (hardwareRadio.checked) {
+            SetInventoryType.value = "Hardware";
+        } else if (softwareRadio.checked) {
+            SetInventoryType.value = "Software";
+        }
+    });
+
+    // On page load, set radio button and inventory type from URL
+    // Unified DOMContentLoaded logic
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isSoftwareInventory = urlParams.get('SoftwareInventory') === 'True';
+
+        if (isSoftwareInventory || Inventory_Type === "Software") {
+            softwareRadio.checked = true;
+            softwareRadio.click();
+        } else {
+            hardwareRadio.checked = true;
+            hardwareRadio.click();
+        }
+    });
+ </script>
+
+
+    
+<script>
+    
+    var softwareQuantityInput = document.getElementById('software_quantity');
+    var softwarePriceInput = document.getElementById('software_unit_price');
+    var softwareAmcInput = document.getElementById('software_amc');
+
+    softwareQuantityInput.addEventListener('input', calculateSoftwareTotal);
+    softwarePriceInput.addEventListener('input', calculateSoftwareTotal);
+
+    function calculateSoftwareTotal() {
+        var quantity = parseFloat(softwareQuantityInput.value);
+        var price = parseFloat(softwarePriceInput.value);
+        var total = quantity * price;
+        softwareAmcInput.value = total;
+    }
+
+    
+    var hardwareQuantityInput = document.getElementById('hardware_quantity');
+    var hardwarePriceInput = document.getElementById('hardware_unit_price');
+    var hardwareAmcInput = document.getElementById('hardware_amc');
+
+    hardwareQuantityInput.addEventListener('input', calculateHardwareTotal);
+    hardwarePriceInput.addEventListener('input', calculateHardwareTotal);
+
+    function calculateHardwareTotal() {
+        var quantity = parseFloat(hardwareQuantityInput.value);
+        var price = parseFloat(hardwarePriceInput.value);
+        var total = quantity * price;
+        hardwareAmcInput.value = total;
+    }
+</script>
+
+{% endblock content %}
+                            
+                           
+                           
+                           
+                             
+                            
+                           
+                            
+                            
+                           
+                          
+                          
+    
+                       
+
+
+
+
+
+
+

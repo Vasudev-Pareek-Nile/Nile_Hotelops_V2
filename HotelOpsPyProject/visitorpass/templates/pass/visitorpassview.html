@@ -1,0 +1,56 @@
+{% load static %}
+
+{% comment %} <link href="/css/bootstrap.min.css" rel="stylesheet"> {% endcomment %}
+
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Visitor Pass is Here </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>Date</th>
+                    <td>{{Ed.Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>In Time</th>
+                      <td>{{Ed.In_Time}}</td>
+                    </tr>
+                    <tr>
+                      <th>Name</th>
+                      <td>{{Ed.Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Purpose Of Visite</th>
+                      <td>{{Ed.Purpose_Of_Visite}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %} 

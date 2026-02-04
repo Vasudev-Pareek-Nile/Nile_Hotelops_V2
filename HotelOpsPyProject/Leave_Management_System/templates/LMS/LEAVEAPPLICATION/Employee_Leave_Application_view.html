@@ -1,0 +1,163 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} 
+        <div class="alert alert-danger" role="alert">{{ message }}
+        </div>
+        
+        {% endfor %}
+      </div>
+</div>
+
+
+<div class="container">
+    <div class="col-md-12">
+       <form action="" method="post">
+        <div class="card">
+            <div class="card-header">
+                Leave Application    <p style="font-weight: bold;">EmployeeCode:-{{EmployeeCode}} EmployeeName:-{{EmployeeName}}</p>
+            </div>
+            <div class="card-main">
+                <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">Leave Type:</label>
+                                
+                                <select required name="leave_type" id="leave_type" class="form-control">
+                                    <option value="" selected>Select Leave Type</option>
+                                    {% for type in Leave_Types %}
+                                    <option {% if leave.Leave_Type_Master.id  == type.id %}selected  {% endif %}  
+                                             value="{{type.id}}" data-balance="{{type.balance}}" data-type="{{type.Type}}">{{type.Type}}</option>
+                                    {% endfor %}
+                                </select>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label>From Date:</label>
+                                <input type="date" name="FromDate" value ="{% if leave.Start_Date %}{{ leave.Start_Date|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group m-3" >
+                                <label>To Date:</label>
+                                <input type="date" name="ToDate"  value ="{% if leave.End_Date %}{{ leave.End_Date|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            
+                                <div class="form-group m-3" >
+                                    
+                                
+                                
+                                
+                                    <input type="radio"  {% if leave.From_1st_Half   %}checked {% else %} checked{% endif %} name="FromHalf" value="0">
+                                    
+                                    <label for="">From 1st Half</label>
+
+                                    <input type="radio"  {% if leave.From_2nd_Half   %}checked{% endif %}  name="FromHalf" value="1"  >
+                                    <label for="">From 2nd Half</label>
+                                
+                                </div>
+                        </div>
+                       
+                        <div class="col-md-6">
+                            <div class="form-group m-3" >
+                  
+                                <input type="radio"  {% if leave.To_1st_Half   %}checked{% endif %} name="ToHalf" value="0">
+                                <label for="">To 1st Half</label>
+                                <input type="radio"  {% if leave.To_2nd_Half   %}checked {% else %} checked {% endif %}   name="ToHalf" value="1" >
+                                <label for="">To 2nd Half</label>
+                                
+                                 
+                             </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">Leave Days:</label>
+                                <input type="input" readonly value="{{leave.Total_credit}}" name="LeaveCredit" class="form-control">
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group m-3">
+                                <label for="">Reason:</label>
+                                <textarea required name="Reason" id="" cols="30" rows="1" class="form-control">{{leave.Reason}}</textarea>
+                                
+                            </div>
+                            
+                        </div>
+                </div>
+            </div>
+            <div class="card-footer  text-right">
+                {% csrf_token %}
+                <input type="submit"  value="Submit" class="btn btn-primary btn-sm">
+            </div>
+        </div>
+       </form>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<script>
+    $("#leave_type, [name='LeaveCredit'], [name='FromDate'], [name='ToDate'], [name='FromHalf'], [name='ToHalf']").change(function() {
+     DoCalCreditDays();
+ });
+ 
+ function DoCalCreditDays() {
+     var leaveTypeSelected = $("#leave_type").val(); 
+     if (leaveTypeSelected) {
+         var FromDate = $("[name='FromDate']").val();
+         FromDate = moment(FromDate);
+ 
+         var ToDate = $("[name='ToDate']").val();
+         ToDate = moment(ToDate);
+ 
+         var FromHalf = $("[name='FromHalf']:checked").val();
+         var ToHalf = $("[name='ToHalf']:checked").val();
+ 
+         var DayDiff = ToDate.diff(FromDate, 'days');
+         var CreditDay = 0;
+ 
+         if (DayDiff === 0) {
+             CreditDay = (FromHalf == 0 && ToHalf == 1) ? 1 : 0.5;  
+         } else {
+            DayDiff=DayDiff + 1;
+            DayDiff= FromHalf==1?DayDiff-0.5:DayDiff;
+            DayDiff= ToHalf==0?DayDiff-0.5:DayDiff;
+            CreditDay = DayDiff
+
+         }
+ 
+         $("[name='LeaveCredit']").val(CreditDay);
+     }
+ }
+ 
+ if ($("#leave_type").val()) {
+     DoCalCreditDays();
+ }
+ </script>
+ 
+
+
+{% endblock %}
+{% comment %} {% endblock NewHomeBase %} {% endcomment %}
+

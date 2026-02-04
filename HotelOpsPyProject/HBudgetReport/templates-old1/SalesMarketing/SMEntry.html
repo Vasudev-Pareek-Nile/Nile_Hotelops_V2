@@ -1,0 +1,276 @@
+{% extends 'SalesMarketing/homebase.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Latest compiled and minified CSS -->
+   
+    <div class="container1">
+
+        <Div class="card card-primary ">
+
+
+            <div class = "card-header">P&L S&M Entry</div>
+            <div class="card-body">
+
+        <form action="{%url 'HBSMEntry' %}" method = "post">
+            {% csrf_token %}
+
+            <div class="row">
+        
+                <lable  class="control-label col-sm-2">Month</lable>
+                <span class="col-sm-1">
+                    <select class="form-control calc"  data-val="{{CMonth}}" name="EntryMonth" value="{{mem.EntryMonth}}">
+                        <option value ="1">Jan</option>
+                        <option value ="2">Feb</option>
+                        <option value ="3">Mar</option>
+                        <option value ="4">Apr</option>
+                        <option value ="5">May</option>
+                        <option value ="6">Jun</option>
+                        <option value ="7">Jul</option>
+                        <option value ="8">Aug</option>
+                        <option value ="9">Sep</option>
+                        <option value ="10">Oct</option>
+                        <option value ="11">Nov</option>
+                        <option value ="12">Dec</option>
+                        
+                    </select>
+            </span>
+            <lable  align="right" class="col-sm-1"> Year</lable>
+            <span  class="col-sm-2">
+                
+                   
+                <select class="form-control calc"  name="EntryYear" value ="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+
+            </span>
+
+        </div>
+        <br>
+        
+        <div class="row">
+        
+            <lable  class="control-label col-sm-2">Salary And Wages</lable>
+            <div class="col-sm-4">
+                <input type="text" class="form-control calc" name="SalaryAndWages" value ="{{mem.SalaryAndWages}}" >
+            </div>
+        </div>
+    
+        <br>
+
+        <div class ="row">
+            <label class="control-label col-sm-2">Bonuses And Incentives</label>
+            <div class ="col-sm-4">
+                <input type="text" class="form-control calc" name ="Bonuses_and_Incentives" value="{{mem.Bonuses_and_Incentives}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Salary Wages And Bonuses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="Salary_Wages_and_Bonuses" value="{{mem.Salary_Wages_and_Bonuses}}">
+            </div>
+        </div>
+        <br>
+        <div class ="row">
+            <label class="control-label col-sm-2">Employee Benefits</label>
+            <div class ="col-sm-4">
+                <input type="text" class="form-control calc" name="EmployeeBenefits" value="{{mem.EmployeeBenefits}}">
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+        
+            <lable  class="control-label col-sm-2">Payroll-Related Expenses</lable>
+            <div class="col-sm-4">
+                <input type="text" readonly class="form-control calc" name ="PayrollRelatedExpenses" value="{{mem.PayrollRelatedExpenses}}">
+            </div>
+        </div>
+        <br>
+        
+        <div class ="row">
+            <label class="control-label col-sm-2">Payroll And Related Expenses</label>
+            <div class ="col-sm-4">
+                <input type="text" readonly class="form-control calc" name="PayrollAndRelatedExpenses" value="{{mem.PayrollAndRelatedExpenses}}">
+            </div>
+        </div>
+
+        <br>
+            <br/>
+        <br>
+            
+            <table id="title" class="table table-bordered ">
+                <thead>
+
+                    <th></th>
+                    <th>Amount</th>
+                    
+                </thead>
+
+                {% for x in mem%}
+                <tr>    
+                    
+                    <td>{{x.title}}</td> 
+                    <td><input type="text" class="form-control calc" name="Amount_{{ forloop.counter0 }}"/>
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                    </td>
+               
+
+                </tr>
+                {% if forloop.last %}
+                <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                {% endif %}
+                {% endfor %}
+                <tfoot>
+                    <tr>
+                        <th>
+                            Total Sales Expenses
+                        </th>
+                        <td>
+                            <input type="text" readonly class="form-control calc" name="Total_Sales_Expenses" value="{{mem.Total_Sales_Expenses }}">
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            <br>  
+        </table>
+
+        <br>
+           
+
+
+        <table id="Mtitle" class="table table-bordered ">
+            <thead>
+
+                <th></th>
+                <th>Amount</th>
+                
+            </thead>
+
+            {% for x in mem1%}
+            <tr>    
+                
+                <td>{{x.Mtitle}}</td> 
+                <td><input type="text" class="form-control calc" name="MAmount_{{ forloop.counter0 }}"/>
+                    <input name="MTitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                </td>
+           
+
+            </tr>
+            {% if forloop.last %}
+            <input  type="hidden" name="TotalItemMarketing" value="{{ forloop.counter0 }}"/>
+            {% endif %}
+            {% endfor %}
+            <tfoot>
+                <tr>
+                    <th>
+                        Total  Expenses
+                    </th>
+                    <td>
+                        <input type="text" readonly class="form-control calc" name="TotalExpenses" value="{{mem.TotalExpenses }}">
+                    </td>
+                </tr>
+            </tfoot>
+            <tfoot>
+                <tr>
+                    <th>
+                        Total Marketing Expenses
+                    </th>
+                    <td>
+                        <input type="text" readonly class="form-control calc" name="Total_Marketing_Expenses" value="{{mem.Total_Marketing_Expenses }}">
+                    </td>
+                </tr>
+            </tfoot>
+            <tfoot>
+                <tr>
+                    <th>
+                        Total Other Expenses
+                    </th>
+                    <td>
+                        <input readonly type="text" class="form-control calc" name="Total_Other_Expenses" value="{{mem.Total_Other_Expenses}}" >
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+
+        <br>
+       
+         <br>
+        
+         <div class = "card-footer text-right">
+            <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+            </div>
+           </div>
+          
+        </form>
+    </div>
+</div>
+
+    </div>
+    
+<br>
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotSalWag=0;
+        var a = $("input[name='SalaryAndWages']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var b = $("input[name='Bonuses_and_Incentives']").val();
+        b = parseFloat(b);
+        b = isNaN(b)?0:b;
+        TotSalWag = a+b;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+        var e = $("input[name='EmployeeBenefits']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+        $("input[name='PayrollRelatedExpenses']").val(e.toFixed(2));
+        var PayrollAndRelatedExpenses=(TotSalWag+e);
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag+e).toFixed(2));
+
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+        $("input[name='Total_Sales_Expenses']").val(TotalAmount.toFixed(2))
+
+        var  MarketingAmount = 0;
+        $("input[name*='MAmount_']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a)?0:a;
+            MarketingAmount= MarketingAmount+a;
+         })
+
+        $("input[name ='Total_Marketing_Expenses']").val(MarketingAmount.toFixed(2))
+
+        $("input[name ='Total_Other_Expenses']").val((MarketingAmount + TotalAmount).toFixed(2))
+        var Total_Other_Expenses=(MarketingAmount+ TotalAmount);
+        $("input[name='TotalExpenses']").val((Total_Other_Expenses + PayrollAndRelatedExpenses).toFixed(2))
+
+    }
+</script>
+
+
+{% endblock content %}

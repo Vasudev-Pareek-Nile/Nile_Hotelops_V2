@@ -1,0 +1,166 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      font-size: 12px;
+    }
+
+    @media print{
+
+    
+    .page-break {
+      page-break-before: always; }}
+      
+  </style>
+  <body>
+    <div class="container">
+      <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if NileLOGO %}
+                    <img src="{{ NileLOGO }}" alt="Organization Logo" style="width: 120px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Refrence Check<br/> {{ selectedOrganizationName }}<br></strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if OrganizationLogo %}
+            <img src="{{ OrganizationLogo }}" alt="Organization Logo" style="width: 120px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+     
+     <table>
+      <tbody>
+        <tr>
+          <td><strong>Candidate Name:</strong>{{ candidate_name }}</td>
+          <td style="text-align: right;"><strong>Department:</strong>{{ candidate_department }}</td>
+        </tr>
+      </tbody>
+     </table>
+      {% for check in checks %}
+      
+      <table style="border: 1px solid #ccc; padding: 4px; margin-top: 20px;background-color: #1ab394;color: white;border-color: #1ab394;">
+        <tbody>
+          <tr>
+            <td width="300">
+              <label for="" class="label">Reference Name:&nbsp;</label
+              ><span>{{check.name}}</span>
+            </td>
+            <td width="300" >
+              <label for="" class="label">Employment Period: </label>
+            
+              <span> {{ check.employment_from_date | date:'j M Y' }} 
+                To {{ check.employment_to_date | date:'j M Y' }}</span>
+            </td>
+            
+            <td width="150">
+              <label for="" class="label">Mob No:&nbsp;</label
+              ><span>{{check.contact_informations}}</span>
+            </td>
+            
+          </tr>
+        </tbody>
+      </table>
+      <table style="border: 1px solid #ccc; padding: 4px; margin-top: 20px">
+        <tbody>
+          <tr>
+            <td>
+              <label for="" class="label"
+                >Relationship to the applicant?:&nbsp;</label
+              >
+            </td>
+            <td>{{check.relationship}}</td>
+          </tr>
+
+          <tr>
+            <td>
+              <label for="" class="label">
+                Did the applicant work at this company?&nbsp;</label
+              >
+            </td>
+            <td>
+              {% if check.this_company == True %}  Yes {% else %}
+             No {% endif %} 
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="" class="label">
+                Would you rehire this applicant?&nbsp;</label
+              >
+            </td>
+            <td>
+              {% if check.rehire == True %}  Yes {% else %}  No
+              {% endif %} 
+              
+            </td>
+          </tr>
+
+          <tr>
+            <td>How would you rate the applicants job performance?</td>
+            <td>{{check.job_performance}}</td>
+          </tr>
+          <tr>
+            <td>How would you rate the applicants interpersonal skills?</td>
+            <td>{{check.interpersonal_skills}}</td>
+          </tr>
+          <tr>
+            <td>How would you rate the applicants attendance at work?</td>
+            <td>{{check.attendance_work}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <table style="border: 1px solid #ccc; padding: 4px; margin-top: 20px">
+        <tbody>
+          {% comment %} <tr>
+            <td><strong>What were the applicants primary job duties?</strong>
+              <br>
+
+              {{check.job_duties}}</td>
+          </tr> {% endcomment %}
+          <tr>
+            <td><strong>Why did the applicant leave the company?</strong>
+              <br>
+              
+              {{check.leave_company}}</td>
+          </tr>
+
+          <tr>
+            <td><strong>Is there anything else we should know?</strong>
+              <br>
+              
+              
+              {{check.anything_else}}</td>
+          </tr>
+        </tbody>
+      </table>
+         <div class="page-break"></div>
+ {% endfor %}
+
+    </div>
+  </body>
+</html>

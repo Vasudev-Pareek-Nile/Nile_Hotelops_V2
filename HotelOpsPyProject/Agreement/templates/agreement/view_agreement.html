@@ -1,0 +1,26 @@
+{% extends "agreement/homebase.html" %} {% block content %} {% comment %}
+<div>
+  <ol type="1">
+    {% for masterlist in masterlists %}
+    <li>
+      {{masterlist.name_artical}} {% for Sublist in Sublists %}
+      <ol type="1">
+        {% if Sublist.Master_title.id == masterlist.id%}
+        <li>
+          {{Sublist.sub_artical}}
+          <ol type="A">
+            {% for childlist in childlists %} {% if
+            childlist.Master_subartical.Master_title.id == Master_title.id %}
+            <li>{{childlist.child_artical}}</li>
+
+            {% endif %} {% endfor %}
+          </ol>
+        </li>
+        {% endif %}
+      </ol>
+      {% endfor %}
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endcomment %} {% endblock content%}

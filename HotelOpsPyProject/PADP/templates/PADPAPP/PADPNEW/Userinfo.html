@@ -1,0 +1,421 @@
+{% extends 'PADPAPP/homebase.html' %}
+{% block content %} 
+
+<style>
+  .btnLnk {
+      min-width: 131px;
+      max-width: 124px;
+      padding: 19px 5px;
+      min-height: 91px;
+      font-size: 17px;
+      word-wrap: break-word;
+      text-transform: uppercase;
+      /* line-height: 40px; */
+      margin: 7px;
+      box-shadow: 4px 4px 0px 0px #aeacac;
+      /* background-color: #f3f3f3 !important; */
+      box-shadow: 1px 1px 4px -1px #1e1a1a;
+      color: #133952;
+      border: 0px !important;
+      border-radius: 7px !important;
+  }
+
+      .btnLnk:hover {
+          color: black;
+          border-bottom: 2px solid #34444c !important;
+      }
+      .custom-modal-width {
+        max-width: 800px; 
+        width: 100%; 
+    }
+</style>
+<style>
+  .center-text {
+    text-align: center;
+  }
+
+  .light-color{
+    color: cornflowerblue;
+  }
+
+  .LabelBold label{
+    font-weight: bold;
+  }
+
+  table thead th{
+    text-transform:uppercase;
+    font-size:14px;
+    font-weight:bold !important;
+  }
+ .btn, .form-control{
+      border-radius: 4px !important;
+  }
+
+  #example{
+    border-left: 1px solid #2222 !important;
+    {% comment %} margin-top: 20px; {% endcomment %}
+  }
+</style>
+<body>
+
+  <div class="card ">
+    <div class="card-body">
+      <div class="mb-4 d-flex justify-content-between">
+          <h4 ><strong>User Information</strong></h4>
+          <a href="#" class="btn btn-primary btn-sm text-white" data-bs-toggle="modal" data-bs-target="#padpModal">
+            <i class="fa fa-plus"></i> Add New PADP
+          </a>
+      </div>
+        <div class="row LabelBold">
+          <div class="row">
+              <div class="col-lg-2">
+                  <div class="input-block mb-3">
+                      <label class="form-label">Employee Code:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.EmployeeCode }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-3">
+                  <div class="input-block mb-3">
+                      <label class="form-label">Name:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.full_name }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-2">
+                  <div class="input-block mb-3">
+                      <label class="form-label">Department:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.Department }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-2">
+                  <div class="input-block mb-3">
+                      <label class="form-label">DOJ:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.DateofJoining }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-2">
+                <div class="input-block mb-3">
+                    <label class="form-label">Reporting Level:</label>
+                    <p class="light-color  for-select">{{ EmpCodedetails.ReportingtoLevel }}</p>
+                </div>
+            </div>
+          </div>
+
+            <!-- Second Row -->
+          <div class="row mt-2">
+            <div class="col-lg-2">
+                <div class="input-block mb-3">
+                    <label class="form-label">Level:</label>
+                    <p class="light-color  for-select">{{ EmpCodedetails.Level }}</p>
+                </div>
+            </div>
+              <div class="col-lg-3">
+                  <div class="input-block mb-3">
+                      <label class="form-label">Designation:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.Designation }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-2">
+                  <div class="input-block mb-3">
+                      <label class="form-label">Tenure:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.tenure_till_today }}</p>
+                  </div>
+              </div>
+              <div class="col-lg-3">
+                  <div class="input-block mb-3">
+                      <label class="Unit Amount">Reporting To:</label>
+                      <p class="light-color  for-select">{{ EmpCodedetails.ReportingtoDesignation }}</p>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </div>
+</div>
+
+<div class="card ">
+  <div class="card-body">
+    <table class="table table-bordered mb-0 datatable dataTable no-footer" id="example">
+      <thead>
+          <tr>
+              <th>Emp Code</th>
+              <th>Emp Name</th>
+              {% comment %} <th>Level</th> {% endcomment %}
+              <th>Review Period</th>
+              <th>Perf. Rating</th>
+              <th>Sal. Increment</th>
+              <th>Status</th>
+              <th>Created On</th>
+              <th>Created By</th>
+              <th></th>
+            
+             
+              
+          </tr>
+      </thead>
+      <tbody>
+        {% for result in final_results %}
+        <tr>
+            <td class="">{{ result.EmployeeCode }}</td>
+            <td class="">{{ result.Appraisee_Name }}</td>
+            {% comment %} <td class="">Level</td> {% endcomment %}
+            {% comment %} <td class="">Employee Name</td> {% endcomment %}
+            <td class="lh-base">{{ result.ReviewPeriod_From }} <br> {{ result.ReviewPeriod_To }}</td>
+            <td class="">{{ result.FinalPerformanceRating }}</td>
+            <td class="">
+              {% if SessionEmployeeCode != EmpCodedetails.EmployeeCode %}
+                {{ result.SalaryIncrementOption }} 
+              {% endif %}  
+            </td>
+            <td class="">
+              {% if result.URl == 'M' %}
+                {{ result.Approval_stage|safe }}
+              <br>
+                {{ result.pending_status|safe }}
+              {% else %}
+                {{ result.Approval_stage|safe }}
+              <br>
+                {{ result.pending_status|safe }}
+              {% endif %}  
+            </td>
+
+            
+            <td class="center-text">{{ result.CreatedOn }}</td>
+            <td class="center-text">{{ result.CreatedBy }}</td>
+            <td>
+              <div class="d-flex flex-column gap-1">
+              {% if result.URl == 'A'  %}  
+                  <a onclick="return confirm('Are you sure you want to delete?')"
+                  href="{% url 'apdpaDelete' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-danger btn-sm text-white" style="font-size: 11px; margin-right: 1px;">
+                  <i class="fa-solid fa-trash"></i>
+              </a>
+              <a href="{% url 'NewAPADP' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+                  <i class="fa fa-edit"></i>
+              </a>
+              {% if  result.LastApporvalStatus == "Approved" %}
+              <a href="{% url 'ApadpPdf' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+              class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+              <i class="fa fa-eye" alt="view"></i>
+            </a>
+            {% endif %}
+
+              {% elif  result.URl == 'M'  %}
+              <a onclick="return confirm('Are you sure you want to delete?')"
+                  href="{% url 'PADP_Delete' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-danger btn-sm text-white" style="font-size: 11px; margin-right: 1px;">
+                  <i class="fa-solid fa-trash"></i>
+              </a>
+              <a href="{% url 'PADP_Add' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}&OID={{EmpCodedetails.OrganizationID}}"
+                  class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+                  <i class="fa fa-edit"></i>
+              </a>
+          {% if result.LastApporvalStatus == "Approved" %}
+          <a href="{% url 'PADP_View' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+          class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+          <i class="fa fa-eye" alt="view"></i>
+        </a>
+        {% endif %}
+
+              
+              {% endif %}
+               </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- <div class="col-md-12">
+    <div class="card">
+      <div class="card-header">
+        <div class="d-flex justify-content-between">
+          <div >
+            <strong>User Information</strong>
+          </div>
+          <div >
+            <a href="" class="btn btn-primary btn-sm text-white" data-toggle="modal" data-target="#padpModal">
+              <i class="fa fa-plus"></i> Add New PADP
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <br>
+        <table style="display: table;  border-collapse: collapse; width: 100%;">
+
+          <thead>
+              <tr>
+                  <td><b>Employee Code:</b></td>
+                  <td>{{ EmpCodedetails.EmployeeCode }}</td>
+                  <td><b>Name:</b></td>
+                  <td>{{ EmpCodedetails.full_name }}</td>
+                
+                  <td><b>Department:</b></td>
+                  <td>{{ EmpCodedetails.Department }}</td>
+                  <td><b>DOJ:</b></td>
+                  <td>{{ EmpCodedetails.DateofJoining }}</td>
+                </tr>
+                <tr>
+                 
+                  <td><b>Designation:</b></td>
+                  <td>{{ EmpCodedetails.Designation }}</td>
+                  <td><b>Level:</b></td>
+                  <td>{{ EmpCodedetails.Level }}</td>
+                  <td><b>Tenure:</b></td>
+                  <td>{{ EmpCodedetails.tenure_till_today }}</td>
+                  <td><b>Reporting To:</b></td>
+                  <td>{{ EmpCodedetails.ReportingtoDesignation }}</td>
+              </tr>
+              <tr>
+                  
+                 
+                  <td><b>Reporting Level:</b></td>
+                  <td>{{ EmpCodedetails.ReportingtoLevel }}</td>
+              </tr>
+             
+          </thead>
+      </table>
+      
+      
+  
+      <br>
+      <table class="table table-bordered" id="example">
+          <thead>
+              <tr>
+                  <th>Emp Code</th>
+                  <th>Review Period</th>
+                  <th>Final Performance Rating</th>
+                  <th>Salary Increment</th>
+                  <th>Status</th>
+                  <th>Created On</th>
+                  <th>Created By</th>
+                  <th style="width: 200px;">Action</th>
+                
+                 
+                  
+              </tr>
+          </thead>
+          <tbody>
+            {% for result in final_results %}
+            <tr>
+                <td class="center-text">{{ result.EmployeeCode }}</td>
+                <td class="center-text">{{ result.ReviewPeriod }}</td>
+                <td class="center-text">{{ result.FinalPerformanceRating }}</td>
+                <td class="center-text">{{ result.SalaryIncrementOption }}</td>
+                <td class="center-text">
+
+                  {% if result.URl == 'M' %}
+                  {{ result.Approval_stage|safe }}
+                  <br>
+                  {{ result.pending_status|safe }}
+                  {% else %}
+                  {{ result.Approval_stage|safe }}
+                  <br>
+                  {{ result.pending_status|safe }}
+                  {% endif %}  
+                </td>
+
+                
+                <td class="center-text">{{ result.CreatedOn }}</td>
+                <td class="center-text">{{ result.CreatedBy }}</td>
+                <td>
+                 
+                  {% if result.URl == 'A'  %}  
+                      <a onclick="return confirm('Are you sure you want to delete?')"
+                      href="{% url 'apdpaDelete' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                      class="btn btn-danger btn-sm" style="font-size: 11px; margin-right: 1px;">
+                      <i class="fa fa-trash-o"></i>
+                  </a>
+                  <a href="{% url 'NewAPADP' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                      class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+                      Edit
+                  </a>
+                  {% if  result.LastApporvalStatus == "Approved" %}
+                  <a href="{% url 'ApadpPdf' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+                  View
+                </a>
+                {% endif %}
+
+                  {% elif  result.URl == 'M'  %}
+                  <a onclick="return confirm('Are you sure you want to delete?')"
+                  href="{% url 'PADP_Delete' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-danger btn-sm" style="font-size: 11px; margin-right: 1px;">
+                  <i class="fa fa-trash-o"></i>
+              </a>
+              <a href="{% url 'PADP_Add' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+                  class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+                  Edit
+              </a>
+              {% if result.LastApporvalStatus == "Approved" %}
+              <a href="{% url 'PADP_View' %}?Page=Userinfo&EmpCode={{ EmpCodedetails.EmployeeCode }}&EmpID={{ EmpCodedetails.EmpID }}&ID={{ result.id }}"
+              class="btn btn-primary btn-sm" style="font-size: 11px; margin-right: 1px;">
+              View
+            </a>
+            {% endif %}
+
+                  
+                  {% endif %}
+                   
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+      </table>
+
+    </div>
+  </div>
+  </div> -->
+  
+  <div class="modal " id="padpModal" role="dialog">
+    <div class="modal-dialog custom-modal-width" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between">
+          <h5 class="modal-title" id="padpModalLabel">Add New PADP</h5>
+          <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+          <div class="col-sm-12" style="text-align:center;min-height:100px" id="divmenu">
+     
+     
+         {% if A == 'Yes' %}
+         <a href="{% url 'NewAPADP' %}?Page=Userinfo&EmpCode={{EmpCodedetails.EmployeeCode}}&EmpID={{EmpCodedetails.EmpID}}" class="btn btn-primary btnLnk">A/T/E/Hot PADP</a>
+         {% elif A == 'No' %}
+
+         <a href="{% url 'PADP_Add' %}?Page=Userinfo&EmpCode={{EmpCodedetails.EmployeeCode}}&EmpID={{EmpCodedetails.EmpID}}" class="btn btn-primary btnLnk">Manager PADP</a>
+         {% endif %}
+         
+         
+     
+     
+          </div>
+          <div class="col-sm-12">
+            <br>
+            <div class="alert alert-danger" style="margin: 0 auto; width: 90.2%;">
+                 <p>
+                     <span style="color:red">*Notes before adding new PADP </span>
+                     <br>
+                     </p><ul>
+                         <li>Please ensure date of joining of employee is entered in HR-&gt; employee data module. </li>
+                         <li>Please ensure employee code  is entered in hotelops's user setup (please ask your IT manager for this). </li>
+                         <li>HR module employee code must be same as hotelops user setup's employee code.</li>
+                     </ul>
+                 <p></p>
+            </div>
+        </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">Close</button> -->
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,258 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Total OOD Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'Total_OODviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>SPA TREATMENT REVENUE</th>
+            <th>{{mem.SpaTreatmentRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>MOD - EXTERNAL GUEST TRANSPORTATION</th>
+            <th>{{mem.Mod_ExtGuestTransportation}}</th>      
+        </tr>
+        <tr>
+            <th>GUEST LAUNDRY REVENUE</th>
+            <th>{{mem.GuestLaundryRevenue}}</th>      
+        </tr>
+        <tr>
+            <th> Revenue</th>
+            <th>{{mem.Revenue}}</th>      
+        </tr>
+        <tr>
+            <th>Cost of Merchandise</th>
+            <th>{{mem.Cost_OfMerchandise}}</th>      
+        </tr>
+        <tr>
+            <th>Cost of Guest Transportation </th>
+            <th>{{mem.Cost_OfGuestTransportation}}</th>      
+        </tr>
+        <tr>
+            <th>Cost of Laundry Services</th>
+            <th>{{mem.Cost_OfLaundryServices}}</th>      
+        </tr>
+        <tr>
+            <th>Total Cost of Sales</th>
+            <th>{{mem.Total_CostOfSales}}</th>      
+        </tr>
+        <tr>
+            <th>Gross Profit (Loss)</th>
+            <th>{{mem.GrossProfit}}</th>      
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+
+            
+    </table>
+</div>
+<br>
+<br>
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.Total_OODMaster.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Other Expenses
+            </th>
+            <th>
+                {{mem.Total_Other_Expenses}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+                Total Expenses
+            </th>
+            <th>
+                {{mem.TotalExpenses}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+                Department Income (Loss)
+            </th>
+            <th>
+                {{mem.DepartmentIncome}}
+            </th>
+        </tr>
+    </tfoot>
+
+
+</table>
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var Rev = 0;
+        var a = $("input[name='SpaTreatmentRevenue']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var e = $("input[name='Mod_ExtGuestTransportation']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;           
+
+        var g = $("input[name='GuestLaundryRevenue']").val();
+        g = parseFloat(g);
+        g = isNaN(g)?0:g;
+        Rev = a+e+g ;
+        $("input[name='Revenue']").val(Rev.toFixed(2));
+
+        
+        var TotSale = 0;
+        var m = $("input[name='Cost_OfMerchandise']").val();
+        m = parseFloat(m);
+        m = isNaN(m)?0:m;
+
+        var n = $("input[name='Cost_OfGuestTransportation']").val();
+        n = parseFloat(n);
+        n = isNaN(n)?0:n;           
+
+        var o = $("input[name='Cost_OfLaundryServices']").val();
+        o = parseFloat(o);
+        o = isNaN(o)?0:o;
+        TotSale = m+n+o ;
+        $("input[name='Total_CostOfSales']").val(TotSale.toFixed(2));
+
+        $("input[name='GrossProfit']").val((Rev-TotSale).toFixed(2));
+        var GrossProfit = (Rev - TotSale);
+
+     
+        var TotSalWag=0;
+        var c = $("input[name='SalaryAndWages']").val();
+        c = parseFloat(c);
+        c = isNaN(c)?0:c;
+               
+        var TotSalWag=0;
+        var d = $("input[name='Bonuses_and_Incentives']").val();
+        d = parseFloat(d);
+        d = isNaN(d)?0:d;
+        TotSalWag = c+d;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+
+        var f = $("input[name='EmployeeBenefits']").val();
+        f = parseFloat(f);
+        f = isNaN(f)?0:f;
+        $("input[name='PayrollRelatedExpenses']").val(f.toFixed(2));
+
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag + f).toFixed(2));
+        var PayrollAndRelatedExpenses = (TotSalWag + f);
+      
+        
+        
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+        $("input[name='Total_Other_Expenses']").val(TotalAmount.toFixed(2))
+        var Total_Other_Expenses = TotalAmount;
+
+        $("input[name='TotalExpenses']").val((PayrollAndRelatedExpenses+Total_Other_Expenses + TotSale ).toFixed(2))
+        var TotalExpenses = (PayrollAndRelatedExpenses+Total_Other_Expenses + TotSale);
+
+        
+        $("input[name='DepartmentIncome']").val((GrossProfit - TotalExpenses).toFixed(2))
+
+      
+            
+
+      
+    }
+</script>
+ 
+{% endblock content %}

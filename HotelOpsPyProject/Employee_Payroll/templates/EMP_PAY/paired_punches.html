@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Paired Punches</title>
+</head>
+<body>
+    <h1>Paired Punches for {{ employee_code }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Employee Code</th>
+                <th>IN Time</th>
+                <th>OUT Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for punch in paired_punches %}
+                <tr>
+                    <td>{{ punch.date }}</td>
+                    <td>{{ punch.employee_code }}</td>
+                    <td>{{ punch.in_time }}</td>
+                    <td>{{ punch.out_time }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

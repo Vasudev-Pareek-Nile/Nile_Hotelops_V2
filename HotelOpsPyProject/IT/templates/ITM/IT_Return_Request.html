@@ -1,0 +1,261 @@
+{% extends 'ITM/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<style>
+    .form-control CustomHide{
+        border-radius:5px !important;
+    }
+
+    .card {
+        border-radius: 5px;
+        border: 1px solid #0000004f;
+    }
+    
+    .card-header{
+        margin-bottom: -20px !important;
+    }
+
+    .form-control CustomHide[readonly] {
+        pointer-events: none !important;
+        background-color: #eee !important;   /* optional */
+        opacity: 1 !important;
+    }
+
+    .CustomFooter{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white; /* optional */
+        padding: 10px;     /* optional */
+        text-align: center; /* optional */
+        z-index: 999; 
+        padding-right: 111px;
+        display: flex;
+        justify-content: end;
+        border-top: 1px solid #00000054;
+    }
+</style>
+
+<div class="container">
+    <div class="col-md-12">
+        <form action="" method="post" id="ITFORM">
+            <div class="card">
+                <div class="card-header text-uppercase fw-bold">IT New Request {{ITS.EmployeeCode}}</div>
+                <div class="card-main">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Employee Code</label>
+                                <input type="text" required class="form-control CustomHide" name="EmpCode" id="employeeCode"  value="{{ITS.EmployeeCode}}" {% if ITS.EmployeeCode %} readonly {% endif %}>
+
+                                <input type="hidden" class="form-control CustomHide" name="EmpID" id="EmpID" value="{{ ITS.EmpID }}" >
+                                <input type="hidden" class="form-control CustomHide" name="OrganizationID" id="OrganizationID" value="{{ ITS.OrganizationID }}" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="EmployeeName">Employee Name</label> 
+                                <input type="text" class="form-control CustomHide" value="{{ITS.EmployeeName}}" readonly name="EmployeeName" id="EmployeeName"> 
+                            </div>
+                            
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Department</label>
+                                <input type="text" class="form-control CustomHide" value="{{ITS.Department}}" readonly name="Department" id="Department">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Designation Grade</label>
+                                <input type="text" class="form-control CustomHide" readonly name="DesignationGrade" value="{{ITS.DesignationGrade}}">
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group m-3">
+                                <label for="">Reporting To Desigantion</label>
+                                <input type="text" class="form-control CustomHide" readonly name="ReportingtoDesigantion" value="{{ITS.ReportingtoDesigantion}}">
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Issued</th>
+                                <th>Return</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>SIM</td>
+                                <td>
+                                    <select name="" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if SI.IsIssued %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not SI.IsIssued %}selected{% endif %}>No</option>    
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="Sim_IsReturned" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if SI.IsReturned %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not SI.IsReturned %}selected{% endif %}>No</option>  
+                                    </select> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mobile</td>
+                                <td>
+                                    <select name="" class="form-control CustomHide new-select">
+                                        <option value="" {% if MB.IsIssued == '' %}selected{% endif %}>Select {{SI.IsIssued}}</option>
+                                        <option value="True" {% if MB.IsIssued %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not MB.IsIssued %}selected{% endif %}>No</option>
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="Mobile_IsReturned" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if MB.IsReturned %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not MB.IsReturned %}selected{% endif %}>No</option>   
+                                    </select> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>
+                                    <select name="" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if EM.IsIssued %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not EM.IsIssued %}selected{% endif %}>No</option>     
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="Email_IsReturned" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if EM.IsReturned %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not EM.IsReturned %}selected{% endif %}>No</option> 
+                                    </select> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>System</td>
+                                <td>
+                                    <select name="" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if SYS.IsIssued %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not SYS.IsIssued %}selected{% endif %}>No</option>   
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="System_IsReturned" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if SYS.IsReturned %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not SYS.IsReturned %}selected{% endif %}>No</option>    
+                                    </select> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Official Account</td>
+                                <td>
+                                    <select name="" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="Yes" {% if ITS.HotelOpsAccount == 'Yes' %}selected{% endif %}>Yes</option>
+                                        <option value="No" {% if ITS.HotelOpsAccount == 'No' %}selected{% endif %}>No</option>   
+                                    </select> 
+                                </td>
+                                <td>
+                                    <select name="HotelOpsAccount_IsClosed" class="form-control CustomHide new-select">
+                                        <option value="">Select</option>
+                                        <option value="True" {% if ITS.IsClosed %}selected{% endif %}>Yes</option>
+                                        <option value="False" {% if not ITS.IsClosed %}selected{% endif %}>No</option> 
+                                    </select> 
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% if Hide %}
+            {% else %}
+                <div class="CustomFooter">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary btn-sm">
+                </div> 
+            {% endif %}
+        </form>    
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        let hide_value = "{{Hide}}";   
+        console.log("the hide value is here::",hide_value)
+
+        if (hide_value === "True" || hide_value === "true" || hide_value === "1") {
+            $(".CustomHide").attr("readonly", true);
+        } else {
+            $(".CustomHide").removeAttr("readonly");
+        }
+    });
+</script>
+
+<script>
+    document.getElementById("ITFORM").addEventListener("submit", function(e){
+        e.preventDefault(); // stop normal submission
+
+        let payload = {
+            OrganizationID: document.getElementById("OrganizationID").value,
+            UserID: "{{ request.session.UserID }}",
+            EmpCode: "{{ ITS.EmployeeCode }}",
+            ID: "{{ ITS.id }}",
+            Sim_IsReturned: document.querySelector("select[name='Sim_IsReturned']").value,
+            Mobile_IsReturned: document.querySelector("select[name='Mobile_IsReturned']").value,
+            Email_IsReturned: document.querySelector("select[name='Email_IsReturned']").value,
+            System_IsReturned: document.querySelector("select[name='System_IsReturned']").value,
+            HotelOpsAccount_IsClosed: document.querySelector("select[name='HotelOpsAccount_IsClosed']").value,
+        };
+
+        fetch("{% url 'IT_Return_Request_API' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}"
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                alert("Updated Successfully!");
+                window.location.href = "{% url 'Clearance_view' %}";
+            } else {
+                alert(data.error);
+            }
+        });
+    });
+</script>
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+

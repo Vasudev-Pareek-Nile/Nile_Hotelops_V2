@@ -1,0 +1,66 @@
+{% extends 'final/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+<style>
+    .Ulmodule li {
+        flex:0;
+        margin: 10px;
+        background: #6789bd;
+        padding: 15px;
+        border-radius: 5px;
+        list-style: none;
+        min-width: 150px;
+        align-items: stretch;
+        
+    }
+    
+    ul.Ulmodule {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: flex-end;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        
+        align-items:  stretch ;
+        
+    }
+    .Ulmodule li a{
+      color: #fff;
+      font-size:25px;
+    }
+  
+</style>
+    <div>
+        <ul class="Ulmodule">
+                <li><a href="/HBudgetReport/PLUtilitiesList">P&L Utilities</a></li>
+                <li><a href="/HBudgetReport/EngineeringList">P&L Engineering</a></li>
+                <li><a href="/HBudgetReport/AG_SecurityList">A&G Security</a></li>
+                <li><a href="/HBudgetReport/AG_HRList">A&G HR</a></li>
+                <li><a href="/HBudgetReport/Total_AGList">Total A&G</a></li>
+                <li><a href="/HBudgetReport/SMList"> P&L S&M </a></li>
+                <li><a href="/HBudgetReport/ITList">IT </a></li>
+                <li><a href="/HBudgetReport/AG_AnalysisList"> A&G - A&G</a></li>
+                <li><a href="/HBudgetReport/Rental_IncomeList">Rental Other Income</a></li>
+                <li><a href="/HBudgetReport/OOD_LaundryList"> OOD-Guest Laundry </a></li>
+                <li><a href="/HBudgetReport/OOD_TransportList"> OOD Transport </a></li>
+                <li><a href="/HBudgetReport/OOD_HealthList"> OOD Health </a></li>
+                <li><a href="/HBudgetReport/FB_BanquetList">FB Banquet </a></li>
+                <li><a href ="/HBudgetReport/FB_IRDList">FB IRD </a></li>
+                <li><a href ="/HBudgetReport/Outlet_1List">Outlet 1 </a></li>
+                <li><a href ="/HBudgetReport/Outlet_2List">Outlet 2 </a></li>
+                <li><a href ="/HBudgetReport/Outlet_3List">Outlet 3 </a></li>
+                <li><a href="/HBudgetReport/Outlet_4List">Outlet 4</a></li>
+                <li><a href="/HBudgetReport/Outlet_5List">Outlet 5</a></li>
+                <li><a href="/HBudgetReport/PL_RoomsList">PL Rooms </a></li>
+                <li><a href="/HBudgetReport/Total_OODList">Total OOD </a></li>
+                <li><a href="/HBudgetReport/PL_SummaryList">PL Summary </a></li>
+                
+        </ul>
+    </div>
+
+    {% endblock content %}

@@ -1,0 +1,539 @@
+{% extends 'PADPAPP/homebase.html' %}
+
+
+{% block content %} 
+
+<style>
+  .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
+  }
+
+  .modal-dialog {
+  margin: 15% auto;
+  width: 80%;
+  }
+
+  .close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  }
+
+  .icon-text {
+  display: flex;
+  align-items: center; /* Center icons and text vertically */
+  margin-bottom: 8px; /* Space between lines */
+  }
+
+  .icon-text i {
+  margin-right: 8px; /* Space between icon and text */
+  color: #007BFF; /* Icon color (Bootstrap primary blue) */
+  }
+
+  .icon-text span {
+  font-size: 16px; /* Adjust font size */
+  line-height: 1.5; /* Better line spacing */
+  }
+
+  table thead th{
+    text-transform:uppercase;
+    font-size:14px;
+    font-weight:bold !important;
+  }
+
+  .EmployeeName{
+  max-width:200px;
+  }
+  .salaryInc{
+  max-width:50px;
+  }
+  .Created{
+  max-width:100px;
+  }
+  .common{
+  word-break: break-word !important;
+  white-space: normal !important;
+  }
+
+  .btn, .form-control{
+  border-radius: 4px !important;
+  }
+
+  #example{
+  border-left: 1px solid #2222 !important;
+  border-bottom: 1px solid #2222 !important;
+  margin-top: 20px;
+  }
+
+  table.dataTable>thead .sorting_asc:before, table.dataTable>thead .sorting_desc:after,
+  table.dataTable>thead .sorting_asc:before, table.dataTable>thead .sorting_desc:after ,
+  table.dataTable>thead .sorting:after, table.dataTable>thead .sorting_asc:after, table.dataTable>thead .sorting_desc:after, table.dataTable>thead .sorting_asc_disabled:after, table.dataTable>thead .sorting_desc_disabled:after 
+  {
+  opacity: 0 !important;
+  display: none !important;
+  }
+  table tr th:first-child, table tr td:first-child {
+  max-width: 80px !important;
+  min-width: 80px !important;;
+  }
+
+  table tr td:nth-child(2), table tr th:nth-child(2) {
+  max-width: 180px !important;
+  min-width: 180px !important;
+  }
+  table tr td:nth-child(3), table tr th:nth-child(3) {
+  max-width: 100px !important;
+  min-width: 100px !important;
+  }
+
+  table tr td:nth-child(4), table tr th:nth-child(4) {
+  max-width: 140px !important;
+  min-width: 140px !important;
+  }
+  table tr td:nth-child(6), table tr th:nth-child(6) {
+  max-width: 153px !important;
+  min-width: 153px !important;
+  }
+
+  table tr td:nth-child(7), table tr th:nth-child(7) {
+  max-width: 123px !important;
+  min-width: 123px !important;
+  }
+
+  tr td:last-child, tr th:last-child {
+  max-width: 100px;
+  min-width: 100px;
+  }
+</style>
+  
+  <body>
+    
+    
+   <div class="card">
+   <div class="card-body">
+      <form action="" method="get" id="filterForm">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <select class="form-control" id="I" name="I" >
+                        {% if I|stringformat:"s" == "3" %}
+                            <option value="All" selected>All -- {{request.session.OrganizationID}}</option>
+                        {% endif %}
+
+                        {% for org in orgs %}
+                            <option value="{{ org.OrganizationID }}" {% if org.OrganizationID == I %}selected{% endif %}>{{ org.OrganizationName }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div> 
+           
+            <div class="col-md-2">
+                <div class="form-group">
+                  <select name="Status" date-val="" class="form-control" title="Select Hotel">
+                    <option value="All">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Returned">Returned</option>
+                    <option value="Draft">Draft</option>
+                </select>
+                </div>
+            </div>
+            <div class="col-md-1">
+              <div class="form-group">
+                <select class="form-control" id="year" name="year" onchange="submitForm()">
+                  {% for year in years %}
+                      <option value="{{ year }}" {% if year == 2024 %}selected{% endif %}>{{ year }}</option>
+                  {% endfor %}
+              </select>
+
+              </div>
+          </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <select class="form-control" id="month" name="month" onchange="submitForm()">
+                  <option value="All">All</option>
+                  <option value="1" {% if current_month == '1' %}selected{% endif %}>January</option>
+                  <option value="2" {% if current_month == '2' %}selected{% endif %}>February</option>
+                  <option value="3" {% if current_month == '3' %}selected{% endif %}>March</option>
+                  <option value="4" {% if current_month == '4' %}selected{% endif %}>April</option>
+                  <option value="5" {% if current_month == '5' %}selected{% endif %}>May</option>
+                  <option value="6" {% if current_month == '6' %}selected{% endif %}>June</option>
+                  <option value="7" {% if current_month == '7' %}selected{% endif %}>July</option>
+                  <option value="8" {% if current_month == '8' %}selected{% endif %}>August</option>
+                  <option value="9" {% if current_month == '9' %}selected{% endif %}>September</option>
+                  <option value="10" {% if current_month == '10' %}selected{% endif %}>October</option>
+                  <option value="11" {% if current_month == '11' %}selected{% endif %}>November</option>
+                  <option value="12" {% if current_month == '12' %}selected{% endif %}>December</option>
+              </select>
+
+
+              </div>
+          </div>
+          <div class="col-md-2">
+            <label>
+                Salary Increment
+                <br>
+                <input type="checkbox" name="SI" value="3%" {% if '3%' in SI %}checked{% endif %}> 3%
+                <input type="checkbox" name="SI" value="5%" {% if '5%' in SI %}checked{% endif %}> 5%
+                <input type="checkbox" name="SI" value="8%" {% if '8%' in SI %}checked{% endif %}> 8%
+                <input type="checkbox" name="SI" value="10%" {% if '10%' in SI %}checked{% endif %}> 10%
+            </label>
+        </div>
+        
+            <div class="col-md-2" id="filterButton">
+                <div class="form-group">
+                    <button class="btn mr-4 btn-primary" style="padding-inline:15px;" id="FilterForm" type="submit">Filter</button>
+                    <a class="btn btn-danger ml-3" style="padding-inline:15px;" href="{% url "PADPApprove" %}">Clear</a>
+                </div>
+            </div>
+        </div>
+       
+    </form>
+
+      <form action="" method="post">
+        {% if UserType == "CEO"  %}
+        {% csrf_token %}
+        
+          <div class="row d-flex align-items-center">
+              <div class="col-md-3">
+                <div class="form-group" >
+                  <label for="bulkAction" style="margin-bottom: 5px;">Bulk Action</label>
+                  <select name="bulkAction" id="bulkAction" class="form-control">
+                    <option value="">Select</option>
+                    
+                    <option value="Returned">Returned</option>
+                    <option value="Approved">Approved</option>
+                  </select>
+                </div>
+                
+              </div>
+              <div class="col-md-3 mt-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+          </div>
+    
+          {% comment %} <br> {% endcomment %}
+        {% comment %} </div> {% endcomment %}
+        {% endif %}
+        
+
+
+      <table class="table table-bordered mb-0  no-footer" id="example"  bs-orderable="false">
+        <thead>
+            <tr>
+                <th data-orderable="false" class="text-center" >
+                  {% if UserType == "CEO"  %}
+                    <input type="checkbox" id="select-all">
+                  {% endif %}
+                  HTL
+                </th>
+              
+                <th data-orderable="false" class="EmployeeName common">Emp Name</th>
+                <th data-orderable="false"  class="text-center">Review</th>
+                <th data-orderable="false" class="FinalPerfRating common" >Final Rating</th>
+                <th data-orderable="false" class="salaryInc common text-center">Sal Inc.</th>
+                <th data-orderable="false" class="status common" >Status</th>
+                <th data-orderable="false" class="Created common text-center" >Created By</th>
+                <th data-orderable="false" >Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for result in final_results %}
+            <tr>
+                <td data-orderable="false" class="text-center">
+                  {% if UserType == "CEO"  %}
+                    <input type="checkbox" class="row-checkbox" name="checkbox_ids" value="{{result.URl}}_{{ result.id }}">
+                  {% endif %}
+                  {{ result.get_organization_name }}
+                </td>
+
+                <td>
+                  <p>
+                  {{ result.EmployeeCode }} ({{ result.Aprraise_Level }})<br>
+                  {% with full_name=result.Appraisee_Name %}
+                
+                    {% with name_parts=full_name.split %}
+                      {{ name_parts.0 }} {% if name_parts|length > 1 %}{{ name_parts|last }}{% endif %}
+                    {% endwith %}
+                  {% endwith %}<br/>
+                    {{ result.Aprraisee_position }}
+                    </p>
+                </td>
+                <td class="text-center">{{ result.ReviewPeriod |safe}}</td>
+                <td style="max-width: 80px;">{{ result.FinalPerformanceRating |safe}}</td>
+                <td class="text-center text-capitalize">{{ result.SalaryIncrementOption|linebreaks }}</td>
+                <td>
+                  <p >
+                    {% if result.URl == 'M' %}
+                      {{ result.Approval_stage|safe }}
+                      <br>
+                    {% else %}
+                      {{ result.Approval_stage|safe }}
+                      <br>
+                    {% endif %}  
+
+                    {% if result.ceo_as_remarks %}
+                      {{ result.ceo_as_remarks }}
+                    {% endif %}
+                    
+                    {% comment %} LastApporvalstatus = {{result.LastApporvalStatus}}
+                    CEO_as = {{result.ceo_as}} {% endcomment %}
+                    <br/>
+                    {% if request.session.UserType == 'CEO' %}
+                      {% if result.ceo_as == 'Returned' %}
+                        <span class="btn btn-danger btn-sm m-1 text-white" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-undo"></i></span>
+                      {% endif %}
+                    {% endif %}
+                   </p>
+                </td>
+                <!-- <td class="text-center"></td> -->
+                <td >
+                  <p>
+                  {% with full_name1=result.CreatedBy %}
+                
+                    {% with name_parts=full_name1.split %}
+                      {{ name_parts.0 }} {% if name_parts|length > 1 %}{{ name_parts|last }}{% endif %}
+                    {% endwith %}
+                  {% endwith %}
+                  <br><strong></strong>{{ result.CreatedOn }}
+                </p>
+                </td>
+                <td>  
+                  <div class="button-group">
+                    {% if result.URl == 'A' %}
+                    <a href="{% url 'NewAPADP' %}?ID={{ result.id }}&Page=PADPApprove&EmpCode={{result.EmployeeCode}}&OID={{result.OrganizationID}}" class="btn btn-primary btn-sm m-1" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-edit"></i></a>
+                    <!-- <a href="{% url 'ApadpPdf' %}?ID={{ result.id }}" class="btn btn-primary btn-sm m-1" style="font-size: 11px; margin-right: 1px;">View</a> -->
+                    {% elif result.URl == 'M' %}
+                    <a href="{% url 'PADP_Add' %}?Page=PADPApprove&ID={{ result.id }}&EmpCode={{result.EmployeeCode}}&OID={{result.OrganizationID}}" class="btn btn-primary btn-sm m-1" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-edit"></i></a>
+                    <!-- <a href="{% url 'PADP_View' %}?Page=PADPApprove&ID={{ result.id }}" class="btn btn-primary btn-sm " style="font-size: 11px; margin-right: 1px;">View</a> -->
+                    {% endif %}
+                    {% if request.session.UserType == 'CEO' or request.session.UserType == 'HR' or request.session.UserID == '20240123168562' %}
+                    {% if result.URl == 'A'  %}
+                    <a href="{% url 'ApadpPdf' %}?ID={{ result.id }}&Page=PADPApprove" class="btn btn-primary btn-sm m-1" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-eye" alt="view"></i></a>
+                    {% elif result.URl == 'M'  %}
+                    <a href="{% url 'PADP_View' %}?Page=PADPApprove&ID={{ result.id }}" class="btn btn-primary btn-sm m-1" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-eye" alt="view"></i></a>
+                    {% endif %}
+                    {% endif %}
+
+
+                    {% if request.session.UserType == 'CEO' %}
+                   
+                    <!-- Approve Button -->
+                    <input type="hidden" name="PADPID" value="{{result.URl}}_{{ result.id }}" class="PADPID-hidden">
+                    <span class="btn btn-primary btn-sm m-1" id="approveBtn" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-check"></i></span>
+                    <!-- <span class="btn btn-primary btn-sm m-1" id="approveBtn" style="font-size: 11px; margin-right: 1px;">Approve</span> -->
+                
+                    <!-- Return Button -->
+                    <span class="btn btn-danger btn-sm m-1 text-white" id="ReturnBtn" style="font-size: 11px; margin-right: 1px;"><i class="fa fa-undo"></i></span>
+                    {% endif %}
+                </div>
+                
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </form>
+  </div>
+</div>
+
+  </div>
+  <div class="modal" id="approveModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #1ab394;color: white; border-radius: 0;" >
+          <h5 class="modal-title" >Approve</h5>
+          <button type="button" class="btn-close close" id="closeApprove">&times;</button>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control remarks-textarea" placeholder="Enter remarks" id="approveRemarks" ></textarea>
+          <input type="hidden" id="approvePADPID" value="">  
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeApproveFooter">Close</button>
+          <button type="button" class="btn btn-primary" id="approveSubmitBtn">Approve</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="ReturnModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #ec4758;color: white; border-radius: 0;">
+          <h5 class="modal-title">Return</h5>
+          <button type="button" class="btn-close close" id="closeReturn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control remarks-textarea" placeholder="Enter remarks" id="ReturnRemarks" required></textarea>
+          <input type="hidden" id="ReturnPADPID" value=""> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="closeReturnFooter">Close</button>
+          <button type="button" class="btn btn-danger" id="ReturnSubmitBtn">Return</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  
+  <script>
+    function searchTable() {
+        // Get the search input value
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+   
+        // Loop through all table rows
+        for (let i = 0; i < rows.length; i++) {
+            let isMatch = false;
+            const cells = rows[i].getElementsByTagName("td");
+   
+            // Check each cell in the row
+            for (let j = 0; j < cells.length; j++) {
+                if (cells[j]) {
+                    const cellContent = cells[j].textContent || cells[j].innerText;
+                    if (cellContent.toLowerCase().indexOf(input) > -1) {
+                        isMatch = true;
+                        break;
+                    }
+                }
+            }
+   
+            // Show or hide the row based on the match
+            rows[i].style.display = isMatch ? "" : "none";
+        }
+    }
+</script>
+  
+  <script>
+    $(document).ready(function() {
+        // Set PADPID in hidden fields when opening the modal
+        $('.button-group').on('click', '.btn', function() {
+            var $buttonGroup = $(this).closest('.button-group'); // Get the closest button group
+            var PADPID = $buttonGroup.find('.PADPID-hidden').val(); // Find the associated PADPID
+    
+            // Determine which button was clicked
+            if ($(this).attr('id') === 'approveBtn') {
+                $('#approvePADPID').val(PADPID);
+                $('#approveModal').css('display', 'block');
+            } 
+             else if ($(this).attr('id') === 'ReturnBtn') {
+                $('#ReturnPADPID').val(PADPID);
+                $('#ReturnModal').css('display', 'block');
+            }
+        });
+    
+        // Close modals
+        $('.close, .btn-secondary').on('click', function() {
+            $('.modal').css('display', 'none');
+        });
+    
+        // AJAX call for Approve
+        $('#approveSubmitBtn').on('click', function() {
+            var remarks = $('#approveRemarks').val();
+            var PADPID = $('#approvePADPID').val();
+           
+            $.ajax({
+                url: "/PADP/Padpceoapprove/",
+                type: 'GET',
+                data: {
+                    'PADPID': PADPID,
+                    'Status': 'Approved',
+                    'Remarks': remarks
+                },
+                success: function(response) {
+                    alert(response.message);
+                    $('#approveModal').css('display', 'none');
+                    location.reload();  // Refresh the page
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+    
+      
+    
+        // AJAX call for Return
+        $('#ReturnSubmitBtn').on('click', function() {
+            var remarks = $('#ReturnRemarks').val();
+            var PADPID = $('#ReturnPADPID').val();
+            if (!remarks) {
+                alert('Please provide remarks.');
+                return;
+            }
+            $.ajax({
+                url: "/PADP/Padpceoapprove/",
+                type: 'GET',
+                data: {
+                    'PADPID': PADPID,
+                    'Status': 'Returned',
+                    'Remarks': remarks
+                },
+                success: function(response) {
+                    alert(response.message);
+                    $('#ReturnModal').css('display', 'none');
+                    location.reload();  // Refresh the page
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+    });
+    </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const selectAllCheckbox = document.getElementById("select-all");
+        const rowCheckboxes = document.querySelectorAll(".row-checkbox");
+
+        selectAllCheckbox.addEventListener("change", function () {
+            const isChecked = this.checked;
+            rowCheckboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+            });
+        });
+
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                if (!this.checked) {
+                    selectAllCheckbox.checked = false; 
+                } else if ([...rowCheckboxes].every(cb => cb.checked)) {
+                    selectAllCheckbox.checked = true; 
+                }
+            });
+        });
+    });
+</script>
+  
+
+
+
+
+  
+<script>
+
+  $(document).ready(function () {
+     var selectedOrganization = "{{ I }}";
+     $("select[name='I']").val(selectedOrganization);
+
+     var selectedmonth = "{{ selected_month }}";
+     $("select[name='month']").val(selectedmonth);
+      
+     var selectedYear = "{{ selected_year }}";
+      $("select[name='year']").val(selectedYear);
+
+      var selected_Status = "{{ Status }}";
+      $("select[name='Status']").val(selected_Status);
+  }); 
+  
+    </script>
+{% endblock %}

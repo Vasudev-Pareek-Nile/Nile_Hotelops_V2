@@ -1,0 +1,140 @@
+{% extends 'lettercl/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+<style>
+    form p {
+        display: inline-block;
+        width: 30%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+  {
+      visibility: hidden;
+  }
+  label{
+    margin-top:15px;
+    margin-bottom:5px;
+  }
+ </style>
+
+<div class="card">
+    <span class="card-header text-uppercase fw-bold">New Employee Confirmation Letter</span>
+    <form action="" method="post">
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="emp_code">Emp Code</label>
+                            <input type="text" class="form-control" name="emp_code" value="{{ Confirmationobj.emp_code }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="prefix">Prefix</label>
+                            <input type="text" class="form-control" name="prefix" value="{{ Confirmationobj.prefix }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" name="first_name" value="{{ Confirmationobj.first_name }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" name="last_name" value="{{ Confirmationobj.last_name }}" required readonly>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_appointment">Date of Appointment</label>
+                            <input type="date" class="form-control" name="date_of_appointment" value="{% if Confirmationobj.date_of_appointment %}{{ Confirmationobj.date_of_appointment|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_confirmation">Date of Confirmation</label>
+                            <input type="date" class="form-control" name="date_of_confirmation" value="{% if Confirmationobj.date_of_confirmation %}{{ Confirmationobj.date_of_confirmation|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <input type="text" class="form-control" name="department" value="{{ Confirmationobj.department }}" required readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" class="form-control" name="designation" value="{{ Confirmationobj.designation }}" required readonly>
+                        </div>
+                    </div>
+                    
+            
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_designation">Issuing Designation</label>
+                            <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                                <option value="">Select</option>
+                                {% for ManagerName in ManagerNames %}
+                                    <option value="{{ ManagerName.designations }}" {% if Confirmationobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                                        {{ ManagerName.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Issuing Manager Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="Issuing_manager_name">Issuing Manager Name</label>
+                            <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ Confirmationobj.Issuing_manager_name }}" required readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="CustomFooter">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function updateManagerName() {
+        const select = document.getElementById("Issuing_designation");
+        const selectedOption = select.options[select.selectedIndex];
+        const fullName = selectedOption.getAttribute("data-fullname");
+        document.getElementById("Issuing_manager_name").value = fullName ? fullName : '';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        updateManagerName();
+    });
+
+    document.getElementById("Issuing_designation").addEventListener("change", updateManagerName);
+</script>
+{% endblock content %}
+
+
+
+
+

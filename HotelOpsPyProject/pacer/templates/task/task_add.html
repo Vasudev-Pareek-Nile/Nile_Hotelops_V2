@@ -1,0 +1,198 @@
+{% extends "task/homebase.html" %} {% block content %}
+
+<style>
+  label {
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+  }
+
+  body {
+    font-family: arial nova;
+    /* font-size: 11px; */
+  }
+</style>
+
+<div class="container">
+  <div class="col-md-12">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>TASK DETAIL ADD</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Task Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="task_name"
+                  value="{{task.task_name}}"
+                  id=""
+                  placeholder="Enter Task Name"
+                  required
+                />
+              </div>
+              
+               <div class="form-group m-2">
+               <label for="">Project</label>
+                  <input
+                  type="text"
+                  class="form-control"
+                  name="project"
+                  value="{{task.project}}"
+                  id=""
+                  placeholder="Enter Project  Name"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+          <label for="">Responsible user:</label>
+<select name="responsible_user" class="form-control">
+    <option value="">Select User</option>
+    {% for user in Userlist %}
+        <option value="{{ user.name }}" {% if user.name == task.responsible_user %} selected {% endif %}>{{ user.name }}</option>
+    {% endfor %}
+</select>
+              </div>
+              <div class="form-group m-2">
+               <label for="">Department</label>
+<select name="department" class="form-control">
+    <option value="">Select Department</option>
+    {% for department in memOrg %}
+        <option value="{{ department.Department }}" {% if task.department == department.Department %}selected{% endif %}>
+            {{ department.Department }}
+        </option>
+    {% endfor %}
+</select>
+              </div>
+               
+
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Add info</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="add_info"
+                  value="{{task.add_info}}"
+                  id=""
+                  placeholder="Additional Information"
+                  required
+                />
+              </div>
+              
+              <div class="form-group m-2">
+                <label for="">Link of Project</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="link_of_project"
+                  value="{{task.link_of_project}}"
+                  id=""
+                  placeholder="Enter Url"
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="">Contact Email</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="contact_email"
+                  value="{{task.contact_email}}"
+                  placeholder="Enter Contact Email "
+                  required
+                />
+              </div>
+              <div class="form-group m-2">
+                <label for="status">Status</label>
+                <select class="form-control" name="status" id="status">
+                  <option value="">Select a Status</option>
+                  <option value="Completed"{% if task.status == "Completed" %}selected{% endif %}>Completed</option>
+                  <option value="In_Progress"{% if task.status == "In_Progress" %}selected{% endif %}>In Progress</option>
+                  <option value="In_Completed"{% if task.status == "In_Completed" %}selected{% endif %}>In Completed</option>
+                  <option value="Not_Applicable"{% if task.status == "Not_Applicable" %}selected{% endif %}>Not Applicable</option>
+                  <option value="Not_Started"{% if task.status == "Not_Started" %}selected{% endif %} selected>Not Started</option>
+                  <option value="Pending"{% if task.status == "Pending" %}selected{% endif %}>Pending</option>
+                </select>
+              </div>
+              
+             
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-2">
+                <label for="">Contact Person  Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="contact_full_name"
+                  value="{{task.contact_full_name}}"
+                  placeholder="Contact  Name "
+                  required
+                />
+              </div>
+               <div class="form-group m-2">
+                <label for="">Link Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="link_title"
+                  value="{{task.link_title}}"
+                  id=""
+                  placeholder="Url Title"
+                  required
+                />
+              </div>
+              
+               <div class="form-group m-2">
+                <label for="">Days Before</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="DayBefore"
+                  value="{{task.DayBefore}}"
+                  id=""
+                  required
+                />
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if task is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  $(function(){
+$("select").select2()
+    
+  })
+  // Get the current date
+  var currentDate = new Date();
+
+  // Format the date as YYYY-MM-DD for input[type="date"]
+  var formattedDate = currentDate.toISOString().split("T")[0];
+
+  // Set the value of the input field to the current date
+  document.getElementById("start_date").value = formattedDate;
+  
+</script>
+{% endblock content %}

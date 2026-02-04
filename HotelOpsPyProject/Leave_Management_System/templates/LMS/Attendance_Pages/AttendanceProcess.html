@@ -1,0 +1,122 @@
+
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+    .card-body{
+        position: relative;
+    }
+
+    .card .card-header {
+        padding: 15px;
+    }
+    .card .card-body{
+        padding: 15px;
+        padding-top: 0px;
+    }
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    /* Make table full width */
+    #example {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    /* Make header cells sticky */
+    #example thead th {
+        position: sticky;
+        top: -5px !important;
+        background-color: white;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+
+<form method="post">    
+    {% if messages %}
+        <div class="cotainer mt-2 mb-2">
+            <div class="container text-center">
+                {% for message in messages %} {% if message.tags == 'success' %}
+                <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+                {% else %}
+                <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+                {% endif %} {% endfor %}
+            </div>
+        </div>
+    {% endif %} 
+
+
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="text-uppercase fw-bold">Advance Attendance Posting</div>   
+                {% comment %} <div class="">
+                    {% include "EMP_PAY/Attendance/AttendanceNavbar.html" %} 
+                </div>     {% endcomment %}
+            </div>    
+            <div class="row">
+                <div class="col-md-2">
+                    {% comment %} <label for="Start_Date">From</label> {% endcomment %}
+                    <input type="date" name="Start_Date" id="Start_Date" value="{% if Start_Date %}{{ Start_Date|date:'Y-m-d' }}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                </div>      
+                <div class="col-md-2">
+                    {% comment %} <label for="To_Date">To</label> {% endcomment %}
+                    <input type="date" name="To_Date" id="To_Date" value="{% if To_Date %}{{ To_Date|date:'Y-m-d'  }}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                </div>   
+                <div class="col-md-2">   
+                    <input type="submit" value="Create" class="btn btn-primary" style="padding-block:8px;">
+                    {% csrf_token %}
+                </div>      
+            </div>      
+        </div>      
+     
+
+        <div class="card-body">
+            <table id="example" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" name="check" class="checkBox selectAll"> Select All</th>
+                        <th>Emp Code</th>
+                        <th>Emp Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Emp Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for emp in Emp_list %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="all_emp_codes[]"  class="checkBox" value="{{ emp.EmployeeCode }}">
+                                <input type="hidden" name="all_emp_id[]" value="{{ emp.EmpID }}">
+                            </td>
+                            <td>{{ emp.EmployeeCode }}</td>
+                            <td>{{ emp.EmpName }}</td>
+                            <td>{{ emp.Department }}</td>
+                            <td>{{ emp.Designation }}</td>
+                            <td>{{ emp.EmpStatus }}</td>
+                        </tr>
+                        {% if forloop.last %}
+                        <input  type="hidden" name="Total_emd_id" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div> 
+</form>
+
+<script>
+    $(document).ready(function () {
+        $(".selectAll").on("change", function () {
+            $(".checkBox").prop("checked", $(this).prop("checked"));
+        });
+    });
+</script>
+
+
+{% endblock %}

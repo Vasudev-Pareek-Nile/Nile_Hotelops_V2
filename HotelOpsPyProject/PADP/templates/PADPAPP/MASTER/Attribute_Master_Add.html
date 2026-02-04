@@ -1,0 +1,45 @@
+{% extends 'PADPAPP/homebase.html' %}
+
+
+{% block content %} 
+<div class="container col-md-4" style="height: 560px;">
+    <div class="card mx-auto">
+        <div class="card-header">Attribute </div>
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="form-group m-3">
+                <label for="leaveType">Objective Master:</label>
+                <input type="text" class="form-control" value="{{obj_name}}" readonly>
+            </div>
+            <div class="form-group m-3">
+                <label>Attribute Name:</label>
+                <input type="text" name="Title" value="{{a_data.Title}}" class="form-control" placeholder="Enter Attribute Name">     
+                
+                
+            </div>
+            <div class="form-group m-3">
+                <label for="">Realative Importance : </label>
+
+                <input type="radio" {% if a_data.RL_H   %}checked{% endif %}  name="RL" value="H"> 
+                <label for="">H</label>                                
+                <input type="radio" {% if a_data.RL_M   %}checked{% endif %} name="RL" value="M"> 
+                <label for="">M</label>
+                <input type="radio"  {% if a_data.RL_L   %}checked{% endif %} name="RL"  value="L"> 
+                <label for="">L</label>
+                
+                
+            </div>
+           
+            
+            
+
+            <div class="card-footer text-right"> 
+                <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+                <button onclick="history.back()"  class="btn btn-primary btn-sm" >Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

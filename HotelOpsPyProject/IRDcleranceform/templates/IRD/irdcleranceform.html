@@ -1,0 +1,53 @@
+{% extends 'IRD/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="IRDCleranceRegisrtration" enctype="multipart/form-data">
+    {{ IRD_Clerance }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p> Register Pay Master Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field IRDCleranceForm.Date class="form-control" placeholder="Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Clerance_time</label>
+                {% render_field IRDCleranceForm.Clerance_time class="form-control" placeholder="Clerance_time" %}
+              </div>
+            </div>
+            <br/>
+            <div class="row">
+              <div class="col-sm-12">
+                <label>Remarks</label>
+                {% render_field IRDCleranceForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks" %}
+              </div>
+            </div>
+          </div>
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  {% endblock content %}

@@ -1,0 +1,151 @@
+{% extends "EMP_PAY\homebase.html" %}
+
+{% block content %}
+{% load Payrollcustom_filters %}
+<style>
+    .table-container {
+        position: relative;
+        overflow: auto;
+        max-height: 80vh;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        min-width: 120px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+    th.sticky-header, td.sticky-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 2;
+    }
+    th.sticky-col, td.sticky-col {
+        position: sticky;
+        left: 0;
+        background: white;
+        z-index: 1;
+    }
+    th.sticky-col:nth-child(2), td.sticky-col:nth-child(2) {
+        left: 120px; /* Adjust based on column width */
+    }
+    th.sticky-col:nth-child(3), td.sticky-col:nth-child(3) {
+        left: 240px; /* Adjust based on column width */
+    }
+    th.sticky-col:nth-child(4), td.sticky-col:nth-child(4) {
+        left: 360px; /* Adjust based on column width */
+    }
+    th.sticky-col:first-child, td.sticky-col:first-child {
+        z-index: 3;
+    }
+    /* Handle the intersection of fixed headers and fixed columns */
+    th.sticky-header.sticky-col, td.sticky-header.sticky-col {
+        z-index: 4;
+    }
+</style>
+
+<div class="card-header col-md-12 mb-3">Attendance Salary Report </div>
+
+
+
+
+
+
+    <form action="" method="get">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="m-1">
+                    <select name="Type" id="Type" class="form-control">
+                      
+
+                        <option value="Attendance">Attendance</option>
+                        <option value="Salary">Salary</option>
+                    </select>
+                </div>
+                <div class="m-1">
+                    <select class="form-control"  name="month">
+                        <option value="All" selected>All</option>
+
+                        <option value="Jan">Jan</option>
+                        <option value="Feb">Feb</option>
+                        <option value="Mar">Mar</option>
+                        <option value="Apr">Apr</option>
+                        <option value="May">May</option>
+                        <option value="Jun">Jun</option>
+                        <option value="Jul">Jul</option>
+                        <option value="Aug">Aug</option>
+                        <option value="Sep">Sep</option>
+                        <option value="Oct">Oct</option>
+                        <option value="Nov">Nov</option>
+                        <option value="Dec">Dec</option>
+                    </select>
+                </div>
+                <div class="m-1">
+                    <select class="form-control" name="year">
+                        {% for i in CYear %}
+                        <option>{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="m-1">
+                    <input type="submit" class="btn btn-primary btn-sm" value="Filter">
+                    <a href="{% url 'AttendanceSalaryList' %}" class="btn btn-primary btn-sm">Clear Filter</a>
+                   
+                </div>
+            </div>
+        </div>
+    </form>
+    <table class="table table-bordered mt-2">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attsal in attsalobj %}
+            <tr>
+                <td>{{ attsal.Type }}</td>
+                <td>{{ attsal.Month }}</td>
+                <td>{{ attsal.Year }}</td>
+                <td>
+                    {% if attsal.FileName %}
+                        <a href="{% url 'download_file' %}?DID={{ attsal.id }}&type=excel" class="btn btn-primary btn-sm">Download Excel</a>
+                    {% endif %}
+                    {% if attsal.PdfFileName %}
+                        <a href="{% url 'download_file' %}?DID={{ attsal.id }}&type=pdf" class="btn btn-secondary btn-sm">Download PDF</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    
+
+
+
+<script>
+    $(document).ready(function () {
+        
+     
+        var selectedType = '{{ Type }}';
+        $("select[name='Type']").val(selectedType);
+      
+        var selectedMonth = '{{ month }}';
+        $("select[name='month']").val(selectedMonth);
+        var Year = '{{ year }}';
+        if (Year != None) {
+            var selectedYear = '{{ year }}';
+            $("select[name='year']").val(selectedYear);
+        }
+    });
+</script>
+{% endblock content %}

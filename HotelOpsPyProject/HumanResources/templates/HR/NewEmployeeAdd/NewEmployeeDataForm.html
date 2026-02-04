@@ -1,0 +1,102 @@
+{% extends "HR/homebase.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+
+.cdm .col-md-3 {
+    max-width: 220px;
+    min-width: 220px;
+    margin: 5px !important;
+    padding: 0;
+}
+
+.btn-active{
+    color: white !important;
+    border-color: #3a4a93 !important;
+    background-color: #3a4a93 !important;
+    padding: 7px;
+    text-align: center;
+}
+
+.btn-primary {
+    padding:7px;
+    background:rgba(58, 74, 147, 0.72) !important;
+    border-color: rgba(58, 74, 147, 0.72) !important;
+    transition: all 0.5s ease;
+}
+
+.btn-primary:hover {
+    background: #5464af !important;
+    border-color: #3a4a93 !important;
+}
+
+#CardWithDetails{
+    padding-left: 10px;
+}
+</style>
+
+
+ 
+<div class="card">
+    <div class="card-header text-uppercase">
+        <h4 class="fw-bold">Employee Details</h4>
+    </div>
+    <div class="card-body">
+        <div class="col-md-12" id="CardWithDetails">
+            <div class="row cdm pl-3 pb-3">
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link    {% if CurrentUrl == "NewEmployeePersonalData" %}btn-active {% else %}btn btn-primary{% endif %} text-left {% if ActiveLinkDict.EMPIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeePersonalData' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">1. Personal Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link  {% if CurrentUrl  == "NewEmployeeWorkData" %}btn-active{% else %}btn btn-primary{% endif %} text-left {% if ActiveLinkDict.WorkIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeWorkData' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">2. Work Information</a>
+                </div>
+               <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link  {% if CurrentUrl  == "NewEmployeeFamilyinfo" %}btn-active{% else %}btn btn-primary{% endif %} text-left {% if ActiveLinkDict.FamilyIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeFamilyinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">3. Family Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link  {% if CurrentUrl == "NewEmployeeEmergencyinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left {% if ActiveLinkDict.EmergencyIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeEmergencyinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">4. Emergency Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left"> 
+                    <a class="nav-link  {% if CurrentUrl == "NewEmployeeQualificationinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.EducationsIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeQualificationinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">5. Qualification Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link  {% if CurrentUrl == "NewEmployeePreviousWorkinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.PreviousworkIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeePreviousWorkinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">6. Previous Work Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeAddressinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.AddressIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeAddressinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">7. Address Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeIdentityinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.IdentityIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeIdentityinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">8. Identity Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeBankinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.BankIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeBankinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">9. Bank Details Information</a>
+                </div>
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeSalaryDetailsData"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.SalaryIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeSalaryDetailsData' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">10. Salary Details</a>
+                </div> 
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeLeaveDetailsData"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.LeaveIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeLeaveDetailsData' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">11. Leave Details</a>
+                </div> 
+                <div class="col-md-3 mb-3 text-left">
+                    <a class="nav-link {% if CurrentUrl == "NewEmployeeDocumentinfo"   %}btn-active{% else %}btn btn-primary{% endif %} text-left  {% if ActiveLinkDict.DocumentIDActive == False %}disabled{% endif %}" href="{% url 'NewEmployeeDocumentinfo' %}?EmpID={{EmpID}}&IND={{IND}}&D={{D}}">12. Document Information</a>
+                </div> 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mt-3">
+    
+{% block main %}
+
+
+
+{% endblock main %}
+
+
+
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,32 @@
+{% extends 'Policy_Data_Privacy/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- {{ ckeditor5_media }}. -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+
+<label class="fw-bold">Policy Content:</label>
+
+<!-- Editor container -->
+<div id="editor" style="height: 300px; background: white;">
+</div>
+
+<!-- Hidden input where final HTML will be stored -->
+<input type="hidden" name="content" id="content_input">
+<script>
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        placeholder: 'Write your policy here...'
+    });
+
+    // When submitting form, copy HTML into hidden input
+    document.querySelector("form").onsubmit = function () {
+        document.getElementById("content_input").value = quill.root.innerHTML;
+    };
+</script>
+
+
+{% endblock %}

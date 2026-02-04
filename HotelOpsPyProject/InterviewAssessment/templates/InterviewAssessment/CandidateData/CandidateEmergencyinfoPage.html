@@ -1,0 +1,140 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<style>
+    .strike{
+       color: red;
+   }
+</style>
+   <div class="card m-3">
+        <div class="card-header">
+            <h3>Emergency Information</h3>
+        </div>
+        <form action="" method="post">
+            <div class="main">
+                <div class="row m-3">
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>First Name <span class="strike">*</span></label>
+                                <input id="EmergencyFirstName" name="EmergencyFirstName" type="text" class="form-control" value="{{Emergencyobj.FirstName}}"  required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Middle Name </label>
+                                <input id="EmergencyMiddleName" name="EmergencyMiddleName" type="text" class="form-control" value="{{Emergencyobj.MiddleName}}" >
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Last Name <span class="strike">*</span></label>
+                                <input id="EmergencyLastName" name="EmergencyLastName" type="text" class="form-control" value="{{Emergencyobj.LastName}}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Relation <span class="strike">*</span></label>
+                                {% comment %} <input id="Relation" name="Relation" type="text" class="form-control" value="{{Emergencyobj.Relation}}" required> {% endcomment %}
+                               
+                                 
+                                    <select class="form-control" id="Relation" name="Relation" required>
+                                      <option value="" {% if Emergencyobj.Relation == "" %}selected {% endif %}  >Select</option>
+                                      <option value="Mother" {% if Emergencyobj.Relation == "Mother" %} selected {% endif %} >Mother</option>
+                                      <option value="Father" {% if Emergencyobj.Relation == "Father" %}selected {% endif %}  >Father</option>
+                                      <option value="Sibling" {% if Emergencyobj.Relation == "Sibling" %} selected {% endif %} >Sibling</option>
+                                      <option value="Spouse" {% if Emergencyobj.Relation == "Spouse" %} selected {% endif %} >Spouse</option>
+                                      <option value="Friend" {% if Emergencyobj.Relation == "Friend" %}selected {% endif %}  >Friend</option>
+                                      <option value="Relative" {% if Emergencyobj.Relation == "Relative" %}selected {% endif %}  >Relative</option>
+                                      <option value="Other" {% if Emergencyobj.Relation == "Other" %} selected {% endif %} >Other</option>
+                                    </select>
+                                
+                           
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> Emergency Contact Number Priamry<span class="strike">*</span></label>
+                                <input id="EmergencyContactNumber_1" name="EmergencyContactNumber_1" type="text" class="form-control" value="{{Emergencyobj.EmergencyContactNumber_1}}" required>
+                                <span id="EmergencyContactNumber_1Error" style="color:red;"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> Emergency Contact Number Secondary<span class="strike">*</span></label>
+                                <input id="EmergencyContactNumber_2" name="EmergencyContactNumber_2" type="text" class="form-control" value="{{Emergencyobj.EmergencyContactNumber_2}}" required>
+                                <span id="EmergencyContactNumber_2Error" style="color:red;"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> Provident Fund Number</label>
+                                <input id="ProvidentFundNumber" name="ProvidentFundNumber" type="text" class="form-control" value="{{Emergencyobj.ProvidentFundNumber}}" >
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> ESI Number</label>
+                                <input id="ESINumber" name="ESINumber" type="text" class="form-control" value="{{Emergencyobj.ESINumber}}" >
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label> Blood Group<span class="strike">*</span></label>
+                            <select name="BloodGroup" id="BloodGroup" class="form-control" required >
+                                <option value="" {% if  Emergencyobj.BloodGroup == "" %}selected{% endif %}  >Select</option>
+                                <option value="O+" {% if  Emergencyobj.BloodGroup == "O+"  %}selected{% endif %}  >O+</option>
+                                <option value="O-" {% if  Emergencyobj.BloodGroup == "O-" %}selected{% endif %}  >O-</option>
+                                <option value="A+" {% if  Emergencyobj.BloodGroup == "A+" %}selected{% endif %}  >A+</option>
+                                <option value="A-" {% if  Emergencyobj.BloodGroup == "A-"  %}selected{% endif %}  >A-</option>
+                                <option value="B+" {% if  Emergencyobj.BloodGroup == "B+" %}selected{% endif %}  >B+</option>
+                                <option value="B-" {% if  Emergencyobj.BloodGroup == "B-" %}selected{% endif %}  >B-</option>
+                                <option value="AB+" {% if  Emergencyobj.BloodGroup == "AB+" %}selected{% endif %}  >AB+</option>
+                                <option value="AB-" {% if  Emergencyobj.BloodGroup == "AB-" %}selected{% endif %}  >AB-</option>
+                            </select>
+                            </div>
+                        </div>
+                </div>
+        
+           </div>
+
+    <div class="card-footer text-right">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+        <input type="submit" id="toggleSpinners" class="btn btn-primary btn-sm" value="Next">
+    </div>
+        </form>
+   </div>
+
+<script>
+     document.getElementById('EmergencyContactNumber_1').addEventListener('input', function () {
+        const mobile = this.value;
+        const regex = /^[6-9]\d{9}$/;
+        const mobileError = document.getElementById('EmergencyContactNumber_1Error');
+
+        if (!regex.test(mobile)) {
+            mobileError.textContent = "Invalid mobile number";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+    document.getElementById('EmergencyContactNumber_2').addEventListener('input', function () {
+        const mobile = this.value;
+        const regex = /^[6-9]\d{9}$/;
+        const mobileError = document.getElementById('EmergencyContactNumber_2Error');
+
+        if (!regex.test(mobile)) {
+            mobileError.textContent = "Invalid mobile number";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+</script>
+{% endblock content %}
+
+
+
+
+

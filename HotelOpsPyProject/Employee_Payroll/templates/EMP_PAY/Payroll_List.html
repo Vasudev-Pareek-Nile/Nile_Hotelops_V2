@@ -1,0 +1,55 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+<div class="container">
+    <div class="card-header col-md-12 mb-3">Payslip List of {{current_year}}</div>
+    <div class="col-md-12">
+           <div class="row mb-3">
+                <form method="GET" action="{% url 'Payroll_List' %}">
+                    <input type="hidden" name="current_year" value="{{ current_year }}">
+                    <button type="submit" name="action" value="prev_year" class="btn btn-primary btn-sm">Previous Year</button>
+                    <button type="submit" name="action" value="next_year" class="btn btn-primary btn-sm">Next Year</button>
+                </form>
+            
+           </div> 
+        <div class="row">
+           
+        
+                <table class="table table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for month in months_data %}
+                        <tr>
+                            <td>{{ month.month_name }}</td>
+                            <td>
+                             
+                                <a href="{% url 'Generate_Salary_Slip' %}?year={{month.year}}&month_no={{month.month}}" class="btn btn-success btn-sm">Download</a>
+                             
+                               
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2" style="text-align: center;">No Data Available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+    </div>
+</div>
+
+{% endblock content %}

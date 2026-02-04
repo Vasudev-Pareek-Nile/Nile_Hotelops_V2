@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Show Cause Notice</title>
+ 
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; /* Use Arial Nova font */
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    hr {
+      border: 2px solid #1ab394;
+      height: 0.5px;
+      margin: 5px 0;
+    }
+
+    /* Custom table styles */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    .custom-table th,
+    .custom-table td {
+        padding: 5px;
+        border: 1px solid #ddd;
+    }
+    
+    .custom-table th {
+        background-color: #0aa485;
+        
+        font-size: 12px;
+    }
+    
+    .custom-table td {
+        background-color: #fff;
+    }
+    
+    .division-row {
+        background-color: #f3f3f3;
+    }
+    
+    .division-name {
+        background-color: #88ab8e;
+        color: #fff;
+        text-transform: uppercase;
+    }
+    
+    .department-name {
+        background-color: #afc8ad;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+    .alert-primary {
+      background-color: #cce5ff;
+      color: #004085;
+      text-transform: uppercase;
+      font-size: 15px;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-color: #b8daff;
+    }
+
+    .input-small {
+      width: 50px;
+    }
+
+    .form-control {
+      width: 100%;
+    }
+
+   
+   
+  </style>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        
+        color: #333;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 5px;
+       
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .letter-head {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .letter-head h1 {
+        margin: 0;
+        font-size: 24px;
+    }
+    .letter-body {
+        margin-top: 20px;
+    }
+    .signature {
+        margin-top: 20px;
+    }
+</style>
+<style>
+  p {
+      font-size: 13px;
+  }
+</style>
+<style>
+  p {
+    text-align: justify;
+  }
+</style>
+
+
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+            <td style="text-align: left;">
+                {% if organization_logo %}
+                    <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+                {% else %}
+                    <p>No logo available</p>
+                {% endif %}
+            </td>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+              <tbody>
+                <tr>
+                  <td><strong>Show Cause Notice <br/> {{ organization_name }}</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td style="text-align: right;">
+            {% if default_organization_logo %}
+            <img src="{{ default_organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr color="mediumseagreen">
+    <br>
+   
+    <main>
+      <div class="container">
+      
+        <div class="letter-body">
+            <p><strong>Date:</strong> {{notice.NoticeIssuingdate}}</p>
+            <p><strong>To,</strong><br>
+                {{notice.Name}}<br>
+                </p>
+
+            <p><strong>Subject:</strong> Show Cause Notice</p>
+
+            <p>Dear {{notice.Name}},</p>
+
+            <p>We are writing to inform you that we have observed lapses on your part. The details of the incident(s) are as follows:</p>
+
+            <p><strong>Remark:</strong></p>
+            <p>{{notice.Remarks}}</p>
+               
+            <p>It has been observed that you have been absent on duty since <strong>{{notice.Date_Of_absence}}</strong>  with no prior information.</p>
+            <p>This conduct is considered a serious violation of the company’s policies and procedures as stated in the Employee Handbook, Code of Conduct, or any applicable company guidelines and regulations. Your actions have not only affected the company's operations but have also set a negative example for other employees.</p>
+
+            <p>We hereby request you to provide a written explanation within <strong>2 days</strong> from the date of receipt of this notice, detailing the reasons for your actions and why disciplinary action should not be taken against you. Your response will be reviewed, and appropriate action will be taken accordingly.</p>
+
+            <p>Failure to respond to this notice within the stipulated time frame will result in the matter being decided without your input, and it may lead to disciplinary action, including termination of your employment.</p>
+
+            <p>We expect your cooperation in this matter.</p>
+
+            <p>Sincerely,</p>
+
+            <div class="signature">
+              <p>{{notice.Issuing_manager_name}}<br>
+               {{notice.Issuing_designation}}</p><br>
+             
+            </div>
+        </div>
+    </div>
+    </main>
+    <hr color="mediumseagreen">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;">
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }}
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;"></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+            </td>
+        </tr>
+      </table>
+    </footer>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+</body>
+
+</html>

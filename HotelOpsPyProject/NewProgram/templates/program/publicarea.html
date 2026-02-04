@@ -1,0 +1,82 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+<style>
+  label {
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+  }
+
+  body {
+    font-family: arial nova;
+    /* font-size: 11px; */
+  }
+</style>
+
+<div class="container">
+  <div class="col-md-6 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>AREA PROGRAM</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              <div class="form-group m-3">
+                <label for="">Public Area 1</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="public1"
+                  value="{{add.area_name}}"
+                  id=""
+                />
+              </div>
+            </div>
+             <div class="col-md-8">
+              <div class="form-group m-3">
+                <label for="">Public Area 2</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="public2"
+                  value="{{add.area_name}}"
+                  id=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if add is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  // Get today's date
+  var today = new Date();
+
+  // Format the date in YYYY-MM-DD format (required by input type="date")
+  var yyyy = today.getFullYear();
+  var mm = String(today.getMonth() + 1).padStart(2, "0"); // January is 0!
+  var dd = String(today.getDate()).padStart(2, "0");
+  var formattedDate = yyyy + "-" + mm + "-" + dd;
+
+  // Set the value of the input field
+  document.getElementById("dateField").value = formattedDate;
+</script>
+
+{% endblock content %}

@@ -1,0 +1,36 @@
+{% extends 'IT/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div                                                   >
+        <div class="card-header">IT List</div>
+        <br>
+        <table id="title" class="table table-bordered">
+            <thead>
+                <th>Month</th>
+                <th>Year</th>
+                <th width="250"  id="mid">  Action </th>
+            </thead>
+            {% for x in mem%}
+            <tr>
+                <td>{{x.Monthtitle}}</td> 
+                <td>{{x.EntryYear}}</td>
+
+                <td>
+                    <a class="btn btn-primary" href="/HBudgetReport/ITEdit/{{x.id}}">Edit</a>
+                    <a onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger" href="/HBudgetReport/ITDelete/{{x.id}}">Delete </a>
+                    <a  class="btn btn-info" href= "{% url 'add'%}">View</a>
+                </td>
+                                          
+            </tr>
+            {% endfor %}
+           
+        </table>
+        <br><br>
+        
+        <br>
+        
+    
+    {% endblock content %}

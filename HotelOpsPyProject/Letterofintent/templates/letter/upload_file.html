@@ -1,0 +1,39 @@
+{% extends 'letter/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+<div class="container w-50 mt-4">
+  
+  
+  <div class="card">
+    <div class="card-header">Upload File</div>
+    <form action="" method="post" enctype="multipart/form-data">
+    <div class="card-body">
+        <div style="padding: 20px;">
+
+          
+      
+            <input
+              type="file"
+              name="file"
+              
+            />
+            
+            {% csrf_token %}
+
+              
+                       
+        </div>  
+    </div>
+    <div class="card-footer text-right">
+        <input type="submit" class="btn btn-success btn-sm" value="Upload">
+    </div>
+    </form>
+           
+  </div>
+
+</div>
+
+{% endblock content %}
+

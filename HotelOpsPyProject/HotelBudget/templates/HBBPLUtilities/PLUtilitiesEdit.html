@@ -1,0 +1,123 @@
+{% extends 'HBBPLUtilities/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ 
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">P&L Utilities Edit</div>
+               
+        <div class="card-body">
+            <form action="{%url 'HPLUtilitiesEdit' mem.id %}" method = "post">
+                {% csrf_token %}
+        <div class="row">
+    
+            <lable  class="control-label col-sm-1">Month</lable>
+            <div class="col-sm-3">
+                    <select class="form-control " name="EntryMonth" data-val="{{mem.EntryMonth}}" value="{{mem.EntryMonth}}">
+                        <option value ="1">January</option>
+                        <option value ="2">February</option>
+                        <option value ="3">March</option>
+                        <option value ="4">April</option>
+                        <option value ="5">May</option>
+                        <option value ="6">June</option>
+                        <option value ="7">July</option>
+                        <option value ="8">August</option>
+                        <option value ="9">September</option>
+                        <option value ="10">October</option>
+                        <option value ="11">November</option>
+                        <option value ="12">December</option>
+                        
+                    </select>
+    
+                </div>
+            <lable  class="col-sm-1"> Year</lable>
+            <div  class="col-sm-3">
+                <select class="form-control" name="EntryYear" data-val="{{mem.EntryYear}}" name="{{mem.EntryYear}}">
+                    {%for i in CYear%}
+                    <option>{{i}}</option>
+                    {%endfor%}
+                </select>
+    
+                </div>
+            
+        </div>
+               
+                <br/>
+                <br>
+               
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        <th></th>
+                        <th>Amount</th>
+                        
+                    </thead>
+                    {% for x in mem1%}
+                    <tr>                
+                        <td>{{x.PLUtilitiesMaster.title}}</td> 
+                        <td><input type="text"  class="form-control" value="{{x.PLUtilities_Amount}}" name="Amount_{{ forloop.counter0 }}"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.PLUtilitiesMaster.id}}" type="text"/>
+                        </td>
+    
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+    
+                    <tfoot>
+                        <tr>
+                            <th>
+                                Total Utilities
+                            </th>
+                            <td>
+                                <input type="text" readonly class="form-control" value="{{mem.TotalAmount}}" name="TotalAmount" >
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>                          
+                <br>
+               
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-success" type="submit" id="new1">Edit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+</div>
+<script>
+
+
+    $(function(){
+        DoCal();
+        
+        $("input[name*='Amount_']").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotalAmount=0;
+            $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+            $("input[name='TotalAmount']").val(TotalAmount.toFixed(2))
+    }
+</script>
+
+{% endblock content %}
+
+

@@ -1,0 +1,108 @@
+{% extends 'Snag/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action={% url 'UpdateOfficeSnagForm' %}  enctype="multipart/form-data">
+    {{ Office_Snag_Registration_Form }}
+
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Register In Office Snaglist Form </p>
+        </div>
+
+        <div class="card-body">
+
+          <input type="hidden" name="ID" value="{{Ed.id}}">
+          
+          <div class="">
+            <div class="row">
+              <div class="col-sm-4">
+                <label>Area</label>
+                {% render_field OfficeSnagForm.Area class="form-control" placeholder="Area"  value=Ed.Area %}
+              </div>
+
+              <div class="col-sm-4">
+                <label>Date</label>
+                {% render_field OfficeSnagForm.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+            </div> 
+           
+        
+        </table>
+
+        <br>
+
+        <table class="table table-bordered">
+          <tr>
+            <th width="300">Category</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Remarks</th>
+
+
+        
+        
+
+          {% for i in DbItemMaster %}
+                <tr>
+                  <td>{{i.Snag_Category_Master.Category_Name}}</td>
+                  <td>{{i.Snag_Category_Master.Category_Title_Name}}</td>
+                  <td class="rb">
+                    <input type="hidden"  rows=2 value="{{i.Snag_Category_Master.id}}" name="ItemID_{{ forloop.counter0 }}" >
+                    <input type="hidden"  rows=2 value="{{i.id}}" name="ID_{{ forloop.counter0 }}" > 
+                    <select type="text"  rows=2 value="{{i.Status}}" name="Status_{{ forloop.counter0 }}">
+                      <option>select</option>
+                      <option value="YES">YES</option>
+                      <option value="NA">NA</option>
+                    </select>
+                    <td>
+                      {% comment %} <textarea name="Remarks_" class="form-control" rows=4 maxlength=500  value="{{i.Remarks}}" name="Remarks_{{ forloop.counter0 }}"></textarea> {% endcomment %}
+                      <textArea type="text"  rows=3 maxlength=400  value="{{i.Remarks}}" name="Remarks_{{ forloop.counter0 }}"></textarea> 
+                    </td>
+                  </td>
+                  <td>
+                   
+                    {% if forloop.last %}
+                    <input type="hidden"  rows=2 value="{{forloop.counter }}" name="TotalItem" >
+                    {% endif %}
+  
+                </tr>
+               
+          {% endfor %}
+        </table> 
+
+                    
+
+            </div>
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+  </form>
+
+  <script>
+    $(function(){
+            $("select").each(function(){
+                var v=$(this).attr('value');
+                if(v!=undefined){
+                    $(this).val(v);
+                }
+            })
+
+    })
+   </script>
+
+
+
+  {% endblock content %}  

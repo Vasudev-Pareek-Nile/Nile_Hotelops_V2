@@ -1,0 +1,275 @@
+{% extends "Inventory/homebase.html" %} {% block content %}
+
+<style>
+    table th {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 11px;
+       
+    }
+    table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+
+    td {
+        text-align: center;
+        font-size: 12px;
+        font-weight: ;
+    }
+
+    body {
+        font-family: arial nova;
+    }
+
+    th {
+        text-align: center;
+    }
+
+
+    #example {
+        font-size: 10px;
+        padding: 5px;
+    }
+
+
+    @media only screen and (max-width: 600px) {
+        #example {
+            font-size: 12px;
+        }
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<div class="col-md-12">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6" style="color: #1ab394">
+                <strong>IT Inventory Report</strong>
+            </div>
+
+
+
+        </div>
+    </div>
+    <br />
+
+    <form method="GET">
+        {% csrf_token %}
+
+        <div class="row">
+                    <div class="col-md-2 mb-1">
+                        <label for="">Hotel Name</label>
+                        <select name="OrganizationID" id="hotelSelect" class="form-control">
+                            {% for organization in memOrg %}
+                            <option value="{{ organization.OrganizationID }}" {% if organization.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ organization.Organization_name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+
+
+                    <div class="col-md-2 mb-1">
+                        <label for="">Hardware Type</label>
+                        <select name="type" multiple="multiple" class="form-control" style="max-height: 30px; overflow-y: auto;">
+                            <option value="">Select Hardware </option>
+                                            {% for Category in Categorys %}
+                                                <option value="{{ Category.Category_Type }}" {% if Category.Category_Type == inventorys.type %} selected {% endif %}>{{ Category.Category_Type }}</option>
+                                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-2 mb-1">
+                        <label for="end_date">Software Type</label>
+                        <select name="softwaretype" class="form-control"  >
+                            <option value="">Select Software  </option>
+                                            {% for software_type in software_types %}
+                                                <option value="{{ software_type.software_name }}" {% if software_type.software_name == inventorys.Area %} selected {% endif %}>{{ software_type.software_name }}</option>
+                                            {% endfor %}
+
+                        </select>
+                    </div>
+                  
+
+                    <div class="col-md-2 mb-1">
+                        <label for="">Warrantiy Status</label>
+                        <select class="form-control" name="Warrantiy_Status" >
+                                            <option value="">Select Status</option>
+                                            <option value="N/A"{% if Warrantiy_Status == "N/A" %}selected{% endif %}>N/A</option>
+                                            <option value="Under_Warranty"{% if Warrantiy_Status == "Under_Warranty" %}selected{% endif %}>Under Warranty</option>
+                                            <option value="Expired"{% if Warrantiy_Status == "Expired" %}selected{% endif %}>Expired</option>
+                                        
+                                        </select>
+                    </div>
+                    <div class="col-md-2 mb-1">
+                            <label for="">Area</label>
+                            <select name="Area" class="form-control">
+                                <option value="">Select Area</option>
+                                {% for area in Areas %}
+                                <option value="{{ area.Area_name }}" {% if area.Area_name == selectedArea %}selected{% endif %}>{{ area.Area_name }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="col-md-2 mb-1">
+                        <label for="Make">Make</label>
+                        <select name="Make" class="form-control">
+                            <option value="">Select Make </option>
+                                            {% for company in companys %}
+                                                <option value="{{ company.Company_name }}" {% if company.Company_name == inventorys.Make %} selected {% endif %}>{{ company.Company_name }}</option>
+                                            {% endfor %}
+
+                        </select>
+                    </div>
+             <div class="col-md-2 mb-1">
+                <label for="AMC_Status">AMC Status</label>
+                 <select class="form-control" name="AMC_Status">
+                                    <option value="">Select AMC </option>
+                                    <option value="N/A"{% if inventorys.AMC_Status == "N/A" %}selected{% endif %}>N/A</option>
+                                    <option value="Under_Warranty"{% if inventorys.AMC_Status == "Under_Warranty" %}selected{% endif %}>Under Warranty</option>
+                                    <option value="Expired"{% if inventorys.AMC_Status == "Expired" %}selected{% endif %}>Expired</option>
+                                  
+                                </select>
+            </div>
+             <div class="col-md-2 mb-1">
+                <label for=""> Hardware AMC Type</label>
+                <select class="form-control" name="amctype">
+                                    <option value="">Select Hardware  </option>
+                                    <option value="Comprehensive"{% if inventorys.amctype == "Comprehensive" %}selected{% endif %}>Comprehensive</option>
+                                    <option value="Non_Comprehensive"{% if inventorys.amctype == "Non_Comprehensive" %}selected{% endif %}>Non Comprehensive </option>
+                                    <option value="On_Call"{% if inventorys.amctype == "On_Call" %}selected{% endif %}>On Call</option>
+                                     <option value="Hotel_Team"{% if inventorys.amctype == "Hotel_Team" %}selected{% endif %}>By Hotel Team</option>
+                                      <option value="No_AMC"{% if inventorys.amctype == "No_AMC" %}selected{% endif %}>No AMC Required</option>
+                                  
+                                </select>
+            </div>
+            <div class="col-md-2 mb-1">
+                <label for=""> Software AMC Type</label>
+                <select class="form-control" name="software_AMC_Type">
+                                    <option value="">Select Software  </option>
+                                    <option value="Comprehensive"{% if inventorys.amctype == "Comprehensive" %}selected{% endif %}>Comprehensive</option>
+                                    <option value="Non_Comprehensive"{% if inventorys.amctype == "Non_Comprehensive" %}selected{% endif %}>Non Comprehensive </option>
+                                    <option value="On_Call"{% if inventorys.amctype == "On_Call" %}selected{% endif %}>On Call</option>
+                                     <option value="Hotel_Team"{% if inventorys.amctype == "Hotel_Team" %}selected{% endif %}>By Hotel Team</option>
+                                      <option value="No_AMC"{% if inventorys.amctype == "No_AMC" %}selected{% endif %}>No AMC Required</option>
+                                  
+                                </select>
+            </div>
+             
+
+
+            <div class="col-md-2">
+
+                <input type="submit" class="btn btn-primary fa fa-filter" style="margin-top: 33px; font-family: 'Arial Nova';" value="Filter" />
+            </div>
+        </div>
+    </form>
+    <hr>
+    <table id="example" class="table table-bordered">
+        <thead class="thead">
+            <tr class="table-success">
+                <th>Hardware & Software Type</th>
+                <th>software_AMC_Start</th>
+                <th>Description</th>
+                <th>SerialNo</th>
+                <th>MAKE | MODEL | COMM. DATE</th>
+                <th>Warranty PERIOD</th>
+                <th>WARRANTY STATUS</th>
+                <th>AMC PERIOD</th>
+                <th>AMC STATUS</th>
+                <th>Software Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+             {% for itInventory in itInventorys  %} 
+        <tr>
+           <td>{{itInventory.type}}| {{itInventory.softwaretype}}</td>
+           <td>{{itInventory.software_AMC_Start}}</td> 
+            <td>{{ itInventory.Description}}</td>
+          <td>{{ itInventory.SerialNo}}</td>
+          <td>{{ itInventory.Make}} | {{ itInventory.Model_No}}| {{ itInventory.Commissioning_Date}}</td>
+          <td>{{ itInventory.Warrantiy_start}}<br>{{ itInventory.Warrantiy_end}}
+          </td>
+          <td>{{ itInventory.Warrantiy_Status}}</td>
+          <td>{{ itInventory.amcstart}} | {{ itInventory.amcend}}</td>
+          <td>{{ itInventory.AMC_Status}}</td>
+          <td>{{ itInventory.softwarename}}</td>
+          
+
+
+          
+               
+          <td>
+            <a href="{% url 'Master_Area_add' %}?ID={{area.id}}" class="fa fa-edit" style="color: blue"></a>
+           
+            <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'area_delete'  %}?ID={{area.id}}">
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+
+          </td>
+        </tr>
+        {% endfor %} 
+
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'copy',
+                    className: 'btn-primary'
+                },
+                {
+                    extend: 'csv',
+                    className: 'btn-primary'
+                },
+                {
+                    extend: 'excel',
+                    className: 'btn-primary'
+                },
+                {
+                    extend: 'pdf',
+                    className: 'btn-primary'
+                },
+                {
+                    extend: 'print',
+                    className: 'btn-primary'
+                }
+            ],
+            columnDefs: [
+                { targets: "_all", className: "text-center" }
+            ]
+        });
+    });
+</script>
+<script>
+    $('select').selectpicker();
+</script>
+
+
+{% endblock content %}
+
+
+
+

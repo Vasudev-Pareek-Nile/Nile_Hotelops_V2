@@ -1,0 +1,62 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<style>
+/* HeaderReplaced*/
+</style>
+<div class="card-header">
+    <h4 class="text-uppercase fw-bold">Leave Details Opening Balance</h4>
+</div>
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+       
+    <div class="row m-3">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="HeaderWithColor">Leave Type </th>
+                    <th class="HeaderWithColor">Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for Leave in LeaveTypes %}
+                <tr>
+                    <td>
+                        {{Leave.Type}}
+                        <input type="hidden" name="LeaveID_{{forloop.counter0}}"  value="{{Leave.id}}">
+
+                    </td>
+                    <td>
+                        <input type="text" name="LeaveBalance_{{forloop.counter0}}" value= "{{Leave.Balance}}" class="form-control">
+                    </td>
+                </tr>
+                {% if forloop.last %}
+                             <input  type="hidden" name="Total_Leave" value="{{ forloop.counter0 }}"/>
+                        {% endif %}
+                {% endfor%}
+            </tbody>
+
+        </table>
+    </div>
+    
+
+
+    </div>
+    <div class="CustomFooter d-flex gap-2">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EmpID={{ EmpID }}" class="btn btn-primary btn-sm">Previous</a>
+        <input type="submit" name="" class="btn btn-primary btn-sm" id="" value="Next">
+
+    </div>
+</form>
+
+
+
+
+{% endblock main %}
+
+
+
+

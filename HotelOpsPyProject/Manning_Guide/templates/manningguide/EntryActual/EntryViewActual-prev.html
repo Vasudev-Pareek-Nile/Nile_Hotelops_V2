@@ -1,0 +1,1155 @@
+{% extends "manningguide/homebase.html" %}
+
+{% comment %} {% extends "manningguide/NewHomeBase.html" %} {% endcomment %}
+{% load maningfilter %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    
+     <style>
+        .body{
+            font-family: 'Arial Nova',
+        }
+        .actions {
+            margin-left: 13px;
+        }
+
+        .actions a {
+            margin-right: 5px;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .actions a:hover {
+            text-decoration: underline;
+        }
+        .custom-card {
+            width: 98%;
+            margin: auto;
+        }
+        .modal-dialog{
+            width: 72%;
+            max-width: 72%;
+            min-width: 720px;
+        }
+        th, td {
+            font-size: 13px;
+            font-family: 'Arial Nova', Arial, sans-serif;
+            border: 1px solid #ddd;
+        }
+        .input-small {
+            width: 70px;
+            height: 30px;
+            border: none; 
+            background: transparent; 
+            text-align: center; 
+        }
+        th {
+            text-align: center;
+            font-size: 13px;
+        }
+        table {
+            width: 100%;
+        }
+        .center-text {
+            text-align: center;
+        }
+        .center-input {
+            display: block;
+            margin: 0 auto;
+        }
+        .form-control {
+            font-size: 0.8rem;
+        }
+        .custom-checkbox {
+            margin-right: 14px;
+            width: 20px; /* Adjust width */
+            height: 13px; /* Adjust height */
+            transform: scale(2.1); /* Adjust scale factor */
+           
+        }
+        .alert-primary{
+            font-size:17px;
+            text-transform:uppercase;
+        }
+
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 44px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 42px !important;
+            right:11px !important;
+        }
+
+        .HeaderWithColor{
+            background-color:#edf0fb !important;
+            color:black;
+            text-transform:uppercase;
+        }
+
+        .TableThColor{
+            background-color:#edf0fb !important;
+            font-size:13px; 
+            font-weight: bold !important;
+        }
+
+        .HeaderWithproperty{
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+       
+    </style>  
+
+    <style>
+        body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+              background:#fff !important;
+             }
+
+        .card{
+            border-radius:10px;
+        }
+        .card .card-header {
+    padding: 20px;
+    border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important;
+    background: transparent;
+}
+        .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+        }
+        tr th {
+    background-color: #edf0fb !important;
+    border-color: #D3D3D4 !important;
+    color: #fff !important;
+    font-size: 14px  !important;
+    font-weight: bold !important;
+    text-transform: uppercase;
+}
+.TableThColor {
+    background-color: #edf0fb !important;
+}
+
+.totalcolor{
+    background-color: #edf0fb5e !important;
+    font-weight:bold;
+}
+
+
+h4{
+    margin-bottom:10px !important;
+    font-size: 16px;
+}
+  td {        
+      background-color: #f7f9fc !important;
+  }
+
+  table thead th {
+    background: #edf0fb  !important;
+}
+
+.HeaderWithColor {
+    background-color: #edf0fb !important;
+    color: black;
+     border-color: #D3D3D4 !important; 
+    text-transform: uppercase !important;
+}
+
+     table {
+       border-radius: 5px;
+       overflow: hidden;
+   }
+
+   table thead tr:first-child th:first-child {
+           border-top-left-radius: 4px;
+   }
+
+   table thead tr:first-child th:last-child {
+           border-top-right-radius: 4px;
+   }
+
+   table tbody tr:last-child td:first-child {
+           border-bottom-left-radius: 4px;
+   }
+
+   table tbody tr:last-child td:last-child {
+           border-bottom-right-radius: 4px;
+   }
+
+    </style>
+
+    {% comment %} <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
+</head>
+<body>
+    
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                          
+                                <h4 class="text-uppercase">View Actual</h4>
+                           
+                                <form method="get">
+                                    <div class="row">                                      
+                                         <div class="col-sm-3">
+                                            <div class="input-block ">
+                                           <select name="hotel_name"  class="form-control form-select">
+                                             {% for itm in memOrg %}
+                                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                                  {{ itm.Organization_name }}
+                                                </option>
+                                            {% endfor %}
+                                           </select>
+                                        </div>
+                                    </div>                    
+                                       
+
+                                    <div class="col-sm-3">
+                                      <div class="input-block">
+                                         <div class=" align-items-center">
+                                            {% comment %} <input type="checkbox" name="exclude_zero_headcount" class="custom-checkbox" value="0" id="exclude_zero_headcount" {% if request.get_item.exclude_zero_headcount %}checked{% endif %}> {% endcomment %}
+                                              <label class="input-group-text mb-0 ml-2" for="exclude_zero_headcount" style="padding: 10px;">
+                                                <input type="checkbox" name="exclude_zero_headcount" class="custom-checkbox" value="0" id="exclude_zero_headcount" {% if request.get_item.exclude_zero_headcount %}checked{% endif %}>
+                                                  Excluding 0 Head Count
+                                                </label>
+                                           </div>
+                                        </div>
+                                    </div>
+
+                                       
+
+                                        <!-- <div class="col-md-3">
+                                           <div class="input-block" style="display:none">
+                                              <select class="form-control form-select" multiple="multiple" id="level_select" name="Level" data-placeholder="Levels">
+                                                  {% for Lavelsdata in Lavelsdatas %}
+                                                    <option value="{{ Lavelsdata.lavelname }}" {% if Lavelsdata.lavelname in selected_levels %}selected{% endif %}>
+                                                     {{ Lavelsdata.lavelname }}
+                                                     </option>
+                                                      {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div> -->
+										
+										<div class="col-sm-3 text-end">								  
+                                               <button type="submit" class="btn  btn-primary"><i class="fa fa-filter me-1"></i>Filter</button>                                                
+											   <button class="btn  btn-danger"> <i class="fa fa-eraser me-1"></i>clear</button>
+                                                <button class="btn btn-secondary " id="exportBtn" ><i class="fa fa-file-export me-1"></i>Export</button>							
+                                        </div>
+                                         <div class="col-md-2"  style="display:none">
+                        <select name="departmentname" class="form-control form-select" >
+                            <option value="All Department">All Departments</option>
+                            {% for department in Departmentsdatas %}
+                                <option value="{{ department.DepartmentName }}" {% if department.DepartmentName == selected_department %}selected{% endif %}>
+                                    {{ department.DepartmentName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2" style="display:none">
+                        <select name="divisionname" class="form-control form-select">
+                            <option value="All Division">All Divisions</option>
+                            {% for Divisiondata in Divisiondatas %}
+                                <option value="{{ Divisiondata.DivisionName }}" {% if Divisiondata.DivisionName == selected_division %}selected{% endif %}>
+                                    {{ Divisiondata.DivisionName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                                    </div>
+                                </form>
+                            </div>
+                           </div>
+                        
+
+       
+      
+        
+            
+                <input type="hidden" name="hotel_name" value="{{ hotel_name }}" />
+                
+<!--  Total of On Roll Manning -->        
+   <div class="row">
+						<div class="col-sm-12">
+							
+                                     <h4 >ON ROLL MANNING</h4>  
+                {% comment %} <h4 class="HeaderWithColor HeaderWithproperty">ON ROLL MANNING </h4> {% endcomment %}
+                               
+                                    <div class="table-responsive">
+                <table class="table table-bordered" id="myTable">
+                    <thead>
+                      
+                    </thead>
+                   
+                    <tbody>
+                       
+                        {% if divisions %}
+                            {% for division in divisions %}
+                             
+                            <tr>
+                                <td colspan="13"  style="background-color: #f3f3f3;">&nbsp;</td>
+                            </tr>
+                                <tr>
+                                    <td colspan="13" class="HeaderWithColor">{{ division.DivisionName }}</td>
+                                </tr>
+                                {% for department in division.onrolldepartmentmaster_set.all %}
+                                    <tr>
+                                        <td colspan="13" style="background-color: #6a6162; text-transform: uppercase;"> {{ department.DepartmentName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="TableThColor">DIV</th>
+                                        <th class="TableThColor">DEPT</th>
+                                        <th class="TableThColor" style="width:100rem;">POSITION</th>
+                                        <th class="TableThColor">LVL</th>
+                                        <th class="TableThColor">AVG SALARY</th>
+                                        <th class="TableThColor">HC</th>
+                                        <th class="TableThColor">MORN</th>
+                                        <th class="TableThColor">GEN</th>
+                                        <th class="TableThColor">AN</th>
+                                        <th class="TableThColor">NIGHT</th>
+                                        <th class="TableThColor">M/BREAK</th>
+                                        <th class="TableThColor" title="RELIEVERS">RELI</th>
+                                        <th class="TableThColor">TOTAL CTC</th>
+                                    </tr>
+                                    {% for designation in department.onrolldesignationmaster_set.all %}
+                                    {% with emp=employees_per_department_designation|get_item:department.DepartmentName|get_item:designation.designations %}
+                                    {% if emp.num_employees > 0 or not exclude_zero_headcount %}
+                                    <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" data-designation="{{ designation.designations }}">
+                                        <td>{{ designation.Div }} 
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td>{{ designation.Dept }}
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td>{{ designation.designations }} 
+                                            <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                        </td>
+                                        <td style="text-align:center;">{{ designation.Lavel }}</td>
+                                        <td style="width: 170px; text-align: center; vertical-align: middle;">
+                                            
+                                                
+                                              {% comment %} {{ emp.avg_salary|formatingdata}} {% endcomment %}
+                                              {{ emp.avg_salary|formatingdata }}
+                                                
+                                        </td>
+                                        <td style="width: 80px; text-align: center;">
+                                         
+                                                   
+                                                        {{ emp.num_employees | default:'0' }}
+                                                        
+                                                
+                                        </td>
+                                        <td style="width: 80px;"><input type="text" id="morningdeta_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="morning_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" data-group="{{ forloop.counter0 }}" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}," readonly></td>
+                                        <td style="width: 80px;">
+                                           
+                                                    <input type="text" id="grnalcount_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="general_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}, " readonly>
+                                               
+                                        </td>
+                                        <td style="width: 80px;"><input type="text" id="Aftercountdeta_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="afternoon_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}, " readonly></td>
+                                        <td style="width: 80px;"><input type="text" id="nightdeta_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="night_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}, " readonly></td>
+                                        <td style="width: 80px;"><input type="text" id="mbreakdeta_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="m_break_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}, " readonly></td>
+                                        <td style="width: 80px;"><input type="text" id="reliverdeta_{{ department.DepartmentName }}_{{ designation.designations }}_{{ forloop.counter0 }}" name="reliever_data_{{ designation.id }}" style="width: 80px; text-align: center; text-align: center; border: none; background: transparent;" class="form-control input-small" value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }}, " readonly></td>
+                                        <td style="width: 170px; text-align: center;">
+                                            {{ emp.multiplication_result|formatingdata}}
+                                                  
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
+                                
+                                <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                                    <td colspan="3" style="text-transform: uppercase;">{{ department.DepartmentName }} Total</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"salary_headcount_product"|formatingdata }}</td>
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"total_headcount"|formatingdata }}</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"total_salarymulti"|formatingdata }}</td>
+                                </tr>
+                                    
+                                {% endfor %}
+                                <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                                    <td colspan="3" style="text-transform: uppercase; ">{{ division.DivisionName }} TOTAL</td>
+                                    <td style="width: 50px;">&nbsp;</td>
+                                    <td style=" text-align: center;">{{ division_totals|get_item:division.DivisionName|get_item:"divisionsalary_headcount_product"|formatingdata }}</td>
+                                    <td style=" text-align: center;">{{ division_totals|get_item:division.DivisionName|get_item:"divisiontotal_headcount"|formatingdata}}</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">{{ division_totals|get_item:division.DivisionName|get_item:"divisiontotal_salarymulti"|formatingdata }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="13">Data not found for selected hotel.</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="13"  ><strong>&nbsp;</strong></td>
+                        </tr>
+                        <tr >
+                            <td colspan="3" class="totalcolor">TOTAL ON ROLL</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">{{grandsalarydivion|formatingdata}}</td>
+                                <td class="totalcolor text-center">{{grand_total_headcount|formatingdata}}</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">&nbsp;</td>
+                                <td class="totalcolor text-center">{{grand_total_salary|formatingdata}}</td>  
+                           
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+        </div>
+            </div>
+        
+   
+
+
+<!--  Total of  DEPARTMENT TOTAL -->   
+  <div class="row">
+						<div class="col-sm-12">
+						
+                                    <h4 >DEPARTMENT TOTAL</h4>       
+                                     {% comment %} <h4 class="HeaderWithColor HeaderWithproperty">DEPARTMENT TOTAL</h4> {% endcomment %}
+                               
+                              
+                                <div class="table-responsive">
+                <table class="table table-bordered" id="myTable2">
+                    <thead>
+                        <tr>
+                            <th class="TableThColor" colspan="4">DEPARTMENTS</th>                            
+                            <th class="TableThColor">AVG SALARY</th>
+                            <th class="TableThColor">HC</th>
+                            <th class="TableThColor">MORNING</th>
+                            <th class="TableThColor">GENERAL</th>
+                            <th class="TableThColor">AN</th>
+                            <th class="TableThColor">NIGHT</th>
+                            <th class="TableThColor">M/BREAK</th>
+                            <th class="TableThColor">RELIEVERS</th>
+                            <th class="TableThColor">TOTAL CTC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if divisions %}
+                            {% for division in divisions %}
+                           
+                                {% for department in division.onrolldepartmentmaster_set.all %}
+                                <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                                    <td colspan="4" style="text-transform: uppercase;">{{ department.DepartmentName }} </td>
+                                   
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"salary_headcount_product"|formatingdata }}</td>
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"total_headcount"|formatingdata }}</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style=" text-align: center;">{{ department_totals|get_item:department.DepartmentName|get_item:"total_salarymulti"|formatingdata }}</td>
+                                </tr>
+                                    
+                                   
+                               
+
+                               
+                                    
+                                {% endfor %}
+                              
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="13">Data not found for selected hotel.</td>
+                            </tr>
+                        {% endif %}
+                       
+                    </tbody>
+                </table>
+            </div>
+        </div>
+            </div>
+       
+
+
+
+
+
+
+
+
+<!--  Total of  Contract -->
+  <div class="row">
+						<div class="col-sm-12">
+							
+            {% comment %} <h4 class="HeaderWithColor HeaderWithproperty">CONTRACT MANNING</h4> {% endcomment %}
+                                   <h4 >CONTRACT MANNING</h4> 
+                                
+                                    <div class="table-responsive">
+               <table class="table table-bordered " id="myTable3">
+                <thead>
+                    <tr>
+                        <th class="TableThColor">DIV</th>
+                        <th class="TableThColor">DEPT</th>
+                        <th class="TableThColor">POSITION</th>
+                        <th class="TableThColor">LEVELS</th>
+                        <th class="TableThColor">AVG SALARY</th>
+                        <th class="TableThColor">HC</th>
+                        <th class="TableThColor">MORNING</th>
+                        <th class="TableThColor">GENERAL</th>
+                        <th class="TableThColor">AN</th>
+                        <th class="TableThColor">NIGHT</th>
+                        <th class="TableThColor">M/BREAK</th>
+                        <th class="TableThColor">RELIEVERS</th>
+                        <th class="TableThColor">TOTAL CTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if divisions %}
+                        {% for division in contractdivisions %}
+                        {%if forloop.counter0 != 0 %}
+                            <tr style="background-color:#fff !important;">
+                                <td colspan="12"  style="background-color:#fff !important;">&nbsp;</td>
+                            </tr>
+                        {%endif%}
+                            <tr>
+                                <td colspan="13" class="HeaderWithColor">{{ division.DivisionName }}</td>
+                            </tr>
+                            {% for department in division.contractdepartmentmaster_set.all %}
+                                <tr>
+                                    <td colspan="13" style="background-color: #6a6162;  text-transform: uppercase;">{{ department.DepartmentName }}</td>
+                                </tr>
+                              
+                                {% for designation in department.contractdesignationmaster_set.all %}
+                                {% with Contractbudget_item=Contractbudget_items_dict|get_item:department.DepartmentName|get_item:designation.designations %}
+                                {% if Contractbudget_item.Contracthead_count > 0 or not exclude_zero_headcount %}
+                                <tr data-division="{{division.DivisionName}}" data-department="{{department.DepartmentName}}" data-designation="{{ designation.designations }}">
+                                    <td>{{ designation.Div }} 
+                                        <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                    </td>
+                                    <td>{{ designation.Dept }}
+                                        <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                    </td>
+                                    <td style="width: 313px; ">{{ designation.designations }} 
+                                        <input type="hidden" name="designation_ID_{{ forloop.counter0 }}" value="{{ designation.id }}" />
+                                    </td>
+                                    <td>{{ designation.Lavel }}</td>
+                                    <td  style="width: 170px;  text-align: center;">
+                                      
+                                       {{ Contractbudget_item.Contractavg_salary|formatingdata }}
+                                              
+                                      
+                                    </td>
+                                    <td style="width: 80px; text-align: center;">
+                                      
+                                        {{ Contractbudget_item.Contracthead_count|formatingdata }}
+                                       
+                                    </td>
+                                    <td style="width: 80px;"><input type="text" id="morningdeta_{{ forloop.counter0 }}" name="morning_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" data-group="{{ forloop.counter0 }}" value="{{ default_values.morning_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="grnalcount_{{ forloop.counter0 }}" name="general_data_{{ designation.id }}" style="width: 80px;" class="form-control input-small"value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="Aftercountdeta_{{ forloop.counter0 }}" name="afternoon_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.afternoon_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="nightdeta_{{ forloop.counter0 }}" name="night_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.night_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="mbreakgdeta_{{ forloop.counter0 }}" name="m_break_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.m_break_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="relieverdeta_{{ forloop.counter0 }}" name="relievers_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.relievers_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td  style="width: 170px; text-align: center;">
+                                        {{ Contractbudget_item.Contractmultiplication_result|formatingdata }}
+                                       
+                                        
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endwith %}  
+                            {% endfor %}
+                              <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #d9d9d9;">
+                                <td colspan="3" style="text-transform: uppercase;">
+                                    {{ department.DepartmentName }} TOTAL
+                                    <input type="hidden" name="department_ID_{{ forloop.counter0 }}" value="{{ department.id }}" />
+                                </td>
+                                <td>&nbsp;</td>
+                                <td style=" width: 170px; text-align: center;">{{Contractdepartment_totals|get_item:department.DepartmentName|get_item:"salary_headcount_contract"|formatingdata }}</td>
+                                <td style=" text-align: center;">{{Contractdepartment_totals|get_item:department.DepartmentName|get_item:"Contracthead_count"|formatingdata }}</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;">&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;">{{Contractdepartment_totals|get_item:department.DepartmentName|get_item:"Contractmultiplication_result"|formatingdata }}</td>
+                            </tr>  
+                                
+                            {% endfor %}
+                             <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                                <td colspan="3" style="text-transform: uppercase;">{{ division.DivisionName }} TOTAL
+                                    <input type="hidden" name="division_ID_{{ forloop.counter0 }}" value="{{ division.id }}" />
+                                </td>
+                                <td style="width: 50px;">&nbsp;</td>
+                                <td style=" width: 170px; text-align: center;">{{ Contractdivision_totals|get_item:division.DivisionName|get_item:"Contractdivisionsalary_headcount_product"|formatingdata }}</td>
+                                <td style=" text-align: center;">{{ Contractdivision_totals|get_item:division.DivisionName|get_item:"Contractdivisiontotal_headcount"|formatingdata }}</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;">&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;">{{ Contractdivision_totals|get_item:division.DivisionName|get_item:"Contractdivisionmultiplication_result"|formatingdata }}</td>
+                            </tr>  
+                        {% endfor %}
+                    {% else %}
+                      
+                    {% endif %}
+                    <tr>
+                        <td colspan="13"  ><strong>&nbsp;</strong></td>
+                    </tr>
+                    <tr >
+                        <td colspan="3" class="totalcolor"><strong>Total Contract<strong></td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor text-center">{{ contractgrandsalarydivion|formatingdata  }}</td>
+                            <td class="totalcolor text-center">{{ Contractgrand_total_headcount|formatingdata }}</td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor"></td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor">&nbsp;</td>
+                            <td class="totalcolor text-center">{{grandContractdivisionmultiplication_result|formatingdata}}</td>
+                            
+                       
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+          </div>
+   
+           
+   
+<!--  Total of  SHARED SERVICES -->
+    <div class="row">
+						<div class="col-sm-12">
+							
+                                   {% comment %} <h4 class="HeaderWithColor HeaderWithproperty">Shared Services Manning</h4> {% endcomment %}
+                                   <h4 >Shared Services Manning</h4> 
+                                </div>
+                                <div >
+                                    <div class="table-responsive">
+               <table class="table table-bordered " id="myTable4">
+                <thead>
+                    <tr>
+                        <th class="TableThColor">DIV</th>
+                        <th class="TableThColor">DEPT</th>
+                        <th class="TableThColor">POSITION</th>
+                        <th class="TableThColor">LEVELS</th>
+                        <th class="TableThColor">AVG SALARY</th>
+                        <th class="TableThColor">HC</th>
+                        <th class="TableThColor">MORNING</th>
+                        <th class="TableThColor">GENERAL</th>
+                        <th class="TableThColor">AN</th>
+                        <th class="TableThColor">NIGHT</th>
+                        <th class="TableThColor">M/BREAK</th>
+                        <th class="TableThColor">RELIEVERS</th>
+                        <th class="TableThColor">TOTAL CTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if divisions %}
+                        {% for division in Servicedivisions %}
+                        <tr>
+                            <td colspan="13"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+                        </tr>
+                            <tr>
+                                <td colspan="13" class="HeaderWithColor">{{ division.DivisionName }}</td>
+                            </tr>
+                            {% for department in division.servicesdepartmentmaster_set.all %}
+                                <tr>
+                                    <td colspan="13" style="background-color: #6a6162;  text-transform: uppercase;"> {{ department.DepartmentName }}</td>
+                                </tr>
+                              
+                                {% for designation in department.servicesdesignationmaster_set.all %}
+                                {% with Servicesbudget=Servicesbudgets_dict|get_item:department.DepartmentName|get_item:designation.designations %}
+                               
+                                {% if Servicesbudget.Serviceshead_count > 0 or not exclude_zero_headcount %}
+                                <tr data-division="{{division.DivisionName}}" data-department="{{department.DepartmentName}}" data-designation="{{ designation.designations }}">
+                                    <td>{{ designation.Div }} 
+                                        
+                                    </td>
+                                    <td>{{ designation.Dept }}
+                                       
+                                    </td>
+                                    <td style="width: 313px; ">{{ designation.designations }} 
+                                       
+                                    </td>
+                                    <td>{{ designation.Lavel }}</td>
+                                    <td style=" text-align: center;">
+                                      
+                                      {{ Servicesbudget.Servicesavg_salary|formatingdata  }}
+                                      
+                                    </td>
+                                    <td style="width: 80px; text-align: center;">
+                                      
+                                      {{ Servicesbudget.Serviceshead_count|formatingdata }}
+                                       
+                                    </td>
+                                    <td style="width: 80px;"><input type="text" id="morningdeta_{{ forloop.counter0 }}" name="morning_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" data-group="{{ forloop.counter0 }}" value="{{ default_values.morning_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="grnalcount_{{ forloop.counter0 }}" name="general_data_{{ designation.id }}" style="width: 80px;" class="form-control input-small"value="" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="Aftercountdeta_{{ forloop.counter0 }}" name="afternoon_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.afternoon_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="nightdeta_{{ forloop.counter0 }}" name="night_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.night_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="mbreakgdeta_{{ forloop.counter0 }}" name="m_break_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.m_break_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td style="width: 80px;"><input type="text" id="relieverdeta_{{ forloop.counter0 }}" name="relievers_data_{{ designation.id }}" style="width: 50px;" class="form-control input-small" value="{{ default_values.relievers_deta }}" oninput="calculateTotal('{{ department.DepartmentName }}', {{ forloop.counter0 }})"></td>
+                                    <td  style="width: 170px; text-align: center;">
+                                        {{ Servicesbudget.Servicesmultiplication_result|formatingdata  }}
+                                       
+                                        
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endwith %}  
+                            {% endfor %}
+                            <tr data-division="{{ division.DivisionName }}" data-department="{{ department.DepartmentName }}" style="background-color: #f3f3f3;">
+                                <td colspan="3" style="text-transform: uppercase;">{{ department.DepartmentName }} Total</td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td  style="width: 170px; text-align: center;">{{departmentservices_dict|get_item:department.DepartmentName|get_item:"TotalServicessalary_headcount_contract"|formatingdata }}</td>
+                                <td style=" width: 80px; text-align: center;">{{departmentservices_dict|get_item:department.DepartmentName|get_item:"TotalServiceshead_count"|formatingdata }}</td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td style=" width: 80px; text-align: center;"></td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td style="width: 80px;">&nbsp;</td>
+                                <td style=" width: 170px; text-align: center;">{{departmentservices_dict|get_item:department.DepartmentName|get_item:"TotalServicesmultiplication_result"|formatingdata }}</td>
+                            </tr>
+                            {% endfor %}
+                            <tr data-division="{{ division.DivisionName }}" style="background-color:  #84aba7; color: #fff;">
+                                <td colspan="3" style="text-transform: uppercase; ">{{ division.DivisionName }} TOTAL</td>
+                                <td style="width: 50px;">&nbsp;</td>
+                                <td style=" text-align: center;">{{ divisionservices_dict|get_item:division.DivisionName|get_item:"Servicedivisionsalary_headcount_product"|formatingdata }}</td>
+                                <td style=" text-align: center;">{{ divisionservices_dict|get_item:division.DivisionName|get_item:"Servicedivisiontotal_headcount"|formatingdata }}</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;"></td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style=" text-align: center;">{{ divisionservices_dict|get_item:division.DivisionName|get_item:"Servicedivisionmultiplication_result"|formatingdata }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                      
+                    {% endif %}
+                    <tr>
+                        <td colspan="13"  ><strong>&nbsp;</strong></td>
+                    </tr>
+                    <tr style=" color: #fff;">
+                        <td colspan="3" class="totalcolor" style="text-transform: uppercase; width: 285px; "><strong>TOTAL - SHARED SERVICES<strong></td>
+                            <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor text-center">{{ Servicesgrandsalarydivion|formatingdata  }}</td>
+                                <td class="totalcolor text-center">{{ ServicesContractgrand_total_headcount|formatingdata }}</td>
+                                <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor"></td>
+                                <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor">&nbsp;</td>
+                                <td class="totalcolor text-center">{{Servicesgranddivisionmultiplication_result|formatingdata}}</td>
+                    </tr>
+
+                  
+                </tbody>
+            </table>
+        </div>
+        </div>
+</div>
+ 
+          
+
+
+<!-- Full Total of all  like on roll, mealcost, INSURANCE COST, SHARED SERVICES,CONTRACT -->
+
+                <div class="row">
+						<div class="col-sm-12">
+						
+                                    <div class="table-responsive">
+            <table class="table table-bordered " id="myTable5">
+                <thead>
+                  
+                    <tr>
+                       
+                        <th  class="TableThColor">&nbsp;</th>
+                        <th class="TableThColor">AVG SALARY</th>
+                        <th class="TableThColor">HC</th>
+                        <th class="TableThColor">MORNING</th>
+                        <th class="TableThColor">GENERAL</th>
+                        <th class="TableThColor">AN</th>
+                        <th class="TableThColor">NIGHT</th>
+                        <th class="TableThColor">M/BREAK</th>
+                        <th class="TableThColor">RELIEVERS</th>
+                        <th class="TableThColor">TOTAL CTC</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr >
+                        <td  style="text-transform: uppercase; width: 285px;  "><strong>TOTAL ON ROLL<strong></td>
+                            
+                            <td style="width: 150px; text-align: center; ">{{ grandsalarydivion|formatingdata  }}</td>
+                            <td style="width: 70px; text-align: center;">{{ grand_total_headcount|formatingdata }}</td>
+                            <td style="width: 70px;  ">&nbsp;</td>
+                            <td style="width: 70px; text-align: center; "></td>
+                            <td style="width: 70px;">&nbsp;</td>
+                            <td style="width: 70px; ">&nbsp;</td>
+                            <td style="width: 70px; ">&nbsp;</td>
+                            <td style="width: 70px; ">&nbsp;</td>
+                            <td style="width: 150px; text-align: center;">{{grand_total_salary|formatingdata}}</td>
+                            
+                       
+                    </tr>
+                    
+                    <tr >
+                        <td  style="text-transform: uppercase; width: 285px;"><strong>TOTAL CONTRACT<strong></td>
+                            
+                                <td style="width: 150px; text-align: center; ">{{ contractgrandsalarydivion|formatingdata  }}</td>
+                                <td style="width: 70px; text-align: center; ">{{ Contractgrand_total_headcount|formatingdata }}</td>
+                                <td style="width: 70px;  ">&nbsp;</td>
+                                <td style="width: 70px; text-align: center; ">&nbsp;</td>
+                                <td style="width: 70px;">&nbsp;</td>
+                                <td style="width: 70px; ">&nbsp;</td>
+                                <td style="width: 70px; ">&nbsp;</td>
+                                <td style="width: 70px; ">&nbsp;</td>
+                                <td style="width: 150px; text-align: center; ">{{grandContractdivisionmultiplication_result|formatingdata}}</td>
+                    </tr>
+                    <tr>
+                       
+                                    <td style="text-transform: uppercase; width: 285px;"><strong>TOTAL SHARED SERVICES<strong></td>
+                                    <td style="width: 150px; text-align: center;">{{ Servicesgrandsalarydivion|formatingdata}}</td>
+                                    <td style="width: 70px; text-align: center;">{{ ServicesContractgrand_total_headcount|formatingdata }}</td>
+                                    <td style="width: 70px;  ">&nbsp;</td>
+                                    <td style="width: 70px; text-align: center;"></td>
+                                    <td style="width: 70px; ">&nbsp;</td>
+                                    <td style="width: 70px; ">&nbsp;</td>
+                                    <td style="width: 70px; ">&nbsp;</td>
+                                    <td style="width: 70px; ">&nbsp;</td>
+                                    <td style="width: 150px; text-align: center;">{{Servicesgranddivisionmultiplication_result|formatingdata}}</td>
+                        
+                    </tr>
+                    <tr>
+                        <td  style="text-transform: uppercase; width: 285px;"><strong>TOTAL CAFETERIA MEAL COST<strong></td>
+                            <td style="width: 150px; text-align: center; ">{{Avgsalarymealcoat|formatingdata}}</td>
+                        <td><input type="text" id="grandheadtotal" name="grandheadtotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandmorningtotal" name="grandmorningtotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandgeneraltotal" name="grandgeneraltotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandafternoontotal" name="grandafternoontotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandnighttotal" name="grandnighttotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandmbreaktotal" name="grandmbreaktotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandrelieverstotal" name="grandrelieverstotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="width: 150px; text-align: center; ">{{meal_cost|formatingdata}}</td>
+                    </tr>
+                    <tr >
+                        <td  style="text-transform: uppercase; width: 285px;"><strong>TOTAL EMPLOYEE INSURANCE COST<strong></td>
+                            <td style="width: 150px; text-align: center; ">{{Avgsalaryinsurancecoat |formatingdata}}</td>
+                        <td><input type="text" id="grandheadtotal" name="grandheadtotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandmorningtotal" name="grandmorningtotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandgeneraltotal" name="grandgeneraltotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandafternoontotal" name="grandafternoontotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandnighttotal" name="grandnighttotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandmbreaktotal" name="grandmbreaktotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td><input type="text" id="grandrelieverstotal" name="grandrelieverstotal" style="width: 80px; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="width: 150px; text-align: center; ">{{insurance_cost|formatingdata}}</td>
+                    </tr>
+                    {% comment %} <tr>
+                        <td colspan="13"  style="background-color: #f3f3f3;"><strong>&nbsp;</strong></td>
+                    </tr> {% endcomment %}
+                    <tr >
+                        <td  style="text-transform: uppercase; text-align:left;  font-weight:bold;  background-color: #f3f3f3;"><strong>TOTAL WAGES & BENEFITS<strong></td>
+                            <td style="font-weight:bold; text-align: center; background-color: #f3f3f3;">{{Avgsalarytotalctc|formatingdata}}</td>
+                        <td style="font-weight:bold; text-align: center; background-color: #f3f3f3;">{{Benefitesheadtotal|formatingdata}}</td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandmorningtotal" name="grandmorningtotal" style=" font-weight:bold; text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandgeneraltotal" name="grandgeneraltotal" style=" font-weight:bold;  text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandafternoontotal" name="grandafternoontotal" style=" font-weight:bold;  text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandnighttotal" name="grandnighttotal" style=" font-weight:bold;  text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandmbreaktotal" name="grandmbreaktotal" style=" font-weight:bold;  text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold; background-color: #f3f3f3;"><input type="text" id="grandrelieverstotal" name="grandrelieverstotal" style=" font-weight:bold;  text-align: center; border: none; background: transparent;" class="form-control input-small" readonly></td>
+                        <td style="font-weight:bold;  text-align: center; background-color: #f3f3f3;">{{Benefitetotalctc|formatingdata}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+      </div>
+
+
+
+
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Select Report Sections</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="onRollCheckbox">
+                        <label class="form-check-label" for="onRollCheckbox">
+                            On Roll 
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="contractCheckbox">
+                        <label class="form-check-label" for="contractCheckbox">
+                            Contract
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="sharedServicesCheckbox">
+                        <label class="form-check-label" for="sharedServicesCheckbox">
+                            Shared Services
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="cafeteriaCheckbox">
+                        <label class="form-check-label" for="cafeteriaCheckbox">
+                            Cafeteria Meal Cost
+                        </label>
+                        <br>
+                        <input class="form-check-input" type="checkbox" id="insuranceCheckbox">
+                        <label class="form-check-label" for="insuranceCheckbox">
+                            Employees Insurance Cost
+                        </label>
+                    </div>
+                    <div id="error-message" style="color: red; display: none; margin-top: 10px;">
+                        First, you must tick at least one checkbox.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <a href="#" id="exportLink" class="btn btn-primary">Export</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript for validation
+        const checkboxes = document.querySelectorAll('.form-check-input');
+        const exportLink = document.getElementById('exportLink');
+        const errorMessage = document.getElementById('error-message');
+    
+        // Function to check if at least one checkbox is selected
+        function validateCheckboxes() {
+            const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            return isChecked;
+        }
+    
+        // Handle Export button click
+        exportLink.addEventListener('click', function (e) {
+            if (!validateCheckboxes()) {
+                e.preventDefault(); // Prevent default action of the link
+                errorMessage.style.display = 'block'; // Show the error message
+            } else {
+                errorMessage.style.display = 'none'; // Hide the error message if valid
+            }
+        });
+    
+        // Hide the error message when a checkbox is selected
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                if (validateCheckboxes()) {
+                    errorMessage.style.display = 'none'; // Hide the error
+                }
+            });
+        });
+    </script>
+        
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+<script>
+    $('#exportBtn').click(function() {
+        var wb = XLSX.utils.book_new(); 
+        var combinedData = [];
+
+        function applyStyles(ws, styles, numCols) {
+            for (let col = 0; col < numCols; col++) {
+                const cellRef = XLSX.utils.encode_cell({ c: col, r: 0 });
+                if (!ws[cellRef]) ws[cellRef] = {};
+                ws[cellRef].s = styles.header;
+            }
+
+            let rowIndex = 1; 
+            $('#myTable tr, #myTable2 tr, #myTable3 tr, #myTable4 tr, #myTable5 tr').each(function() {
+                const divisionRow = $(this).find('strong').first();
+                if (divisionRow.length) {
+                    for (let col = 0; col < numCols; col++) {
+                        const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                        if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                        ws[cellRefRow].s = styles.division;
+                    }
+                } else if ($(this).find('td').first().text().includes('Total')) {
+                    for (let col = 0; col < numCols; col++) {
+                        const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                        if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                        ws[cellRefRow].s = styles.totalRow;
+                    }
+                }
+                rowIndex++;
+            });
+        }
+
+        function addTableData(tableId, combinedData) {
+            var rows = Array.from(document.querySelectorAll(`#${tableId} tr`));
+            rows.forEach(row => {
+                var rowData = Array.from(row.querySelectorAll('td, th')).map(cell => cell.innerText);
+                combinedData.push(rowData);  
+            });
+        }
+
+        // Collect all table data into combinedData
+        addTableData('myTable', combinedData);
+        addTableData('myTable2', combinedData);
+        addTableData('myTable3', combinedData);
+        addTableData('myTable4', combinedData);
+        addTableData('myTable5', combinedData);
+
+        // Create the MASTER sheet with the combined data
+        var combinedWs = XLSX.utils.aoa_to_sheet(combinedData);
+        XLSX.utils.book_append_sheet(wb, combinedWs, "MASTER");
+
+        // Process each table individually
+        var ws1 = XLSX.utils.table_to_sheet(document.getElementById('myTable'));
+        ws1['!cols'] = Array(13).fill({ wpx: 70 });
+        ws1['!cols'][2] = { wpx: 220 }; 
+        applyStyles(ws1, {
+            header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+        }, 13);
+        XLSX.utils.book_append_sheet(wb, ws1, "ON ROLL MANNING");
+
+        var ws2 = XLSX.utils.table_to_sheet(document.getElementById('myTable2'));
+        ws2['!cols'] = Array(13).fill({ wpx: 70 });
+        ws2['!cols'][2] = { wpx: 220 }; 
+        applyStyles(ws2, {
+            header: { fill: { fgColor: { rgb: "A9A9A9" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            division: { fill: { fgColor: { rgb: "8B4513" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            totalRow: { fill: { fgColor: { rgb: "2F4F4F" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+        }, 13);
+        XLSX.utils.book_append_sheet(wb, ws2, "DEPARTMENT TOTAL");
+
+        var ws3 = XLSX.utils.table_to_sheet(document.getElementById('myTable3'));
+        ws3['!cols'] = Array(13).fill({ wpx: 70 });
+        ws3['!cols'][2] = { wpx: 220 }; 
+        applyStyles(ws3, {
+            header: { fill: { fgColor: { rgb: "1E90FF" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            division: { fill: { fgColor: { rgb: "4682B4" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            totalRow: { fill: { fgColor: { rgb: "5F9EA0" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+        }, 13);
+        XLSX.utils.book_append_sheet(wb, ws3, "CONTRACT MANNING");
+
+        var ws4 = XLSX.utils.table_to_sheet(document.getElementById('myTable4'));
+        ws4['!cols'] = Array(13).fill({ wpx: 70 });
+        ws4['!cols'][2] = { wpx: 220 }; 
+        applyStyles(ws4, {
+            header: { fill: { fgColor: { rgb: "FFD700" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            division: { fill: { fgColor: { rgb: "FFA500" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            totalRow: { fill: { fgColor: { rgb: "FF6347" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+        }, 13);
+        XLSX.utils.book_append_sheet(wb, ws4, "SHARED SERVICES");
+
+        var ws5 = XLSX.utils.table_to_sheet(document.getElementById('myTable5'));
+        ws5['!cols'] = Array(13).fill({ wpx: 70 });
+        ws5['!cols'][2] = { wpx: 220 }; 
+        applyStyles(ws5, {
+            header: { fill: { fgColor: { rgb: "8A2BE2" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            division: { fill: { fgColor: { rgb: "9370DB" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+            totalRow: { fill: { fgColor: { rgb: "7B68EE" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+        }, 13);
+        XLSX.utils.book_append_sheet(wb, ws5, "TOTAL");
+
+        
+        XLSX.writeFile(wb, 'view_actual.xlsx');
+    });
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+       
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const exportLink = document.getElementById('exportLink');
+        const selectedOrganizationID = "{{ selectedOrganizationID }}";  
+        const selectedDivision = "{{ selected_division }}";  
+        const selectedDepartment = "{{ selected_department }}";
+        const exclude_zero_headcount = "{{ exclude_zero_headcount }}";    
+
+        function updateExportLink() {
+            const onRoll = document.getElementById('onRollCheckbox').checked;
+            const contract = document.getElementById('contractCheckbox').checked;
+            const sharedServices = document.getElementById('sharedServicesCheckbox').checked;
+            const cafeteria = document.getElementById('cafeteriaCheckbox').checked;
+            const insurance = document.getElementById('insuranceCheckbox').checked;
+
+            let url = "{% url 'EntryActualPdf' %}?";
+            const params = [];
+
+            // Add checkbox states to the query parameters
+            params.push(`include_on_roll=${onRoll}`);
+            params.push(`include_contract=${contract}`);
+            params.push(`include_shared_services=${sharedServices}`);
+            params.push(`include_cafeteria=${cafeteria}`);
+            params.push(`include_insurance=${insurance}`);
+
+            // Add other parameters
+            params.push(`hotel_name=${encodeURIComponent(selectedOrganizationID)}`);
+            params.push(`divisionname=${encodeURIComponent(selectedDivision)}`);
+            params.push(`departmentname=${encodeURIComponent(selectedDepartment)}`);
+            params.push(`exclude_zero_headcount=${encodeURIComponent(exclude_zero_headcount)}`);
+
+            // Update the href attribute of the export link
+            exportLink.href = url + params.join('&');
+        }
+
+        // Attach event listeners to checkboxes
+        document.querySelectorAll('.form-check-input').forEach(checkbox => {
+            checkbox.addEventListener('change', updateExportLink);
+        });
+
+        // Initial call to set the export link
+        updateExportLink();
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>
+{% endblock content %}

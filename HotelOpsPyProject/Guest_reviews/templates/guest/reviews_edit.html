@@ -1,0 +1,162 @@
+{% extends "guest/homebase.html" %} {% block content %}
+
+<style>
+  body {
+    font-family: arial nova;
+    font-size: 14px;
+  }
+   label{
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+    
+  }
+  
+</style>
+{% for msg in messages %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Hey!</strong> {{ msg }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  {% endfor %}
+
+<div class="container">
+  <div class="d-flex justify-content-center">
+    <!-- Centering the form horizontally -->
+    
+    <div class="col-md-10">
+      <div class="card">
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="card-header" style="color: #1ab394"><strong>Social Media Guest Feedback</strong></div>
+          <div class="card-body">
+            <div class="row">
+               <div class="col-md-5">
+              <div  class="form-group m-3 ">
+                  <label for="">Sources</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="sources"
+                    value="{{guest.sources}}"
+                    id=""
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="col-md-5">
+                 <div class="form-group m-3  ">
+                  <label for="">Date</label>
+                  <input
+                    type="date"
+                    readonly
+                    class="form-control"
+                    name="date"
+                    value="{{guest.date | date:'Y-m-d' }}"
+                    id=""
+                    readonly
+                  />
+                </div> 
+              </div>
+              <div class="col-md-10">
+                 <div class="form-group m-3"> 
+                  <label>Image Sources </lable>              
+              {% if guest.image %}
+        <img src="{{ guest.image.url }}" alt="Guest Image" class="img-fluid" />
+    {% endif %}
+                 </div>
+                </div>
+    
+              <div class="col-md-5">
+               
+                <div class="form-group m-3">
+                  <label for="">Date:</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="gm_date"
+                    value=""
+                    value="{{guest.gm_date }}"
+                    id="date"
+                    required 
+                  />
+                </div>
+                <div class="form-group m-3">
+                  <label for="">Guest Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="guest_name"
+                    value=""
+                    id=""
+                    required 
+                  />
+                </div>
+               
+            </div>
+              <div class="col-md-5">
+                <div class="form-group m-3">
+                  <label for="">Room No.</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="room_no"
+                    value="{{guest.room_no}}"
+                    id=""
+                    required 
+
+                  />
+                </div>
+                <div class="form-group m-3">
+                  <label for="">Stay Days</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="stay_days"
+                    value="{{guest.stay_days}}"
+                    id=""
+                    required 
+                  />
+                </div>
+                
+              </div>
+            </div>
+            <div class="form-group m-3">
+                 <label class="" for="lastName">Complaint Description</label>
+                <textarea name="complaint" style="width: 82%;" class="form-control"  ""cols="40" rows="2" required ></textarea>
+              </div>
+            <div class="form-group m-3">
+                 <label class="" for="lastName">Process Lapse</label>
+                <textarea name="process_lapse" style="width: 82%;" class="form-control"  ""cols="40" rows="2" required></textarea>
+              </div>
+            <div class="form-group m-3">
+                 <label class="" for="lastName">Action Plan</label>
+                <textarea name="Action_Plan" style="width: 82%;" class="form-control"  ""cols="40" rows="2" required></textarea>
+              </div>
+            <div class="form-group m-3">
+                 <label class="" for="lastName">GM Comment</label>
+                <textarea name="gm_comment" style="width: 82%;" class="form-control"  ""cols="40" rows="2" required></textarea>
+              </div>
+          </div>
+          <div class="card-footer text-right">
+            <input type="submit" class="btn btn-primary" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  // Get today's date
+  var today = new Date();
+
+  // Format the date to YYYY-MM-DD (required format for date input)
+  var formattedDate = today.toISOString().split("T")[0];
+
+  // Set the value of the date input field
+  document.getElementById("date").value = formattedDate;
+</script>
+
+{% endblock content %}

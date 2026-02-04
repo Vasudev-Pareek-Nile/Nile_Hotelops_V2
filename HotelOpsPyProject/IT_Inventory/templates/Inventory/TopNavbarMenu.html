@@ -1,0 +1,42 @@
+{% comment %} <li class="nav-item d-none d-sm-inline-block">
+	<a
+	  href="/Hiring_Reporting_Performance_Review_Guidelines/Reporting_list"
+	  >List</a
+	>
+  </li>
+  <li class="nav-item d-none d-sm-inline-block">
+	<a
+	  href="/Hiring_Reporting_Performance_Review_Guidelines/hiring_report"
+	  >Reports</a
+	>
+  </li> {% endcomment %}
+
+
+<!-- New - Example Element Element -->
+<div class="nav-element-container d-flex gap-4">
+    {% comment %} <li class="list-unstyled"><a href="/Hiring_Reporting_Performance_Review_Guidelines/Reporting_list" class="nav-link dropdown-main-color text-white">List</a></li>
+    <li class="list-unstyled"><a href="/Hiring_Reporting_Performance_Review_Guidelines/hiring_report" class="nav-link dropdown-main-color text-white">Reports</a></li> {% endcomment %}
+
+    <li class="list-unstyled"><a href="{% url "Inventory_list" %}" class="nav-link dropdown-main-color text-white">Inventory List</a></li>
+    <li class="list-unstyled"><a href="{% url "Software_List" %}" class="nav-link dropdown-main-color text-white">Software Report</a></li>
+    <li class="list-unstyled"><a href="{% url "Hardware_List" %}" class="nav-link dropdown-main-color text-white">Hardware Report</a></li>
+
+    {% if  request.session.UserID == "20210206173426" or request.session.UserID == '20201212175519' %}
+      <li class="nav-item dropdown has-arrow main-drop list-unstyled ">
+        <a href="#" class="dropdown-toggle nav-link dropdown-main-color text-white" data-bs-toggle="dropdown">
+            <span>Master</span>
+        </a>
+        <div class="dropdown-menu">
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="{% url "Type_category" %}">Type category</a> {% endcomment %}
+            <a class="dropdown-item dropdown-item-color" href="{% url "Type_category_list" %}">Type Category List</a>
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="{% url "Master_company_add" %}">Master Company Add</a> {% endcomment %}
+            <a class="dropdown-item dropdown-item-color" href="{% url "Master_company_list" %}">Master Company List</a>
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="{% url "Master_Area_add" %}">Master Area Add</a>  {% endcomment %}
+            <a class="dropdown-item dropdown-item-color" href="{% url "Master_Area_list" %}">Master Area List</a> 
+            {% comment %} <a class="dropdown-item dropdown-item-color" href="{% url "Master_software_type" %}">Master Software Type</a>  {% endcomment %}
+            <a class="dropdown-item dropdown-item-color" href="{% url "Master_software_type_list" %}">Master Software Type List</a> 
+        </div>
+    </li>
+   {% endif %}
+</div>
+

@@ -1,0 +1,66 @@
+{% extends 'HotelHandover/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+    }
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Hotel HandOver Entry</div>
+               
+        <div class="card-body">
+            <form action="{%url 'HotelHandoverEntry' %}" method = "post">
+                {% csrf_token %}
+      
+
+</br> 
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                        <th>Description</th>
+                        <th>Weeks Before Hotel Opening</th>
+                        <th>Remarks</th>
+                       
+                        
+                    </thead>
+                    {% for x in mem%}
+                    <tr>           
+                        <td>{{x.title}}</td> 
+                          
+                        
+                        
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                        </td>
+                        <td><textarea type="text"  class="form-control" name="Remarks_{{ forloop.counter0 }}"/></textarea>
+                        </td>
+    
+                    </tr>
+                    {% if forloop.last %}
+                    <input  type="hidden" name="TotalItem" value="{{ forloop.counter0 }}"/>
+                    {% endif %}
+                    {% endfor %}
+    
+                
+                </table>                          
+                <br>
+            </div>
+                <br>
+    
+                <div class = "card-footer text-right">
+                <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+                </div>
+                <br>
+                
+            </form>
+        </div>
+    </div>
+    
+    
+    {% endblock content %}

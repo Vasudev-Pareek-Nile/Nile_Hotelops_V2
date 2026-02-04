@@ -1,0 +1,41 @@
+# from datetime import date
+
+# from django.core.management.base import BaseCommand
+# from EmailReader.views import downloadEmails
+
+# class Command(BaseCommand):
+#     def handle(self, *args, **options):
+       
+#         downloadEmails()
+
+#         self.stdout.write(self.style.SUCCESS(f'Data transferred successfully for  records'))
+
+
+from datetime import datetime
+from django.core.management.base import BaseCommand
+from EmailReader.views import downloadEmails
+
+class Command(BaseCommand):
+    help = 'Downloads emails within a specified date range'
+
+    def add_arguments(self, parser):
+          pass
+
+    def handle(self, *args, **options):
+        start_date_str = input("Enter the start date (YYYY-MM-DD): ")
+        end_date_str = input("Enter the end date (YYYY-MM-DD): ")
+
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+        except ValueError:
+            self.stderr.write(self.style.ERROR('Invalid date format. Please use YYYY-MM-DD.'))
+            return
+
+        if start_date > end_date:
+            self.stderr.write(self.style.ERROR('Start date cannot be after end date.'))
+            return
+
+        downloadEmails(start_date, end_date)
+
+        self.stdout.write(self.style.SUCCESS('Emails downloaded successfully within the specified date range.'))

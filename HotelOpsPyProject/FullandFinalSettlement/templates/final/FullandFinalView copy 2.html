@@ -1,0 +1,492 @@
+{% load static %}
+
+
+{% block content %}
+<style>
+
+    th {
+        text-align: center;
+        vertical-align:middle;
+    }
+  table td,table th{
+    {% comment %} border:1px solid #edf0fb  !important; {% endcomment %}
+    padding:5px;
+  }
+  h4{
+    background-color:#edf0fb;
+    color:black;
+    padding:10px;
+    text-align:center;
+  }
+  table th{
+    text-align:left;
+    background-color:#fbfbfb;
+    color:#333;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+  <header>
+    <table style="width: 100%;">
+      <tr>
+        <td style="text-align: left;">
+            {% if organization_logo %}
+                <img src="{{ organization_logo }}" alt="Organization Logo" style="width: 100px; height: auto;">
+            {% else %}
+                <p>No logo available</p>
+            {% endif %}
+        </td>
+        <td style="text-align: center;">.
+            <table style="text-align: center; font-size:14px">
+              <tbody>
+                <tr>
+                  <td><strong><u>FULL AND FINAL SETTLEMENT</u></strong></td>
+                </tr>
+              </tbody>
+          </table>
+        </td>
+        <td style="text-align: right;">
+          {% if organization_logos %}
+          <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 100px; height: auto;">
+          {% else %}
+              <p>No logo available</p>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </header>
+
+
+  {% comment %} body {% endcomment %}
+<div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+          <h4>FULL AND FINAL SETTLEMENT OF DUES STATEMENT</h4>
+          <div class="row">
+              <div class="col-sm-12">
+                <table style="border:0.3px solid black; border-collapse: collapse; border-spacing: 2px; border-color: gray;">
+                  <tbody>
+                    <tr>
+                        <td>Employee Code</td>
+                        <th>{{Ed.Emp_Code}}</th>
+                        <td>Name</td>
+                        <th>{{Ed.Name}}</th>
+                      </tr> 
+                      <tr>
+                        <td>Date Of Joining</td>
+                        <th>{{Ed.DOJ|date:'d-m-Y'}}</th>
+                        <td>Date Of Leaving</td>
+                        <th>{{Ed.Date_Of_Leaving|date:'d-m-Y'}}</th>
+                        
+                      </tr> 
+                      <tr>
+                        <td>Department</td>
+                        <th>{{Ed.Dept|default:'' }}</th>
+                        <td>Designation</td>
+                        <th>{{Ed.Designation|default:'' }}</th>
+                        
+                      </tr> 
+                      <tr>
+                        <td>Absconding</td>
+                        <th>{{Ed.Absconding|default:'' }}</th>
+                        <td>Resignation</td>
+                        <th>{{Ed.Resignation|default:'' }}</th>
+                      </tr> 
+                      <tr>
+                        <td>Notice Days Served</td>
+                        <th>{{Ed.Notice_Days_Served|default:'' }}</th>
+                        <td>Confirmed</td>
+                        <th>{{Ed.Confirmed|default:'' }}</th>
+                      </tr> 
+                      <tr>
+                        <td>Terminated</td>
+                        <th>{{Ed.Terminated|default:'' }}</th>
+                        <td>Laid Off</td>
+                        <th>{{Ed.Laid_Off|default:'' }}</th>
+                      </tr> 
+                      <tr>
+                        <td>Deduction From Salary PL</td>
+                        <th>{{Ed.Deduction_from_salary_PL_Boolean|default:'' }}</th>
+                        <td>&nbsp;</td>
+                        <th>&nbsp;</th>
+                        <!-- <td>Current Salary</td>
+                        <th>{{Ed.Current_Salary|default:'0' }}</th> -->
+                      </tr> 
+                      <tr>
+                        <td>Basic Salary</td>
+                        <th>{{Ed.PL_Basic_Salary|default:'0' }}</th>
+                        <td>Gross Salary</td>
+                        <th>{{Ed.NPP_Gross|default:'0' }}</th>
+                      </tr> 
+                      {% comment %} <td>Laid Off</td>
+                      <th>{{Ed.Laid_Off}}</th> {% endcomment %}
+                    </tr> 
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+          </div>
+      </div>
+
+      {% comment %} <div> {% endcomment %}
+          <br>
+      <div class="row mt-5">
+          <div class="col-sm-12 mt-5">
+            <h4>LEAVE SUMMARY</h4>
+            <table style="border:0.3px solid black; border-spacing: 2px; border-color: gray;">
+              <tbody>
+                  <tr>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Opening Balance <br>(As on 1 jan 2025)</th>
+                  <th>Leaved Earned <br>(This Year-2025)</th>
+                  <th>Total Balance</th>
+                  <th>Leaved Availed</th>
+                  <th>PL Bal</th>
+                  </tr>
+                  <tr>
+                    <th>{{Ed.Leave_PL_From_Date|date:'d-m-Y'  }}</th>
+                    <th>{{Ed.Leave_PL_To_Date|date:'d-m-Y'  }}</th>
+                    <th>{{Ed.LS_Opening_Balance|default:'0' }}</th>
+                    <th>{{Ed.LS_Leaved_Earned|default:'0' }}</th>
+                    <th>{{Ed.Total_PL_Balance|default:'0' }}</th>
+                    <th>{{Ed.LS_Leaved_Availed|default:'0' }}</th>
+                    <th>{{Ed.LS_PL_Bal|default:'0' }}</th>
+                  </tr>
+                </tbody>
+            </table>
+            </div>
+          </div>        
+      </div>
+   
+     <div class="card-body">
+        <input  type="hidden" name="ID" value="{{Ed.id}}">
+        <h4>PL PAYMENT</h4>
+        <div class="row">
+          <div class="col-sm-12">
+            <table  style="border:0.3px solid black; border-spacing: 2px; border-color: gray;">
+              <tbody>
+                  <tr>
+                  <th>Total PL</th>
+                  <th>Basic Salary</th>
+                  <th>Rate</th>
+                  <th>Amount</th>
+                
+                  </tr>
+                  <tr>
+                    <th>{{Ed.PL_Total_PL|default:'0' }}</th>
+                    <th>{{Ed.PL_Basic_Salary|default:'0' }}</th>
+                    <th>{{Ed.PL_Rate|default:'0' }}</th>
+                    <th>{{Ed.PL_Amount|default:'0' }}</th>
+                  </tr>
+              </tbody>
+            </table>
+          </div>        
+        </div>
+      </div>
+
+
+    <div class="card-body">
+        <input  type="hidden" name="ID" value="{{Ed.id}}">
+
+        <h4>NOTICE PERIOD PAYMENT</h4>
+        <div class="row">
+          <div class="col-sm-12">
+            <table style="border:0.3px solid black; border-spacing: 2px; border-color: gray;">
+              <tbody>
+                  <tr>
+                    <th>Total Notice served</th>
+                    <th>Total Notice Pay Days</th>
+                    <th>Gross</th>
+                    <th>Rate</th>
+                    <th>Net Amount Paid</th>
+                  </tr>
+                  <tr>
+                    <th>{{Ed.Total_Notice_Days_Served|default:'0' }}</th>
+                    <th>{{Ed.NPP_Total_Notice_Pay_Days|default:'0' }}</th>
+                    <th>{{Ed.NPP_Gross|default:'0' }}</th>
+                    <th>{{Ed.NPP_Rate|default:'0' }}</th>
+                    <th>{{Ed.NPP_Net_Amount_Paid|default:'0' }}</th>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>        
+    </div>
+
+
+  <div class="card-body">
+      <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <h4>GRATUITY PAYMENT</h4>
+      
+      <div class="row">
+        <div class="col-sm-12">
+          <table style="border:0.3px solid black; border-spacing: 2px; border-color: gray;">
+            <tbody>
+              <tr>
+                <th>No Of Years</th>
+                <th>Last Basics</th>
+                <th>Graturity Days / Per year</th>
+                <th>Graturity Payments</th>
+              </tr>
+              <tr>
+                <th>{{Ed.GP_No_Of_Years|default:'0' }}</th>
+                <th>{{Ed.GP_Last_Basics|default:'0' }}</th>
+                <th>{{Ed.GP_Graturity_Days|default:'0' }}</th>
+                <th>{{Ed.GP_Graturity_Payments|default:'0' }}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>        
+  </div>
+
+
+  
+  <div class="card-body">
+      <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <h4>LEAVE TRAVEL ENTITLEMENT</h4>
+      <div class="row">
+        <div class="col-sm-12">
+          <table style="border:0.3px solid black; border-spacing: 2px; border-color: gray;">
+            <tbody>
+              <tr>
+                <th>Total Months Worked</th>
+                <th>LTA Rate</th>
+                <th>Total Days Worked</th>
+                <th>Pro Rata Basis Payment</th>
+              </tr>
+              <tr>
+                <th>{{Ed.Total_Months_Worked|default:'0' }}</th>
+                <th>{{Ed.LTA_Rate|default:'0' }}</th>
+                <th>{{Ed.Total_Days_Worked|default:'0' }}</th>
+                <th>{{Ed.Pro_Rata_Basis_Payment|default:'0' }}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>        
+  </div>
+
+  <div class="card-body">
+      <input type="hidden" name="ID" value="{{Ed.id}}">
+      <h4>ADVANCE SALARY</h4>
+      <div class="row">
+          <div class="col-sm-12">
+              <table style="border: 0.3px solid black; border-spacing: 2px; border-color: gray;">
+                  <thead>
+                      <tr>
+                          <td>Total Advance Taken</td>
+                          <td>Total Advance Paid</td>
+                          <td>Remaining Amount</td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td>{{Ed.Total_Advance_Taken|default:'0' }}</td>
+                          <td>{{Ed.Total_Advance_Paid|default:'0'}}</td>
+                          <td>{{Ed.Remaining_Amount|default:'0' }}</td>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+
+
+  <div class="card-body">
+      <input type="hidden" name="ID" value="{{Ed.id}}">
+      <h4>BANK DETAILS</h4>
+      <div class="row">
+          <div class="col-sm-12">
+              <table style="border: 0.3px solid black; border-spacing: 2px; border-color: gray;">
+                  <tbody>
+                      <tr>
+                          <th>Bank Name</th>
+                          <th>Branch Name</th>
+                          <th>Accounts Number</th>
+                          <th>IFSC Code</th>
+                      </tr>
+                      <tr>
+                          <th>{{Ed.Bank_Name|default:'&nbsp;'  }}</th>
+                          <th>{{Ed.Branch_Name|default:'&nbsp;'  }}</th>
+                          <th>{{Ed.Accounts_Number|default:'&nbsp;'  }}</th>
+                          <th>{{Ed.IFSCCode|default:'&nbsp;' }}</th>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+
+
+
+<div class="card-body">
+    <input  type="hidden" name="ID" value="{{Ed.id}}">
+    <h4>FULL AND FINAL PAYMENT SUMMARY</h4>
+    <div class="row">
+        <div class="col-sm-12">
+            {% comment %} <div class="section-title">FULL AND FINAL PAYMENT SUMMARY</div> {% endcomment %}
+              <table style="border: 0.3px solid black; border-spacing: 2px; border-color: gray;">
+                  <thead>
+                      <tr>
+                          <td colspan="2" style="text-align: center;"><b>PARTICULAR</b></td>
+                          <td colspan="2" style="text-align: center;"><b>AMOUNT</b></td>
+                          <td colspan="2" style="text-align: center;"><b>REMARKS</b></td>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr><td colspan="6"  style="text-align: center;"><b>Earnings</b></td></tr>
+                      <tr>
+                          <td colspan="2">LTA Amount</td>
+                          <td colspan="2">{{ Ed.LTA_Amount|default:0 }}</td>
+                          <td colspan="2">{{ Ed.LTA_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                          <td colspan="2">PT Amount</td>
+                          <td colspan="2">{{ Ed.PT_Amount|default:0 }}</td>
+                          <td colspan="2">{{ Ed.PT_Amount_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                          <td colspan="2">Employee PF</td>
+                          <td colspan="2">{{ Ed.Employee_PF_Amount|default:0 }}</td>
+                          <td colspan="2">{{ Ed.Employee_PF_Amount_Remarks|default:''  }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">PL Payment</td>
+                        <td colspan="2">{{ Ed.FFPS_PL|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Final_PL_Payment_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Gratuity Payments</td>
+                        <td colspan="2">{{ Ed.FFPS_Gratuity|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Graturity_Payments_Earning_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Other Earnings</td>
+                        <td colspan="2">{{ Ed.Other_Earnings|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Other_Earnings_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Pending Salary</td>
+                        <td colspan="2">{{ Ed.FFPS_Pending_Salary|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Pending_Salary_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><b>Total Earning</b></td>
+                        <td colspan="2"><b>{{ Ed.Total_Earning|default:0 }}</b></td>
+                        <td colspan="2">{{ Ed.Total_Earning_Remarks|default:'' }}</td>
+                      </tr>
+
+                      <tr><td colspan="6" style="text-align: center;"><b>Deduction</b></td></tr>
+
+                      <tr>
+                        <td colspan="2">Uniform Deductions</td>
+                        <td colspan="2">{{ Ed.FFPS_Uniform_Deductions|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Uniform_Deductions_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Other Deductions</td>
+                        <td colspan="2">{{ Ed.OtherDeductions|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Other_Deductions_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Notice Period</td>
+                        <td colspan="2">{{ Ed.Notice_Period_Deductions|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Notice_Period_Deductions_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">Advance Salary</td>
+                        <td colspan="2">{{ Ed.Advance_Salary|default:0 }}</td>
+                        <td colspan="2">{{ Ed.Advance_Salary_Remarks|default:'' }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="2"><b>Total Deduction</b></td>
+                        <td colspan="2"><b>{{ Ed.FFPS_Deductions|default:0 }}</b></td>
+                        <td colspan="2">{{ Ed.Total_Deductions_Remarks|default:'' }}</td>
+                      </tr>
+
+                  </tbody>
+              </table>
+
+              <!-- Final Payable Amount -->
+              <br>
+              <table style="border: 0.3px solid black; border-spacing: 2px; border-color: gray;">
+                  <tr>
+                      <td style="text-align: center;"><b>Final Payable Amount</b></td>
+                      <td><b>{{ Ed.FFPS_Grand_Total|default:0 }}</b></td>
+                  </tr>
+              </table>
+
+              
+            <br>
+                  <input type="hidden" name="ID" value="{{Ed.id}}">
+      <h4>APPROVAL INFORMATION</h4>
+      <div class="row">
+          <div class="col-sm-12">
+              <table style="border: 0.3px solid black; border-spacing: 2px; border-color: gray;">
+                  <tbody>
+                      <tr>
+                          <th>Audited By HR</th>
+                          <th>Audited By Finance</th>
+                          <th>Audited By GM</th>
+                          <th>Auditor</th>
+                          <th>Payment Status</th>
+                          <th>F and F Status</th>
+                      </tr>
+                      <tr>
+                          <th>{{Ed.AuditedByHR|default:''}}</th>
+                          <th>{{Ed.AuditedByFinance|default:''}}</th>
+                          <th>{{Ed.AuditedByGM|default:''}}</th>
+                          <th>{{Ed.AuditedBy_Auditor|default:'' }}</th>
+                          <th>{{Ed.PaymentStatus|default:''}}</th>
+                          <th>{{Ed.FinalStatus|default:''}}</th>
+                      </tr>
+                  </tbody>
+              </table>
+          </div>
+            <br>
+            <br>
+            <br> 
+            <table>
+                {% comment %} <tr>
+                    <td>Prepared By</td>
+                    <td>Checked By</td>
+                    <td>Approved By</td>
+                </tr>
+                <tr>
+                    <td>________________________</td>
+                    <td>________________________</td>
+                    <td>________________________</td>
+                </tr>
+                <tr>
+                    <td>________________________</td>
+                    <td>________________________</td>
+                    <td>________________________</td>
+                </tr> {% endcomment %}
+                <tr>
+
+                </tr>
+                <tr>
+                    <td colspan="3">1. I understand to maintain absolute secrecy herebafter with regards to the company's business operations and all such</td>
+                </tr>
+                <tr>
+                    <td colspan="3">2. I received all my dues from the company in full & final settlement and I have no further claims against the company.</td>
+                </tr>
+                <tr></tr>
+                <tr>
+                    <td>Name: {{Ed.Name}}</td>
+                    <td>Date: {{today|date:'d-m-Y'}}</td>
+                    <td>Signature: ____________________</td>
+                </tr>
+            </table>
+          </div>
+        </div>        
+  </div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,248 @@
+{% extends "guest/homebase.html" %} {% block content %}
+
+<style>
+  table th {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 11px;
+    /* font-weight: bold; */
+  }
+
+  td {
+     text-align: center; 
+    font-size: 12px;
+     font-weight: bold; 
+  }
+
+  body {
+    font-family: arial nova;
+  }
+   th {
+        text-align: center;
+   }
+
+  /* Reduce padding and font size for smaller table */
+  #example {
+    font-size: 10px;
+    padding: 5px;
+  }
+
+  /* Optional: Make table responsive for smaller screens */
+  @media only screen and (max-width: 600px) {
+    #example {
+      font-size: 12px;
+    }
+  }
+</style>
+ <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<div class="col-md-12">
+  <div class="card-header">
+    <div class="row">
+      <div class="col-md-6" style="color: #1ab394">
+        <strong>Social Media Guest Feedback</strong>
+      </div>
+      
+     
+     
+    </div>
+  </div>
+  <br />
+  
+  <form>
+    
+  <div class="row">
+    <div class="col-md-2 mb-1">
+      <label for="start_date">Start Date:</label>
+      <input value="{{ start_date  }}" type="date" class="form-control" name="start_date" id="start_date" />
+    </div>
+  
+    <div class="col-md-2 mb-1">
+      <label for="end_date">End Date:</label>
+      <input value="{% if todate %}{{ todate }}{% else %}{% now 'Y-m-d' %}{% endif %}" type="date" class="form-control"
+        name="end_date" id="end_date" />
+    </div>
+  
+    <div class="col-md-3">
+      <label for="">Hotel Name</label>
+      <select name="hotel" class="form-control">
+                  {% for organization in memOrg %}
+        <option value="{{ organization.OrganizationID }}" {% if organization.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+            {{ organization.Organization_name }}
+        </option>
+    {% endfor %}
+                  </select>
+    </div>
+    <div class="col-md-2">
+      <label for="">Status</label>
+      <select name="status" class="form-control">
+                    <option value="">Select a Status</option>
+                   
+                    <option value="Pending" {% if status == "Pending" %}selected{% endif %}>Pending</option>
+                     <option value="Closed" {% if status == "Closed" %}selected{% endif %}>Closed</option>
+                     
+                  </select>
+    </div>
+    <div class="col-md-2">
+  <label for="process_lapse">Process Lapse</label>
+  <input
+    type="text"
+    class="form-control"
+    name="process_lapse"
+    id="process_lapse"
+    
+  />
+</div>
+<div class="col-md-2">
+  <label for="action_plan">Action Plan</label>
+  <input
+    type="text"
+    class="form-control"
+    name="action_plan"
+    id="action_plan"
+  />
+</div>
+<div class="col-md-2">
+  <label for="gm_comment">GM/HM Comment</label>
+  <input
+    type="text"
+    class="form-control"
+    name="gm_comment"
+    id="gm_comment"
+  />
+</div>
+
+    <div class="col-md-2">
+    
+      <input type="submit" class="btn btn-primary fa fa-filter  " style="margin-top: 33px;" value="Filter" />
+    </div>
+  </div>
+  </form>
+   <hr>
+<table id="example" class="table table-bordered">
+  <thead class="thead">
+    <tr class="table-success">
+      <th>Date</th>
+      <th>Guest Details</th>
+      <th>Complaint</th>
+      <th>Process Lapse</th>
+      <th>Action Plan</th>
+      <th>GM Comment</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for guests in guests %}
+    <tr>
+      <td  style="width: 70px;" >{{ guests.gm_date | date:'d-m-Y' }}</td>
+      <td>
+        <table class="table table-bordered" style="text-align: left !important;">
+           <tr><td>Room No.</td><td>
+        {% if guests.room_no %}
+            {{ guests.room_no }}
+        {% else %}
+            <span style="color: red;">Pending</span>
+        {% endif %}
+    </td></tr>
+    <tr><td>Guest Name.</td><td>
+        {% if guests.guest_name %}
+            {{ guests.guest_name }}
+        {% else %}
+            <span style="color: red;">Pending</span>
+        {% endif %}
+    </td></tr>
+    <tr><td>Stay Days.</td><td>
+        {% if guests.stay_days %}
+            {{ guests.stay_days }}
+        {% else %}
+            <span style="color: red;">Pending</span>
+        {% endif %}
+    </td></tr>
+        </table>
+      </td>
+      <td>
+        <img src="{{ guests.image.url }}" alt="Image" width="200" height="100" /><br>
+        {% if guests.complaint %}
+          {{ guests.complaint }}
+        {% else %}
+          <span style="color: red;">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if guests.process_lapse %}
+          {{ guests.process_lapse }}
+        {% else %}
+          <span style="color: red;">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if guests.Action_Plan %}
+          {{ guests.Action_Plan }}
+        {% else %}
+          <span style="color: red;">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if guests.gm_comment %}
+          {{ guests.gm_comment }}
+        {% else %}
+          <span style="color: red;">Pending</span>
+        {% endif %}
+      </td>
+      <td>
+        {% if guests.status is none %}
+        <span style="color: red;">Pending</span>
+        {% elif guests.status == 0 %}
+        <span style="color: red;">Pending</span>
+        {% elif guests.status == 1 %}
+        <span style="color: green;">Closed</span>
+        {% endif %}
+      </td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+</div>
+
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css"
+/>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+ 
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+   
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+   
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    
+
+<script>
+ $(document).ready(function() {
+    $('#example').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        columnDefs: [
+            { targets: "_all", className: "text-center" }
+        ]
+    });
+});
+
+ 
+
+</script>
+{% endblock content %}

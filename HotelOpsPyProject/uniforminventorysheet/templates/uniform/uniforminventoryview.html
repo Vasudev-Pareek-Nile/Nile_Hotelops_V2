@@ -1,0 +1,154 @@
+{% comment %} {% extends 'uniform/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+ 
+  <form method="post" action={% url 'UniformInventoryViewData' %}  enctype="multipart/form-data">
+    {{ Uniform_Inventory_Sheet }}
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Uniform Invertory Order </p>
+        </div>
+
+        <div class="card-body">
+            <input type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+             <div class="row">
+                 <div class="col-sm-3">
+                     <label>From</label>
+                      {{Ed.From}}
+                    </div>
+                 <div class="col-sm-3">
+                      <label>To</label>
+                      {{Ed.To}}
+                    </div>
+                </div>
+
+            </div>
+<br/>
+                    <div class='row'>
+                      <style>
+                        h5 {text-align: center;}
+                      </style>
+                        <div class="col-sm-12">
+                            <br>
+                           <th><h5> Return of Hotel Property<h5></th>
+                        </br>
+                        </div>
+                      </div>
+                
+                    <table class="table table-bordered">
+                            <tr>  
+                                  <th width="300">Item</th>
+                                  <th>Fresh</th>
+                                  <th>Soiled</th>
+                                  <th>Total</th>
+                            </tr>
+                     
+
+                      {% for i in DbItemMaster %}
+                            <tr>
+                              <td>{{i.Uniform_Item_Master.Item_Title_Name}}</td>
+                              <td class="rb">
+                               
+                                  <td>
+                                     {{i.Fresh}}
+                                  </td>
+                                  <td>
+                                     {{i.Soiled}}
+                                  </td>
+                                  <td>
+                                     {{i.Total}}
+                                  </td>
+                              </td>
+
+                                {% if forloop.last %}
+                                <input type="hidden"  rows=2 value="{{forloop.counter }}" name="TotalItem" >
+                                {% endif %}
+                              </td>
+                            </tr>
+                      {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-right">
+        </div>
+
+      </div>
+    </div>
+
+  
+  {% endblock content %} {% endcomment %}
+
+  {% load static %}
+
+  {% comment %} <link href="/css/bootstrap.min.css" rel="stylesheet"> {% endcomment %}
+  
+  {% block content %}
+  <style>
+    table td,table th{
+      border:1px solid #434568 !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+      width:200px;
+    }
+  </style>
+  
+    <!--- signup page for doctor by admin(sumit)  ---------->
+    
+      <div class="container register-form">
+        <div class="card card-primary">
+          <div class="card-header">
+            <p>Your Uniform Inventory Form View </p>
+          </div>
+         
+          <div class="card-body">
+            <input  type="hidden" name="ID" value="{{Ed.id}}">
+        <div class="row">
+              <div class="col-sm-12">
+                <table class="table table-striped table-bordered table-hover">
+                  <tbody>
+                    <tr>
+                      <th>From</th>
+                      <td>{{Ed.From}}</td>
+                      </tr>
+                      <tr>
+                        <th>To</th>
+                        <td>{{Ed.To}}</td>
+                      </tr>
+                      <tr>
+                        <th>Item_Title_Name</th>
+                        <td>{{Ed.Item_Title_Name}}</td>
+                      </tr>
+                      <tr>
+                        <th>Fresh</th>
+                        <td>{{Ed.Fresh}}</td>
+                        </tr>
+                        <tr>
+                          <th>Soiled</th>
+                          <td>{{Ed.Soiled}}</td>
+                        </tr>
+                        <tr>
+                          <th>Total</th>
+                          <td>{{Ed.Total}}</td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>        
+        </div>
+      </div>
+  
+{% endblock content %} 
+ 
+  

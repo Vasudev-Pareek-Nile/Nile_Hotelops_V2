@@ -1,0 +1,41 @@
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        Employee Data Link
+    </div>
+    <div class="main d-flex justify-content-center align-items-center">
+        <div class="col-md-8 m-1">
+            <div class="form-group text-center">
+                <a id="dataLink" href="/InterviewAssessment/CandidateDataForm/?ID={{ obj.TokenKey }}" target="_blank" class="d-block mb-3">Click here to view the link</a>
+                <p>Valid till {{obj.ExpiryDate|date:'j F, Y'}}</p>
+                <button class="btn btn-primary" onclick="copyLink()">
+                    <span class="fa fa-copy"></span> Copy Link
+                </button>
+                <br>
+                <a href="{% url 'InterviewAssessmentList' %}" class="btn btn-primary btn-sm m-2">Back To Interview Assessment</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyLink() {
+        var linkElement = document.getElementById("dataLink");
+
+        var tempInput = document.createElement("input");
+        document.body.appendChild(tempInput);
+
+        tempInput.value = linkElement.href;
+
+        tempInput.select();
+        document.execCommand("copy");
+
+        document.body.removeChild(tempInput);
+
+        alert("Copied the link: " + linkElement.href);
+    }
+</script>
+
+{% endblock %}

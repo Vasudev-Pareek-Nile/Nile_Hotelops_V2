@@ -1,0 +1,105 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+ <style>
+    td.bold {
+        font-weight: bold;
+        background: #efefef;
+        vertical-align: middle !important;
+        font-size: 15px;
+    }
+    .title{
+        font-size: 40px;
+    }
+
+ </style>
+    <div class="container1">
+        <Div class="card card-primary ">
+       
+        <div class ="card-header">Snag List Edit</div>
+               
+        <div class="card-body">
+            <form action="{%url 'SnagListEdit' mem.id %}" method = "post">
+                {% csrf_token %}
+
+             <div class = "row">
+               <div class="col-sm-4">
+                <label> Area  </label>
+                <input type="text" class="form-control" id="Area" value="{{mem.Area}}" name ="Area" placeholder ="Area" maxlength="100">
+              </div>
+
+              <br>
+              <div class="col-sm-4">
+                <label> Date  </label>
+                <input type="date" name="Date" placeholder="Date" value="{{ mem.Date|default_if_none:''|date:'Y-m-d'  }}" class="form-control" id = "Date">
+              </div>
+            </div>
+        
+        
+               <br>
+               <br>
+                <table id="title" class= "table table-bordered " >
+                    <thead>
+                        
+                      
+                        <th>Description</th>
+                        <th>Yes/No</th>
+                        <th>Remarks</th>
+                        
+                    </thead>
+                    {% for x in mem1 %}
+                    <tr> 
+                        {% if x.SnagListMaster.category == "1" %}
+                        <td style="background-color: aliceblue;" colspan="3">{{x.SnagListMaster.title}}
+                        <input name="ID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                        <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.SnagListMaster.id}}" type="text"/>
+
+                        </td> 
+                        {% else %}
+                        <td >{{x.SnagListMaster.title}}</td> 
+                        <td><input type="checkbox" width="50px" data-val="{{x.Yes}}" value="1" name="Yes_{{ forloop.counter0 }}"/>
+                            <input name="ID_{{ forloop.counter0 }}" type="hidden" value="{{x.id}}" type="text"/>
+                            <input name="TitleID_{{ forloop.counter0 }}" type="hidden" value="{{x.SnagListMaster.id}}" type="text"/>
+    
+                       </td>
+                      
+                       <td>
+                        <textarea type="myTextarea"   class="form-control" name="Remarks_{{ forloop.counter0 }}"/>{{x.Remarks}}</textarea>
+                        
+                       </td> 
+                       {% if forloop.last %}
+                       <!-- Add the total loop count hidden field on the last iteration -->
+                            <input type="hidden" name="TotalItem" id="TotalItem" value="{{ forloop.counter }}">
+                        {% endif %}
+                       {% endif %}
+                    
+                        </tr>
+                         
+                    {% endfor %}       
+                    </table>
+                    <div class = "card-footer text-right">
+                        <button class="btn btn-primary" type="submit" id="new1">Submit</button>
+                        </div>
+                  
+                                 
+               </div>      
+            </form>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            $("input[type='checkbox']").each(function(){
+                if($(this).attr('data-val')!=undefined && $(this).attr('data-val')=="True"){
+                  $(this).prop('checked','true')
+              }
+                
+              })
+
+        })
+    </script>
+
+
+
+{% endblock content %}

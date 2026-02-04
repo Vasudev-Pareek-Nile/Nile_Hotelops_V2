@@ -1,0 +1,569 @@
+{% load static %}
+{% load encryption_filters %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Product -hotelops</title>
+
+    <link href="{% static '/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static '/font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+
+    <!-- Toastr style -->
+    <link href="{% static '/css/plugins/toastr/toastr.min.css' %}" rel="stylesheet">
+
+    <!-- Gritter -->
+    <link href="{% static '/js/plugins/gritter/jquery.gritter.css' %}" rel="stylesheet">
+
+    <link href="{% static '/css/animate.css' %}" rel="stylesheet">
+    <link href="{% static '/css/style.css' %}?v=1" rel="stylesheet">
+    <link href="{% static '/CustomCss.css' %}" rel="stylesheet">
+    <script src="{% static '/js/jquery-3.1.1.min.js' %}"></script>
+
+    <link href="{% static 'css/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+   
+
+    
+</head>
+<style>
+    body{
+        font-size: 11px;
+    }
+    .metismenu a{
+
+        color: #fff !important;
+    }
+</style>
+<style>
+    .content-section {
+        display: none;
+    }
+    .content-section.active {
+        display: block;
+    }
+    .nav-link.active {
+        font-weight: bold;
+    }
+    .show {
+        display: block;
+    }
+</style>
+<body >
+    <div id="wrapper">
+                <nav class="navbar-default navbar-static-side" role="navigation">
+                    
+                    <div class="sidebar-collapse">
+                        {% comment %} <ul class="nav metismenu" id="side-menu"> {% endcomment %}
+                            <ul class="nav metismenu" id="side-menu" style="max-height: 100vh; overflow-y: auto;">
+                            <li class="nav-header">
+                                <div class="dropdown profile-element text-center">
+                                    <img alt="image" class="" src="{{ request.session.OrganizationLogo}}" style="max-width:100px;box-shadow: none !important;"/>
+                                    
+                
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="{{request.session.HomeURL}}">
+                                        <span class="block m-t-xs font-bold">{{ request.session.FullName }} {{hotelopsmgmtpy.MasterAttribute.Host}} <b class="caret"></b></span>
+                                        <span class="text-muted text-xs block" style="overflow: auto;">{{ request.session.Designation}} </span>
+                                    </a>
+                                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                        
+                                        <li><a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a></li>
+                                        <li><a class="dropdown-item" href="{{request.session.Logout}}">Logout</a></li>
+                                    </ul>
+                                </div>
+                                <div class="logo-element" style="text-transform:capitalize">
+                                    <img  alt="image" class="" src="{{ request.session.OrganizationLogo}}" style="max-width:50px;box-shadow: none !important;"/>
+                                    <span style="font-size: 8px;">{{ request.session.FullName }}</span>
+                                </div>
+                            </li>
+                            
+                            
+                        
+                            <li class="">
+                                <a href="" aria-expanded="true">
+                                    <i class="fa fa-user"></i> 
+                                    <span class="nav-label">Employee Information</span> 
+                                    <span class="fa arrow"></span>
+                                </a>
+                                <ul class="nav nav-second-level collapse in" >
+                                    <li><a class="nav-link" href="{% url "PersonalDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Personal  Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "EmergencyInfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Emergency Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "FamilyinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Family Information</a></li>
+
+                                    <li><a class="nav-link" href="{% url "AddressPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Address Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "IdentityPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Identity Information</a></li>
+                                    <li><a class="nav-link" href="{% url "DocumentinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Document Information</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "QualificationinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Qualification Information</a></li>
+                                    <li><a class="nav-link" href="{% url "BankDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Bank Details Information</a></li>
+                                  
+                                </ul>
+                            </li>   
+                    
+                            <!-- Employment Details Section -->
+                            <li class="">
+                                <a href="" aria-expanded="true">
+                                    <i class="fa fa-briefcase"></i> 
+                                    <span class="nav-label">Work Information</span> 
+                                    <span class="fa arrow"></span>
+                                </a>
+                                <ul class="nav nav-second-level collapse in">
+                                    
+                                  
+                                    <li><a class="nav-link" href="{% url "PreviousworkinfoPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Previous Work Information</a></li>
+
+                                    <li><a class="nav-link" href="{% url "EmployeeWorkDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Work Information</a></li>
+                                  
+                                  
+                                    <li><a class="nav-link" href="{% url "SalaryDetailsPage" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Salary Details Information</a></li>
+                                    
+
+                                    <li><a class="nav-link" href="{% url "EmployeeLetters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Employee Letters</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Uniform" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Uniform</a></li>
+                                   <li><a class="nav-link" href="{% url "IT" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">IT</a></li>
+                                  
+                              
+                                    <li><a class="nav-link" href="{% url "JobDescriptions" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Job Description</a></li>
+                               
+                                    <li><a class="nav-link" href="{% url "CodeConduct" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Code of Conduct </a></li>
+                                    <li><a class="nav-link" href="{% url "Checklist" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">CheckList</a></li>
+                                    <li><a class="nav-link"  href="{% url "LeaveDetails" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Leave Details</a></li>
+
+                                    <li><a class="nav-link" href="{% url "ProbationConfirmation" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Probation Confirmation</a></li>
+                                   
+                                    
+
+                                    <li><a class="nav-link" href="{% url "KraReport" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Kra Report</a></li>
+                                  
+                                    <li><a class="nav-link" href="{% url "PADP" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">PADP</a></li>
+
+                                    <li><a class="nav-link"  href="{% url "Warning_Letters" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}" >Warning Letters</a></li>
+
+
+                                   
+
+                               
+                                </ul>
+                            </li>
+
+                            <!-- Exit Process Section -->
+                            <li class="">
+                                <a href="" aria-expanded="true">
+                                    <i class="fa fa-sign-out"></i> 
+                                    <span class="nav-label">Exit Process</span> 
+                                    <span class="fa arrow"></span>
+                                </a>
+                                
+                                <ul class="nav nav-second-level collapse in">
+
+                                  
+                                    <li><a class="nav-link" href="{% url "Resigantion" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Resignation</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Termination" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Termination</a></li>
+                                    
+                                    <li><a class="nav-link" href="{% url "Absconding" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Absconding</a></li>
+
+                                  
+                                    
+                                    <li><a class="nav-link" href="{% url "FullandFinal" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Full and Final Settlement</a></li>
+                                    <li><a class="nav-link" href="{% url "ExitInterview" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Exit Interview</a></li>
+                                    <li><a class="nav-link" href="{% url "Clearance_From" %}?EmpID={{EmpID|encrypt_id_filter}}&OID={{OrganizationID}}">Clearance Form</a></li>
+
+                                </ul>
+                            </li>
+
+                        
+                        </ul>
+
+                    </div>
+                    <div class="sidebar-footer text-center m-1" style="position: fixed; bottom: 20px; left: 20px; z-index: 999;">
+                        <button onclick="history.back()" class="btn btn-primary btn-sm">
+                            <i class="fa fa-arrow-left"></i> 
+                        </button>
+                        
+                    </div>
+                    
+                    
+                </nav>
+       
+
+
+                    <div id="page-wrapper" class="gray-bg dashbard-1">
+
+                                <div class="row border-bottom">
+                                
+                                    <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+                                        <div class="navbar-header">
+                                            <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                                            
+                                        <ul class="nav navbar-top-links">
+                                            
+                                            
+                                            <li><a href= "{% url 'NewEmployeeDataForm' %}">New Employee</a></li>
+                                            
+                                            <li><a href= "{% url 'EmployeeList' %}">EmployeeList</a></li>
+                                            <li><a href= "{% url 'DataMissingReport' %}">Data Missing Report</a></li>
+
+
+
+                                            
+                                            
+                                        
+                                            
+                                            
+                                            
+                                        
+                                        </div>
+                                        
+                                                <ul class="nav navbar-top-links navbar-right">
+                                                    <li style="padding: 20px">
+                                                        <span class="m-r-sm text-muted welcome-message">Welcome to {{ request.session.OrganizationName}}.</span>
+                                                    </li>
+
+                                                 
+                                                
+                                                    <li class="nav-item d-none d-sm-inline-block">
+                                                        <a href="{{request.session.HomeURL}}" class="nav-link">Home</a>
+                                                        
+                                                        
+                                                    </li>
+                                                    
+                                    
+
+
+                                                    <li class="nav-item dropdown">
+                                                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">Profile<span class="caret"></span></a>
+                                                        <ul class="dropdown-menu">
+
+                                                            <li><a class="dropdown-item" href="{{request.session.ChangePassword}}">Change Password</a></li>
+                                                        </ul>
+                                                    </li>
+
+                                                    <li class="dropdown">
+                                                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                                            <i class="fa fa-envelope"></i>  <span class="label label-warning">0</span>
+                                                        </a>
+                                                        
+                                                    </li>
+                                                    <li class="dropdown">
+                                                        <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
+                                                            <i class="fa fa-bell"></i>  <span class="label label-primary">0</span>
+                                                        </a>
+                                                        
+                                                    </li>
+
+
+                                                    <li>
+                                                        <li><a class="dropdown-item" href="{{request.session.Logout}}">Logout</a></li>
+                                                   </li>
+                                   
+                                                </ul>
+
+                                    </nav>
+                                </div>
+                                
+                
+                                <div class="row  border-bottom white-bg dashboard-header">
+                                            <div class="col-md-12">
+
+                                                    
+                                                <div class="card" style="background-color: rgb(213, 216, 231);">
+                                                    <div class="row">
+                                                                    <div class="col-md-1 col-sm-1 m-2">
+                                                                        
+
+
+
+                                                                                
+                                                                                {% if Emobj.ProfileImageFileName  %}
+                                                                            
+                                                                                <img id="ProfileImagePreview" src="{% url 'Humanview_file' %}?ID={{ Emobj.EmpID }}&model=EmployeePersonalDetails" alt="Profile Image Preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                                                            
+                                                                            
+                                                                            
+                                                                                {% else %}
+                                                                                <img id="ProfileImagePreview" src="{% static 'Images/avatarimg.webp' %}" alt="Profile Image Preview" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
+                                                                    
+                                                                                {% endif %}
+                                                                        
+                                                                            
+
+
+
+
+
+                                                                    </div>
+                                                                    <div class="col-md-2 col-sm-2 mt-4">
+                                                                        <span>
+                                                                            <strong>Emp Code:</strong> {{ Emobj.EmployeeCode }}
+                                                                        </span>
+                                                                        <br>
+                                                                        <span>
+                                                                            
+                                                                                <strong>Name:</strong> 
+                                                                            
+                                                                        {{ Emobj.FirstName }} {{ Emobj.MiddleName }} {{ Emobj.LastName }}
+                                                                        
+                                                                        </span>
+                                                                        <br>
+                                                                        <span>
+                                                                            
+                                                                            <strong>Employee Status:</strong> 
+                                                                        
+                                                                    {{ Emobj.EmpStatus }}
+                                                                    
+                                                                    </span>
+
+
+
+                                                                        
+                                                                    </div>
+                                                                    <div class="col-md-3 col-sm-3 mt-4">
+                                                                        <span>
+                                                                        
+                                                                                <strong>Designation:</strong> 
+                                                                        
+                                                                            {{ Emobj.Designation }}
+                                                                        
+
+                                                                        </span>
+                                                                        <br>
+                                                                        <span>
+                                                                        
+                                                                                <strong>Reporting to:</strong>
+                                                                        
+                                                                            {{ Emobj.ReportingtoDesignation }}
+                                                                        
+
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-md-2 col-sm-2 mt-4">
+                                                                        <span>
+                                                                            
+                                                                                <strong>Department:</strong> 
+                                                                        
+                                                                            {{ Emobj.Department }}
+                                                                        
+                                                                        </span>
+                                                                        <br>
+                                                                        <span>
+
+                                                                        
+                                                                                <strong>Level:</strong>
+                                                                        
+                                                                                {{ Emobj.Level }}
+                                                                        
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="col-md-3 col-sm-3 mt-4">
+                                                                        <span>
+                                                                        
+                                                                                <strong>Date of Joining:</strong> 
+                                                                        
+                                                                            {{ Emobj.DateofJoining|date:'j F Y' }}
+                                                                        
+                                                                        </span>
+                                                                        <br>
+                                                                        <span>
+                                                                        
+                                                                                <strong>Tenure:</strong>
+                                                                        
+                                                                                {{ Emobj.TenureTillToday }}
+
+                                                                        </span>
+                                                                    </div>
+                                                    </div>
+                                                </div>
+                                                                                    
+                                                
+                                                 <br>     
+                                                 {% block content %}
+                                            
+                                            
+                                            
+                                                 {% endblock content %}                       
+                                            </div>
+                                            
+
+                                           
+
+
+
+
+                                           
+                    
+
+
+                                   
+                                 </div>
+
+                                
+                                
+
+                    </div>
+
+    </div>                
+   
+   
+   
+   
+   
+   
+   
+    <!-- Toast notification -->
+
+<script src="{% static 'js/plugins/sweetalert/sweetalert.min.js' %}"></script>
+    
+
+    <!-- Mainly scripts -->
+    <script src="{% static '/js/popper.min.js' %}"></script>
+    <script src="{% static '/js/bootstrap.js' %}"></script>
+    <script src="{% static '/js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
+    <script src="{% static '/js/plugins/slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+    <!-- Flot -->
+    <script src="{% static '/js/plugins/flot/jquery.flot.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.tooltip.min.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.spline.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static '/js/plugins/flot/jquery.flot.pie.js' %}"></script>
+
+    <!-- Peity -->
+    <script src="{% static '/js/plugins/peity/jquery.peity.min.js' %}"></script>
+    <script src="{% static '/js/demo/peity-demo.js' %}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static '/js/inspinia.js' %}"></script>
+    <script src="{% static '/js/plugins/pace/pace.min.js' %}"></script>
+
+    <!-- jQuery UI -->
+    <script src="{% static '/js/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- GITTER -->
+    <script src="{% static '/js/plugins/gritter/jquery.gritter.min.js' %}"></script>
+
+    <!-- Sparkline -->
+    <script src="{% static '/js/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
+
+    <!-- Sparkline demo data  -->
+    <script src="{% static '/js/demo/sparkline-demo.js' %}"></script>
+
+    <!-- ChartJS-->
+    <script src="{% static '/js/plugins/chartJs/Chart.min.js' %}"></script>
+
+    <!-- Toastr -->
+    <script src="{% static '/js/plugins/toastr/toastr.min.js' %}"></script>
+
+    
+    <script>
+         var showSuccess=function(){
+
+            swal({
+                title: "Data Saved successfully !",
+                type: "success"
+            });
+
+         }
+         var showDelete=function(){
+
+            swal({
+                title: "Deleted Successfully",
+              
+                type: "warning",
+               
+            });
+
+         }
+
+
+         var showUploaded=function(){
+
+            swal({
+                title: "Uploaded Successfully",
+              
+                type: "success",
+               
+            });
+
+         }
+
+
+
+        $(document).ready(function () {         
+
+            $("select").each(function(){
+            try
+                {
+
+                if($(this).attr('data-val')!=undefined)
+                {
+
+                    $(this).val($(this).attr('data-val'));
+                }
+
+            }catch(e){}
+
+            })
+           
+
+        });
+
+        $(window).bind("scroll", function () {
+            let toast = $('.toast');
+            toast.css("top", window.pageYOffset + 20);
+
+        });
+    </script>
+     
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.tab-link');
+        const contents = document.querySelectorAll('.tab-content');
+    
+        function showContent(id) {
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.id === id) tab.classList.add('active');
+            });
+    
+            contents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === id.replace('-tab', '')) content.classList.add('active');
+            });
+        }
+    
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                showContent(this.id);
+            });
+        });
+    
+       
+        if (tabs.length > 0) {
+            showContent(tabs[0].id);
+        }
+    });
+    </script>
+    
+    
+
+
+
+    
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,100 @@
+{% extends "check/homebase.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+   
+    table th {
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 11px;
+    }
+
+    td {
+        text-align: center;
+    }
+
+    {% comment %} body {
+        font-family: Arial Nova;
+    } {% endcomment %}
+
+</style>
+
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 900px;">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function() {
+            document.querySelector('.alert').remove();
+        }, 3000);
+    </script>
+    {% endfor %}
+{% endif %}
+
+<div class="card-header" style="width: 100%; margin: auto;">
+    <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+            <h4>REFERENCE CHECK FORM</h4>
+        </div>
+        <div class="col-md-6 text-right">
+            <a href="{% url 'Reference_form' %}" class="btn btn-primary">Add Reference Check Form</a>
+        </div>
+    </div>
+</div>
+
+<table id="example" class="table table-bordered" style="width: 100%; margin: auto;">
+    <thead class="thead">
+        <tr class="table-success">
+            <th>Employee Name</th>
+            <th>Employee Department</th>
+            <th>Reference Name 1</th>
+            <th>Reference Name 2</th>
+            <th>Reference Name 3</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reference in references %}
+        <tr>
+            <td>{{ reference.candidate_name }}</td>
+            <td>{{ reference.candidate_department }}</td>
+            <td>
+                {{ reference.Ref1_name }} |
+                {% if reference.ref1_status == 0 %}
+                    <span class="badge badge-danger">Pending</span>
+                {% elif reference.ref1_status == 1 %}
+                    <span class="badge badge-success">Done</span>
+                {% else %}
+                    <span class="badge badge-warning">Unknown</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ reference.Ref2_name }} |
+                {% if reference.ref2_status == 0 %}
+                    <span class="badge badge-danger">Pending</span>
+                {% elif reference.ref2_status == 1 %}
+                    <span class="badge badge-success">Done</span>
+                {% else %}
+                    <span class="badge badge-warning">Unknown</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ reference.Ref3_name }} |
+                {% if reference.ref3_status == 0 %}
+                    <span class="badge badge-danger">Pending</span>
+                {% elif reference.ref3_status == 1 %}
+                    <span class="badge badge-success">Done</span>
+                {% else %}
+                    <span class="badge badge-warning">Unknown</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+
+{% endblock content %}

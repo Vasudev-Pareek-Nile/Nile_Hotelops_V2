@@ -1,0 +1,166 @@
+{% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+{% block content %}
+<style>
+
+    th {
+        text-align: center;
+        vertical-align:middle;
+    }
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  h4{
+    background-color:#F8C471;
+    color:#34495E;
+    padding:10px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#333;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        {% comment %} <div class="card-header">
+          <p>Your Full and Final Settlement </p>
+        </div> {% endcomment %}
+
+
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+          <h4>Scanty Baggage Register</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-striped table-bordered table-hover">
+                
+                  <tbody>
+                      <tr>
+                          <th>Date</th>
+                          <th>Room No</th>
+                          <th>Guest Name</th>
+                          <th>Arrival Date</th>
+                          <th>Departure Date</th>
+                          <th>Deposite</th>
+                          <th>Comment</th>
+                          <th>Front Desk Associate</th>
+                          <th>Duty Manager</th>
+                          <th>Remarks</th>                          
+                       </tr>
+                       <tr>
+                        <td>{{Ed.Date}}</td>
+                        <td>{{Ed.Room_No}}</td>
+                        <td>{{Ed.Guest_Name}}</td>
+                        <td>{{Ed.Arrival_Date}}</td>
+                        <td>{{Ed.Departure_Date}}</td>
+                        <td>{{Ed.Deposite}}</td>
+                        <td>{{Ed.Comment}}</td>
+                        <td>{{Ed.Front_Desk_Associate}}</td>
+                        <td>{{Ed.Duty_Manager}}</td>
+                        <td>{{Ed.Remarks}}</td>
+                      </tr>
+                 
+              
+              
+                                    
+                   </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+      </div>
+       
+    </div >
+
+
+
+{% endblock content %}
+{% comment %} {% load static %}
+
+<img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" />
+
+
+{% block content %}
+<style>
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+  }
+</style>
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Your Scanty Baggage Order </p>
+        </div>
+       
+        <div class="card-body">
+          <input  type="hidden" name="ID" value="{{Ed.id}}">
+      <div class="row">
+            <div class="col-sm-12">
+              <table class="table table-striped table-bordered table-hover">
+                <tbody>
+                  <tr>
+                    <th>Date</th>
+                    <td>{{Ed.Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Room No</th>
+                      <td>{{Ed.Room_No}}</td>
+                    </tr>
+                    <tr>
+                      <th>Guest Name</th>
+                      <td>{{Ed.Guest_Name}}</td>
+                    </tr>
+                    <tr>
+                      <th>Arrival Date</th>
+                      <td>{{Ed.Arrival_Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Departure Date</th>
+                      <td>{{Ed.Departure_Date}}</td>
+                    </tr>
+                    <tr>
+                      <th>Deposite</th>
+                      <td>{{Ed.Deposite}}</td>
+                    </tr>
+                    <tr>
+                      <th>Comment</th>
+                      <td>{{Ed.Comment}}</td>
+                    </tr>
+                    <tr>
+                      <th>Front Desk Associate</th>
+                      <td>{{Ed.Front_Desk_Associate}}</td>
+                    </tr>
+                    <tr>
+                      <th>Duty Manager</th>
+                      <td>{{Ed.Duty_Manager}}</td>
+                    </tr>
+                    <tr>
+                      <th>Remarks</th>
+                      <td>{{Ed.Remarks}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>        
+      </div>
+    </div>
+
+    {% endblock content %}  {% endcomment %}

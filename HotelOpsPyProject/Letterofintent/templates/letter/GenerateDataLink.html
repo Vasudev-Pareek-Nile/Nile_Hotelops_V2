@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request for Reference Check for {{ candidate_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content p {
+            margin: 15px 0;
+        }
+        .content a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        .content img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 20px auto; /* Center the image */
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="content">
+            <p>Dear <b>{{ name }}</b>,</p>
+            <p>We are pleased to inform you that you have been selected for the position of <b>{{ candidate_designation }}</b> in the <b>{{ candidate_department }}</b> department at our organization, <b>{{ HotelName }}</b>.</p>
+           
+
+            <p>To proceed with the onboarding process, please click the link below to fill in your details:</p>
+            <p><a href="{{Link}}">Fill Your Details</a></p>
+
+            <p>We look forward to your positive response.</p>
+            <p>Thank you for your time and consideration.</p>
+            <p>Best regards,</p>
+            <p>{{ OrganizationName }} HR Team</p>
+          
+            <img src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/{{Logo}}" alt="{{OrganizationName}}">
+        </div>
+
+
+
+
+        
+    </div>
+</body>
+</html>

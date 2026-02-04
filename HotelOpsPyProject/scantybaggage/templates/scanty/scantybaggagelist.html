@@ -1,0 +1,64 @@
+{% extends 'scanty/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<div class="table-responsive">
+  <div >
+    <div  class="card-header">
+        Scanty Baggage List
+    </div>
+    <div>
+      <br/>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr style="background-color: #bbbbbb;">
+            <th>Date</th>
+            <th>Room No</th>
+            <th>Guest Name</th>
+            <th>Arrival Date</th>
+            <th>Departure Date</th>
+            <th>Deposite</th>
+            <th>Comment</th>
+            <th>Front Desk Associate</th>
+            <th>Duty Manager</th>
+            <th>Remarks</th>
+            <th>Action</th>
+          </tr>
+    
+        </thead>
+        {% if key1%}
+        <tbody>
+            {% for i in key1 %}
+          <tr>
+            <td>{{i.Date}}</td>
+            <td>{{i.Room_No}}</td>
+            <td>{{i.Guest_Name}}</td>
+            <td>{{i.Arrival_Date}}</td>
+            <td>{{i.Departure_Date}}</td>
+            <td>{{i.Deposite}}</td>
+            <td>{{i.Comment}}</td>
+            <td>{{i.Front_Desk_Associate}}</td>
+            <td>{{i.Duty_Manager}}</td>
+            <td>{{i.Remarks}}</td>
+            <td> 
+              <div class="btn btn-group">
+                  <a href="/scantybaggage/ScantyBaggageEditList?id={{i.id}}" class="btn btn-primary btn-sm">Edit</a>
+                  <a href="/scantybaggage/ScantyBaggageDeleteData?id={{i.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a>
+                  <a href="/scantybaggage/ScantyBaggage_pdf_view?id={{i.id}}" class="btn btn-primary btn-sm">View</a>
+               </div>
+          </td> 
+          </tr>
+            {% endfor %}
+        </tbody>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+  
+  
+</div>
+
+{% endblock content %}

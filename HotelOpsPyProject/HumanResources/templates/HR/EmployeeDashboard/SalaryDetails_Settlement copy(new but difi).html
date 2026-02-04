@@ -1,0 +1,197 @@
+{% extends "HR/EmployeeDashboard/homebase_Salary_Settlement.html" %}
+ {% load static %} 
+{% block content %}
+<link href="{% static 'css/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+<style>
+    .card .card-body {
+        padding: 1rem !important;
+    }
+
+    .card .card-header {
+        padding-bottom: -40px !important;
+    }
+</style>
+
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between">
+       <span class=" text-uppercase fw-bold">  Salary Information </span> 
+        <button id="editButton" class="btn btn-primary btn-sm float-right">Edit</button>
+    </div>
+    
+    <div class="card-body">
+        <div class="row mb-2">
+            <div class="col-sm-12 col-md-7">
+                <div id="employeeTable_filter" class="dataTables_filter">
+                <label>Effective From:
+                    <input type="date" class="form-control" name="EffectiveFrom"></label>
+                </div>
+            </div>
+        </div>
+
+        <form id="SalaryInfoForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- <div class="main">
+            
+                <div class="row m-1"> -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>SR</th>
+                                <th>Components</th>
+                                <th>Per Month</th>
+                                <th>Per Annum</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salaryTable">
+                            {% for SalaryTitle in SalaryTitles %}
+                            <tr>
+                                <td>
+                                    {{forloop.counter}}
+                                </td>
+                                <td>
+                                    {% if SalaryTitle.IsBold %}
+                                    <span style="font-weight: bold;">
+                                        {{SalaryTitle.Title}}
+                                    </span>
+                                    {% else %}
+                                    <span>
+                                        {{SalaryTitle.Title}} 
+                                    </span>
+                                    {% endif %}
+                                    <input type="hidden" name="TitleID_{{forloop.counter0}}" value="{{SalaryTitle.id}}">
+                                </td>
+                                <td>
+                                
+                                    {% if SalaryTitle.Title == "Gross (A)" or SalaryTitle.Title == "Total Employee Deduction (B)" or SalaryTitle.Title == "Total Company Contribution (C)"  or SalaryTitle.Title == "CTC (A+C)"     %}
+                                    <input type="number" name="Permonth_{{forloop.counter0}}" 
+                                    value="{{SalaryTitle.Permonth}}" 
+                                    class="form-control perm-month"
+                                    data-index="{{forloop.counter0}}"
+                                    data-Title-Permonth ="{{SalaryTitle.Title}}_Permonth" 
+                                
+                                
+                                    readonly >
+                                    {% else %}
+                                    <input type="number" name="Permonth_{{forloop.counter0}}" 
+                                    value="{{SalaryTitle.Permonth}}" 
+                                    class="form-control perm-month"
+                                    data-index="{{forloop.counter0}}"
+                                    data-type="{{SalaryTitle.Type}}"
+                                    data-Title-Permonth = "{{SalaryTitle.Title}}_Permonth"
+                                    >
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <input type="number" name="Perannum_{{forloop.counter0}}" 
+                                        value="{{SalaryTitle.Perannum}}" 
+                                        class="form-control per-annum"
+                                        data-Title-Perannum="{{SalaryTitle.Title}}_Perannum"  
+                                        
+                                        readonly>
+                                </td>
+                            </tr>
+                            {% if forloop.last %}
+                            <input type="hidden" name="Total_Title" value="{{ forloop.counter0 }}"/>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+            <div class="card-footer text-right">
+                <button type="submit" id="saveButton" class="btn btn-primary Successpopup" style="display: none;">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("I am here ")
+        const inputs = document.querySelectorAll(".perm-month");
+
+        inputs.forEach(input => {
+            input.addEventListener("change", function () {
+                let value = this.value;
+                console.log("I am Called ",value)
+
+
+                fetch("{% url 'recalculate_salary' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: new URLSearchParams({
+                        "Permonth": value
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update related Perannum field
+                        let row = this.closest("tr");
+                        let perAnnumField = row.querySelector(".per-annum");
+                        if (perAnnumField) {
+                            perAnnumField.value = data.perannum;
+                        }
+                    } else {
+                        console.error(data.error);
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButton = document.getElementById('editButton');
+        const saveButton = document.getElementById('saveButton');
+        const inputs = document.querySelectorAll('#SalaryInfoForm input');
+
+        console.log("inputs are here", inputs)
+        
+        function toggleInputs(disabled) {
+            inputs.forEach(input => {
+                if (!input.hasAttribute('readonly')) {
+                    if (disabled) {
+                        input.setAttribute('disabled', 'disabled');
+                    } else {
+                        input.removeAttribute('disabled');
+                    }
+                }
+            });
+        }
+
+        editButton.addEventListener('click', function() {
+            if (editButton.textContent.trim() === 'Edit') {
+                editButton.textContent = 'Cancel';
+                saveButton.style.display = 'inline-block';
+                toggleInputs(false);
+            } else {
+                editButton.textContent = 'Edit';
+                saveButton.style.display = 'none';
+                toggleInputs(true);
+            }
+        });
+
+        toggleInputs(true);
+    });
+</script>
+
+
+
+
+{% endblock content %}
+
+
+
+
+

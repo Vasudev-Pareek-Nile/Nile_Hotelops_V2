@@ -1,0 +1,38 @@
+{% extends "agreement/homebase.html" %} {% block content %}
+
+<div class="container">
+  <div class="col-md-6 mx-auto">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>Singed Contract Upload</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Upload Pdf</label>
+                <input
+                  type="file"
+                  class="form-file"
+                  name="pdf_filenn"
+                  value=""
+                  id=""
+                  required
+                />
+                <!-- <input type="hidden" name="ID" value="{{ID}}"> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock content %}

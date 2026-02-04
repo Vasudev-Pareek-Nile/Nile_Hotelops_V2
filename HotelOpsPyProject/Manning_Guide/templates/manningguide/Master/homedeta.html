@@ -1,0 +1,715 @@
+{% extends "manningguide/homebase.html" %}
+{% block content %}
+
+
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000); 
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+<style>
+  body {
+    font-family: 'Arial Nova', sans-serif; /* Use correct font name with quotes */
+  }
+
+  #AddDesignation label{
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  #AddDesignation row{
+    padding: 10px;
+  }
+</style>
+<style>
+    .tree ul {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+    .tree li {
+        position: relative;
+        padding-left: 20px;
+        cursor: pointer;
+    }
+
+    .tree li::before {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #ccc;
+    }
+
+    .tree li::after {
+        content: '';
+        position: absolute;
+        left: -10px;
+        top: 10px;
+        width: 10px;
+        height: 1px;
+        background: #ccc;
+    }
+
+    .tree li:last-child::before {
+        height: 10px;
+    }
+
+    .tree ul.collapsed {
+        display: none;
+    }
+
+    .tree li span {
+        user-select: none;
+    }
+
+    .tree i {
+        margin-right: 5px;
+    }
+
+    .actions {
+        margin-left: 10px;
+    }
+
+    .actions a {
+        margin-right: 5px;
+        text-decoration: none;
+        color: blue;
+    }
+
+    .actions a:hover {
+        text-decoration: underline;
+    }
+        .custom-card {
+        width: 98%; /* Adjust the width as needed */
+        margin: auto; /* Center the card */
+    }
+</style>
+
+<style>
+    .card{
+        border-radius:10px;
+    }
+    .card .card-header {
+        padding: 20px;
+        border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important;
+        background: transparent;
+    }
+    .btn{
+        border-radius:4px;
+    }
+    .form-control{
+        border-radius:4px;
+    
+    }
+    .text-primary {
+        color: #3a4a93 !important;
+    }
+</style>
+
+<div class="row">
+        <div class="col-sm-12">
+
+<section class="pt-0">
+  <div class="container vstack">
+    <div class="tab-pane">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <h4 class="">Manage Master -  On Roll</h4>
+            <div class="">
+                <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#AddDivision">Add New Division</button>
+                <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-target="#AddDepartmentModal">Add New Department</button>
+                <button type="button" class="btn btn-primary btn-sm mb-1" data-toggle="modal" data-bs-target="#AddDesignation">Add New Designation</button>
+                <a href="{% url 'laveldeta' %}" class="btn btn-primary btn-sm mb-1">Add Level</a>
+            </div>
+        </div>
+  <div class="card-body" >
+  <div class="tree">
+    <ul>
+        {% for division in divisions %}
+            {% if not division.IsDelete %}
+                <li id="division_{{ division.id }}">
+                    <i class="fas fa-folder"></i><span>{{ division.DivisionName }}</span>
+                    <span>
+                        <a href="#" class="edit edit-division text-primary" data-id="{{ division.id }}" data-type="division" data-toggle="modal" data-target="#AddDivision">Edit</a> |
+                        <a onclick="return confirm('Are you sure you want to delete? ')" href="{% url 'division_delete' %}?ID={{ division.id }}" class="delete text-danger">Delete</a> || 
+                        Sort Order : <a href="#" class="up text-info" onclick="move_up({{ division.id }});">Up</a> | <a href="#" class="down" onclick="move_down({{ division.id }});">Down</a>
+                    </span>
+                    <ul>
+                        {% for department in departments %}
+                            {% if not department.IsDelete and department.OnRollDivisionMaster_id == division.id %}
+                                <li id="department_{{ department.id }}">
+                                    <i class="fas fa-folder"></i><span>{{ department.DepartmentName }}</span>
+                                    <span>
+                                        <a href="#" class="edit edit-department text-primary" data-id="{{ department.id }}" data-type="department" data-toggle="modal" data-target="#AddDepartmentModal">Edit</a> |
+                                        <a onclick="return confirm('Are you sure you want to delete? ')" href="{% url 'department_delete' %}?ID={{ department.id }}" class="delete text-danger">Delete</a> || 
+                                        Sort Order: <a href="#" class="up text-info" onclick="move_up_department({{ department.id }});">Up</a> | <a href="#" class="down" onclick="move_down_department({{ department.id }});">Down</a>
+                                    </span>
+                                    <ul>
+                                        {% for designation in reportings %}
+                                            {% if not designation.IsDelete and designation.OnRollDepartmentMaster_id == department.id %}
+                                                <li id="designation_{{ designation.id }}">
+                                                    <i class="fas fa-file"></i><span>{{ designation.designations }} ({{ designation.Lavel }})</span>
+                                                    <span>
+                                                        <a href="#" class="edit edit-designation text-primary" data-id="{{ designation.id }}" data-type="designation" data-toggle="modal" data-target="#AddDesignation">Edit</a> |
+                                                        <a onclick="return confirm('Are you sure you want to delete? ')" href="{% url 'designationadd_delete' %}?ID={{ designation.id }}" class="delete text-danger">Delete</a> || 
+                                                        Sort Order : <a href="#" class="up text-info" onclick="move_up_designation({{ designation.id }});">Up</a> | <a href="#" class="down" onclick="move_down_designation({{ designation.id }});">Down</a>
+                                                    </span>
+                                                </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+</div>
+
+</div>
+        </div>
+    
+  </div>
+</section>
+</div>
+</div>
+
+
+<div class="modal fade" id="AddDivision" tabindex="-1" role="dialog" aria-labelledby="divisionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="divisionModalLabel"> Division Name</h5>
+                <button type="button" class="btn-close border-0 shadow-none bg-transparent fs-5" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div> 
+            <div class="modal-body">
+                <form method="POST" action="{% url 'OnRollDivisionAdd' %}" class="mb-0">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" name="DivisionName" id="division_name" required>
+                        <input type="hidden" name="division_id" id="division_id">
+                    </div>
+                    <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    {% comment %} <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> {% endcomment %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> 
+
+
+<div class="modal fade" id="AddDepartmentModal" tabindex="-1" role="dialog" aria-labelledby="departmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="departmentModalLabel">New Department</h5>
+        <button type="button" class="btn-close" data-dismiss="modal"
+            aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'OnRollDepartmentAdd' %}" class+"mb-0">
+          {% csrf_token %}
+          <div class="form-group m-3">
+            <label for="division_dep">Division</label>
+            <select id="division_dep" name="DivisionID" class="form-control select" required>
+              <option value="">Select Division</option>
+              {% for division in Divisionsfilter %}
+              <option value="{{ division.id }}">{{ division.DivisionName }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group m-3">
+            <label for="department_name">Department Name</label>
+            <input type="text" class="form-control" name="DepartmentName" id="department_name" required />
+            <input type="hidden" name="department_id" id="department_id">
+          </div>
+      </div>
+      <div class="modal-footer">
+        <input type="submit" value="Submit" class="btn btn-primary btn-sm" />
+        {% comment %} <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button> {% endcomment %}
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="AddDesignation" tabindex="-1" aria-labelledby="designationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title" id="designationModalLabel">New Designation</h5>
+        <button type="button" class="btn-close" data-dismiss="modal"
+            aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{% url 'OnRollDesignationAdd' %}" id="designationForm" class="mb-0">
+          {% csrf_token %}
+          <div class="row">
+            <div class="form-group col-md-6">
+                <label for="division_id">Division</label>
+                 <select id="division_deta" name="DivisionID" class="form-control" required>
+                    <option value="">Select Division</option>
+                    {% for division in Divisionsfilter %}
+                        <option value="{{ division.id }}">
+                            {{ division.DivisionName }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="department_deta">Department</label>
+              <select id="department_deta" name="DepartmentID" class="form-control" required>
+                <option value="">Select Department</option>
+                {% for department in Departmentsfilter %}
+                <option value="{{ department.id }}">{{ department.DepartmentName }} - {{ department.OnRollDivisionMaster.DivisionName }} </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="division_Div">Div</label>
+              <input type="text" class="form-control" name="Div" id="division_Div" required />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="designation_description">Dept</label>
+              <input type="text" class="form-control" name="Dept" id="designation_description" required />
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-8">
+                <label for="designation_name">Designation</label>
+                <input type="text" class="form-control" name="designations" id="designation_name" required />
+            </div>
+            <div class="form-group col-md-4">
+                <label for="laveldeta">Level</label>
+                <select  id="designation_Lavel" name="Lavel" class="form-control" >
+                  <option value="">Select Level</option>
+                  {% for level in laveladds %}
+                  <option value="{{ level.lavelname }}">{{ level.lavelname }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+          </div>
+          <div class="row mt-3">
+                <div class="form-group col-md-12">
+                    <input type="checkbox" name="Update_Employee_Data" value="1"> Update Employee Data
+                </div>
+           </div>
+          <div class="row mb-3">
+
+            <div class="form-group col-md-12">
+                <label>Direct Reporting Desigination</label>
+                <select id="ReportingToDesignation" name="Direct_Reporting" class="form-control" required>
+                    <option value="">Select Position</option>
+                    {% for Designation in MergedReportingtoDesignation %}
+                        <option value="{{ Designation.id }}" 
+                                {% if Workobj.ReportingtoDesignation == Designation.designations %}selected{% endif %}
+                                data-ReportingToDesignationLevel="{{ Designation.Lavel }}"
+
+                                {% if Designation.OnRollDivisionMaster %}
+                                    data-ReportingtoDivision="{{ Designation.OnRollDivisionMaster.id }}"
+                                {% elif Designation.CorporateDivisionMaster %}
+                                    data-ReportingtoDivision="{{ Designation.CorporateDivisionMaster.id }}"
+                                {% endif %}
+
+                                {% if Designation.OnRollDepartmentMaster %}
+                                    data-ReportingToDesignationLeveldepartment="{{ Designation.OnRollDepartmentMaster.id }}"
+                                {% elif Designation.CorporateDepartmentMaster %}
+                                    data-ReportingToDesignationLeveldepartment="{{ Designation.CorporateDepartmentMaster.id }}"
+                                {% endif %}>
+                            {{ Designation.designations }}  
+                            
+                            {% if Designation.OnRollDepartmentMaster %}
+                                ({{ Designation.OnRollDepartmentMaster.DepartmentName }}) 
+                            {% elif Designation.CorporateDepartmentMaster %}
+                                ({{ Designation.CorporateDepartmentMaster.DepartmentName }}) - Nile
+                            {% endif %}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-12">
+                <label for="Dotted_Line_Reporting">Dotted Line Reporting Desigination</label>
+                <select name="Dotted_Line_Reporting" class="form-control" id="Dotted_Line_Reporting">
+                    <option value="">Select Designations</option>
+                    {% for reporting in reportings %}
+                        <option value="{{ reporting.id }}">{{ reporting.designations }}</option>
+                    {% endfor %}
+
+                    {% for corp in corp_designations %}
+                        <option value="{{ corp.id }}">{{ corp.designations }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <input id="ReportingtoDivision" name="Direct_Reporting_Division" type="hidden" class="form-control" readonly>
+                </div>
+            </div>
+
+            <div class="col-md-6 form-group">
+                <input id="ReportingToDesignationDepartment" name="Direct_Reporting_Department" type="hidden" class="form-control">
+            </div>
+
+            <div class="col-md-6 form-group">
+                <input id="ReportingToDesignationLevel" name="Direct_Reporting_Level" type="hidden" class="form-control">
+            </div>
+          </div>
+
+          <input type="hidden" name="designation_id" id="designation_id">
+          <div class="modal-footer">
+            <input type="submit" value="Submit" class="btn btn-primary " />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tree = document.querySelector('.tree');
+        if (tree) {
+            tree.querySelectorAll('li span').forEach(span => {
+                span.addEventListener('click', function (e) {
+                    const parentLi = e.target.parentElement;
+                    const childUl = parentLi.querySelector('ul');
+                    if (childUl) {
+                        childUl.classList.toggle('collapsed');
+                        
+                        const icon = parentLi.querySelector('i');
+                        if (childUl.classList.contains('collapsed')) {
+                            icon.classList.remove('fa-folder-open');
+                            icon.classList.add('fa-folder');
+                        } else {
+                            icon.classList.remove('fa-folder');
+                            icon.classList.add('fa-folder-open');
+                        }
+                    }
+                });
+            });
+
+            
+            tree.querySelectorAll('.actions a').forEach(actionLink => {
+                actionLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (this.classList.contains('edit')) {
+                        alert('Edit action for ' + this.parentElement.previousElementSibling.textContent);
+                    
+                    } else if (this.classList.contains('delete')) {
+                        alert('Delete action for ' + this.parentElement.previousElementSibling.textContent);
+                        
+                    }
+                });
+            });
+        }
+    });
+</script>
+  
+<script>
+    $(document).ready(function() {
+        // Handle the edit division button click
+        $('.edit-division').click(function(e) {
+            e.preventDefault();
+            
+            var divisionId = $(this).data('id');
+            
+            $.ajax({
+                url: '/Manning_Guide/divisions_list/',
+                type: 'GET',
+                data: { id: divisionId },
+                dataType: 'json',
+                success: function(data) {
+                    if ('error' in data) {
+                        console.error('Error fetching division data:', data.error);
+                        return;
+                    }
+                    $('#division_id').val(data.id);  
+                    $('#division_name').val(data.DivisionName);  
+                    $('#divisionModalLabel').text('Edit Division');
+                    // $('#AddDivision').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching division data:', status, error);
+                }
+            });
+        });
+    
+       
+        $('#AddDivision').on('hidden.bs.modal', function () {
+            $('#division_id').val('');
+            $('#division_name').val('');
+            $('#divisionModalLabel').text('New Division');
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('.edit-department').click(function(e) {
+            e.preventDefault();
+            
+            var departmentId = $(this).data('id');
+            
+            $.ajax({
+                url: '/Manning_Guide/departments_list/',
+                type: 'GET',
+                data: { id: departmentId },
+                dataType: 'json',
+                success: function(data) {
+                    if ('error' in data) {
+                        console.error('Error fetching department data:', data.error);
+                        return;
+                    }
+                    $('#department_id').val(data.id);
+                    $('#division_dep').val(data.DivisionID);  
+                    $('#department_name').val(data.DepartmentName);  
+                    $('#departmentModalLabel').text('Edit Department');
+                    // $('#AddDepartmentModal').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching department data:', status, error);
+                }
+            });
+        });
+
+        // Handle the hidden event for the department modal
+        $('#AddDepartmentModal').on('hidden.bs.modal', function () {
+            $('#department_id').val('');
+            $('#division_dep').val('');
+            $('#department_name').val('');
+            $('#departmentModalLabel').text('New Department');
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('.edit-designation').click(function(e) {
+            e.preventDefault();
+            
+            var designationId = $(this).data('id');
+            
+            $.ajax({
+                url: '/Manning_Guide/designation_details/',
+                type: 'GET',
+                data: { id: designationId },
+                dataType: 'json',
+                success: function(data) {
+                    if ('error' in data) {
+                        console.error('Error fetching designation data:', data.error);
+                        return;
+                    }
+                    $('#designation_id').val(data.id);
+                    $('#division_deta').val(data.DivisionID);
+                    $('#department_deta').val(data.DepartmentID);
+                    $('#division_Div').val(data.Div);
+                    $('#designation_description').val(data.Dept);
+                    $('#designation_Lavel').val(data.Lavel);
+                    $('#designation_name').val(data.designations);
+                    // $('#designation_report').val(data.Report_Designations);
+                    $('#ReportingToDesignation').val(data.Direct_Reporting);
+                    $('#Dotted_Line_Reporting').val(data.Dotted_Line);
+
+                    $('#ReportingtoDivision').val(data.Direct_Division);
+                    $('#ReportingToDesignationDepartment').val(data.Direct_Department);
+                    $('#ReportingToDesignationLevel').val(data.Direct_Level);
+                    $('#designationModalLabel').text('Edit Designation');
+                    // $('#AddDesignation').modal('show');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching designation data:', status, error);
+                }
+            });
+        });
+
+        // Handle the hidden event for the designation modal
+        $('#AddDesignation').on('hidden.bs.modal', function () {
+            $('#designation_id').val('');
+            $('#division_deta').val('');
+            $('#department_deta').val('');
+            $('#division_Div').val('');
+            $('#designation_description').val('');
+            $('#designation_Lavel').val('');
+            $('#designation_name').val('');
+            $('#designation_report').val('');
+            $('#designationModalLabel').text('New Designation');
+        });
+    });
+</script>
+
+<script>
+    function move_up(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_up_viewdivisiononroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function move_down(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_down_viewdivisiononroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function move_up_department(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_up_departmentonroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function move_down_department(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_down_departmentonroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function move_up_designation(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_up_designation_onroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function move_down_designation(id) {
+        $.ajax({
+            url: `/Manning_Guide/move_down_designation_onroll/${id}/`,
+            type: 'POST',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            },
+            success: function(data) {
+                console.log(data);
+                location.reload();
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        // Update Department & Level when designation changes
+        function ReportingupdateDesignationDetails() {
+            var selectElement = document.getElementById('ReportingToDesignation');
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var division = selectedOption.getAttribute('data-ReportingtoDivision');
+            var department = selectedOption.getAttribute('data-ReportingToDesignationLeveldepartment');
+            var level = selectedOption.getAttribute('data-ReportingToDesignationLevel');
+
+            document.getElementById('ReportingToDesignationDepartment').value = department || '';
+            document.getElementById('ReportingToDesignationLevel').value = level || '';
+            document.getElementById('ReportingtoDivision').value = division || '';
+        }
+
+        $('#ReportingToDesignation').on('change', ReportingupdateDesignationDetails);
+        ReportingupdateDesignationDetails();
+    });
+</script>
+
+
+
+
+
+{% endblock content %}

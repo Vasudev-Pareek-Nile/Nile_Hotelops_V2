@@ -1,0 +1,109 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+
+<style>
+    body{
+        font-size:13px !important;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body" id="varianceReport">
+        {% comment %} <div id="varianceReport"></div> {% endcomment %}
+    </div>
+</div>
+
+
+<script>
+fetch('http://127.0.0.1:8000/Manning_Guide/api/variance_details_report/')
+  .then(res => res.json())
+  .then(res => {
+    const data = res.data;
+    const container = document.getElementById('varianceReport');
+
+    let currentDivision = null;
+    let currentDepartment = null;
+    let table = null;
+    let tbody = null;
+
+    data.forEach(row => {
+
+      /* DIVISION HEADER */
+      if (row.Division !== currentDivision) {
+        currentDivision = row.Division;
+        currentDepartment = null;
+
+        container.insertAdjacentHTML('beforeend', `
+          <h4 class="mt-4 text-primary">${currentDivision}</h4>
+        `);
+      }
+
+      /* DEPARTMENT HEADER */
+      if (row.Department !== currentDepartment) {
+        currentDepartment = row.Department;
+
+        container.insertAdjacentHTML('beforeend', `
+          <h6 class="mt-2 text-secondary">${currentDepartment}</h6>
+
+          <table class="table table-bordered table-sm mb-4">
+            <thead class="table-light">
+              <tr>
+                {% comment %} <th>Divi</th>
+                <th>Dept</th> {% endcomment %}
+                <th>Designation</th>
+                <th>BUD AVG SAL</th>
+                <th>ACT AVG SAL</th>
+                <th>VAR AVG SAL</th>
+
+                <th>BUD HC</th>
+                <th>Act HC</th>
+                <th>Var HC</th>
+
+                <th>BUD TOTAL CTC</th>
+                <th>ACT TOTAL CTC</th>
+                <th>VAR TOTAL CTC</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        `);
+
+        table = container.lastElementChild;
+        tbody = table.querySelector('tbody');
+      }
+
+      /* ROW */
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr>
+            {% comment %} <td>${row.Division}</td>
+            <td>${row.Department}</td> {% endcomment %}
+            <td>${row.Designation}</td>
+
+            <td>${row.Bud_AvgSal ?? 0}</td>
+            <td>${row.Act_AvgSal ?? 0}</td>
+            <td>${row.Var_AvgSal ?? 0}</td>
+                
+            <td>${row.Bud_HC ?? 0}</td>
+            <td>${row.Act_HC ?? 0}</td>
+            <td>${row.Var_HC ?? 0}</td>
+
+          {% comment %} // <td>${row.Act_TotalCTC ?? 0}</td>
+          // <td class="${row.Var_TotalCTC < 0 ? 'text-danger fw-bold' : ''}">
+          //   ${row.Var_TotalCTC}
+          // </td> {% endcomment %}
+
+          <td>${row.Bud_TotalCTC ?? 0}</td>
+          <td>${row.Act_TotalCTC ?? 0}</td>
+          <td>${row.Var_TotalCTC ?? 0}</td>
+        </tr>
+      `);
+    });
+  });
+</script>
+
+
+
+
+{% endblock content %}

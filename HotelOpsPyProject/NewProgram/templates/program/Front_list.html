@@ -1,0 +1,59 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+
+
+   <div class="card">
+    <div class="card-header"  >
+      <div class="row">
+          <div class="col-md-6" style="color: #1ab394;"><strong>AREA PROGRAM FOH</strong></div>
+          <div class="col-md-6 text-right"><a href="{% url 'front_add' %}" class="btn btn-primary"> Add FOH</a></div>
+      </div>  </div>
+      
+      <div class="card-body">
+
+        <table id="example" class="table table-bordered">
+          <thead class="thead-">
+         <tr class="table-success">
+             <th>Date</th>
+             <th>NAME OF LOCATION</th>
+             <th>PROJECT K.O.P. * NUMBER</th>
+             <th>TOTAL HOTEL KEYS</th>
+             <th>GUESTROOM FLOORS</th>
+             <th>Action</th>
+         </tr>
+     </thead>
+            <tbody> 
+              {% for houses in house  %} 
+             <tr>
+               <td>{{ houses.date |date:'d-m-Y' }}</td>
+               <td>{{ houses.location}} </td>
+               <td>{{ houses.project_number }}</td>
+               <td>{{ houses.hotel_key}} </td>
+               <td>{{ houses.guest_room_floors}}</td>
+               
+                    
+           <td>
+                 <a href="{% url 'front_add' %}?ID={{houses.id}}" class="fa fa-edit" style="color: blue"></a>
+                
+                                                
+                 
+                 <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'front'  %}?ID={{houses.id}}">
+                   <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+                   <span style="color: red"></span>
+                 </a>
+      <a href="{% url 'front_pdf'  %}?ID={{houses.id}}"><i class="fa fa-download" aria-hidden="true"></i></a>
+               </td>
+             </tr>
+             {% endfor %}
+           </tbody>
+         </table>
+      </div>
+   </div>
+      <br>
+      
+
+  </div>
+</div>
+
+
+{% endblock content %}

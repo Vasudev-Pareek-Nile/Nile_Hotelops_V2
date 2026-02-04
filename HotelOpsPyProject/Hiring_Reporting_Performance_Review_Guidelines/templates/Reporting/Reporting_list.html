@@ -1,0 +1,76 @@
+{% extends "Reporting/homebase.html" %} {% block content %}
+<style>
+ 
+  table th{
+    text-transform: uppercase;
+    
+  }
+th {
+    text-align: center;
+  }
+  
+</style>
+<div class="card">
+    <div class="card-header"  >
+      <div class="row">
+          <h4 class="col-md-6">Hiring, Reporting & Performance Review Guidelines List</h4>
+          <div class="col-md-6 text-right"><a href="{% url 'HiringAdd' %}" class="btn btn-primary">Add </a></div>
+      </div> 
+    
+      <div class="card-body">
+
+    <table id="example" class="table table-bordered table-striped table-hover" style="width:100%">
+      <thead class="">
+        <tr class="table-success">
+          <th> Title</th>
+          <th> Positions</th>
+          <th>  Reporting</th>
+          <th>Contribution to Performance appraisal </th>
+          <th>   Hiring</th>
+           <th> Firing</th>
+          <th> Transfer</th>
+          
+           <th></th>
+        </tr>
+      </thead>
+       <tbody>
+         {% for hiring in hiring  %} 
+        <tr>
+          <td>{{ hiring.department_division}}</td>
+          <td><ul>
+          {% if hiring.positions1 %}<li> {{ hiring.positions1}}</li>{% endif %}
+          {% if hiring.positions2 %}<li>{{ hiring.positions2}}</li>{% endif %}
+           {% if hiring.positions3 %}<li> {{ hiring.positions3}}</li>{% endif %}
+          {% if hiring.positions4 %}<li> {{ hiring.positions4}}</li>{% endif %}
+          </ul> </td>
+          <td>{{ hiring.reporting }}</td>
+          <td><ul>
+   {% if hiring.Feedback_percent1 and hiring.Feedback_position1 %} <li>{{ hiring.Feedback_percent1}}% {{ hiring.Feedback_position1}}</li>{% endif %}
+   {%if hiring.Feedback_percent2 and hiring.Feedback_position2 %} <li>{{ hiring.Feedback_percent2}}% {{ hiring.Feedback_position2}}</li>{% endif %}
+   {% if hiring.Feedback_percent3 and hiring.Feedback_position3 %} <li>{{ hiring.Feedback_percent3}}% {{ hiring.Feedback_position3}}</li>{% endif %}
+   {%if hiring.Feedback_percent4 and hiring.Feedback_position4 %} <li>{{ hiring.Feedback_percent4}}% {{ hiring.Feedback_position4}}</li>{% endif %}
+    <!-- Add more lines if needed -->
+  </ul>
+           </td>
+          <td>{{ hiring.hiring}}</td>
+          <td>{{hiring.fairing}}</td>
+          <td>{{ hiring.property_transfer}}</td>
+          <td>
+            <a href="{% url 'HiringAdd' %}?ID={{hiring.id}}" class="fa fa-edit" style="color: blue"></a>
+           
+            <a onclick="return confirm('Are you sure you want to delete? ')  " href="{% url 'Reporting_delet'  %}?ID={{hiring.id}}">
+              <i class="fa fa-trash-o" style="font-size: 15px; color: red"></i>
+              <span style="color: red"></span>
+            </a>
+
+          </td>
+               
+     
+        </tr>
+        {% endfor %}
+      </tbody> 
+    </table>
+  </div>
+</div>
+
+{% endblock content%}

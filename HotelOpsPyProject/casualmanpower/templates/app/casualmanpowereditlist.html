@@ -1,0 +1,86 @@
+{% extends 'app/homebase.html' %}
+{% load static %}
+
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+
+  <!--- signup page for doctor by admin(sumit)  ---------->
+  <form method="post" action="{% url 'UpdateCasualManPowerData' %}"  enctype="multipart/form-data">
+    {{ Casual_Manpower_Requisition }}
+    {% csrf_token %}
+
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p>Update In Casual Manpower Requisition </p>
+        </div>
+
+        <div class="card-body">
+          <input type="hidden" name="ID" value="{{Ed.id}}">
+
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field CasualManpowerRequisition.Date class="form-control" placeholder="Date" value=Ed.Date %}
+              </div>
+              <div class="col-sm-3">
+                <label>Prepared By</label>
+                {% render_field CasualManpowerRequisition.Prepared_By class="form-control" placeholder="Prepared_By" value=Ed.Prepared_By %}
+              </div>
+              <div class="col-sm-3">
+                <label>Department</label>
+                {% render_field CasualManpowerRequisition.Department class="form-control" placeholder="Department" value=Ed.Department %}
+              </div>
+              <div class="col-sm-3">
+                <label>Numbers Required</label>
+                {% render_field CasualManpowerRequisition.Numbers_Required class="form-control" placeholder="Numbers_Required" value=Ed.Numbers_Required %}
+              </div>
+              <div class="col-sm-12">
+                <label>Reason</label>
+                {% comment %} {% render_field CasualManpowerRequisition.Reason class="form-control" rows=2 placeholder="Reason" value=Ed.Reason %} {% endcomment %}
+                <textarea name="Reason" class="form-control" rows=4 maxlength=500 placeholder="Reason">{{Ed.Reason}}</textarea>
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Function</label>
+                {% render_field CasualManpowerRequisition.Function  class="form-control" placeholder="Function" value=Ed.Function %}
+              </div>
+             <div class="col-sm-3">
+              <label>Rate</label>
+                {% render_field CasualManpowerRequisition.Rate  class="form-control" placeholder="Rate" value=Ed.Rate %}
+              </div>
+              <div class="col-sm-3">
+                <label>No Of Pax</label>
+                {% render_field CasualManpowerRequisition.No_Of_Pax   class="form-control"  placeholder="No_Of_Pax" value=Ed.No_Of_Pax %}
+              </div>
+              <div class="col-sm-3">
+                <label>Date Required</label>
+                {% render_field CasualManpowerRequisition.Date_Required  class="form-control" placeholder="Date_Required" value=Ed.Date_Required %}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Est Sales Volume</label>
+                {% render_field CasualManpowerRequisition.Est_Sales_Volume class="form-control" placeholder="Est_Sales_Volume" value=Ed.Est_Sales_Volume %}
+              </div>
+              <div class="col-sm-3">
+                    <label>Reporting Time</label>
+                {% render_field CasualManpowerRequisition.Reporting_Time  class="form-control" placeholder="Reporting_Time" value=Ed.Reporting_Time %}
+              </div>
+            </div>
+          </div>
+         
+         {% comment %} <div class="text-center">Already have an account? <a href="doctorlogin">Login here</a></div> {% endcomment %}
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+    {% endblock content %}

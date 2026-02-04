@@ -1,0 +1,101 @@
+
+{% load static %}
+
+
+{% block content %}
+<style>
+  
+  table td,table th{
+    border:1px solid #434568 !important;
+    padding:5px;font-family: Arial Nova;
+    ;
+  }
+  table th{
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;font-family: Arial Nova;
+  }
+
+
+  p {     margin: 0 !important;
+    
+    font-family: Arial Nova;font-size: 11px; }
+    .noborder,.noborder td {
+      border-width: 0px;
+      
+          }
+          
+          table,table td,table,table th{font-family: Arial Nova;font-size: 10px;padding:3px;}
+
+          h2{text-align: center;}
+</style>
+<style>
+  {% if OID == "2100" %}
+    @page {
+      margin-top: 0px;
+      margin-left: 30px;
+      margin-right: 30px;
+      margin-bottom: 200px;
+    }
+  {% else %}
+      @page {
+        margin-top: 100px;
+        margin-left: 30px;
+        margin-right: 30px;
+        margin-bottom: 30px;
+      }
+  {% endif %}
+
+
+  table td, table th {
+    border:1px solid #434568 !important;
+    padding:5px;
+    font-family: Arial Nova;
+  }
+
+  table th {
+    text-align:left;
+    background-color:#dedede;
+    color:#434568;
+    width:200px;
+    font-family: Arial Nova;
+  }
+
+  p {
+    margin: 0 !important;
+    font-family: Arial Nova;
+    font-size: 11px;
+  }
+
+  .noborder, .noborder td {
+    border-width: 0px;
+  }
+
+  table, table td, table th {
+    font-family: Arial Nova;
+    font-size: 10px;
+    padding: 3px;
+  }
+
+  h2 {
+    text-align: center;
+  }
+</style>
+
+
+<DIV>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  
+    {{ header|safe }}
+    {{ html|safe }}
+</DIV>
+
+{% endblock content %} 
+

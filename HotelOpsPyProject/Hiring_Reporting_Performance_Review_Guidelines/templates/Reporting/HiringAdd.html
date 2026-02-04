@@ -1,0 +1,187 @@
+{% extends "Reporting/homebase.html" %} {% block content %}
+
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/bbbootstrap/libraries@main/choices.min.css"
+/>
+
+<style>
+  .width{
+    width: 130%;
+  }
+  .widthPer{
+     width: 100%;
+  }
+  
+</style>
+<div class="container">
+  <div class="col-md-12">
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="card">
+        <div class="card-header">
+         Hiring
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group m-2">
+                <label for="">Title</label>
+                <input type="text" class="form-control" placeholder="Enter Department/Division " value="{{hiring.department_division}}" required name="department_division">
+              </div>
+              <div class="card-header m-2"><strong> Contribution to Performance
+              Appraisal </strong></div>
+             <div class="row ml-1">
+              <div >
+                <div class="form-group m-2">
+                  <label for=""> Contribution Percent 1</label>
+                  <input type="number" class="form-control widthPer" name="Feedback_percent1" value="{{hiring.Feedback_percent1}}">
+                </div>
+              
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for=""> Contribution Position 1</label>
+                  <input type="text" name="Feedback_position1" value="{{hiring.Feedback_position1}}" class="form-control width" placeholder="Enter Position 1" />
+                </div>
+              </div>
+               <div >
+                <div class="form-group m-2">
+                  <label for=""> Contribution Percent 2</label>
+                  <input type="number" class="form-control widthPer" name="Feedback_percent2" value="{{hiring.Feedback_percent2}}">
+                </div>
+              
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for="">Contribution Position 2</label>
+                  <input type="text" name="Feedback_position2" value="{{hiring.Feedback_position2}}" class="form-control width" placeholder="Enter Position 2" />
+                </div>
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for="">Contribution Percent 3</label>
+                  <input type="number" class="form-control widthPer" name="Feedback_percent3" value="{{hiring.Feedback_percent3}}">
+                </div>
+              
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for="">Contribution Position 3</label>
+                  <input type="text" name="Feedback_position3" value="{{hiring.Feedback_position3}}" class="form-control width" placeholder="Enter Position 3" />
+                </div>
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for="">Contribution Percent 4</label>
+                  <input type="number" class="form-control widthPer" name="Feedback_percent4" value="{{hiring.Feedback_percent4}}">
+                </div>
+              
+              </div>
+              <div>
+                <div class="form-group m-2">
+                  <label for="">Contribution Position 4</label>
+                  <input type="text" name="Feedback_position4" value="{{hiring.Feedback_position4}}" class="form-control width" placeholder="Enter Position 4" />
+                </div>
+              </div>
+             </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row m-0">
+                <div class="form-group m-2">
+                  <label class="" for="lastName">Position 1</label>
+                  <input type="text" name="positions1"  class="form-control" value="{{hiring.positions1}}" placeholder="Enter position" />
+                </div>
+                <div class="form-group m-2">
+                  <label class="" for="lastName">Position 2</label>
+                  <input type="text" name="positions2"  class="form-control" value="{{hiring.positions2}}" placeholder="Enter position" />
+                </div>
+                <div class="form-group m-2">
+                  <label class="" for="lastName">Position 3</label>
+                  <input type="text" name="positions3"  class="form-control" value="{{hiring.positions3}}" placeholder="Enter position" />
+                </div>
+                <div class="form-group m-2">
+                  <label class="" for="lastName">Position 4</label>
+                  <input type="text" name="positions4"  class="form-control"  value="{{hiring.positions4}}" placeholder="Enter position" />
+                </div>
+                
+              </div>
+              <div class="form-group m-2">
+                <label class="" for="lastName">Reporting</label>
+                <textarea name="reporting" style="width: 84%;" class="form-control" cols="30"  rows="1">{{hiring.reporting}}</textarea>
+              </div>
+              <div class="form-group m-2">
+                <label class="" for="lastName">Hiring</label>
+                <textarea name="hiring" style="width: 84%;" class="form-control" cols="30"  rows="1">{{hiring.hiring}}</textarea>
+              </div>
+              <div class="form-group m-2">
+                <label class="" for="lastName">Firing</label>
+                <textarea name="fairing" style="width: 84%;" class="form-control" cols="30"   rows="1">{{hiring.fairing}}</textarea>
+              </div>
+              <div class="form-group m-2">
+                <label class="" for="lastName">
+Transfer
+</label>
+                <textarea name="property_transfer" style="width: 84%;" class="form-control"  ""cols="30" rows="1">{{hiring.property_transfer}}</textarea>
+              </div>
+            </div>
+           
+          </div>
+        </div>
+        <div class="card-footer text-right">{% if hiring is none %}<input type="submit" value="Submit" class="btn btn-primary" >{% else %}<input type="submit" value="Update" class="btn btn-primary" >{% endif %}</div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 
+
+
+
+  {% comment %}
+  <script>
+    $(document).ready(function () {
+      // Initialize total percentage
+      var totalPercentage = 0;
+
+      // Function to update total percentage and check if it's 100%
+      function updateTotalPercentage() {
+        totalPercentage = 0;
+
+        $(".percentage-dropdown").each(function () {
+          var percentage = parseInt($(this).val());
+          totalPercentage += percentage;
+        });
+
+        // Disable or enable "Add More" button based on total percentage
+        $("#add-more-btn").prop("disabled", totalPercentage == 100);
+      }
+
+      // Event listener for percentage and position dropdowns
+      $("#dropdowns-container").on(
+        "change",
+        ".percentage-dropdown, .position-dropdown",
+        function () {
+          updateTotalPercentage();
+        }
+      );
+
+      // Event listener for "Add More" button
+      $("#add-more-btn").click(function () {
+        // Clone the first dropdown row and append it to the table body
+        var newDropdownRow = $(
+          "#dropdowns-container .dropdown-container:first"
+        ).clone();
+        $("#dropdowns-container").append(newDropdownRow);
+
+        // Reset the cloned dropdown's values
+        newDropdownRow.find(".percentage-dropdown").val("25"); // Set default to 25%
+        newDropdownRow.find(".position-dropdown").val("GM");
+
+        // Update total percentage
+        updateTotalPercentage();
+      });
+    });
+  </script>
+  {% endcomment %} {% endblock content%}
+</form>

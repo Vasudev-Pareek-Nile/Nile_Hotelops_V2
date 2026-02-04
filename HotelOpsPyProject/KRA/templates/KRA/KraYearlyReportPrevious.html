@@ -1,0 +1,604 @@
+{% extends "KRA/homebase.html" %}
+{% block content %}
+<style>
+
+    /* td[data-s='Not Met']{
+        color: red;
+    } */
+
+    .Yearly-First-box{
+        display: flex;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+
+    }
+
+    .employee-notification-icon{
+        padding: 5px;
+    }
+
+    .circle-button{
+        padding: 6px;
+        height: 45px;
+        width: 45px;
+    }
+
+    .card .card-header {
+        margin-bottom: -18px !important;
+        padding: 15px !important;
+    }
+    .card .card-header p{
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    #reportTable{
+        position: sticky;
+        top: 0px;
+    }
+    #reportTable thead tr th{
+        font-size: 14px;
+    }
+
+    #reportTable tbody tr td{
+        font-size: 12px;
+    }
+
+    .standard-row {
+        border: 1px solid black;
+        border-left: none;
+        border-right: none;
+        padding: 4px 0;
+        font-weight: bold;
+    }
+
+/* 
+    #reportTableContainer {
+        max-height: 400px; 
+        overflow-y: auto;
+        overflow-x: auto;
+        overflow-x: hidden;
+        position: relative;
+    } */
+
+    #reportTable {
+        width: max-content;
+        border-collapse: collapse;
+    }
+
+    #reportTable th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa; 
+        z-index: 10; 
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #TableCaptionBtn{
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    } 
+
+    .TextRed{
+        color: red !important;
+    }
+</style>
+<style>
+    /* Scrollable container */
+#reportTableContainer {
+    max-height: 490px;
+    overflow: auto; /* both X and Y scroll */
+    position: relative;
+}
+
+/* Freeze header row */
+#reportTable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #f8f9fa;
+}
+
+/* Freeze first column */
+#reportTable th:first-child,
+#reportTable td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 9; /* behind header if overlapping */
+    background-color: #fff; /* match body background */
+    min-width: 190px;
+    max-width: 300px;
+    white-space: nowrap;
+}
+/* Freeze first column */
+#reportTable th:last-child,
+#reportTable td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 9; /* behind header if overlapping */
+    background-color: #fff; /* match body background */
+    min-width: 110px;
+    max-width: 120px;
+    /* min-width: 173px;
+    max-width: 175px; */
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Ensure top-left cell (Title) appears above all */
+#reportTable thead th:first-child {
+    z-index: 11;
+}
+#reportTable thead th:last-child {
+    z-index: 11;
+}
+
+/* Optional: Improve border and spacing */
+#reportTable th,
+#reportTable td {
+    border: 1px solid #dee2e6 !important;
+    white-space: nowrap;
+}
+
+.card-header{
+    margin-bottom: -28px;
+}
+
+.text-success {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #28a745bf;
+}
+
+.TextRed {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #dc3545d1;
+}
+
+.text-info {
+    color: #ffffff !important;
+    padding: 4px;
+    background: #007bffba;
+}
+</style>
+
+
+<div class="card">
+    {% comment %} <div class="card-header">
+        <p>KRA Yearly Report</p>
+    </div> {% endcomment %}
+    
+    <div class="card-header text-uppercase fw-bold"><h4 class="fw-bold">KRA Yearly Report</h4></div>
+
+    <!-- <div class="mb-2">
+        <button class="btn btn-primary" id="showFirstHalf">Show Jan–Jun</button>
+        <button class="btn btn-secondary" id="showSecondHalf">Show Jul–Dec</button>
+    </div> -->
+
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row">
+                <!-- Organization Field -->
+                <div class="col-md-4">
+                    <div class="form-group"> 
+                        <div class="form-group">
+                            
+                            <select class="form-control" id="I" name="I" onchange="submitForm('org')">
+                                {% for org in orgs %}
+                                    <option value="{{ org.OrganizationID }}" {% if org.OrganizationID == I %}selected{% endif %}>{{ org.OrganizationName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <select class="form-control" name="employee" id="employee" onchange="submitForm()">
+                            <option value="">Select</option>
+                            {% for Emp in Emps %}
+                                <option value="{{ Emp.EmployeeCode }}" {% if Emp.EmployeeCode == selected_employee %}selected{% endif %}>{{ Emp.full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Year Dropdown -->
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <select class="form-control" id="year" name="year" onchange="submitForm()">
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3 d-flex justify-items-start align-items-center gap-2">
+                    <!-- <button type="submit" class="btn btn-primary" id="filterButton">Filter</button> -->
+                    <button class="btn btn-primary" id="Exporttoexecel">Export</button>
+                    <a href="{% url 'KraYearlyReport' %}" class="btn btn-danger">Clear</a>
+                </div>
+            </div>
+        </form>
+        <!-- <div id="TableCaptionBtn">
+            <button class="btn btn-primary btn-sm" id="showFirstHalf">Previous</button>
+            <button class="btn btn-secondary btn-sm" id="showSecondHalf">Next</button>
+        </div> -->
+
+<div id="reportTableContainer">
+    <!-- Loader Code -->
+    <div class="card-loader">
+        <div>
+            <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+            <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+        </div>
+    </div>
+    <!-- // Loader Code -->
+
+    <table class="table table-bordered" id="reportTable">
+        <thead>
+            <tr>
+                <th class="text-center" style="width: 200px;">Title</th>
+                <th class="text-center" style="width: 120px;">Jan</th>
+                <th class="text-center" style="width: 120px;">Feb</th>
+                <th class="text-center" style="width: 120px;">Mar</th>
+                <th class="text-center" style="width: 120px;">Apr</th>
+                <th class="text-center" style="width: 120px;">May</th>
+                <th class="text-center" style="width: 120px;">Jun</th>
+                <th class="text-center" style="width: 120px;">Jul</th>
+                <th class="text-center" style="width: 120px;">Aug</th>
+                <th class="text-center" style="width: 120px;">Sep</th>
+                <th class="text-center" style="width: 120px;">Oct</th>
+                <th class="text-center" style="width: 120px;">Nov</th>
+                <th class="text-center" style="width: 120px;">Dec</th>
+                <th class="text-center" style="width: 120px;">Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be injected by AJAX -->
+        </tbody>
+    </table>
+</div>
+
+    </div>
+</div>
+
+<!-- <script>
+  $(document).ready(function() {
+    // Initially show first 6 months
+    $('.first-half').show();
+    $('.second-half').hide();
+
+    $('#showFirstHalf').on('click', function() {
+    //   $('.first-half').show();
+    //   $('.second-half').hide();
+      $('.second-half').fadeOut(100);
+        $('.first-half').fadeIn(100);
+    });
+
+    $('#showSecondHalf').on('click', function() {
+    //   $('.first-half').hide();
+    //   $('.second-half').show();
+      $('.first-half').fadeOut(100);
+        $('.second-half').fadeIn(100);
+    });
+
+
+  });
+</script> -->
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<script>
+    function submitForm(org) {
+        if (org == 'org') {
+            $("select[name='employee']").val('');
+        }
+        document.getElementById("filterForm").submit();
+    }
+
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedyear = "{{ selected_year }}";
+        $("select[name='year']").val(selectedyear);
+        var selectedemployee = "{{ selected_employee }}";
+        $("select[name='employee']").val(selectedemployee);
+    });
+
+    document.getElementById("Exporttoexecel").addEventListener("click", function () {
+    var table = document.getElementById("reportTable");
+
+    var selectedOrgText = $("select[name='I'] option:selected").text();  
+    var selectedEmpText = $("select[name='employee'] option:selected").text();  
+
+    var headers = [
+        ["Organization Name", selectedOrgText],  
+        ["Employee Name", selectedEmpText],  
+        [],  
+        ["Title", "Standard", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Overall Rating"]  
+    ];
+
+    var headerStyle = {
+        fill: { 
+            fgColor: { rgb: "FFFF00" } 
+        },
+        font: { bold: true }
+    };
+
+    var tableData = [];
+    var rows = table.querySelectorAll("tr");  
+    for (var i = 1; i < rows.length; i++) {   
+        var rowData = [];
+        var cells = rows[i].querySelectorAll("td");  
+        cells.forEach(function(cell) {
+            rowData.push(cell.innerText.trim());  
+        });
+        tableData.push(rowData);  
+    }
+
+    var fullData = headers.concat(tableData);  
+
+    var wb = XLSX.utils.book_new();
+    var ws = XLSX.utils.aoa_to_sheet(fullData); 
+
+  
+    for (var col = 0; col < headers[3].length; col++) {
+        var cell = ws[XLSX.utils.encode_cell({r: 3, c: col})];  
+        if (!cell) {
+            cell = ws[XLSX.utils.encode_cell({r: 3, c: col})] = {};  
+        }
+        cell.s = headerStyle; 
+    }
+
+    XLSX.utils.book_append_sheet(wb, ws, "KRA Report");
+
+    var fileName = `KRA_Yearly_Report_${selectedEmpText}_${selectedOrgText}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);
+});
+
+</script> 
+
+<script> 
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script> 
+
+<script>
+        
+    $(document).ready(function () {
+        const OrganizationID = "{{ I }}";
+        const selected_employee = "{{ selected_employee }}";
+        const selected_year = "{{ selected_year }}";
+
+        
+        console.log("Selected OrganizationID::", typeof OrganizationID)
+        console.log("selected_employee::",selected_employee)
+        console.log("selected_year::",selected_year)
+
+        const apiUrl = `https://hotelops.in:8080/KRA/api/kra-yearly-report/${OrganizationID}/${selected_employee}/${selected_year}/`;
+        // const apiUrl = `/KRA/api/kra-yearly-report/${OrganizationID}/${selected_employee}/${selected_year}/`;
+        // const apiUrl = "http://127.0.0.1:8000/KRA/api/kra-yearly-report/1701/0000176/2025/";
+
+        $('.card-loader').show();
+
+        $.getJSON(apiUrl, function (data) {
+            const tbody = $("#reportTable tbody");
+            tbody.empty(); // Clear existing rows
+
+            $.each(data, function (index, row) {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+                let tr = `<tr><td rowspan="1" style="background-color: #f9f9f9;">${row.Title}</td>`;
+
+                months.forEach(function (month) {
+                    let rating = row[month] || '';
+                    if (rating === "Exceeds Expectation") {
+                        rating = "Exceed"
+                    }else{
+                        rating=rating
+                    }
+
+                    if (rating === "Not Met") {
+                        rating = "Not&nbsp;Met"
+                    }else{
+                        rating=rating
+                    }
+
+                    let actual = row[`${month}_Actual`] || '';
+                    let MonthStn = row[`${month}_Standard`] || '';
+                    let badgeClass = getBadgeClass(rating);
+
+                    tr += `
+                        <td class="first-half" data-s="${rating}">
+                            <div class="Yearly-Container">
+                                <div class="Yearly-First-box">
+                                    <span>${actual}</span>
+                                    <div class="employee-notification-icon">
+                                    <span class="${badgeClass}">${rating}</span>
+                                    </div>
+                                </div>
+                                <div>${MonthStn}</div>
+                            </div>
+                        </td>`;
+                });
+
+                const overall = row.OverallRating || '';
+                const overallClass = getTextColorClassExceed(overall);
+                // console.log()
+
+                tr += `<td data-s="${overall}" style="background-color: #f9f9f9;">
+                            <span class="${overallClass}">${overall}</span>
+                    </td></tr>`;
+
+                // tr += `<tr>
+                //     <td colspan="12" class="text-center text-muted" style="font-size: 13px;">
+                //         ${row.Standard}
+                //     </td>
+                // </tr>`;
+
+                tbody.append(tr);
+            });
+        })
+        .fail(function () {
+            $('#reportTable tbody').html('<tr><td colspan="12">Error loading data.</td></tr>');
+        })
+        .always(function () {
+            // Hide loader after success or failure
+            $('.card-loader').hide();
+        });
+
+        // Helper functions
+        function getBadgeClass(status) {
+            if (status === "Exceed") return "text-success text-white rounded-1";
+            if (status === "Not&nbsp;Met") return "TextRed text-white rounded-1";
+            // if (status === "Not Met") return "badge-danger text-white rounded-1";
+            if (status === "Met") return "text-info text-white rounded-1";
+            if (status === "N/A") return "text-warning text-white rounded-1";
+            return "";
+        }
+        // // Helper functions
+        // function getBadgeClass(status) {
+        //     if (status === "Exceed") return "badge-soft-success";
+        //     if (status === "Not Met") return "badge-soft-danger";
+        //     if (status === "Met") return "badge-soft-info";
+        //     if (status === "N/A") return "badge-soft-warning";
+        //     return "";
+        // }
+
+        function getTextColorClass(status) {
+            if (status === "Exceed") return "text-success";
+            if (status === "Not Met") return "text-danger";
+            if (status === "Met") return "text-success";
+            if (status === "N/A") return "text-warning";
+            return "";
+        }
+        function getTextColorClassExceed(status) {
+            if (status === "Exceeds Expectation") return "text-success";
+            if (status === "Not Met") return "TextRed";
+            if (status === "Met") return "text-success";
+            if (status === "N/A") return "text-warning";
+            return "";
+        }
+    });
+</script>
+
+<!-- 
+<script>
+$(document).ready(function () {
+    const OrganizationID = "{{ I }}";
+    const selected_employee = "{{ selected_employee }}";
+    const selected_year = "{{ selected_year }}";
+
+    console.log("Selected OrganizationID::", typeof OrganizationID);
+    console.log("selected_employee::", selected_employee);
+    console.log("selected_year::", selected_year);
+
+    const apiUrl = `http://127.0.0.1:8000/KRA/api/kra-yearly-report/${OrganizationID}/${selected_employee}/${selected_year}/`;
+
+    $('.card-loader').show();
+
+    $.getJSON(apiUrl, function (data) {
+        const tbody = $("#reportTable tbody");
+        tbody.empty(); // Clear existing rows
+
+        $.each(data, function (index, row) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Check Month Standards
+            const monthStandards = months.map(month => row[`${month}_Standard`] || '');
+            const allSameStandard = monthStandards.every((stn, _, arr) => stn === arr[0]);
+            const commonStandard = allSameStandard ? monthStandards[0] : null;
+
+            let tr = `<tr><td style="background-color: #f9f9f9;">${row.Title}</td>`;
+
+            months.forEach(function (month) {
+                let rating = row[month] || '';
+                if (rating === "Exceeds Expectation") {
+                    rating = "Exceed";
+                }
+
+                let actual = row[`${month}_Actual`] || '';
+                let MonthStn = row[`${month}_Standard`] || '';
+                let badgeClass = getBadgeClass(rating);
+
+                // Skip per-cell display if all MonthStn are the same
+                let standardDisplay = allSameStandard ? '' : MonthStn;
+
+                tr += `
+                    <td class="first-half" data-s="${rating}">
+                        <div class="Yearly-Container">
+                            <div class="Yearly-First-box">
+                                <span>${actual}</span>
+                                <div class="employee-notification-icon">
+                                    <span class="${badgeClass}">${rating}</span>
+                                </div>
+                            </div>
+                            <div>${standardDisplay}</div>
+                        </div>
+                    </td>`;
+            });
+
+            const overall = row.OverallRating || '';
+            const overallClass = getTextColorClassExceed(overall);
+
+            tr += `<td data-s="${overall}">
+                    <span class="${overallClass}">${overall}</span>
+                </td></tr>`;
+
+            tbody.append(tr);
+
+            // Append one standard row if all standards are the same
+            if (allSameStandard && commonStandard) {
+                const colspanCount = months.length + 1; // 12 months + 1 rating
+                const secondRow = `<tr>
+                    <td colspan="${colspanCount}" class="text-center text-muted" style="font-size: 13px;">
+                        Standard: ${commonStandard}
+                    </td>
+                </tr>`;
+                tbody.append(secondRow);
+            }
+        });
+    })
+    .fail(function () {
+        $('#reportTable tbody').html('<tr><td colspan="13">Error loading data.</td></tr>');
+    })
+    .always(function () {
+        $('.card-loader').hide();
+    });
+
+    // Helper functions
+    function getBadgeClass(status) {
+        if (status === "Exceed") return "text-success text-white rounded-1";
+        if (status === "Not Met") return "text-danger text-white rounded-1";
+        if (status === "Met") return "text-info text-white rounded-1";
+        if (status === "N/A") return "text-warning text-white rounded-1";
+        return "";
+    }
+
+    function getTextColorClassExceed(status) {
+        if (status === "Exceeds Expectation") return "text-success";
+        if (status === "Not Met") return "text-danger";
+        if (status === "Met") return "text-info";
+        if (status === "N/A") return "text-warning";
+        return "";
+    }
+});
+</script>
+ -->
+
+{% endblock content %}

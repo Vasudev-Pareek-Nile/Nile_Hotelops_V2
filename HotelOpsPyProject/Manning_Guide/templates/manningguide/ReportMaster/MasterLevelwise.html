@@ -1,0 +1,378 @@
+{% extends "manningguide/homebase.html" %}
+{% load static %}
+{% load maningfilter %}
+{% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(function() {
+      document.querySelector('.alert').remove();
+    }, 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+
+<style>
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+        
+             }
+             .card{
+                border-radius:10px;
+             }
+             h4{
+               margin-bottom:10px !important;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            padding:6px !important;
+            border-radius:4px;
+        }
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 14px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+                    margin-right: 10px; 
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+
+         .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        }
+        th.sorting, th, th.sorting_asc {
+    background: #edf0fb !important;
+     }
+
+        .HeaderWithColor {
+            /* background-color: #edf0fb !important; */
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        .card .card-header {
+    padding: 20px;
+    padding-bottom: 0px;
+    {% comment %} border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important; {% endcomment %}
+    background: transparent;
+        }
+
+        #myTable tr td:nth-child(3),#myTable tr td:nth-child(4),#myTable tr td:nth-child(5),#myTable tr td:nth-child(6)
+        ,#myTable tr th:nth-child(3),#myTable tr th:nth-child(4),#myTable tr th:nth-child(5),#myTable tr th:nth-child(6){
+            text-align:center;
+        }
+
+    .select2-dropdown {
+        z-index: 999;
+    }
+    .filter-box{
+        margin-left: -16px;
+    }
+    table {
+        border-radius: 5px;
+        overflow: hidden;
+    }
+    .table th {
+        padding: 0.5rem 0.25rem !important;
+        background-color: aliceblue !important;
+        color: #076e00 !important;
+    }
+    .table td {
+        padding: 5px 5px !important;
+        font-size: 13px !important;
+    }
+</style>
+
+<div class="card ">
+    <div class="card-header">
+        <span class="fw-bold text-uppercase">Budget Master Report</span>
+    </div>
+
+    <div class="card-body">
+        <form id="filter-form"  method="GET" action="{% url 'MasterLevelwise' %}"  class="mb-0">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="input-block">
+                        <select name="hotel_name" class="form-control select2" onchange="this.form.submit()">
+                            {% for itm in memOrg %}
+                                <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                    {{ itm.Organization_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+        
+                <div class="col-md-4 filter-box">
+                    <a class="btn btn-primary p-2 " id="export-report-btn"  href="{% url 'budget_master_pdf' %}?hotel_name={{ selectedOrganizationID }}">Export</a>
+                    {% comment %} <button  class="btn  btn-secondary p-2" id="exportBtn">Export Excel</button> {% endcomment %}
+                </div>
+            </div>
+        </form>  
+        <div class="col-md-12">
+            <div id="filter-container">
+                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                <div id="structured-filter"></div>
+            </div>
+        </div>
+
+        <table class="table table-bordered" id="myTable">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Level</th>
+                    <th>Avg Ctc</th>
+                    <th>Head Count</th>
+                    <th>Monthly Ctc</th>
+                </tr>
+            </thead>
+            <tbody id="example_tbody"></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+<script src="{% static 'js/structured-filter.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $('select').select2();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+
+        var csrfToken = $('input[name=csrfmiddlewaretoken]').val(); 
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
+        });
+
+        function fetchDesignations() {
+            $.ajax({
+                url: "{% url 'get_designations' %}",
+                method: "GET",
+                success: function (data) {
+                    const designations = data.designations;
+                    fetchLevels(designations);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to fetch designations:", error);
+                }
+            });
+        }
+
+        function fetchLevels(designations) {
+            $.ajax({
+                url: "{% url 'get_levels' %}",
+                method: "GET",
+                success: function (data) {
+                    const levels = data.levels;
+                    fetchDepartments(designations, levels);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to fetch levels:", error);
+                }
+            });
+        }
+
+        function fetchDepartments(designations, levels) {
+            $.ajax({
+                url: "{% url 'get_departments' %}",
+                method: "GET",
+                success: function (data) {
+                    const departments = data.departments;
+                    $('#structured-filter').structFilter({
+                        fields: [
+                            { id: "avg_salary", type: "number", label: "Avg CTC" },
+                            { id: "head_count", type: "number", label: "Head Count" },
+                            { id: "total_ctc", type: "number", label: "Monthly CTC" },
+                            { 
+                                id: "on_roll_department_master_id", 
+                                type: "list", 
+                                label: "Department Name",
+                                list: departments 
+                            },
+                            { 
+                                id: "on_roll_designation_master__Lavel", 
+                                type: "list", 
+                                label: "Level",
+                                list: levels 
+                            },
+                            {
+                                id: "on_roll_designation_master_id",
+                                type: "list",
+                                label: "Designations",
+                                list: designations 
+                            }
+                        ]
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to fetch departments:", error);
+                }
+            });
+        }
+
+        function formatIndianNumber(number) {
+            const [integerPart, decimalPart] = number.toString().split('.');
+            
+            if (integerPart.length <= 3) {
+                return number;
+            }
+        
+            const lastThree = integerPart.slice(-3);
+            const otherNumbers = integerPart.slice(0, -3);
+            const formattedNumber = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + ',' + lastThree;
+        
+            return decimalPart ? formattedNumber + '.' + decimalPart : formattedNumber;
+        }
+
+        function fetchFilteredData(organizationID, filters) {
+            $.ajax({
+                url: "{% url 'budget_filter' %}",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    hotel_name: organizationID,
+                    filters: filters 
+                }),
+                success: function (data) {
+                    $('#example_tbody').empty();
+                    data.projects.forEach(function (item) {
+                        const avgSalary = formatIndianNumber(item.avg_salary);
+                        const headCount = formatIndianNumber(item.head_count);
+                        const totalCtc = formatIndianNumber(item.total_ctc);
+
+                        $('#example_tbody').append(`
+                            <tr>
+                                <td >${item.on_roll_department_master__DepartmentName}</td>
+                                <td>${item.on_roll_designation_master__designations}</td>
+                                <td >${item.on_roll_designation_master__Lavel}</td>
+                                <td >${avgSalary}</td>
+                                <td >${headCount}</td>
+                                <td >${totalCtc}</td>
+                            </tr>
+                        `);
+                    });
+
+                   
+                    var filtersParam = encodeURIComponent(JSON.stringify(filters));
+                    $('#export-report-btn').attr('href', "{% url 'budget_master_pdf' %}?hotel_name=" + organizationID + "&filters=" + filtersParam);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to fetch data:", error);
+                }
+            });
+        }
+
+        $("select[name='hotel_name']").on('change', function () {
+            var selectedOrganizationID = $(this).val();
+            fetchFilteredData(selectedOrganizationID, {}); 
+        });
+
+        $("#structured-filter").on("change.search", function(event){
+            var selectedOrganizationID = $("select[name='hotel_name']").val();
+            var filters = $("#structured-filter").structFilter("val");
+            fetchFilteredData(selectedOrganizationID, filters);
+        });
+
+        fetchDesignations();
+        var initialOrganizationID = "{{ selectedOrganizationID }}";
+        fetchFilteredData(initialOrganizationID, {}); 
+    });
+</script>
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script> {% endcomment %}
+
+
+<script>
+    document.getElementById('exportBtn').addEventListener('click', function() {
+        try {
+            var wb = XLSX.utils.book_new(); // Create a new workbook
+
+            function applyStyles(ws, styles, numCols) {
+                for (let col = 0; col < numCols; col++) {
+                    const cellRef = XLSX.utils.encode_cell({ c: col, r: 0 });
+                    if (!ws[cellRef]) ws[cellRef] = {};
+                    ws[cellRef].s = styles.header;
+                }
+
+                let rowIndex = 1;
+                $('#myTable tr, #myTable2 tr, #myTable3 tr, #myTable4 tr, #myTable5 tr').each(function() {
+                    const divisionRow = $(this).find('strong').first();
+                    if (divisionRow.length) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.division;
+                        }
+                    } else if ($(this).find('td').first().text().includes('Total')) {
+                        for (let col = 0; col < numCols; col++) {
+                            const cellRefRow = XLSX.utils.encode_cell({ c: col, r: rowIndex });
+                            if (!ws[cellRefRow]) ws[cellRefRow] = {};
+                            ws[cellRefRow].s = styles.totalRow;
+                        }
+                    }
+                    rowIndex++;
+                });
+            }
+
+            // Example for one table only; ensure this works before expanding to other tables
+            var ws1 = XLSX.utils.table_to_sheet(document.getElementById('myTable'));
+            ws1['!cols'] = [{ wpx: 200 }, ...Array(11).fill({ wpx: 90 })]; // First column 200px, others 110px
+            applyStyles(ws1, {
+                header: { fill: { fgColor: { rgb: "0AA485" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                division: { fill: { fgColor: { rgb: "4B6650" } }, font: { bold: true, color: { rgb: "FFFFFF" } } },
+                totalRow: { fill: { fgColor: { rgb: "95917E" } }, font: { bold: true, color: { rgb: "FFFFFF" } } }
+            }, 13);
+
+            XLSX.utils.book_append_sheet(wb, ws1, "Table1");
+
+            // Export file
+            XLSX.writeFile(wb, 'MasterLevel.xlsx');
+            console.log('Exported successfully!');
+        } catch (error) {
+            console.error('Error exporting file:', error);
+        }
+    });
+</script>
+
+
+{% endblock %}

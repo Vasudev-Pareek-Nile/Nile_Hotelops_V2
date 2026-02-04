@@ -1,0 +1,162 @@
+
+<style>
+    
+   
+</style>
+<script>
+    var GRedURL ="{{ request.session.MasterURL }}";
+    var ProductUserRightsList ="{{ request.session.ProductUserRightsList }}";
+    var UserID="{{request.session.UserID}}"
+</script>
+<script>
+    $(function () {
+        var CS_SearchDataSource=[];
+        $(".nav_l_h_s_m").empty();
+        $(".nav_l_h_s_m").append('<li><form ><input class="form-control top-custsearch" id="" type="text" placeholder="Search here"> </form></li>')
+        $.getJSON('/get_cached_data',function(data){
+             
+            console.log(data)
+            data=data[0].ModuleList
+ data = JSON.parse(data)
+ pl = data
+ const categories = [...new Set(data.map(item => item.Category))];
+ console.log(categories)
+ var c = []
+ //nav_l_h_s_m_ho
+
+ $(categories).each(function (Index, itm) {
+     $("#nav_l_h_s_m_ho").append('<li class="submenu"><a href = "#" class= "subdrop" ><span> ' + itm + '</span> <span class="menu-arrow"></span></a> <ul style="display: none;" class="nav_l_h_s_m" data-cat="' + itm + '"> </ul> </li > ')
+ })
+ //$(pl).each(function (index, item) {
+ //    var r = item.DomainURL;
+ //    var it = { "name": item.ProductLabel, "id": "27", "type": "module", redURL: r };
+ //    $(".nav_l_h_s_m").append('<li><a href="' + r + '">' + item.ProductLabel + '</a></li>');
+ //    CS_SearchDataSource.push(it)
+ //})
+
+ var Cat = "";
+ $(pl).each(function (index, item) {
+     var r = item.DomainURL;
+     var c = item.Category;
+     //if (Cat == "" || Cat != c) {
+
+     //    //$(".nav_l_h_s_m[data-cat='" + c + "']").append('<li class="topnavCatli"><a href="' + r + '">' + c + '</a></li>');
+     //    Cat = c;
+     //}
+     var it = { "name": item.ProductLabel, "id": "27", "type": "module", redURL: r };
+     $(".nav_l_h_s_m[data-cat='" + c + "']").append('<li><a href="' + r + '">' + item.ProductLabel + '</a></li>');
+     CS_SearchDataSource.push(it)
+ })
+
+ $('.top-search').typeahead({
+     source: CS_SearchDataSource
+     , updater: function (item) {
+         // Call your function here
+
+
+         if (item.type == "module") {
+             window.location.href = item.redURL
+             showLoader();
+         }
+
+     }
+ });
+
+
+ $(".top-custsearch").on("keyup", function () {
+     let value = $(this).val().toLowerCase();
+
+     $(this).parent().parent().parent().parent().find(".nav_l_h_s_m li").filter(function (index, item) {
+         if (index > 0) {
+             // Get the text from <a> inside the <li>
+             let itemText = $(this).find("a").text().toLowerCase();
+
+             if (value === "") {
+                 $(this).css("hide-important");
+             } else {
+                 if (itemText.includes(value)) {
+                     $(this).removeClass("hide-important");
+                 } else {
+                     $(this).addClass("hide-important");
+                 }
+             }
+         }
+     });
+ });
+ //$("#nav_l_h_s_m_ho>li").click(function () {
+ //    $("#nav_l_h_s_m_ho>li ul").css('display','none')
+ //    $(this).find("ul").toggle()
+
+ //})
+ $(document).on("click", "#nav_l_h_s_m_ho > li > a", function (e) {
+     e.preventDefault();
+
+     var $submenu = $(this).next(".nav_l_h_s_m");
+
+     // Slide up all others
+     $(".nav_l_h_s_m").not($submenu).slideUp();
+
+     // Toggle the current
+     $submenu.stop(true, true).slideToggle();
+ });
+    })
+
+})
+    </script>
+
+
+		<!-- Sidebar -->
+		<div class="sidebar" id="sidebar">
+			<div class="sidebar-inner slimscroll">
+				<div id="sidebar-menu" class="sidebar-menu">
+					<nav class="greedys sidebar-horizantal">
+                        <ul class="list-inline-item list-unstyled links"  id="nav_l_h_s_m_ho" >
+
+                        <li style="position: absolute; right: 0;">
+                            <a style="display: inline-block"><i class="fas fa-arrow-left" style="cursor: pointer; color: #fff;" onclick="window.history.back();"></i></a>
+                            <a style="display: inline-block"><i class="fas fa-sync-alt" style="cursor: pointer; color: #fff; display: inline-block" onclick="location.reload();"></i></a>
+                        </li>
+                        </ul>
+					</nav>
+					
+					<ul class="sidebar-vertical" >
+                       
+						<li class="submenu">
+							<a href="#"><i class="la la-dashcube"></i> <span> Modules</span> <span class="menu-arrow"></span></a>
+							<ul class="nav_l_h_s_m">
+								
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<!-- /Sidebar -->
+		
+		<!-- Two Col Sidebar -->
+		<div class="two-col-bar" id="two-col-bar">
+			<div class="sidebar sidebar-twocol" id="navbar-nav">
+				<div class="sidebar-left slimscroll">
+					<div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+						<a class="nav-link active" id="v-pills-dashboard-tab" title="Dashboard" data-bs-toggle="pill" href="#v-pills-dashboard" role="tab" aria-controls="v-pills-dashboard" aria-selected="true">
+							<span class="material-icons-outlined">
+								home
+							</span>
+						</a> 
+					</div>
+				</div>
+				
+				 <div class="sidebar-right">
+					<div class="tab-content" id="v-pills-tabContent">
+						<div class="tab-pane fade show active" id="v-pills-dashboard" role="tabpanel" aria-labelledby="v-pills-dashboard-tab">
+							<p>Modules</p>
+							<ul class="nav_l_h_s_m">
+							</ul>
+						</div> 
+					</div>
+				</div> 
+			</div>
+		</div>
+		<!-- /Two Col Sidebar -->
+    

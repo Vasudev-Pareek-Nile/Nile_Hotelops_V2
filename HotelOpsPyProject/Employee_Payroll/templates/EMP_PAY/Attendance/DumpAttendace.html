@@ -1,0 +1,56 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container">
+   
+
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6"> Dump  Attendance Details  
+            </div>
+           
+        </div>
+    </div>
+    <div class="container text-center mt-2 mb-2">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+      <br>
+    <form action="" method="post" class="col-md-12 mb-3">
+           <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="date" class="form-control" value="{% now "Y-m-d" %}" name="S_Date" >
+    
+                    </div>
+                </div>
+              
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="date" class="form-control" value="{% now "Y-m-d" %}" name="E_Date" >
+    
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Submit">
+                      
+                </div>
+               
+                {% csrf_token %}
+            </div>
+           </div>
+        </form>
+    
+
+</div>
+
+
+
+
+
+{% endblock content %}
+ 

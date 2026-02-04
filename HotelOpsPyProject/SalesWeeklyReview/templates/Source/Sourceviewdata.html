@@ -1,0 +1,151 @@
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+  </style>
+
+  
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Source Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>    
+                     
+        </tr>
+    </table>
+    <br>
+<br/>
+<div class="card-body">
+    <form action="{%url 'SourceView' mem.id %}" method = "post">
+        {% csrf_token %}                
+  
+      </div>                                                        
+    </form>
+</div>
+</div>
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        
+        <th>Source Name</th>
+        <th>RM Nights</th>
+        <th>Revenue</th>
+        <th>ADR</th>
+        <th>RPD</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr> 
+        <td>{{x.SourceMaster.title}}</td> 
+        <td>{{x.RMNights}}</td>   
+        <td>{{x.Revenue}}</td>
+        <td>{{x.ADR}}</td>
+        <td>{{x.RPD}}</td>
+    </tr>
+    
+    {% endfor %}
+
+    <tfoot>
+        <tr>
+            <th>Total </th>
+            <th>{{mem.Total}}</th>
+            <th>{{mem.TotalRevenue}}</th>
+            <th>{{mem.TotalADR}}</th>
+            <th>{{mem.TotalRPD}}</th>
+         
+        </tr>
+    </tfoot>
+</table>
+</div>
+   
+<script>
+    
+    $(function(){
+
+        $("input[name*='RMNights_'],input[name*='Revenue_']").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        
+        $("input[name*='RMNights_']").each(function(){
+            debugger;
+                var RN = $(this).val();
+                RN = parseFloat(RN);
+                RN = isNaN(RN)?0:RN;
+
+                var RV = $(this).parent().parent().find("[name*='Revenue_']").val();
+                RV = parseFloat(RV);
+                RV = isNaN(RV)?0:RV;
+
+                var ADR=0;
+                if(RN>0){
+
+                    ADR = RV/RN;
+                }
+                $(this).parent().parent().find("[name*='ADR_']").val(ADR.toFixed(2));
+               
+
+                var RPD =0;
+                RPD = RN/12;
+                $(this).parent().parent().find("[name*='RPD_']").val(RPD.toFixed(2));
+                
+                
+        })
+
+        var TotalAmount=0;
+        $("input[name*='RMNights_']").each(function(){
+                var a = $(this).val();
+                a = parseFloat(a);
+                a = isNaN(a)?0:a;
+                TotalAmount= TotalAmount+a;
+        })
+        $("input[name='Total']").val(TotalAmount.toFixed(2))
+
+        var TotalRev=0;
+        $("input[name*='Revenue_']").each(function(){
+                var a = $(this).val();
+                a = parseFloat(a);
+                a = isNaN(a)?0:a;
+                TotalRev= TotalRev+a;
+        })
+        $("input[name='TotalRevenue']").val(TotalRev.toFixed(2))
+        $("input[name='TotalADR']").val((TotalRev/TotalAmount).toFixed(2))
+        $("input[name='TotalRPD']").val((TotalAmount/12).toFixed(2))
+
+}
+
+</script>
+   
+
+{% endblock content %}

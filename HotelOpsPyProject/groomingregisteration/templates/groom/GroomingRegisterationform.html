@@ -1,0 +1,89 @@
+{% extends 'groom/homebase.html' %}
+{% load static %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+  <form method="post" action="GroomingRegisterationForm" enctype="multipart/form-data">
+    {{ Grooming_Registeration }}
+  
+    {% csrf_token %}
+    <div class="container register-form">
+      <div class="card card-primary">
+        <div class="card-header">
+          <p> Register In Grooming Registeration Form </p>
+        </div>
+
+        <div class="card-body">
+         
+          <input type="hidden" name="CreatedBy" value="{{d.UserID}}"> 
+          <input type="hidden" name="OrganizationID" value="{{d.OrganizationID}}"> 
+         
+          <div class="">
+            <div class="row">
+              <div class="col-sm-3">
+                <label>Date</label>
+                {% render_field GroomingRegisterationForm.Date class="form-control" placeholder="Date" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Audit Type</label>
+                {% render_field GroomingRegisterationForm.Audit_Type class="form-control" placeholder="Audit_Type" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name</label>
+                {% render_field GroomingRegisterationForm.Name class="form-control" placeholder="Name" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Shoes</label>
+                {% render_field GroomingRegisterationForm.Shoes class="form-control" placeholder="Shoes" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Shocks</label>
+                {% render_field GroomingRegisterationForm.Shocks class="form-control" placeholder="Shocks" %}
+              </div>
+            
+              <div class="col-sm-3">
+                <label>Nails</label>
+                {% render_field GroomingRegisterationForm.Nails  class="form-control" placeholder="Nails" %}
+              </div>
+             <div class="col-sm-3">
+              <label>Hair</label>
+                {% render_field GroomingRegisterationForm.Hair  class="form-control" placeholder="Hair" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Uniform</label>
+                {% render_field GroomingRegisterationForm.Uniform  class="form-control"  placeholder="Uniform" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Name Badge</label>
+                {% render_field GroomingRegisterationForm.Name_Badge  class="form-control"  placeholder="Name_Badge" %}
+              </div>
+              <div class="col-sm-3">
+                <label>Brand Pin</label>
+                {% render_field GroomingRegisterationForm.Brand_Pin  class="form-control"  placeholder="Brand_Pin" %}
+              </div>
+            </div>
+            
+
+              <br/>
+              <div class="row">
+                  <div class="col-sm-12">
+                      <label>Remarks</label>
+                       {% render_field GroomingRegisterationForm.Remarks class="form-control" rows=4 maxlength=500 placeholder="Remarks" %}
+                   </div>
+    
+                </div>
+          </div>
+         
+        </div>
+        <div class="card-footer text-right">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+
+      </div>
+    </div>
+
+
+  {% endblock content %}

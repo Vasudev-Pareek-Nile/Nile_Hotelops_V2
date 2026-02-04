@@ -1,0 +1,170 @@
+{% extends 'Policy_Posh/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+ 
+
+<style>
+    form p {
+        display: inline-block;
+        width: 25%;
+        margin-right: 10px;
+    }
+    
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    form p {
+        display: inline-block;
+        width: 100%;
+        margin-right: 10px;
+    }
+  }
+  label[for="id_data"]
+{
+    visibility: hidden;
+}
+label{
+    padding-top: 14px;
+    margin-bottom:5px;
+}
+ </style>
+
+ <div class="card">
+    <div class="card-header text-uppercase fw-bold">Posh Policy</div>
+
+    <form action="" method="post">
+        <div class="card-body">
+            <div class="col-md-12">
+                <div class="row">
+                    <!-- Emp Code -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="emp_code">Emp Code</label>
+                            <input type="text" name="emp_code" id="emp_code" class="form-control" value="{{ Experienceobj.emp_code }}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Prefix -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="prefix">Prefix</label>
+                            <input type="text" name="prefix" id="prefix" class="form-control" value="{{ Experienceobj.prefix }}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- First Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" value="{{ Experienceobj.first_name }}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Last Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" value="{{ Experienceobj.last_name }}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Generate Date -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="generate_date">Generate Date</label>
+                            <input type="date" name="generate_date" id="generate_date" class="form-control" value="{% if Experienceobj.generate_date %}{{Experienceobj.generate_date|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}" required>
+                        </div>
+                    </div>
+        
+                    <!-- Date of Joining -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_joining">Date of Joining</label>
+                            <input type="date" name="date_of_joining" id="date_of_joining" class="form-control" value="{{ Experienceobj.date_of_joining|date:'Y-m-d'}}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Date of Last Working -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="date_of_last_working">Date of Last Working</label>
+                            <input type="date" name="date_of_last_working" id="date_of_last_working" class="form-control" value="{% if Experienceobj.date_of_last_working %}{{Experienceobj.date_of_last_working|date:'Y-m-d'}}{% else %}{% now "Y-m-d" %}{% endif %}">
+                        </div>
+                    </div>
+        
+                    <!-- Department -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <input type="text" name="department" id="department" class="form-control" value="{{ Experienceobj.department }}" required readonly>
+                        </div>
+                    </div>
+        
+                    <!-- Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" name="designation" id="designation" class="form-control" value="{{ Experienceobj.designation }}" required readonly>
+                        </div>
+                    </div>
+        
+                
+                    <!-- HR Designation -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="hr_designation">HR Designation:</label>
+                            <select class="form-control" name="Hr_Designation" id="Hr_Designation" required>
+                                <option value="">Select</option>
+                                {% for HRManagerName in HRManagerNames %}
+                                    <option value="{{ HRManagerName.designations }}" 
+                                            {% if Experienceobj.Hr_Designation == HRManagerName.designations %} selected {% endif %} 
+                                            data-hrname="{{ HRManagerName.EmployeeName }}">
+                                        {{ HRManagerName.designations }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- HR Name -->
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="hr_name">HR Name:</label>
+                            <input type="text" name="Hr_Name" id="Hr_Name" class="form-control" 
+                                value="{{ Experienceobj.Hr_Name|default_if_none:'' }}" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="CustomFooter">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>  
+</div>
+
+
+
+<script>
+    // Function to update the HR Name based on the selected designation
+    function updateHRName() {
+        const designationSelect = document.getElementById("Hr_Designation");
+        const selectedOption = designationSelect.options[designationSelect.selectedIndex];
+        const hrName = selectedOption.getAttribute("data-hrname");
+
+        // Update the HR Name input field
+        document.getElementById("Hr_Name").value = hrName ? hrName : '';
+    }
+
+    // Add event listeners to update the HR Name on page load and when the selection changes
+    document.addEventListener("DOMContentLoaded", function() {
+        updateHRName(); // Set the initial value
+    });
+
+    document.getElementById("Hr_Designation").addEventListener("change", updateHRName);
+</script>
+  
+{% endblock content %}

@@ -1,0 +1,43 @@
+
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="container">
+    <div class="col-md-12">
+       <form action="" method="post" enctype="multipart/form-data">
+        <div class="card">
+            <div class="card-header">Send Emails</div>
+            <div class="card-main">
+                
+                    <div class="row">
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-right">
+                {% csrf_token %}
+                <input type="submit" value="Send Emails" class="btn btn-primary btn-sm" >
+            </div>
+        </div>
+
+       </form>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+
+
+
+

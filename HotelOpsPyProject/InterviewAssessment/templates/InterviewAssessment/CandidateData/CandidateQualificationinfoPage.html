@@ -1,0 +1,282 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="loader" style="display: none; text-align: center; padding: 20px;">
+                Loading...
+           </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadLink" target="_blank" class="btn btn-primary" href="#" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+   <div class="card m-3">
+    <div class="card-header">
+        <h3>Qualification Information</h3>
+    </div>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <div class="main">
+            <div class="row m-3">
+    
+                
+                    <table id="educationTable" class="table table-bordered" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th width="180">Education Type</th>
+                                <th>Degree/Course</th>
+                                <th>Name of the Institution</th>
+                                <th width="110">Year</th>
+                                {% comment %} <th width="100">Percentage</th> {% endcomment %}
+                                <th width="250  ">Attachment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             {% for Edu in Educations %} 
+                            <tr id="Edurow{{ Edu.id }}">
+                                <td>
+                                    <select class="form-control" name="EducationType[]" required>
+                                        <option value="Secondary" {% if Edu.EducationType == "Secondary" %}selected{% endif %}>Secondary</option>
+                                        <option value="Higher Secondary" {% if Edu.EducationType == "Higher Secondary" %}selected{% endif %}>Higher Secondary</option>
+                                        <option value="Graduation" {% if Edu.EducationType == "Graduation" %}selected{% endif %}>Graduation</option>
+                                        <option value="Post Graduation" {% if Edu.EducationType == "Post Graduation" %}selected{% endif %}>Post Graduation</option>
+                                        <option value="Diploma" {% if Edu.EducationType == "Diploma" %}selected{% endif %}>Diploma</option>
+                                        <option value="Certificate" {% if Edu.EducationType == "Certificate" %}selected{% endif %}>Certificate</option>
+                                        <option value="Other" {% if Edu.EducationType == "Other" %}selected{% endif %}>Other</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" name="DegreeCourse[]" value="{{ Edu.Degree_Course }}" required></td>
+                                <td><input type="text" class="form-control" name="InstitutionName[]" value="{{ Edu.NameoftheInstitution }}" required></td>
+                                <td>
+                                    <input type="hidden" id="eduYear{{ Edu.id }}" value="{{ Edu.Year }}">
+                                    <select id="yearDropdown{{ Edu.id }}" class="form-control" name="Year[]" required></select>
+
+                                </td>
+
+                                {% comment %} <td><input type="number" class="form-control" name="Percentage[]" value="{{ Edu.Percentage }}" required></td> {% endcomment %}
+                                <td>
+                                  
+                                     {% comment %} <input type="file" class="form-control file-input" name="AttachmentEducation[]" accept="application/pdf" data-id="FID_{{ Edu.id }}" id="educationFile" {% if Edu.FileName %}{% else %} required{% endif %}> {% endcomment %}
+                                        
+                                     <input type="file" class="form-control file-input" name="AttachmentEducation[]" accept="application/pdf" data-id="FID_{{ Edu.id }}" id="educationFile" >
+                                   
+                                     {% if Edu.FileTitle %}
+                                        Previous Document
+                                        <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ Edu.id }}&model=EmployeeEducationData" 
+                                        class="btn btn-primary btn-sm ml-2"
+                                        onclick="showEduDetails(this)"
+                                        >
+                                       <span class="fa fa-eye"></span>
+                                        </a>
+                                     
+                                    {% endif %}
+                                  
+                   
+                                       
+                                   
+
+
+
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeEducationRow('{{ Edu.id }}')">REMOVE</button>
+                                    <input type="hidden" name="Edu_ids[]" value="{{ Edu.id }}">
+                                </td>
+                            </tr>
+                           {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="7" class="text-right">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="addEducationRow()">ADD</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <input type="hidden" id="removedEduIds" name="removed_Edu_ids[]">    
+                
+                
+        </div>
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+            <input type="submit" id="toggleSpinners" class="btn btn-primary btn-sm" value="Next">
+        </div>
+    </form>
+
+    
+   </div>
+
+
+   <script>
+    var showEduDetails = function(obj) {
+        var hurl = $(obj).attr('data-href');
+
+        // Show the modal
+        $(".modalPr").modal('show');
+
+        // Show the loader
+        $(".modalPr .loader").show();
+
+        // Hide the iframe initially
+        $(".modalPr iframe").hide();
+
+        // Set the iframe source
+        $(".modalPr iframe").attr('src', hurl);
+
+        // Wait for the iframe to load
+        $(".modalPr iframe").on('load', function() {
+            // Hide the loader and show the iframe once the content is loaded
+            $(".modalPr .loader").hide();
+            $(this).show();
+        });
+    }
+</script>
+
+   <script>
+    let newEduCount = 0;
+
+    var handleFileChange =function(){
+    if($(this).parent().find("input[type='hidden'][name='FID[]']").length>0){
+
+    }
+    else{
+        var fid = $(this).attr('data-id');
+        if(fid==undefined || fid==null){
+            fid="New";
+
+        }
+        var inp ="<input type='hidden'  name='FID[]' value='"+fid+"'/>";
+        $(this).parent().append(inp)
+    }
+}
+
+
+function populateYearDropdown(dropdownId, selectedYear) {
+        const startYear = 1980; // Starting year
+        const endYear = new Date().getFullYear(); // Current year
+
+        const dropdown = document.getElementById(dropdownId);
+
+        if (!dropdown) return; // Exit if dropdown not found
+
+        // Clear existing options
+        dropdown.innerHTML = '';
+
+        // Add a default placeholder option
+        const placeholderOption = document.createElement('option');
+        placeholderOption.textContent = 'Select Year';
+        placeholderOption.value = '';
+        placeholderOption.disabled = true;
+        placeholderOption.selected = !selectedYear; // Select if no year provided
+        dropdown.appendChild(placeholderOption);
+
+        // Populate the dropdown with years
+        for (let year = startYear; year <= endYear; year++) {
+            const option = document.createElement('option');
+            option.textContent = year;
+            option.value = year;
+            if (year == selectedYear) {
+                option.selected = true; // Select if it matches the existing year
+            }
+            dropdown.appendChild(option);
+        }
+    }
+
+    document.querySelectorAll('.file-input').forEach(function(fileInput) {
+                        fileInput.addEventListener('change', handleFileChange);
+                    });
+    
+    function addEducationRow() {
+        var table = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+        newEduCount++;
+        var newId = 'new_' + newEduCount;  
+
+        newRow.id = 'Edurow' + newId;
+        newRow.innerHTML = `
+            <td>
+                <select class="form-control" name="EducationType[]" required>
+                    <option value="Secondary">Secondary</option>
+                    <option value="Higher Secondary">Higher Secondary</option>
+                    <option value="Graduation">Graduation</option>
+                    <option value="Post Graduation">Post Graduation</option>
+                    <option value="Diploma">Diploma</option>
+                    <option value="Certificate">Certificate</option>
+                    <option value="Other">Other</option>
+                </select>
+            </td>
+            <td><input type="text" class="form-control" name="DegreeCourse[]" required></td>
+            <td><input type="text" class="form-control" name="InstitutionName[]" required></td>
+            <td>
+                <select id="yearDropdown${newId}" class="form-control" name="Year[]" required>
+                    <!-- Options will be populated dynamically -->
+                </select>
+            </td>
+        
+            <td>
+         
+             <input type="file" class="form-control file-input" name="AttachmentEducation[]" accept="application/pdf" data-id="FID_${newId}" >
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeEducationRow('${newId}')">REMOVE</button>
+                <input type="hidden" name="Edu_ids[]" value="${newId}">
+            </td>
+        `;
+        newRow.querySelector('.file-input').addEventListener('change', handleFileChange);   
+        // Populate the year dropdown for the newly added row
+        populateYearDropdown(`yearDropdown${newId}`);
+    }
+
+    function removeEducationRow(EduId) {
+        var row = document.getElementById('Edurow' + EduId);
+        
+        if (row) {
+            row.parentNode.removeChild(row);
+            addRemovedEduId(EduId);
+        }
+    }
+
+    function addRemovedEduId(EduId) {
+        var removedEduIdsInput = document.getElementById('removedEduIds');
+        var removedEduIds = removedEduIdsInput.value.split(',').filter(id => id); 
+    
+        if (!removedEduIds.includes(EduId)) {
+            removedEduIds.push(EduId);
+            removedEduIdsInput.value = removedEduIds.join(',');
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for Edu in Educations %}
+            populateYearDropdown('yearDropdown{{ Edu.id }}', '{{ Edu.Year }}');
+        {% endfor %}
+    });
+</script>
+
+
+{% endblock content %}
+
+
+
+
+

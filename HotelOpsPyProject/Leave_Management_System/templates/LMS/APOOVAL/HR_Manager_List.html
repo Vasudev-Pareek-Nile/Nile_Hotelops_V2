@@ -1,0 +1,171 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+<style>
+  table th,td
+  {
+      font-size: 14px;
+      
+  } 
+  
+  .input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input[type="date"] {
+  padding-left: 59px;
+}
+
+.input-wrapper label {
+  position: absolute;
+  left: 5px; 
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  background-color: white;
+  padding: 0 5px;
+}
+
+
+</style>
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+<div class="card-header">Leave Approval List</div>
+<br>
+<div class="row">
+    <div class="col-md-12"> <form method="get" class="d-flex">
+        
+       
+      
+         <div class="form-group m-1">
+
+            <select name="I" class="form-control m-1">
+        
+                <option value="" {% if "" == selectedOrganizationID %}selected{% endif %} >ALL Hotels</option>
+                {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                        {{ itm.Organization_name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div> 
+        <div class="form-group m-2"> <select name="Status" id="" class="form-control ml-2">
+
+            <option value="1" {% if Status == selectedStatus %}selected{% endif %}>Approved</option>
+            <option value="0" {% if Status == selectedStatus %}selected  {% endif %}>Pending</option>
+            <option value="-1" {% if Status == selectedStatus %}selected  {% endif %}>Rejected</option>
+
+
+        </select></div>
+        
+        <div class="form-group m-2">
+            <div class="input-wrapper">
+                <input type="date" name="Start_Date" id="Start_Date" value="{% if  Start_Date %}{{Start_Date}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+                <label for="Start_Date">From</label>
+              </div>
+              
+              
+        </div>
+
+        <div class="form-group m-2">
+            <div class="input-wrapper">
+            <input type="date" name="To_Date" id="To_Date" value="{% if  To_Date %}{{To_Date}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+            <label for="Start_Date">To</label>
+        </div>
+              
+        </div>
+        <div class="form-group m-1"><button type="submit" class="btn btn-primary btn-sm m-2" >Filter</button>
+        
+            <a href="{% url 'HR_Manager_List' %}" class="btn btn-primary btn-sm" style="width: 80px;">Clear Filter</a></div>
+        
+       
+        
+    </form>
+    </div>
+   
+    
+  </div>
+<br>
+<br>
+<table id="example" class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Hotel</th>
+          <th>Emp Code</th>
+          <th>Emp Name</th>
+          <th>Leave Type</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Reason</th>
+          <th>Total Credit</th>
+       
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for leave_application in approval_list %}
+            {% for employee in employee_data %}
+                {% if leave_application.Emp_code == employee.EmployeeCode %}
+                    <tr>
+                        <td style="text-transform: uppercase !important;">{{employee.Hotel}}</td>
+                        <td>{{ leave_application.Emp_code }}</td>
+                        <td>{{ employee.FirstName }} {{ employee.MiddleName }} {{ employee.LastName }}</td>
+                        <td>{{ leave_application.Leave_Type_Master.Type }}</td>
+                        <td>{{ leave_application.Start_Date | date:'d-m-Y' }}</td>
+                        <td>{{ leave_application.End_Date | date:'d-m-Y' }}</td>
+                        <td>{{ leave_application.Reason }}</td>
+                        <td>{{ leave_application.Total_credit }}</td>
+                        
+                        <td>
+                            <a href="{% url 'Approve_Leave' %}?ID={{leave_application.id}}&action=approve&OID={{leave_application.OrganizationID}}" class="btn btn-primary btn-sm">Approve</a>
+                            <a onclick="return confirm('Are you sure you want to Reject this?')" href="{% url 'Approve_Leave' %}?ID={{leave_application.id}}&action=reject&OID={{leave_application.OrganizationID}}" class="btn btn-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+    
+</table>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+    
+
+    <script>
+        $(document).ready(function() {
+            
+            var table = $("#example").DataTable({
+                "paging": true,
+                "searching": true,
+                "order": [],
+               
+            });
+    
+            
+           
+        });
+        
+        $(document).ready(function () {
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedStatus = "{{ Status }}";
+        $("select[name='Status']").val(selectedStatus);
+        
+        
+        
+    });
+
+    </script>
+
+{% endblock %}

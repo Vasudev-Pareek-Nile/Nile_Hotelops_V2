@@ -1,0 +1,84 @@
+<html>
+
+<head>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-bordered td,.table-bordered th{
+            border:1px solid #d3d3d3;
+            padding:4px;
+            word-wrap:break-word;
+            text-overflow: clip;
+            
+        }
+     
+        @page {
+            size: landscape;padding:20px;
+            
+        }
+    </style>
+
+</head>
+<body>
+
+          <div class="row">
+            <div class="col">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>Pending Snag list Report</h5>
+                       
+                    </div>
+                    <div class="ibox-content">
+                       
+                        </form>
+                     
+                        <br/>
+                        {% comment %} {{DataRes}} {% endcomment %}
+                        <div class="row">
+                            <div class="col ">
+                                    <table id="tableData" class="table table-bordered">
+                                            <thead>
+                                                <tr class="active">
+                                                    <th width="70px">
+                                                        Date
+                                                    </th>
+                                                    <th  width="70px">Area</th> 
+                                                    <th  width="70px">Division</th> 
+                                                    <th  width="70px">Title</th> 
+                                                    <th>Snag</th> 
+                                                    <th  width="110px">Type of Work</th> 
+                                                    <th  width="210px"> Remarks</th> 
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for itm in DataRes %}
+                                                {% comment %} {{itm.OrganizationID}} {% endcomment %}
+                                                
+                                                <tr>
+                                                    {% if itm.category == "1" %}
+                                                    <th colspan="7" style="background-color: aliceblue;">{{itm.title}}</th>
+                                                    {% else %}
+                                                    <td width="70px">
+                                                        
+                                                            {{itm.Date}}
+                                                            </td>
+                                                            <td width="70px">{{itm.Area}}</td> 
+                                                            <td width="70px">{{itm.DivisionTitle}}</td> 
+                                                            <td width="70px">{{itm.SectionTitle}}</td> 
+                                                            <td>{{itm.title}}</td> 
+                                                            <td width="110px">{{itm.worktype}}</td> 
+                                                            <td width="110px">{{itm.Remarks}}</td> 
+                                                    {% endif %}
+
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                    </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+    
+</body>
+</html>

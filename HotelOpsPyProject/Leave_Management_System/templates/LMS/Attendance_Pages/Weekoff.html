@@ -1,0 +1,614 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+{% load static %} 
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %} 
+{% block content %} {% endcomment %}
+
+<style>
+  #event-listing {
+    overflow-y: auto;
+}
+</style>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.css"
+/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.js"></script>
+<style>
+  #calendar button {
+    text-transform: capitalize;
+  }
+  .fc-view-container *,
+  .fc-view-container *:before,
+  .fc-view-container *:after {
+    text-transform: CAPITALIZE;
+  }
+
+  body {
+    font-family: Arial, nova;
+  }
+  .popper,
+  .tooltip {
+    position: absolute;
+    z-index: 9999;
+    background: #ffc107;
+    color: black;
+    width: 150px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    text-align: center;
+  }
+  .style5 .tooltip {
+    background: #1e252b;
+    color: #ffffff;
+    max-width: 200px;
+    width: auto;
+    font-size: 0.8rem;
+    padding: 0.5em 1em;
+  }
+  .popper .popper__arrow,
+  .tooltip .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+  }
+
+  .tooltip .tooltip-arrow,
+  .popper .popper__arrow {
+    border-color: #ffc107;
+  }
+  .style5 .tooltip .tooltip-arrow {
+    border-color: #1e252b;
+  }
+  .popper[x-placement^="top"],
+  .tooltip[x-placement^="top"] {
+    margin-bottom: 5px;
+  }
+  .popper[x-placement^="top"] .popper__arrow,
+  .tooltip[x-placement^="top"] .tooltip-arrow {
+    border-width: 5px 5px 0 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    bottom: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .popper[x-placement^="bottom"],
+  .tooltip[x-placement^="bottom"] {
+    margin-top: 5px;
+  }
+  .tooltip[x-placement^="bottom"] .tooltip-arrow,
+  .popper[x-placement^="bottom"] .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    top: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .tooltip[x-placement^="right"],
+  .popper[x-placement^="right"] {
+    margin-left: 5px;
+  }
+  .popper[x-placement^="right"] .popper__arrow,
+  .tooltip[x-placement^="right"] .tooltip-arrow {
+    border-width: 5px 5px 5px 0;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    left: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .popper[x-placement^="left"],
+  .tooltip[x-placement^="left"] {
+    margin-right: 5px;
+  }
+  .popper[x-placement^="left"] .popper__arrow,
+  .tooltip[x-placement^="left"] .tooltip-arrow {
+    border-width: 5px 0 5px 5px;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    right: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  div#WeekOffCard {
+      height: 835px;
+  }
+</style>
+{% if messages %}
+  <div class="cotainer">
+    <div class="container text-center">
+      {% for message in messages %} {% if message.tags == 'success' %}
+      <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+      {% else %}
+      <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+      {% endif %} {% endfor %}
+    </div>
+  </div>
+{% endif %}
+
+{% comment %} <div class="row" style="font-family: Arial, Helvetica, sans-serif"> {% endcomment %}
+<div class="card">
+  <div class="card-header text-uppercase fw-bold">
+    Employee Week Off Details
+  </div>
+  <div class="card-body">
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-4 mb-1">
+          <select id="EmployeeSelect" class="form-control">
+            <option value="All">All Employee</option>
+            {% for emp in emp_list %}
+            <option value="{{ emp.EmployeeCode }}">
+              {{ emp.FirstName }} {{emp.LastName}},{{emp.EmployeeCode}}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-8 mb-1">
+          <button
+            onclick="ShowAddNew()"
+            class="btn mr-4 btn-primary"
+            style="padding-inline: 15px; padding-block: 7px";
+          >
+            Add Week off
+          </button>
+          <button
+            onclick="UploadWeekoff()"
+            class="btn mr-4 btn-primary"
+            style="padding-inline: 15px padding-block: 7px";
+          >
+            Upload
+          </button>
+          <button
+            onclick="DownloadWeekoff()"
+            class="btn mr-4 btn-primary"
+            style="padding-inline: 15px; padding-block: 7px";
+          >
+            Excel
+          </button>
+          {% comment %} <button
+            onclick="javascript:window.print()"
+            class="btn mr-4 btn-primary"
+            style="padding-inline: 15px padding-block: 7px";
+          >
+            Print
+          </button> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body row">
+    <div class="col-md-9">
+      <div id="calendar"></div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card" id="WeekOffCard">
+        <div class="card-header fw-bold">Week offs</div>
+        <ul class="list-group list-group-flush" id="event-listing"></ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% comment %} </div> {% endcomment %}
+
+<div class="modal" id="DowloadWeekoffModel" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title text-uppercase fw-bold">Download Weekoff</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <label class="col-sm-4 control-label">Year:</label>
+          <div class="col-sm-8">
+            <select class="form-control" name="year" value="{{mem.EntryYear}}">
+              {%for i in CYear%}
+              <option>{{i}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <label class="col-sm-4 control-label mt-2">Month:</label>
+          <div class="col-sm-8 mt-2">
+            <select class="form-control" data-val="{{CMonth}}" name="month_no">
+              <option value="1">Jan</option>
+              <option value="2">Feb</option>
+              <option value="3">Mar</option>
+              <option value="4">Apr</option>
+              <option value="5">May</option>
+              <option value="6">Jun</option>
+              <option value="7">Jul</option>
+              <option value="8">Aug</option>
+              <option value="9">Sep</option>
+              <option value="10">Oct</option>
+              <option value="11">Nov</option>
+              <option value="12">Dec</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="downloadBtn" type="button" class="btn btn-primary">
+          Download Excel
+        </button>
+
+        <button
+          id="closeBtn"
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="UploadWeekoffModel" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title text-uppercase fw-bold">Upload Weekoff</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <label class="col-sm-4 control-label">Choose File :</label>
+          <div class="col-sm-8">
+            <input
+              id="weekoffFileInput"
+              type="file"
+              required
+              class="form-control"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="uploadButton" type="button" class="btn btn-primary">
+          Upload
+        </button>
+        <button
+          id="closeBtn"
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="addNewEvntModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header d-flex justify-content-between">
+        <h5 class="modal-title text-uppercase fw-bold">Add Week off</h5>
+        <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+      </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <label class="col-sm-4 control-label">Employee Name:</label>
+          <div class="col-sm-8 mb-2">
+            <select id="empselect" class="form-control">
+              {% for emp in emp_list %}
+              <option value="{{ emp.EmployeeCode }}">
+                {{ emp.FirstName }} {{emp.LastName}},{{emp.EmployeeCode}}
+              </option>
+              {% endfor %}
+            </select>
+
+            <input id="id" value="0" type="hidden" class="form-control" />
+          </div>
+          <br />
+          <label class="col-sm-4 control-label">Weekoff Date :</label>
+          <div class="col-sm-8">
+            <input type="date" id="WeekoffDate" class="form-control" />
+          </div>
+          <br /><br />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          onclick="DeleteEvent()"
+          class="btn btn-danger float-left"
+        >
+          Delete
+        </button>
+        <button type="button" onclick="AddNewEvent()" class="btn btn-primary">
+          Submit
+        </button>
+        <button
+          id="closeBtn"
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var calendar;
+  var eventListing = $("#event-listing");
+  var data;
+
+  function loadAndDisplayEvents(
+    selectedValue,
+    initialLoad = false,
+    calDate = undefined
+  ) {
+    $.ajax({
+      type: "GET",
+      url: "/Employee_Payroll/all_events/",
+      data: { EmployeeSelect: selectedValue },
+      success: function (eventsData) {
+        data = eventsData;
+
+        if (initialLoad) {
+          calendar.fullCalendar("addEventSource", eventsData);
+        } else {
+          calendar.fullCalendar("removeEvents");
+          calendar.fullCalendar("addEventSource", eventsData);
+        }
+
+        if (calDate == undefined) {
+          updateEventListing(eventsData, moment());
+        } else {
+          updateEventListing(eventsData, calDate);
+        }
+      },
+    });
+  }
+
+  const updateEventListing = (events, startDate) => {
+    eventListing.empty();
+
+    const eventsForSelectedMonth = events.filter((event) => {
+      const eventMonth = moment(event.start).format("MM");
+      const eventYear = moment(event.start).format("YYYY");
+
+      return (
+        startDate === undefined ||
+        (eventMonth === startDate.format("MM") &&
+          eventYear === startDate.format("YYYY"))
+      );
+    });
+
+    if (eventsForSelectedMonth.length === 0) {
+      eventListing.append(
+        '<li class="list-group-item">No Week offs for this month</li>'
+      );
+    } else {
+      eventsForSelectedMonth.forEach((event) => {
+        const formattedStartDate = moment(event.start).format("DD-MM-YYYY");
+        eventListing.append(
+          `<li class="list-group-item lst" style="text-transform: capitalize;">Employee Name: ${event.title}<br>Weekoff Date: ${formattedStartDate}</li>`
+        );
+      });
+    }
+  };
+
+  function DeleteEvent() {
+    var id = $("#addNewEvntModal #id").val();
+    if (confirm("Are you sure you want to remove it?")) {
+      $.ajax({
+        type: "GET",
+        url: "/Employee_Payroll/remove/",
+        data: { id: id },
+        dataType: "json",
+        success: function (responseData) {
+          location.reload();
+          alert("Event Removed");
+          $("#addNewEvntModal").modal("hide");
+        },
+        error: function (responseData) {
+          alert(responseData.responseJSON.error);
+        },
+      });
+    }
+  }
+
+  function ShowAddNew() {
+    $("#addNewEvntModal").modal("show");
+    $("#addNewEvntModal #WeekoffDate").val(moment().format("YYYY-MM-DD"));
+  }
+
+  function AddNewEvent() {
+    var title = $("#addNewEvntModal #title").val();
+    var WeekoffDate = $("#addNewEvntModal #WeekoffDate").val();
+    var id = $("#addNewEvntModal #id").val();
+    var empcode = $("#addNewEvntModal #empselect").val();
+
+    $.ajax({
+      type: "GET",
+      url: "/Employee_Payroll/add_event/",
+      data: {
+        title: title,
+        WeekOffDate: WeekoffDate,
+        id: id,
+        empcode: empcode,
+      },
+      dataType: "json",
+      success: function (responseData) {
+        if ("error" in responseData) {
+          alert(responseData.error);
+          console.log(responseData);
+        } else {
+          location.reload();
+          $("#addNewEvntModal").modal("hide");
+          alert(id == 0 ? "Added Successfully" : "Edit Successfully");
+        }
+      },
+      error: function (responseData) {
+        alert(responseData.responseJSON.error);
+      },
+    });
+  }
+
+  $(document).ready(function () {
+    calendar = $("#calendar").fullCalendar({
+      header: {
+        left: "prev,next today",
+        center: "title",
+        right: "month,agendaWeek,agendaDay",
+      },
+      firstDay: 1,
+      events: [],
+      eventClick: function (event) {
+        $("#addNewEvntModal").modal("show");
+        if (event.id) {
+          $("#addNewEvntModal #id").val(event.id);
+          $("#addNewEvntModal #WeekoffDate").val(
+            event.start.format("YYYY-MM-DD")
+          );
+          var empcode = event.empcode;
+          var empselect = $("#addNewEvntModal #empselect");
+          empselect.val(empcode);
+          empselect.prop("disabled", true);
+        }
+      },
+      viewSkeletonRender: function (info) {
+        updateEventListing(data, info.view.currentStart);
+      },
+    });
+
+
+    $("#EmployeeSelect").on("change", function () {
+      const selectedValue = $(this).val();
+
+      const startDate = moment(
+        calendar.fullCalendar("getDate").startOf("month")._d
+      );
+      //const startDate='2024-04-01'
+      // updateEventListing(data, startDate,selectedValue);
+      loadAndDisplayEvents(selectedValue, false, startDate);
+    });
+
+    $("#calendar .fc-button-group button").click(function () {
+      const startDate = moment(
+        calendar.fullCalendar("getDate").startOf("month")
+      );
+      const selectedValue = $("#EmployeeSelect").val();
+      console.log(selectedValue);
+      updateEventListing(data, startDate, selectedValue);
+    });
+
+    loadAndDisplayEvents(null, true);
+  });
+</script>
+
+<script>
+  function UploadWeekoff() {
+    debugger
+    $("#UploadWeekoffModel").modal("show");
+
+    $("#uploadButton").on("click", function () {
+      debugger
+      var fileInput = $("#weekoffFileInput")[0].files[0];
+      if (!fileInput) {
+        alert("Please choose a file.");
+        return;
+      }
+
+      var formData = new FormData();
+      formData.append("file", fileInput);
+
+      var csrftoken = getCookie("csrftoken");
+
+      $.ajax({
+        type: "POST",
+        url: "/Employee_Payroll/upload_weekoff/",
+        data: formData,
+        processData: false,
+        contentType: false,
+        beforeSend: function (xhr) {
+          debugger
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        },
+        success: function (response) {
+          debugger
+          location.reload();
+          alert(response.success);
+        },
+        error: function (xhr, status, error) {
+          location.reload();
+          var errorMessages = xhr.responseJSON.details;
+          if (errorMessages && errorMessages.length > 0) {
+            errorMessages.forEach(function (errorMessage) {
+              alert(errorMessage);
+            });
+          } else {
+            alert(xhr.responseJSON.error);
+          }
+        },
+      });
+    });
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+<script>
+  function DownloadWeekoff() {
+    $("#DowloadWeekoffModel").modal("show");
+  }
+
+  document.getElementById("downloadBtn").addEventListener("click", function () {
+    var year = document.querySelector('select[name="year"]').value;
+    var month = document.querySelector('select[name="month_no"]').value;
+
+    window.location.href = `/Employee_Payroll/download_weekoff/?year=${year}&month=${month}`;
+    alert("Downloading");
+    location.reload();
+  });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,232 @@
+{% extends "program/homebase.html" %} {% block content %}
+
+
+<div class="container">
+  <div class="col-md-12 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" >
+          <strong>Project Review</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="title"
+                  value="{{pro.title}}"
+                  id=""
+                  placeholder="Enter Title"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              
+              <div class="form-group m-3">
+                <label for="">Project</label>
+                {% comment %}
+                <input
+                  type="text"
+                  class="form-control"
+                  name="project"
+                  value="{{pro.project}}"
+                  id=""
+                />
+                {% endcomment %}
+                <select class="form-control" name="project" id="">
+                  <option value="">--Please choose an option--</option>
+                  <option value="Brownfield"  {% if pro.project == "Brownfield" %}selected{% endif %}>Brownfield</option>
+                  <option value="Shell & core up"  {% if pro.project == "Shell & core up" %}selected{% endif %}>Shell & core up</option>
+                  <option value="conversion"  {% if pro.project == "conversion" %}selected{% endif %}>conversion</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Height of the bulding</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="height_bulding"
+                  value="{{pro.height_bulding}}"
+                  id=""
+                  placeholder="Mts."
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Structure Type</label>
+                {% comment %}
+                <input
+                  type="text"
+                  class="form-control"
+                  name="structure_type"
+                  value="{{pro.structure_type}}"
+                  id=""
+                />
+                {% endcomment %}
+                <select class="form-control" name="structure_type" id="">
+                  <option value="">--Please choose an option--</option>
+                  <option value="Stand_alone" {% if pro.structure_type == "Stand_alone" %}selected{% endif %}>Stand alone</option>
+                  <option value="spread_out" {% if pro.structure_type == "spread_out" %}selected{% endif %}>Spread Out</option>
+                  <option value="mixed_use"  {% if pro.structure_type == "mixed_use" %}selected{% endif %}>Mixed Use</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Total Site area</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="total_area"
+                  value="{{pro.total_area}}"
+                  id=""
+                  placeholder="Sq Mt./acres."
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Structure - levels</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="structure_levels"
+                  value="{{pro.structure_levels}}"
+                  id=""
+                  placeholder="Enter Levels Basement + G +"
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Total Built up area</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="built_area"
+                  value="{{pro.built_area}}"
+                  id=""
+                  placeholder="Sq Mt."
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">No. of Rooms</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  name="no_of_room"
+                  value="{{pro.no_of_room}}"
+                  id=""
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Standard Guest room size</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="guest_size"
+                  value="{{pro.guest_size}}"
+                  id=""
+                  placeholder="Sq Mt."
+                />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group m-3">
+                <label for="">Room Mix</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="room_mix"
+                  value="{{pro.room_mix}}"
+                  id=""
+                  placeholder="Enter Room Mix"
+                />
+              </div>
+            </div>
+            <table id="example" class="table table-bordered">
+                <thead class="thead">
+                    <tr class="table-success">
+                        
+                         <th>Location</th>
+                        <th>L</th>
+                        <th>B</th>
+                        <th>Net</th>
+                    </tr>
+                </thead>
+               <tbody style="max-height: 300px; overflow-y: auto;">
+    {% for are in arenn %}
+    <tr>
+        {% if item.title !=  "" %}
+        <tr>
+            <td style="border: 1px solid #dddddd; text-align: left; padding: 4px;background-color: #f2f2f2;font-weight:bold" colspan="4">
+                {{item.title}}
+            </td>
+
+        </tr>
+        {% endif %}
+        <td>{{are.location_name}}</td>
+        <td style="width: 100px;">
+            <input type="number" name="lenth_{{ forloop.counter0 }}" class="form-control" oninput="calculateProduct(this)">
+        </td>
+        <td style="width: 100px;">
+            <input type="number" name="barth_{{ forloop.counter0 }}" class="form-control" oninput="calculateProduct(this)">
+        </td>
+        <td style="width: 100px;">
+            <!-- Make sure to enable the input for net -->
+            <input type="number" name="net_{{ forloop.counter0 }}" class="form-control" disabled>
+        </td>
+    </tr>
+    
+    {% endfor %}
+</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if pro is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  // Get today's date
+  function calculateProduct(input) {
+        var row = input.parentNode.parentNode; 
+        var cost1Input = row.querySelector('input[name="lenth_' + input.name.split('_')[1] + '"]');
+        var cost2Input = row.querySelector('input[name="barth_' + input.name.split('_')[1] + '"]');
+        var netInput = row.querySelector('input[name="net_' + input.name.split('_')[1] + '"]');
+        
+        var firstValue = parseFloat(cost1Input.value);
+        var secondValue = parseFloat(cost2Input.value);
+        var product = firstValue * secondValue;
+
+        if (!isNaN(product)) {
+            netInput.value = product;
+        } else {
+            netInput.value = "";
+        }
+    }
+  </script>
+{% endblock content %}

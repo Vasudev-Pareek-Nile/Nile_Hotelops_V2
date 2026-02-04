@@ -1,0 +1,472 @@
+{% extends "program/homebase.html" %} {% block content %}
+<style>
+  label {
+    color: #1ab394;
+    font-family: arial nova;
+    font-weight: bold;
+  }
+
+  body {
+    font-family: arial nova;
+    /* font-size: 11px; */
+  }
+  
+ .td-wrapper {
+    margin-right: 80px; 
+  }
+.td-wrapperr {
+    margin-right: 80px;
+  }
+  td {
+    padding: 3px;
+    margin-right: 80px; 
+  }
+  
+
+</style>
+
+<div class="container">
+  <div class="col-md-12 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab393">
+          <strong>Project Review FOH</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+ <table style="margin-top: 15px;">
+  <tr>
+    <td><div class="td-wrapper">Date</div></td>
+    <td><div class="td-wrapper"><input type="date" class="form-control" name="date" value="{{fron.date |date:'Y-m-d' }}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Name of Location</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="location" value="{{fron.location}}" id="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Project K.O.P. * Number</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="project_number" value="{{fron.project_number}}" id="" placeholder="." /></div></td>
+    <td><div class="td-wrapper">Total Hotel Keys</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="hotel_key" value="{{fron.hotel_key}}" id="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Guestroom Floors</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="guest_room_floors" value="{{fron.guest_room_floors}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Total Hotel Bays</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="hotel_bays" value="{{fron.hotel_bays}}" id="" placeholder="" /></div></td>
+  </tr>
+
+ <tr>
+    <td><div class="td-wrapper">Required Parking Spaces</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="reqvered_parking_spaces" value="{{fron.reqvered_parking_spaces}}" id="" placeholder="." /></td>
+   
+  </tr>
+  </table>
+  <table style="margin-top: 25px;">
+{% comment %} <tr >
+    <td><div class="td-wrapperr">Total King</div></td>
+    <td><div class="td-wrapperr"><input type="number" class="form-control" name="total_king" value="{{fron.total_king}}" id="" /></div></td>
+    <td><div class="td-wrapperr">Total King Studios</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="total_king_studios" value="{{fron.total_king_studios}}" id="" placeholder="" /></div></td>
+  </tr>
+  <tr>
+<td><div class="td-wrapperr">Total Double Double</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="total_double" value="{{fron.total_double}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapperr">Total Double Double Studio</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="total_double_studios" value="{{fron.total_double_studios}}" id="" placeholder="" /></div></td>
+
+  </tr>
+<tr>
+    
+   
+    <td><div class="td-wrapperr">Total King Accessible</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="total_king_accessible" value="{{fron.total_king_accessible}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapperr">Total Double Double Accessible</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="total_double_accessible" value="{{fron.total_double_accessible}}" id="" placeholder="" /></div></td>
+  </tr>
+
+ <tr>
+
+    <td><div class="td-wrapperr">Percent of King</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_king" value="{{fron.percent_king}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapperr">Percent King Studios</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_king_studious" value="{{fron.percent_king_studious}}" id="" placeholder="" /></div></td>
+   
+  </tr>
+<tr>
+   <td><div class="td-wrapperr">Percent of Double Double</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_double" value="{{fron.percent_double}}" id="" placeholder="" /></div></td>
+     <td><div class="td-wrapperr">Percent of Double Double Studio</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_double_studio" value="{{fron.percent_double_studio}}" id="" placeholder="" /></div></td>
+  </tr>
+<tr>
+ <td><div class="td-wrapperr">Percent of King Accessible</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_king_accessible" value="{{fron.percent_king_accessible}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapperr">Percent Double Accessbile</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="percent_accessible" value="{{fron.percent_accessible}}" id="" placeholder="" /></div></td>
+</tr>
+<tr>
+ <td><div class="td-wrapperr">Gross Square Meters Key</div></td>
+    <td><div class="td-wrapperr"><input type="text" class="form-control" name="meters_per_key" value="{{fron.meters_per_key}}" id="" placeholder="" /></div></td>
+</tr> {% endcomment %}
+
+</table>
+
+<table style="margin-top: 25px;">
+  <tr>
+    <td colspan="8" ><strong>YOUR CURRENT PROJECT SELECTIONS:</strong></td>
+  </tr>
+  
+<tr>
+    <td><div class="td-wrapper">Region</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Region_name" value="{{fron.Region_name}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Location Index</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Location_Index" value="{{fron.Location_Index}}" id="" placeholder="" /></div></td>
+    
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Parking Required</td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Parking_Required" value="{{fron.Parking_Required}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Swimming Pool</td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Swimming_Pool" value="{{fron.Swimming_Pool}}" id="" placeholder="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Parking Levels</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Parking_Levels" value="{{fron.Parking_Levels}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Structural System</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Structural_System" value="{{fron.Structural_System}}" id="" placeholder="" /></div></td>
+    
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Corridor Requirements</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Corridor_Requirements" value="{{fron.Corridor_Requirements}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Security Requirements</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Security_Requirements" value="{{fron.Security_Requirements}}" id="" placeholder="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Meeting Space</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Meeting_Space" value="{{fron.Meeting_Space}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Feed Employees</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Feed_Employees" value="{{fron.Feed_Employees}}" id="" placeholder="" /></div></td>
+  
+  </tr>
+  <tr>
+      <td><div class="td-wrapper">Stairwells</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Stairwells" value="{{fron.Stairwells}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Laundry Services</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Laundry_Services" value="{{fron.Laundry_Services}}" id="" placeholder="" /></div></td>
+  </tr>
+  <tr>
+    <td><div class="td-wrapper">Guest Transportation</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Guest_Transportation" value="{{fron.Guest_Transportation}}" id="" placeholder="" /></div></td>
+    <td><div class="td-wrapper">Uniform Distribution</div></td>
+    <td><div class="td-wrapper"><input type="text" class="form-control" name="Uniform_Distribution" value="{{fron.Uniform_Distribution}}" id="" placeholder="" /></div></td>
+    <td colspan="4"></td>
+  </tr>
+
+</table>
+
+</br>
+
+
+            <table id="table1" class="table table-bordered" style="margin-top: 20px;" >
+              <thead class="thead">
+                <tr class="table-success">
+                  <th>Hotel Facilities Area Summary</th>
+                  <th>Gross Square Meters</th>
+                </tr>
+              </thead>
+              <tbody style="max-height: 300px; overflow-y: auto">
+                {% for Front in Fronts %}
+                <tr>
+                  <td>{{Front.name}}
+                     <input type="hidden" name="Fronts_ID_{{ forloop.counter0 }}" value="{{ Front.id }}" />
+                  </td>
+                  <td style="width: 200px">
+                    <input type="number" class="form-control" name="squermitter_{{ forloop.counter0 }}" />
+                  </td>
+                </tr>
+                {% if forloop.last %}
+                <input type="hidden" name="Total" value="{{ forloop.counter0 }}" />
+                {% endif %} {% endfor %}
+                <tr>
+            <td><b>TOTAL HOTEL SQUARE METERS:</b></td>
+            <td>
+                <input type="number" class="form-control" id="totalSquareMeters1" name="totalroom" value="{{fron.totalroom}}" readonly />
+            </td>
+        </tr>
+              </tbody>
+            </table >
+            <h4 style="margin-top: 20px;">1. GUEST ROOMS & CIRCULATION</h4>
+             <table id="table6" class="table table-bordered" style="margin-top: 10px;"  >
+              <thead class="thead">
+                <tr class="table-success">
+                  <th>Room Types</th>
+                  <th>Keys</th>
+                  <th>Total Square Meters</th>
+                </tr>
+              </thead>
+              <tbody style="max-height: 300px; overflow-y: auto">
+                {% for perents in perents %}
+                <tr>
+                  <td>{{perents.name}}
+                     <input type="hidden" name="perents_ID_{{ forloop.counter0 }}" value="{{ perents.id }}" />
+                  </td>
+                  <td style="width: 100px">
+                    <input type="number" class="form-control" name="roomkey_{{ forloop.counter0 }}" />
+                  </td>
+                   <td style="width: 170px">
+                    <input type="number" class="form-control" name="totalSquer_{{ forloop.counter0 }}" />
+                  </td>
+                  
+                </tr>
+                {% if forloop.last %}
+                <input type="hidden" name="Totalroom" value="{{ forloop.counter0 }}" />
+                {% endif %} {% endfor %}
+                 <tr>
+            <td><b>TOTAL GUEST ROOMS & CIRCULATION:</b></td>
+            <td><input type="number" class="form-control"id="totalroomkeyMeters6"  name="totalkey"  value="{{fron.totalkey}}"readonly /></td>
+            <td>
+                <input type="number" class="form-control" id="totalsquermeeterMeters6" name="guestroom"  value="{{fron.guestroom}}"readonly />
+            </td>
+        </tr>
+              </tbody>
+            </table>
+           <h4 style="margin-top: 25px;">2. LOBBY, F&B AND RELATED SUPPORT AREAS</h4>
+             <table id="table2" class="table table-bordered" style="margin-top: 10px;">
+              <thead class="thead">
+                <tr class="table-success">
+                  
+                 <th></th>
+                 <th></th>
+                  <th>Total Square Meters</th>
+                </tr>
+              </thead>
+              <tbody style="max-height: 300px; overflow-y: auto">
+                {% for subchilds in subchilds %}
+                <tr>
+                  <td>{{subchilds.name1}}</td>
+                 <td>{{subchilds.Sub_name}}
+                  <input type="hidden" name="subchilds_ID_{{ forloop.counter0 }}" value="{{ subchilds.id }}" />
+                 </td>
+                   <td style="width: 170px">
+                    <input type="number" class="form-control" name="lobbysquermeter_{{ forloop.counter0 }}" />
+                  </td>
+                  
+                </tr>
+                {% if forloop.last %}
+                <input type="hidden" name="totallobby" value="{{ forloop.counter0 }}" />
+                {% endif %} {% endfor %}
+                <tr>
+            <td></td>
+              <td><b>TOTAL LOBBY, F&B AND RELATED SUPPORT AREAS:</b></td>
+            <td>
+                <input type="number" class="form-control" id="totalSquareMeters2"  name="lobbytotal" value="{{fron.lobbytotal}}" readonly />
+            </td>
+        </tr>
+              </tbody>
+            </table>
+             <h4 style="margin-top: 25px;">3. MEETING FACILITIES</h4>
+             <table id="table5" class="table table-bordered" style="margin-top: 10px;">
+              <thead class="thead">
+                <tr class="table-success">
+                  
+                 <th></th>
+                 
+                  <th>Total Square Meters</th>
+                </tr>
+              </thead>
+              <tbody style="max-height: 300px; overflow-y: auto">
+                {% for childs in childs %}
+                <tr>
+                  <td>{{childs.child_name}}
+                    <input type="hidden" name="childs_ID_{{ forloop.counter0 }}" value="{{ childs.id }}" />
+                  </td>
+                
+                   <td style="width: 170px">
+                    <input type="number" class="form-control" name="mettingsquer_{{ forloop.counter0 }}" />
+                  </td>
+                  
+                </tr>
+                {% if forloop.last %}
+                <input type="hidden" name="Totalmetting" value="{{ forloop.counter0 }}" />
+                {% endif %} {% endfor %}
+                 <tr>
+            <td><b>TOTAL HOTEL SQUARE METERS:</b></td>
+            <td>
+                <input type="number" class="form-control" id="totalSquareMeters5"  name="mettingtotal"  value="{{fron.mettingtotal}}"readonly />
+            </td>
+        </tr>
+              </tbody>
+            </table>
+
+             <h5 style="margin-top: 25px;">4. ADDITIONAL GROUND FLOOR PUBLIC AREAS</h5>
+             <table id="table4" class="table table-bordered" style="margin-top: 10px;">
+              <thead class="thead">
+                <tr class="table-success">
+                  
+                 <th></th>
+                  <th></th>
+                  <th>Total Square Meters</th>
+                </tr>
+              </thead>
+              <tbody style="max-height: 300px; overflow-y: auto">
+                {% for public in public %}
+                <tr>
+                  <td>{{public.public1}}</td>
+                <td>{{public.public2}}
+                   <input type="hidden" name="public_ID_{{ forloop.counter0 }}" value="{{ public.id }}" />
+                </td>
+                   <td style="width: 170px">
+                    <input type="number" class="form-control" name="public_squermeter_{{ forloop.counter0 }}" />
+                  </td>
+                  
+                </tr>
+                {% if forloop.last %}
+                <input type="hidden" name="Totalpublic" value="{{ forloop.counter0 }}" />
+                {% endif %} {% endfor %}
+                 <tr>
+            <td></td>
+              <td><b>TOTAL ADDITIONAL GROUND FLOOR PUBLIC SPACES:</b></td>
+            <td>
+                <input type="number" class="form-control" id="totalSquareMeters4"   name="additionaltotal"  value="{{fron.additionaltotal}}"readonly />
+            </td>
+        </tr>
+              </tbody>
+            </table>
+
+            <h5 style="margin-top: 25px;">5. ADMINISTRATIVE OFFICES</h5>
+             <table id="table3" class="table table-bordered" style="margin-top: 10px;">
+    <thead class="thead">
+        <tr class="table-success">
+            <th></th>
+            <th>Total Square Meters</th>
+        </tr>
+    </thead>
+    <tbody style="max-height: 300px; overflow-y: auto">
+        {% for admini in admini %}
+        <tr>
+            <td>{{ admini.administrative }}
+                  <input type="hidden" name="admini_ID_{{ forloop.counter0 }}" value="{{ admini.id }}" />
+
+            </td>
+            <td style="width: 170px">
+                <input type="number" class="form-control square-meter-input" name="administartive_squermeter_{{ forloop.counter0 }}" />
+            </td>
+        </tr>
+         {% if forloop.last %}
+                <input type="hidden" name="TotalAdmini" value="{{ forloop.counter0 }}" />
+                {% endif %}
+        {% endfor %}
+        <tr>
+            <td><b>TOTAL ADMINISTRATIVE OFFICES:</b></td>
+            <td>
+                <input type="number" class="form-control" id="totalSquareMeters3"  name="administrativetotal"  value="{{fron.administrativetotal}}"readonly />
+            </td>
+        </tr>
+    </tbody>
+</table>
+          </div>
+        </div>
+
+        <div class="card-footer text-right">
+          {% if fron is none %}<input type="submit" value="Submit" class="btn btn-primary" />{% else %}<input
+            type="submit" value="Update" class="btn btn-primary" />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+
+
+  $(function(){
+
+    $("#table1 tr td input[name*='squermitter']").change(function(){
+        var total=0
+        $("#table1 tr td input[name*='squermitter']").each(function(){
+
+            var a =$(this).val();
+            a = parseFloat(a)
+            a= isNaN(a)?0:a;
+            total=total+a;
+        })
+        $("#totalSquareMeters1").val(total)
+    })
+
+
+    // Table 2
+    $("#table2 tr td input[name*='lobbysquermeter']").change(function(){
+        var total=0;
+        $("#table2 tr td input[name*='lobbysquermeter']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        });
+        $("#totalSquareMeters2").val(total);
+    });
+
+    // Table 3
+    $("#table3 tr td input[name*='administartive_squermeter']").change(function(){
+        var total=0;
+        $("#table3 tr td input[name*='administartive_squermeter']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        })
+        $("#totalSquareMeters3").val(total);
+    })
+ // Table 4
+    $("#table4 tr td input[name*='public_squermeter']").change(function(){
+        var total=0;
+        $("#table4 tr td input[name*='public_squermeter']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        })
+        $("#totalSquareMeters4").val(total);
+    })
+// Table 5
+    $("#table5 tr td input[name*='mettingsquer']").change(function(){
+        var total=0;
+        $("#table5 tr td input[name*='mettingsquer']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        })
+        $("#totalSquareMeters5").val(total);
+    })
+    // Table 6
+    $("#table6 tr td input[name*='roomkey']").change(function(){
+        var total=0;
+        $("#table6 tr td input[name*='roomkey']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        })
+        $("#totalroomkeyMeters6").val(total);
+    })
+      // Table 6
+    $("#table6 tr td input[name*='totalSquer']").change(function(){
+        var total=0;
+        $("#table6 tr td input[name*='totalSquer']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a) ? 0 : a;
+            total = total + a;
+        })
+        $("#totalsquermeeterMeters6").val(total);
+    })
+  })
+
+ 
+</script>
+
+{% endblock content %}
+

@@ -1,0 +1,607 @@
+
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+{% load Payrollcustom_filters %}
+<style>
+    html, body {
+        overflow-y: hidden;
+        height: 100%;
+    } 
+
+    .card{
+        position: relative;
+    }
+    .card-footer{
+        z-index: 9;
+        position: fixed;
+        bottom: 0;
+        display: block;
+        width: 100%;
+        background-color: white;
+        right: 0;
+        /* padding-right: 56px; */
+        padding-inline: 23px;
+    }
+
+    .table-container {
+        position: relative;
+        overflow: auto;
+        max-height: 72vh;
+    }
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0px;
+    }
+    th, td {
+        min-width: 100px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        text-align: left;
+    }
+    th.sticky-header, td.sticky-header {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 2;
+    }
+    th.sticky-col, td.sticky-col {
+        position: sticky;
+        left: 0;
+        /* background: white !important; */
+        z-index: 1;
+    }
+    
+    /* Handle the intersection of fixed headers and fixed columns */
+    th.sticky-header.sticky-col, td.sticky-header.sticky-col {
+        z-index: 4;
+    }
+    .sticky-col-white {
+        background-color: white !important;
+        font-weight: bold;
+    }
+    .navbar {
+        position: relative;
+        z-index: 1050; /* High enough to be on top */
+    }
+
+    .select2-container, .dropdown-menu {
+        z-index: 1000 !important; /* Less than navbar */
+    }
+
+    table thead tr th{
+        font-size: 15px !important;
+    }
+    table tbody tr td {
+        font-size: 12px !important;
+    }
+
+    .form-control {
+        line-height: 1 !important;
+        height: 34px !important;
+    }
+    .divider {
+        color: #ba0e0eff;
+        font-weight: bolder;
+    }
+
+    .emp-col-details {
+        width: 150px; 
+        min-width: 150px;
+        max-width: 350px;
+    }
+
+    th.sticky-col:nth-child(2), td.sticky-col:nth-child(2) {
+        left: 150px; 
+        width: 50px !important; 
+        min-width: 50px !important;
+        max-width: 100px;
+    }
+
+
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        background: #fff;
+        z-index: 3;
+    }
+
+    .page-wrapper .content {
+        padding: 0px !important;
+    }
+
+    .card .card-body {
+        padding: 8px !important;
+    }
+
+
+    td[data-st] {
+        color: #00000082;
+        background: #00000014;
+        text-align: center;
+        /* text-align: center; */
+    }
+    td[data-st='P'] {
+        color: #23B40B;
+        background: #f3fff3;
+        /* text-align: center; */
+    }
+
+    td[data-st='A'] {
+        color: #EE1C1C;
+        background: #fc131321;
+        /* text-align: center; */
+    }
+
+    td[data-st='W'] {
+        color: #CEEAFF;
+        background: #ceeaff14;
+        /* text-align: center; */
+    }
+
+    td[data-st='SL'] {
+        color: #5F6CE8;
+        background: #5f6ce814;
+        /* text-align: center; */
+    }
+
+    td[data-st='HDP'] {
+        color: #ECAD0D;
+        background: #ecad0d1c;
+        /* text-align: center; */
+    }
+
+    td[data-st='PL'] {
+        color: #179ED5;
+        background: #179ed51a;
+        /* text-align: center; */
+    }
+
+    td[data-st='CL'] {
+        color: #db962e;
+        background: #fdebd021;
+        /* text-align: center; */
+    }
+
+    td[data-st='NH'] {
+        color: #8B8B8B;
+        background: #8b8b8b26;
+        /* text-align: center; */
+    }
+
+    td[data-st='Comp-Off'] {
+        color: #00B894;
+        background: #00b89414;
+        /* text-align: center; */
+    }
+
+    tr.emp-col td{
+        background: #edf0fb !important;
+    }
+
+    .text-center{
+        text-align: center !important;
+        width: 50px !important; 
+        min-width: 50px !important;
+        max-width: 100px;
+    }
+</style>
+
+
+<div class="card"> 
+    <div class="card-body">
+        <div class="table-container">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="sticky-header sticky-col EmpDetails">Emp Details</th>
+                        <th class="sticky-header sticky-col"></th>
+                        
+                        {% for day in days %}
+                            <th class="sticky-header">{{ day }}</th>
+                        {% endfor %}
+                        
+                        <th class="sticky-header text-center">PR</th>
+                        <th class="sticky-header text-center">WO</th>
+                        <th class="sticky-header text-center">AB</th>
+
+
+                        {% for leave in leavelist %}
+                            <th class="sticky-header text-center">{{ leave }}</th>
+                        {% endfor %}
+
+                        <th class="sticky-header">Total Leave</th>
+                        <th class="sticky-header">Total Working Days</th>
+                        {% comment %} <th class="sticky-header">Total Paid Days</th> {% endcomment %}
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    {% for row in rowslist %}
+                        <tr class="emp-col">
+                            <td class="sticky-col sticky-col-white emp-col-details">
+                                {{ row.EmpName }}
+                            </td>
+    
+                            <td class="sticky-col sticky-col-white">In</td>
+                            {% for day in days %}
+                                <td>
+                                    {% with day_value=day|stringformat:"s"|add:',0' %}
+                                        {{ row|get_MRI_day_index:day_value }}
+                                    {% endwith %} 
+                                    <span class="divider">/</span>
+                                    {% with day_value=day|stringformat:"s"|add:',2' %}
+                                        {{ row|get_MRI_day_index:day_value }}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        
+                            <td rowspan="4" class="text-center">{{ row.Present }}</td>
+                            <td rowspan="4" class="text-center">{{ row.WeekOff }}</td>
+                            <td rowspan="4" class="text-center">{{ row.Absent }}</td>
+
+                            {% comment %} {% for leave, count in row.leave_counts.items %}
+                                <td rowspan="4" class="text-center">{{ count }}</td>
+                            {% endfor %} {% endcomment %}
+
+                            {% for leave in leavelist %}
+                                <td rowspan="4" class="text-center">
+                                    {{ row.leave_counts|get_item:leave|default:0 }}
+                                </td>
+                            {% endfor %}
+
+
+                            <td rowspan="4" class="text-center">{{ row.l_Count }}</td>
+                            <td rowspan="4" class="text-center">{{ row.TotalWorkingDays }}</td>
+                            {% comment %} <td rowspan="4" class="text-center">{{ row.TotalPaidDays }}</td> {% endcomment %}
+                            {% comment %} <td rowspan="4" class="text-center">&nbsp;</td> {% endcomment %}
+                        </tr>
+                        <tr>
+                            <th class="sticky-col sticky-col-white EmpDetails">{{ row.EmployeeCode }}</th>
+                            <td class="sticky-col sticky-col-white">Out</td>
+                                
+                            {% for day in days %}
+                                <td>
+                                    {% with day_value=day|stringformat:"s"|add:',1' %}
+                                        {{ row|get_MRI_day_index:day_value }}
+                                    {% endwith %}
+                                    <span class="divider">/</span>
+                                    {% with day_value=day|stringformat:"s"|add:',3' %}
+                                        {{ row|get_MRI_day_index:day_value }}
+                                    {% endwith %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+    
+                        <tr>
+                            <th class="sticky-col sticky-col-white EmpDetails"></th>
+                            <td class="sticky-col sticky-col-white">Hours</td>
+                            {% for day in days %}
+                                {% with day_value=day|stringformat:"s"|add:',4' %}
+                                    <td>{{ row|get_MRI_day_index:day_value }}</td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+
+                        <tr>
+                            <th class="sticky-col sticky-col-white EmpDetails"></th>
+                            <td class="sticky-col sticky-col-white">Status</td>
+                            {% for day in days %}
+                                {% with day_value=day|stringformat:"s"|add:',5' %}
+                                    <td data-st="{{ row|get_MRI_day_index:day_value }}">{{ row|get_MRI_day_index:day_value }}</td>
+                                {% endwith %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+            <form action="" method="get">
+                <div class="card-footer d-flex justify-content-between">
+                    <div class="d-flex gap-2">
+                        <div class="">
+                            <select class="form-control" name="EmployeeCode">
+                                <option value="All">All Employee</option>
+                                {% for emp in emp_list %}
+                                <option value="{{emp.EmployeeCode}}">{{ emp.EmployeeCode }} - {{ emp.EmpName }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="">
+                            <select name="Departments" class="form-control">
+                                <option value="">All Department</option>
+                                {% for dt in Departments %}
+                                    <option value="{{ dt.Department }}" {% if dt.Department == Department %}selected{% endif %}>
+                                        {{ dt.Department }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="">
+                            <select class="form-control" name="month_no" {% if year is none %} data-val="{{ CMonth }}" {% endif %} name="month_no">
+                                <option value="1"  {% if CMonth == 1 %}selected{% endif %}>Jan</option>
+                                <option value="2"  {% if CMonth == 2 %}selected{% endif %}>Feb</option>
+                                <option value="3"  {% if CMonth == 3 %}selected{% endif %}>Mar</option>
+                                <option value="4"  {% if CMonth == 4 %}selected{% endif %}>Apr</option>
+                                <option value="5"  {% if CMonth == 5 %}selected{% endif %}>May</option>
+                                <option value="6"  {% if CMonth == 6 %}selected{% endif %}>Jun</option>
+                                <option value="7"  {% if CMonth == 7 %}selected{% endif %}>Jul</option>
+                                <option value="8"  {% if CMonth == 8 %}selected{% endif %}>Aug</option>
+                                <option value="9"  {% if CMonth == 9 %}selected{% endif %}>Sep</option>
+                                <option value="10" {% if CMonth == 10 %}selected{% endif %}>Oct</option>
+                                <option value="11" {% if CMonth == 11 %}selected{% endif %}>Nov</option>
+                                <option value="12" {% if CMonth == 12 %}selected{% endif %}>Dec</option>
+                            </select>
+                        </div>
+
+                        <div class="">
+                            <select class="form-control" name="year">
+                                {% for i in CYear %}
+                                    <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="">
+                            <input
+                                type="text"
+                                id="searchInput"
+                                class="form-control"
+                                placeholder="Search Employee Here ..."
+                                style="width: 200px; display: inline-block; height:34px;"
+                                onkeyup="searchTable()"
+                            >
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            Filter
+                        </button>
+    
+                        <a href="{% url 'AttendaceMonthlyReport' %}" class="btn btn-sm btn-danger">
+                            Clear
+                        </a>
+                    </div>
+                    
+                    
+                    <div class="text-end">
+
+                        <a href="{% url 'MonthlyAttendenceReport_Pdf_View' %}?month_no={{ month_no }}&year={{ year }}&OID={{ OrganizationID }}&dpt={{ GetDepartments }}&EmpCode={{ EmployeeCode }}" class="btn btn-sm btn-primary">
+                            PDF
+                        </a>
+
+                        <button  onclick="exportToExcel()" class="btn btn-sm btn-primary">
+                            Excel
+                        </button>
+
+                        {% if  request.session.Department_Name|lower == "hr" and   request.session.OrganizationID == "1001" or request.session.OrganizationID == "2030"  or request.session.OrganizationID == "1301"   or request.session.UserID == "20201212175519" or request.session.UserID == "20221202113089"  %}  
+                            <span onclick="UploadToExcel()" class="btn btn-sm btn-primary">Upload</span>
+                            <!-- <span onclick="UploadToExcel()" class="btn mr-4 btn-primary" style="padding-inline:20px;">Upload excel(ETM)</span> -->
+                            <span onclick="UploadAttendacneSalaryExcel()" class="btn btn-sm btn-primary">Attendance</span>
+                        {% endif %} 
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal modalExlUpload" tabindex="-1" role="dialog">
+    <form method="post" enctype="multipart/form-data" action="/Employee_Payroll/AttendaceCorrectEtmExlUp/">
+        {% csrf_token %}
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header d-flex justify-content-between">
+          <h5 class="modal-title">Data Correct From Excel</h5>
+          <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+          <div class="row mb-2">
+                    <div class="col-sm-1">File
+                    </div>
+                    <div class="col-sm-11">
+                        <input type="file" name="doc" class="form-control"/>
+                    </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+    </form>
+</div>
+
+
+
+<div class="modal modalAttSalUpload" tabindex="-1" role="dialog">
+    <form method="post" enctype="multipart/form-data" action="/Employee_Payroll/UploadAttendanceSalaryFile/">
+        {% csrf_token %}
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header d-flex justify-content-between">
+                    <h5 class="modal-title">Attendance Salart Excel</h5>
+                    <button type="button" class="close border-0 shadow-none bg-transparent fs-5" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body p-3">
+                    <div class="form-group row mb-2">
+                        <label for="Type" class="col-sm-2 col-form-label mr-1">Type</label>
+                        <div class="col-sm-8">
+                            <select name="Type" id="Type" class="form-control">
+                                <option value="Attendance">Attendance</option>
+                                <option value="Salary">Salary</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row mb-2">
+                        <label for="doc" class="col-sm-2 col-form-label mr-1">File</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="doc" id="doc" class="form-control" onchange="validateFileType(this, ['.xls', '.xlsx'])" />
+                        </div>
+                    </div>
+                    <div class="form-group row mb-2">
+                        <label for="pdf" class="col-sm-2 col-form-label mr-1 ml-2">PDF File</label>
+                        <div class="col-sm-8">
+                            <input type="file" name="pdf" id="pdf" class="form-control" onchange="validateFileType(this, ['.pdf'])" />
+                        </div>
+                    </div>
+                    
+                    <script>
+                        function validateFileType(input, allowedExtensions) {
+                            const filePath = input.value;
+                            const fileName = filePath.split('\\').pop(); // Get file name
+                            const fileExtension = fileName.substring(fileName.lastIndexOf('.')).toLowerCase(); // Get file extension
+                    
+                            // Check if the extension is allowed
+                            if (!allowedExtensions.includes(fileExtension)) {
+                                alert(`Invalid file type. Please upload a file with one of the following extensions: ${allowedExtensions.join(', ')}`);
+                                input.value = ''; // Clear the input
+                            }
+                        }
+                    </script>
+                    <div class="form-group row">
+                        <label for="month_no" class="col-sm-2 col-form-label mr-1 mb-2">Month</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="month_no" name="month">
+                                <option value="Jan">Jan</option>
+                                <option value="Feb">Feb</option>
+                                <option value="Mar">Mar</option>
+                                <option value="Apr">Apr</option>
+                                <option value="May">May</option>
+                                <option value="Jun">Jun</option>
+                                <option value="Jul">Jul</option>
+                                <option value="Aug">Aug</option>
+                                <option value="Sep">Sep</option>
+                                <option value="Oct">Oct</option>
+                                <option value="Nov">Nov</option>
+                                <option value="Dec">Dec</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label for="year" class="col-sm-2 col-form-label mr-1">Year</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="year" name="year">
+                                {% for i in CYear %}
+                                <option>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function searchTable() {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.querySelectorAll("tr");
+
+        let i = 0;
+        while (i < rows.length) {
+            const firstRow = rows[i]; // "In Time" row with EmpDetails
+            const empCell = firstRow.querySelector(".emp-col");
+            const empText = empCell ? empCell.textContent.toLowerCase() : "";
+
+            // Check if employee matches the search
+            const isMatch = empText.includes(input);
+
+            // Show/hide the group of 4 rows together
+            for (let j = 0; j < 4 && i + j < rows.length; j++) {
+                rows[i + j].style.display = isMatch ? "" : "none";
+            }
+
+            i += 4; // move to next employee block
+        }
+    }
+</script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script>
+    function exportToExcel() {
+        const wb = XLSX.utils.table_to_book(document.querySelector('table'));
+        XLSX.writeFile(wb, 'table.xlsx');
+    }
+    var UploadToExcel=function(){
+
+        $(".modalExlUpload").modal('show')
+    }
+    var UploadAttendacneSalaryExcel=function(){
+
+        $(".modalAttSalUpload").modal('show')
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        
+        try{
+        var selectedEmployeeCode = "{{ EmployeeCode }}";
+        $("select[name='EmployeeCode']").val(selectedEmployeeCode);
+
+        var selectedOrganization = "{{ I }}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedPayMode = "{{ PayMode }}";
+        $("select[name='PayMode']").val(selectedPayMode);
+        var selectedMonth = '{{ month_no }}';
+        $("select[name='month_no']").val(selectedMonth);
+        var Year = '{{ year }}';
+        if (Year != None) {
+            var selectedYear = '{{ year }}';
+            $("select[name='year']").val(selectedYear);
+        }
+    }catch(E){}
+    // $('select').select2();
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $(".verify-btn").click(function() {
+            var employeeCode = $(this).data("employee-code");
+            var verifyType = $(this).text();
+            var csrfToken = "{{ csrf_token }}";
+            $.ajax({
+                url: 'http://127.0.0.1:8000/Employee_Payroll/update_verification/',
+                type: 'POST',
+                headers: {
+                    "X-CSRFToken": csrfToken
+                },
+                data: {
+                    'csrfmiddlewaretoken': csrfToken,
+                    'employee_code': employeeCode,
+                    'verify_type': verifyType
+                },
+                success: function(response) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+
+    // $(document).ready(function() {
+	// 		$('select').select2();
+	// });
+		
+</script>
+{% endblock content %}

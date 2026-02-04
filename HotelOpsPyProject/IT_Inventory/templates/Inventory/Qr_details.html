@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Details</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .headers {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 3px;
+            margin-bottom: 5px;
+        }
+
+        th[scope="row"] {
+            width: 140px;
+            font-size: 12px;
+        }
+
+        .warranty-cell {
+            width: 50px;
+        }
+
+        {% comment %} .custom-card {
+            max-width: 400px;
+
+        } {% endcomment %}
+
+        .center-div {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container ">
+        <div class="card custom-card">
+            <div class="card-header">
+                <h5 class="card-title" style="color: #FFD700;">Hardware And Software Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th scope="row">Hardware And Software</th>
+                            <td colspan="2">{{ item.type }} </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Model No</th>
+                            <td colspan="2">{{ item.Model_No }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Serial No</th>
+                            <td colspan="2">{{ item.SerialNo }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Area</th>
+                            <td colspan="2">{{ item.Area }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">IP</th>
+                            <td colspan="2">{{ item.ip }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Description</th>
+                            <td colspan="2">{{ item.Description }}</td>
+                        </tr>
+                    </table>
+                    <h5 class="card-title" style="color: #FFD700;">Warranty Details</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th scope="row">Warranty Status</th>
+                            <td colspan="4">{{ item.Warrantiy_Status }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Warranty Start</th>
+                            <td colspan="2">{{item.Warrantiy_start}}</td>
+                            <th scope="row">Warranty End</th>
+                            <td colspan="2">{{item.Warrantiy_end}}</td>
+                        </tr>
+                    </table>
+                    <h5 class="card-title" style="color: #FFD700;">AMC Details</h5>
+                    <table class="table table-bordered">
+                        <tr>
+                            <th scope="row">AMC Status</th>
+                            <td colspan="4">{{item.AMC_Status}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">AMC Start</th>
+                            <td colspan="2">{{item.amcstart}}</td>
+                            <th scope="row">AMC End</th>
+                            <td colspan="2">{{item.amcend}}</td>
+                        </tr>
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+</body>
+
+</html>

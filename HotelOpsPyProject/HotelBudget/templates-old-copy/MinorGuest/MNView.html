@@ -1,0 +1,218 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">Minor Guest Communication Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'Minor_Guestviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>Local Call Revenue</th>
+            <th>{{mem.LocalCallRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Long Distance Call Revenue</th>
+            <th>{{mem.LongDistanceCallRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Internte Revenue</th>
+            <th>{{mem.InternetRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Other Mis Revenue</th>
+            <th>{{mem.OtherMisRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Telecommunication Revenue(Others)</th>
+            <th>{{mem.TelecommunicationRevenueOthers}}</th>      
+        </tr>
+        <tr>
+            <th>Telecommunication Revenue</th>
+            <th>{{mem.TelecommunicationRevenue}}</th>      
+        </tr>
+        <tr>
+            <th>Salary And Wages</th>
+            <th>{{mem.SalaryAndWages}}</th>      
+        </tr>
+        <tr>
+            <th>Bonuses </th>  
+            <th>{{mem.Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+      
+    </table>
+    </div>
+    <br>
+    <br>
+
+
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.MinorGuestMaster.title}}</td> 
+        <td>{{x.Amount}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Cost Of Sales
+            </th>
+            <th>
+                {{mem.Total_Cost_Sales}}
+            </th>
+        </tr>
+    </tfoot>
+    <tfoot>
+        <tr>
+            <th>
+                Departmental Income (Loss)
+            </th>
+            <th>
+                {{mem.DepartmentIncomeLoss}}
+            </th>
+        </tr>
+    </tfoot>
+
+
+</table>
+
+ 
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+        
+        var TotRevenue=0;
+        var p = $("input[name='LocalCallRevenue']").val();
+        p = parseFloat(p);
+        p = isNaN(p)?0:p;
+
+        var q = $("input[name='LongDistanceCallRevenue']").val();
+        q = parseFloat(q);
+        q = isNaN(q)?0:q;
+
+        var r = $("input[name='InternetRevenue']").val();
+        r = parseFloat(r);
+        r = isNaN(r)?0:r;
+
+        var s = $("input[name='OtherMisRevenue']").val();
+        s = parseFloat(s);
+        s = isNaN(s)?0:s;
+
+        var t = $("input[name='TelecommunicationRevenueOthers']").val();
+        t = parseFloat(t);
+        t = isNaN(t)?0:t;
+        TotRevenue = p+q+r+s+t ;
+        $("input[name='TelecommunicationRevenue']").val(TotRevenue.toFixed(2));
+
+
+
+        var TotSalWag=0;
+        var a = $("input[name='SalaryAndWages']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var b = $("input[name='Bonuses']").val();
+        b = parseFloat(b);
+        b = isNaN(b)?0:b;
+        TotSalWag = a+b;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+        var e = $("input[name='EmployeeBenefits']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+        $("input[name='PayrollRelatedExpenses']").val(e.toFixed(2));
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag+e).toFixed(2));
+
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+        $("input[name='Total_Cost_Sales']").val(TotalAmount.toFixed(2))
+        $("input[name='DepartmentIncomeLoss']").val((TotRevenue - TotalAmount).toFixed(2))
+    }
+</script>
+{% endblock content %}

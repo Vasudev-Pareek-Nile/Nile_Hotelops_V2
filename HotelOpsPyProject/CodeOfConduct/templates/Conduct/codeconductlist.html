@@ -1,0 +1,231 @@
+{% extends 'Conduct/homebase.html' %}
+
+{% block content %}
+
+
+
+<style>
+  .dt-buttons .btn {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+    color: #fff;
+  }
+
+  .dt-buttons .btn:focus, .dt-buttons .btn:active {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+  }
+
+  table th {
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  td {
+    font-size: 12px;
+  }
+
+  body {
+    font-family: 'Arial Nova', sans-serif;
+  }
+
+  .dataTables_wrapper .dataTables_filter {
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .dataTables_wrapper .dt-buttons {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .job-title {
+    text-align: left;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+</style>
+
+
+<body>
+  &nbsp; &nbsp; &nbsp; &nbsp;<div class="col-md-12">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-6" style="color: #1ab394">
+          <strong>Code Of Conduct</strong>
+        </div>
+        <div class="col-md-6 text-right">
+          <a href="#" class="btn btn-primary btn-sm text-white" data-bs-toggle="modal" data-bs-target="#addEmpModal">Add New Emp</a>
+          {% for doc in docs %}
+            <a href="{% url 'download_sample_file' doc.id %}" class="btn btn-secondary btn-sm text-white">Download Sample</a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-body">
+  
+  
+
+    <br>
+    <table class="table table-bordered" id="example">
+        <thead>
+            <tr>
+                <th>Code of Conduct Date</th>
+                <th>Employee File</th>
+                
+                <th>Action</th>
+               
+                
+            </tr>
+        </thead>
+        <tbody>
+          {% for codeconduct in codeconducts %}
+          <tr>
+              <td>{{ codeconduct.Conductdate|date:"d M. Y" }}</td>
+              <td>
+                  <a href="{{ codeconduct.FileName.url }}" download="{{ codeconduct.FileTitle }}">
+                      {{ codeconduct.FileTitle }}
+                  </a>
+              </td>
+              <td style="width: 140px;">
+                 
+                  <button type="button" class="btn btn-primary btn-sm edit-btn" data-id="{{ codeconduct.id }}">
+                      Edit
+                  </button>
+                  <a onclick="return confirm('Are you sure you want to delete?')" 
+                     href="{% url 'CodeDelete' %}?ID={{ codeconduct.id }}" 
+                     class="btn btn-danger btn-sm" 
+                     style="font-size: 12px; margin-right: 1px;">
+                     Delete
+                  </a>
+              </td>
+          </tr>
+          {% endfor %}
+    
+      
+        </tbody>
+    </table>
+    
+    
+    
+    
+    
+
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="addEmpModal" tabindex="-1" aria-labelledby="addEmpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="addEmpModalLabel">Add New Employee</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <form id="addEmpForm" method="POST" enctype="multipart/form-data" action="{% url 'submit_emp_code_of_conduct' %}">
+                  {% csrf_token %}
+                  <div class="mb-3">
+                      <label for="conductDate" class="form-label">Code of Conduct Date</label>
+                      <input type="date" class="form-control" id="conductDate" name="Conductdate" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="empFile" class="form-label">Employee File</label>
+                      <input type="file" class="form-control" id="empFile" name="FileName" required>
+                  </div>
+                  <input type="hidden" id="Empcode" name="Empcode" value="{{ check_instance.EmployeeCode }}">
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" form="addEmpForm">Submit</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<!-- Your Bootstrap Modal -->
+<div class="modal fade" id="editConductModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Code of Conduct</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editConductForm" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="hidden" id="emp-id" name="id">
+
+          <div class="mb-3">
+            <label for="empcode" class="form-label">Employee Code</label>
+            <input type="text" class="form-control" id="empcode" name="Empcode">
+          </div>
+
+          <div class="mb-3">
+            <label for="FileName" class="form-label">Upload Document</label>
+            <input type="file" class="form-control" id="FileName" name="FileName">
+          </div>
+
+          <div class="mb-3">
+            <label for="conductdate" class="form-label">Conduct Date</label>
+            <input type="date" class="form-control" id="conductdate" name="Conductdate">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+      $('.edit-btn').on('click', function() {
+          var empId = $(this).data('id');  // Get the ID from the clicked button
+
+          $.ajax({
+              url: '{% url "submit_emp_code_of_conduct" %}',  // The view handling the AJAX request
+              data: {
+                  'id': empId,  // Pass the ID of the employee document
+              },
+              dataType: 'json',
+              success: function(data) {
+                  // Populate the modal form with the fetched data
+                  $('#emp-id').val(data.id);
+                  $('#empcode').val(data.Empcode);
+                  $('#conductdate').val(data.Conductdate);
+                  
+                  
+                  if (data.FileName) {
+                      $('#FileName').val('');  
+                  }
+
+                  
+                  $('#editConductModal').modal('show');
+              }
+          });
+      });
+  });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock content %}

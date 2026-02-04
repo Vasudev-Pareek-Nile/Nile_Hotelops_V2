@@ -1,0 +1,989 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+
+<style>
+  body{
+    font-size:13px;
+  }
+
+  table td, th{
+    font-size:13px;
+  }
+  .table th {
+    padding: 0.5rem 0.25rem !important;
+    background-color: aliceblue !important;
+    color: #076e00 !important;
+  }
+  .table td {
+      border-top: 1px solid #E9E9EA;
+      white-space: nowrap;
+      vertical-align: middle;
+      padding: 0.3rem !important;
+      font-size: 13px !important;
+  }
+  .TextEnd{
+    text-align: center;
+  }
+  .TextCenter{
+    text-align: center;
+  }
+	table {
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+    font-size:13px;
+	}
+	.btn{
+		border-radius: 5px !important;
+	}
+	
+    /* Overall Select2 container */
+    .select2-container--default .select2-selection--single {
+        height: 40px !important;            /* adjust height */
+        font-size: 13px  !important;        /* font size */
+    }
+
+    /* Text inside select */
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 30px !important;        /* must be close to height */
+        padding-left: 8px;
+        padding-right: 10px;
+    }
+
+    /* Dropdown arrow alignment */
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 40px !important;
+    }
+    .total_header_color{
+        background-color: #e9e9ea !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        font-size: 13px !important;
+    }
+
+    #varianceReport{
+      margin-top: -30px;
+    }
+    .btn{
+      padding: 5px;
+      font-size: 12px !important;
+    }
+    .department_box{
+      background-color: #edf0fb;
+      padding: 5px 5px !important;
+      border-radius:5px;
+      text-transform: uppercase;
+    }
+
+    .hidden-header thead {
+      visibility: collapse;   /* BEST for tables */
+    }
+
+</style>
+
+<div class="row card" id="profile-card">
+    <div id="card-loader" class="card-loader" 
+        style="display:none; flex-direction: column; justify-content: center; align-items: center; 
+            position: fixed; top:0; left:0; width:100vw; height:100vh; 
+            background: rgba(34,34,34,0.4); z-index:9999;">
+        <div class="spinner-border text-primary-spinner" role="status" style="width:3rem; height:3rem;"></div>
+        <div style="margin-top:1rem; font-weight:bold; font-size:1.2rem; color:#3a4a93;">
+            Loading...
+        </div>
+    </div>
+
+    <div class="col-sm-12 card-body">
+        <span class="fw-bold text-uppercase">Detailed Variance Report</span>
+
+        <form method="get" class="mt-2">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="input-block">
+                    <select name="hotel_name"  class="form-control select2">
+                        {% for itm in memOrg %}
+                            <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                                {{ itm.Organization_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                </div>
+
+                <div class="col-md-3 filter-box">
+                    <div class="input-block">
+                        <div class=" align-items-center">
+                            <label class="input-group-text mb-0 ml-2" for="exclude_zero_headcount">
+                            <input type="checkbox"
+                                name="exclude_zero_headcount"
+                                value="1"
+                                id="exclude_zero_headcount"
+                                {% if exclude_zero_headcount == '1' %}checked{% endif %}
+                                style="margin-right: 7px;">
+                            Excluding 0 Head Count</label>
+                        </div>  
+                    </div>
+                </div>
+
+                <div class="col-md-4 filter-box">
+                    <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+                    <a type="submit" href="{% url 'variance_details_report_experiment' %}" class="btn btn-sm btn-danger">Clear</a>
+                </div>
+            </div>
+        </form>
+        
+        <div id="varianceReport"></div>
+    </div> 
+</div>
+
+
+
+<div class="row card">
+  <div class="col-sm-12 card-body">            
+        <button class="btn btn-primary mb-2">Departments Total</button>
+
+        <div id="varianceReport_dummy_Data"></div>
+    </div>
+</div>
+
+
+<div class="row card">
+  <div class="col-sm-12 card-body">            
+        <button class="btn btn-sm btn-primary mb-2">Contract Manning</button>
+
+        <div>
+            <table class="table table-bordered table-sm" id="Contract_Manning_Report">
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th class="text-center">Bud Avg Sal</th>
+                        <th class="text-center">Act Avg Sal</th>
+                        <th class="text-center">Var Avg Sal</th>
+                        <th class="text-center">Bud HC</th>
+                        <th class="text-center">Act HC</th>
+                        <th class="text-center">Var HC</th>
+                        <th class="text-center">Bud Total CTC</th>
+                        <th class="text-center">Act Total CTC</th>
+                        <th class="text-center">Var Total CTC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="row card">
+  <div class="col-sm-12 card-body">   
+        <button class="btn btn-sm btn-primary mb-2">SHARED SERVICES MANNING</button>
+
+           <div class="table-responsive">
+              <table class="table table-bordered custom-table" id="SHARED_SERVICES_MANNING" >
+                <thead>
+                    <tr>
+                        <th class="TableThColor">DIV</th>
+                        <th class="TableThColor">DEPT</th>
+                        <th class="TableThColor">POSITION</th>
+                        <th class="TableThColor text-center">BUD AVG SAL</th>
+                        <th class="TableThColor text-center">ACT AVG SAL</th>
+                        <th class="TableThColor text-center">VAR AVG SAL</th>
+                        <th class="TableThColor text-center">BUD HC</th>
+                        <th class="TableThColor text-center">ACT HC</th>
+                        <th class="TableThColor text-center">VAR HC</th>
+                        <th class="TableThColor text-center">BUD TOTAL CTC</th>
+                        <th class="TableThColor text-center">ACT TOTAL CTC</th>
+                        <th class="TableThColor text-center">VAR TOTAL CTC</th>
+                    </tr>
+                </thead>
+                <tbody id="sharedServicesBody">
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row card">
+  <div class="col-sm-12 card-body">   
+           <div class="table-responsive">
+              <table class="table table-bordered custom-table" id="division_total_grid" >
+                  <thead>
+                      <tr>
+                          <th>POSITION</th>
+                          <th>BUD AVG SAL</th>
+                          <th>ACT AVG SAL</th>
+                          <th>VAR AVG SAL</th>
+                          <th>BUD HC</th>
+                          <th>ACT HC</th>
+                          <th>VAR HC</th>
+                          <th>BUD TOTAL CTC</th>
+                          <th>ACT TOTAL CTC</th>
+                          <th>VAR TOTAL CTC</th>
+                      </tr>
+                  </thead>
+                  <tbody id="division_total_grid_body"></tbody>
+              </table>
+        </div>
+    </div>
+</div>
+
+
+{% comment %} Loaders {% endcomment %}
+<script>
+    function showLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "flex";
+    }
+
+    function hideLoader(cardId) {
+        document.querySelector(`#${cardId} .card-loader`).style.display = "none";
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        var selectedOrganization = "{{ selectedOrganizationID }}";
+        $("select[name='hotel_name']").val(selectedOrganization);
+        $('select').select2();
+    });
+</script>
+
+<script>
+  let OID = "{{selectedOrganizationID}}"
+  let Ex_zero = "{{exclude_zero_headcount}}"
+  showLoader("profile-card");
+
+  fetch(`/Manning_Guide/api/variance_details_report/?OrganizationID=${OID}&Ex_zero=${Ex_zero}`)
+    .then(res => res.json())
+    .then(res => {
+      hideLoader("profile-card");
+      const data = res.data;
+      const container = document.getElementById('varianceReport');
+
+      let currentDivision = null;
+      let currentDepartment = null;
+      let table = null;
+      let tbody = null;
+
+      // Department totals
+      let deptBudSal = 0, deptActSal = 0;
+      let deptBudHC = 0, deptActHC = 0;
+      let deptBudCTC = 0, deptActCTC = 0;
+      
+      // Division totals
+      let divBudSal = 0, divActSal = 0;
+      let divBudHC = 0, divActHC = 0;
+      let divBudCTC = 0, divActCTC = 0;
+
+      function appendDeptTotal() {
+        if (!tbody) return;
+
+        const deptBudAvg = deptBudHC ? (deptBudSal / deptBudHC).toFixed(2) : 0;
+        const deptActAvg = deptActHC ? (deptActSal / deptActHC).toFixed(2) : 0;
+        const deptVarAvg = (deptBudAvg - deptActAvg).toFixed(2);
+
+        // console.log(`${deptActAvg} = ${deptActSal} / ${deptActHC}`)
+
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr class="table-success fw-bold">
+            <td>${row_Department}</td>
+            <td class="text-uppercase">Total</td>
+            <td class="text-uppercase TextCenter">${Number(deptBudAvg).toLocaleString()}</td>
+            <td class="text-uppercase TextCenter">${Number(deptActAvg).toLocaleString()}</td>
+            <td class="text-uppercase TextCenter">${Number(deptVarAvg).toLocaleString()}</td>
+            <td class="text-uppercase TextCenter">${deptBudHC}</td>
+            <td class="text-uppercase TextCenter">${deptActHC}</td>
+            <td class="text-uppercase TextCenter">${deptBudHC - deptActHC}</td>
+            <td class="text-uppercase TextCenter">${Number(deptBudCTC).toLocaleString()}</td>
+            <td class="text-uppercase TextCenter">${Number(deptActCTC).toLocaleString()}</td>
+            <td class="text-uppercase TextCenter">${Number(deptBudCTC - deptActCTC).toLocaleString()}</td>
+          </tr>
+        `);
+
+        // Reset totals for next department
+        deptBudSal = deptActSal = 0;
+        deptBudHC = deptActHC = 0;
+        deptBudCTC = deptActCTC = 0;
+      }
+
+      function appendDivisionTotal() {
+        if (!currentDivision) return;
+
+        const divBudAvg = divBudHC ? (divBudSal / divBudHC).toFixed(2) : 0;
+        const divActAvg = divActHC ? (divActSal / divActHC).toFixed(2) : 0;
+        const divVarAvg = (divBudAvg - divActAvg).toFixed(2);
+
+        container.insertAdjacentHTML('beforeend', `
+          <table class="table table-bordered table-sm mb-2 hidden-header">
+            <thead class="table-light">
+                <tr>
+                  <th>Department</th>
+                  <th>Designation</th>
+                  <th class="TextCenter">BUD AVG SAL</th>
+                  <th class="TextCenter">ACT AVG SAL</th>
+                  <th class="TextCenter">VAR AVG SAL</th>
+                  <th class="TextCenter">BUD HC</th>
+                  <th class="TextCenter">ACT HC</th>
+                  <th class="TextCenter">VAR HC</th>
+                  <th class="TextCenter">BUD TOTAL CTC</th>
+                  <th class="TextCenter">ACT TOTAL CTC</th>
+                  <th class="TextCenter">VAR TOTAL CTC</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr class="table-primary fw-bold">
+                <td style="width: 30.3%" colspan=2>${row_Division} Total</td>
+                <td style="width: 8%" class="TextCenter">${Number(divBudAvg).toLocaleString()}</td>
+                <td style="width: 8%" class="TextCenter">${Number(divActAvg).toLocaleString()}</td>
+                <td style="width: 8%" class="TextCenter">${Number(divVarAvg).toLocaleString()}</td>
+                <td style="width: 5.5%" class="TextCenter">${divBudHC}</td>
+                <td style="width: 5.5%" class="TextCenter">${divActHC}</td>
+                <td style="width: 5.5%" class="TextCenter">${divBudHC - divActHC}</td>
+                <td style="width: 11%" class="TextCenter">${Number(divBudCTC).toLocaleString()}</td>
+                <td style="width: 10%" class="TextCenter">${Number(divActCTC).toLocaleString()}</td>
+                <td style="width: 10%" class="TextCenter">${Number(divBudCTC - divActCTC).toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        `);
+
+        // reset for next division
+        divBudSal = divActSal = 0;
+        divBudHC = divActHC = 0;
+        divBudCTC = divActCTC = 0;
+      }
+
+      data.forEach((row, index) => {
+        // Convert string numbers to actual numbers
+        const Bud_AvgSal = parseFloat((row.Bud_AvgSal || 0).toString().replace(/,/g, ''));
+        const Act_AvgSal = parseFloat((row.Act_AvgSal || 0).toString().replace(/,/g, ''));
+        // console.log("Act_AvgSal is here", row.Act_AvgSal)
+        const Bud_HC = parseInt(row.Bud_HC || 0);
+        const Act_HC = parseInt(row.Act_HC || 0);
+        const Bud_TotalCTC = parseFloat((row.Bud_TotalCTC || 0).toString().replace(/,/g, ''));
+        const Act_TotalCTC = parseFloat((row.Act_TotalCTC || 0).toString().replace(/,/g, ''));
+
+        // DIVISION HEADER
+        if (row.Division !== currentDivision) {
+          
+          // close previous division
+          if (currentDivision !== null) {
+            appendDivisionTotal();
+          }
+
+          currentDivision = row.Division;
+          currentDepartment = null;
+
+          container.insertAdjacentHTML(
+            'beforeend',
+            `<button class="mt-2 btn-sm btn btn-primary btn-sm">${currentDivision}</button>`
+          );
+        }
+
+
+        // DEPARTMENT HEADER
+        // if (row.Department !== currentDepartment) {
+        if (row.Department !== currentDepartment || row.Division !== currentDivision) {
+          // console.log("the department and division is here::")
+          appendDeptTotal();
+          currentDepartment = row.Department;
+
+          container.insertAdjacentHTML('beforeend', `
+            <div class="mt-2 text-secondary department_box">${currentDepartment}</div>
+            <table class="table table-bordered table-sm mb-1">
+              <thead class="table-light">
+                <tr>
+                  <th style="width: 13%">Department</th>
+                  <th style="width: 22%">Designation</th>
+                  <th style="width: 8%" class="TextCenter">BUD AVG SAL</th>
+                  <th style="width: 8%" class="TextCenter">ACT AVG SAL</th>
+                  <th style="width: 8%" class="TextCenter">VAR AVG SAL</th>
+                  <th style="width: 6%" class="TextCenter">BUD HC</th>
+                  <th style="width: 6%" class="TextCenter">ACT HC</th>
+                  <th style="width: 6%" class="TextCenter">VAR HC</th>
+                  <th style="width: 12%" class="TextCenter">BUD TOTAL CTC</th>
+                  <th style="width: 12%" class="TextCenter">ACT TOTAL CTC</th>
+                  <th style="width: 12%" class="TextCenter">VAR TOTAL CTC</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          `);
+
+          table = container.lastElementChild;
+          tbody = table.querySelector('tbody');
+        }
+
+        // console.log(`act_actual: ${Act_AvgSal}`)
+        // Update department totals
+        // deptBudSal += Bud_AvgSal * Bud_HC;
+        // deptActSal += Act_AvgSal * Act_HC;
+        deptBudHC += Bud_HC;
+        deptActHC += Act_HC;
+        deptBudCTC += Bud_TotalCTC;
+        deptActCTC += Act_TotalCTC;
+
+        if (Bud_AvgSal > 0) {
+          deptBudSal += Bud_AvgSal;
+        }
+
+        if (Act_AvgSal > 0) {
+          deptActSal += Act_AvgSal;
+        }
+
+        // DIVISION totals (weighted)
+        // divBudSal += Bud_AvgSal * Bud_HC;
+        // divActSal += Act_AvgSal * Act_HC;
+        divBudHC += Bud_HC;
+        divActHC += Act_HC;
+        divBudCTC += Bud_TotalCTC;
+        divActCTC += Act_TotalCTC;
+        
+        if (Bud_AvgSal > 0) {
+          divBudSal += Bud_AvgSal;
+        }
+
+        if (Act_AvgSal > 0) {
+          divActSal += Act_AvgSal;
+        }
+
+        row_Department = row.Department
+        row_Division = row.Division
+
+        // console.log(`is here: ${Act_AvgSal}`)
+
+
+        // ROW
+        tbody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td style="width: 13%">${row.Department}</td>
+            <td style="width: 22%">${row.Designation}</td>
+            <td style="width: 8%" class="TextEnd">${Number(Bud_AvgSal).toLocaleString()}</td>
+            <td style="width: 8%" class="TextEnd">${Number(Act_AvgSal).toLocaleString()}</td>
+            <td style="width: 8%; color: ${getColor(Number(Bud_AvgSal - Act_AvgSal).toLocaleString())}" class="TextEnd">${Number((Bud_AvgSal - Act_AvgSal)).toLocaleString()}</td>
+            <td style="width: 6%" class="TextEnd">${Bud_HC}</td>
+            <td style="width: 6%" class="TextEnd">${Act_HC}</td>
+            <td style="width: 6%; color: ${getColor(Bud_HC - Act_HC)}" class="TextEnd">${Bud_HC - Act_HC}</td>
+            <td style="width: 12%" class="TextEnd">${Number(Bud_TotalCTC).toLocaleString()}</td>
+            <td style="width: 12%" class="TextEnd">${Number(Act_TotalCTC).toLocaleString()}</td>
+            <td style="width: 12%; color: ${getColor(Number(Bud_TotalCTC - Act_TotalCTC).toLocaleString())}" class="TextEnd" >${Number(Bud_TotalCTC - Act_TotalCTC).toLocaleString()}</td>
+          </tr>
+        `);
+
+        // Last row department total
+        //if (index === data.length - 1) appendDeptTotal();
+        if (index === data.length - 1) {
+          appendDeptTotal();
+          appendDivisionTotal();
+        }
+
+        function getColor(value) {
+          const num = parseFloat(value);
+          return (num < 0) ? "red" : "green";
+        }
+      });
+    });
+</script>
+
+
+<script>
+  let OID_demo = "{{selectedOrganizationID}}";
+  let Ex_zero_demo = "{{exclude_zero_headcount}}";
+  showLoader("profile-card");
+
+  fetch(`/Manning_Guide/api/variance_details_report/?OrganizationID=${OID_demo}&Ex_zero=${Ex_zero_demo}`)
+    .then(res => res.json())
+    .then(res => {
+      hideLoader("profile-card");
+
+      const data = res.data;
+      const container = document.getElementById("varianceReport_dummy_Data");
+      container.innerHTML = "";
+
+      const deptMap = {};
+
+      /* =========================
+         AGGREGATE BY DEPARTMENT
+      ========================== */
+      data.forEach(row => {
+
+        const dept = row.Department || "Unknown";
+
+        const Bud_AvgSal = parseFloat((row.Bud_AvgSal || 0).toString().replace(/,/g, ""));
+        const Act_AvgSal = parseFloat((row.Act_AvgSal || 0).toString().replace(/,/g, ""));
+        const Bud_HC = parseInt(row.Bud_HC || 0);
+        const Act_HC = parseInt(row.Act_HC || 0);
+        const Bud_TotalCTC = parseFloat((row.Bud_TotalCTC || 0).toString().replace(/,/g, ""));
+        const Act_TotalCTC = parseFloat((row.Act_TotalCTC || 0).toString().replace(/,/g, ""));
+
+        if (!deptMap[dept]) {
+          deptMap[dept] = {
+            budSal: 0,
+            actSal: 0,
+            budHC: 0,
+            actHC: 0,
+            budCTC: 0,
+            actCTC: 0
+          };
+        }
+
+        if (Bud_AvgSal > 0) deptMap[dept].budSal += Bud_AvgSal;
+        if (Act_AvgSal > 0) deptMap[dept].actSal += Act_AvgSal;
+
+        deptMap[dept].budHC += Bud_HC;
+        deptMap[dept].actHC += Act_HC;
+        deptMap[dept].budCTC += Bud_TotalCTC;
+        deptMap[dept].actCTC += Act_TotalCTC;
+      });
+
+      /* =========================
+         TABLE STRUCTURE
+      ========================== */
+      container.innerHTML = `
+        <table class="table table-bordered table-sm">
+          <thead class="table-light">
+            <tr>
+              <th rowspan="2">DEPARTMENTS</th>
+              <th colspan="3" class="TextCenter">AVERAGE SALARY</th>
+              <th colspan="3" class="TextCenter">HEAD COUNT</th>
+              <th colspan="3" class="TextCenter">TOTAL CTC</th>
+            </tr>
+            <tr>
+              <th class="TextCenter">BUDGETED</th>
+              <th class="TextCenter">ACTUAL</th>
+              <th class="TextCenter">VARIANCE</th>
+              <th class="TextCenter">BUDGETED</th>
+              <th class="TextCenter">ACTUAL</th>
+              <th class="TextCenter">VARIANCE</th>
+              <th class="TextCenter">BUDGETED</th>
+              <th class="TextCenter">ACTUAL</th>
+              <th class="TextCenter">VARIANCE</th>
+            </tr>
+          </thead>
+          <tbody id="deptBody_Data"></tbody>
+        </table>
+      `;
+
+      const tbody = document.getElementById("deptBody_Data");
+
+      /* =========================
+         COLOR HELPER
+      ========================== */
+      function getColor(val) {
+        return Number(val) < 0 ? "red" : "green";
+      }
+
+      /* =========================
+        GRAND TOTAL VARIABLES
+      ========================= */
+      let totalBudSal = 0;
+      let totalActSal = 0;
+      let totalBudHC = 0;
+      let totalActHC = 0;
+      let totalBudCTC = 0;
+      let totalActCTC = 0;
+
+      let budAvg_Total = 0;
+      let actAvg_Total = 0;
+
+      /* =========================
+         RENDER DEPARTMENTS
+      ========================== */
+      Object.entries(deptMap).forEach(([dept, d]) => {
+        console.log("i am here")
+        
+        totalBudSal += d.budSal;
+        totalActSal += d.actSal;
+        totalBudHC += d.budHC;
+        totalActHC += d.actHC;
+        totalBudCTC += d.budCTC;
+        totalActCTC += d.actCTC;
+        
+        // console.log("totalBudSal::", totalBudSal)
+        // console.log("totalActSal::", totalActSal)
+        // const budAvg = d.budHC ? (d.budSal / d.budHC).toFixed(2) : 0;
+        // const actAvg = d.actHC ? (d.actSal / d.actHC).toFixed(2) : 0;
+        // const budAvg = d.budHC ? (d.budSal / d.budHC).toFixed(2) : 0;
+        // const actAvg = d.actHC ? (d.actSal / d.actHC).toFixed(2) : 0;
+
+        const budAvg = d.budHC ? (d.budSal / d.budHC) : 0;
+        const actAvg = d.actHC ? (d.actSal / d.actHC) : 0;
+
+        budAvg_Total += budAvg;
+        actAvg_Total += actAvg;
+
+        tbody.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>${dept}</td>
+            <td class="TextEnd">${Number(budAvg).toFixed(2).toLocaleString()}</td>
+            <td class="TextEnd">${Number(actAvg).toFixed(2).toLocaleString()}</td>
+            <td class="TextEnd" style="color:${getColor(budAvg - actAvg)}">
+              ${Number(budAvg - actAvg).toFixed(2).toLocaleString()}
+            </td>
+
+            <td class="TextEnd">${d.budHC}</td>
+            <td class="TextEnd">${d.actHC}</td>
+            <td class="TextEnd" style="color:${getColor(d.budHC - d.actHC)}">
+              ${d.budHC - d.actHC}
+            </td>
+
+            <td class="TextEnd">${Number(d.budCTC).toLocaleString()}</td>
+            <td class="TextEnd">${Number(d.actCTC).toLocaleString()}</td>
+            <td class="TextEnd" style="color:${getColor(d.budCTC - d.actCTC)}">
+              ${Number(d.budCTC - d.actCTC).toLocaleString()}
+            </td>
+          </tr>
+        `);
+      });
+
+      /* =========================
+        GRAND TOTAL CALCULATION
+      ========================= */
+      const totalBudAvg = budAvg_Total ? (budAvg_Total / totalBudHC).toFixed(2) : 0;
+      const totalActAvg = actAvg_Total ? (actAvg_Total / totalActHC).toFixed(2) : 0;
+
+      /* =========================
+        GRAND TOTAL ROW
+      ========================= */
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr class="table-secondary fw-bold">
+          <td>GRAND TOTAL</td>
+
+          <td class="TextEnd">${Number(totalBudAvg).toLocaleString()}</td>
+          <td class="TextEnd">${Number(totalActAvg).toLocaleString()}</td>
+          <td class="TextEnd" style="color:${getColor(totalBudAvg - totalActAvg)}">
+            ${Number(totalBudAvg - totalActAvg).toLocaleString()}
+          </td>
+
+          <td class="TextEnd">${totalBudHC}</td>
+          <td class="TextEnd">${totalActHC}</td>
+          <td class="TextEnd" style="color:${getColor(totalBudHC - totalActHC)}">
+            ${totalBudHC - totalActHC}
+          </td>
+
+          <td class="TextEnd">${Number(totalBudCTC).toLocaleString()}</td>
+          <td class="TextEnd">${Number(totalActCTC).toLocaleString()}</td>
+          <td class="TextEnd" style="color:${getColor(totalBudCTC - totalActCTC)}">
+            ${Number(totalBudCTC - totalActCTC).toLocaleString()}
+          </td>
+        </tr>
+      `);
+
+      //console.log({
+      //  totalBudSal,
+      //  totalActSal,
+      //  totalBudHC,
+      //  totalActHC,
+      //  totalBudCTC,
+      //  totalActCTC
+      //});
+
+      // console.log("totalBudSal:", totalBudSal);
+      // console.log("totalBudHC:", totalBudHC);
+      // console.log("totalActSal:", totalActSal);
+      // console.log("totalActHC:", totalActHC);
+
+      console.log("budAvg_Total:", budAvg_Total);
+      console.log("actAvg_Total:", actAvg_Total);
+    });
+</script>
+
+<script>
+  const orgId = "{{selectedOrganizationID}}"; 
+
+  function calculateVariance(budgetValue, actualValue) {
+      return actualValue - (budgetValue || 0);
+  }
+  /* =========================
+      COLOR HELPER
+  ========================== */
+  function getColor(val) {
+    return Number(val) < 0 ? "red" : "green";
+  }
+
+  fetch(`/Manning_Guide/api/contract_varience_manning_api/?org_id=${orgId}`)
+      .then(response => response.json())
+      .then(data => {
+          const tbody = document.querySelector('#Contract_Manning_Report tbody');
+          const actual = data.actual_dict;
+          const budget = data.budget_dict;
+
+          // Initialize totals
+          let total_budget_avg_salary = 0;
+          let total_actual_avg_salary = 0;
+          let total_variance_avg_salary = 0;
+
+          let total_budget_head_count = 0;
+          let total_actual_head_count = 0;
+          let total_variance_head_count = 0;
+
+          let total_budget_total_ctc = 0;
+          let total_actual_total_ctc = 0;
+          let total_variance_total_ctc = 0;
+
+          for (const dept in actual) {
+              for (const desig in actual[dept]) {
+                  const actualRow = actual[dept][desig];
+                  const budgetRow = budget[dept] ? budget[dept][desig] || {} : {};
+
+                  // Compute variances dynamically
+                  const varianceRow = {
+                      variance_avg_salary: calculateVariance(budgetRow.budget_avg_salary, actualRow.actual_avg_salary),
+                      variance_head_count: calculateVariance(budgetRow.budget_head_count, actualRow.actual_head_count),
+                      variance_total_ctc: calculateVariance(budgetRow.budget_total_ctc, actualRow.actual_total_ctc)
+                  };
+
+                  // Add to totals
+                  total_budget_avg_salary += budgetRow.budget_avg_salary || 0;
+                  total_actual_avg_salary += actualRow.actual_avg_salary || 0;
+                  // total_variance_avg_salary += varianceRow.variance_avg_salary || 0;
+
+                  total_budget_head_count += budgetRow.budget_head_count || 0;
+                  total_actual_head_count += actualRow.actual_head_count || 0;
+                  total_variance_head_count += varianceRow.variance_head_count || 0;
+
+                  total_budget_total_ctc += budgetRow.budget_total_ctc || 0;
+                  total_actual_total_ctc += actualRow.actual_total_ctc || 0;
+                  total_variance_total_ctc += varianceRow.variance_total_ctc || 0;
+
+                  total_budget_avg_salary_v1 = total_budget_avg_salary/total_budget_head_count
+                  total_actual_avg_salary_v1 = total_actual_avg_salary/total_actual_head_count
+                  total_variance_avg_salary = total_budget_avg_salary_v1 - total_actual_avg_salary_v1
+
+                  const tr = document.createElement('tr');
+                  tr.innerHTML = `
+                      <td>${dept}</td>
+                      <td>${desig}</td>
+                      <td class="text-center">${budgetRow.budget_avg_salary || 0}</td>
+                      <td class="text-center">${actualRow.actual_avg_salary}</td>
+                      <td class="text-center" style="color:${getColor(varianceRow.variance_avg_salary)}">${varianceRow.variance_avg_salary}</td>
+                      <td class="text-center">${budgetRow.budget_head_count || 0}</td>
+                      <td class="text-center">${actualRow.actual_head_count}</td>
+                      <td class="text-center" style="color:${getColor(varianceRow.variance_head_count)}">${varianceRow.variance_head_count}</td>
+                      <td class="text-center">${budgetRow.budget_total_ctc || 0}</td>
+                      <td class="text-center">${actualRow.actual_total_ctc}</td>
+                      <td class="text-center" style="color:${getColor(varianceRow.variance_total_ctc)}">${varianceRow.variance_total_ctc}</td>
+                  `;
+                  tbody.appendChild(tr);
+              }
+          }
+
+          // Add totals row
+          const totalRow = document.createElement('tr');
+          totalRow.innerHTML = `
+              <td colspan="2"><strong>TOTAL</strong></td>
+              <td class="text-center"><strong>${Number(total_budget_avg_salary_v1).toFixed(2).toLocaleString()}</strong></td>
+              <td class="text-center"><strong>${Number(total_actual_avg_salary_v1).toFixed(2).toLocaleString()}</strong></td>
+              <td class="text-center"><strong style="color:${getColor(total_variance_avg_salary)}">${Number(total_variance_avg_salary).toFixed(2).toLocaleString()}</strong></td>
+              <td class="text-center"><strong>${total_budget_head_count}</strong></td>
+              <td class="text-center"><strong>${total_actual_head_count}</strong></td>
+              <td class="text-center"><strong  style="color:${getColor(total_variance_head_count)}">${total_variance_head_count}</strong></td>
+              <td class="text-center"><strong>${total_budget_total_ctc}</strong></td>
+              <td class="text-center"><strong>${total_actual_total_ctc}</strong></td>
+              <td class="text-center"><strong  style="color:${getColor(total_variance_total_ctc)}">${total_variance_total_ctc}</strong></td>
+          `;
+          tbody.appendChild(totalRow);
+
+      })
+      .catch(err => console.error("Error fetching data:", err));
+</script>
+
+<script>
+  const orgId_service = "{{selectedOrganizationID}}";  // or dynamic
+
+  fetch(`/Manning_Guide/api/shared_services_manning_api/?org_id=${orgId_service}`)
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("sharedServicesBody");
+      tbody.innerHTML = "";
+
+      const {
+        Servicedivisions,
+        actualservice_dict,
+        budgetservice_dict,
+        variance_shared_services_dict,
+        onrolldepartment_variance_dictss
+      } = data;
+
+      Servicedivisions.forEach(division => {
+        // Division header
+        tbody.innerHTML += `
+          <tr>
+            <td colspan="12" class="HeaderWithColor"><strong>${division.DivisionName}</strong></td>
+          </tr>
+        `;
+
+        const departments = actualservice_dict;
+
+        Object.keys(departments).forEach(deptName => {
+          tbody.innerHTML += `
+            <tr>
+              <td colspan="12" style="background:#979797;color:#fff">
+                <strong>${deptName}</strong>
+              </td>
+            </tr>
+          `;
+
+          const designations = departments[deptName];
+
+          Object.keys(designations).forEach(desig => {
+            const actual = designations[desig] || {};
+            const budget = (budgetservice_dict[deptName] || {})[desig] || {};
+            const variance = (variance_shared_services_dict[deptName] || {})[desig] || {};
+
+            tbody.innerHTML += `
+              <tr>
+                <td>${desig}</td>
+                <td>${deptName}</td>
+                <td>${desig}</td>
+
+                <td class="text-center">${budget.budgetservice_avg_salary ?? 0}</td>
+                <td class="text-center">${actual.actualservice_avg_salary ?? 0}</td>
+                <td class="text-center">${variance.variance_avg_salary ?? 0}</td>
+
+                <td class="text-center">${budget.budgetservice_head_count ?? 0}</td>
+                <td class="text-center">${actual.actualservice_head_count ?? 0}</td>
+                <td class="text-center">${variance.variance_head_count ?? 0}</td>
+
+                <td class="text-center">${budget.budgetservice_total_ctc ?? 0}</td>
+                <td class="text-center">${actual.actualservice_total_ctc ?? 0}</td>
+                <td class="text-center">${variance.variance_total_ctc ?? 0}</td>
+              </tr>
+            `;
+          });
+
+          // Department totals
+          const deptVar = onrolldepartment_variance_dictss[deptName] || {};
+          tbody.innerHTML += `
+            <tr style="background:#f3f3f3">
+              <td colspan="3"><strong>${deptName} Total</strong></td>
+              <td colspan="3" class="text-center">${deptVar.variance_multiplication_result ?? 0}</td>
+              <td colspan="3" class="text-center">${deptVar.variance_head_count ?? 0}</td>
+              <td colspan="3" class="text-center">${deptVar.variance_salary_headcount_contract ?? 0}</td>
+            </tr>
+          `;
+        });
+      });
+    });
+</script>
+
+
+<script>
+  const orgId_grand_total = "{{selectedOrganizationID}}";
+  fetch(`/Manning_Guide/api/budget_onroll_variance_totals_api/?OID=${orgId_grand_total}`)
+      .then(response => response.json())
+      .then(res => {
+          if (!res.status) {
+              console.error("API failed");
+              return;
+          }
+
+          const data = res.data;
+
+          console.log("Full API Data:", data);
+
+          // Example: access values
+          console.log("On Roll Budget HC:", data.On_Roll.Budget_On_Roll.headcount);
+          console.log("Meal Cost Variance:", data.Total_Meal_Cost.Var_Total_CTC);
+
+          renderTable(data);
+      })
+      .catch(err => console.error("Fetch error:", err));
+
+
+  function renderTable(data) {
+
+      const rows = [
+          {
+              label: "TOTAL ON ROLL",
+              bud_avg: data.On_Roll.Budget_On_Roll.avg_salary,
+              act_avg: data.On_Roll.Actual_On_Roll.avg_salary,
+              var_avg: data.On_Roll.Variance.avg_salary,
+              bud_hc: data.On_Roll.Budget_On_Roll.headcount,
+              act_hc: data.On_Roll.Actual_On_Roll.headcount,
+              var_hc: data.On_Roll.Variance.headcount,
+              bud_ctc: data.On_Roll.Budget_On_Roll.total_salary,
+              act_ctc: data.On_Roll.Actual_On_Roll.total_salary,
+              var_ctc: data.On_Roll.Variance.total_salary
+          },
+          {
+              label: "TOTAL - CONTRACT",
+              bud_avg: data.Total_Contract.Budget_On_Roll.avg_salary,
+              act_avg: data.Total_Contract.Actual_On_Roll.avg_salary,
+              var_avg: data.Total_Contract.Variance.avg_salary,
+              bud_hc: data.Total_Contract.Budget_On_Roll.headcount,
+              act_hc: data.Total_Contract.Actual_On_Roll.headcount,
+              var_hc: data.Total_Contract.Variance.headcount,
+              bud_ctc: data.Total_Contract.Budget_On_Roll.total_salary,
+              act_ctc: data.Total_Contract.Actual_On_Roll.total_salary,
+              var_ctc: data.Total_Contract.Variance.total_salary
+          },
+          {
+              label: "TOTAL SHARED SERVICES",
+              bud_avg: data.Total_Shared_Services.Budget_On_Roll.avg_salary,
+              act_avg: data.Total_Shared_Services.Actual_On_Roll.avg_salary,
+              var_avg: data.Total_Shared_Services.Variance.avg_salary,
+              bud_hc: data.Total_Shared_Services.Budget_On_Roll.headcount,
+              act_hc: data.Total_Shared_Services.Actual_On_Roll.headcount,
+              var_hc: data.Total_Shared_Services.Variance.headcount,
+              bud_ctc: data.Total_Shared_Services.Budget_On_Roll.total_salary,
+              act_ctc: data.Total_Shared_Services.Actual_On_Roll.total_salary,
+              var_ctc: data.Total_Shared_Services.Variance.total_salary
+          },
+          {
+              label: "TOTAL - CAFETERIA MEAL COST",
+              bud_avg: "",
+              act_avg: "",
+              var_avg: "",
+              bud_hc: "",
+              act_hc: "",
+              var_hc: "",
+              bud_ctc: data.Total_Meal_Cost.Bud_Total_CTC,
+              act_ctc: data.Total_Meal_Cost.Act_Total_CTC,
+              var_ctc: data.Total_Meal_Cost.Var_Total_CTC
+          },
+          {
+              label: "TOTAL - EMPLOYEE INSURANCE COST",
+              bud_avg: "",
+              act_avg: "",
+              var_avg: "",
+              bud_hc: "",
+              act_hc: "",
+              var_hc: "",
+              bud_ctc: data.Total_Insurance_Cost.Bud_Total_CTC,
+              act_ctc: data.Total_Insurance_Cost.Act_Total_CTC,
+              var_ctc: data.Total_Insurance_Cost.Var_Total_CTC
+          }
+      ];
+
+      const tbody = document.getElementById("division_total_grid_body");
+      tbody.innerHTML = "";
+
+      rows.forEach(r => {
+          tbody.innerHTML += `
+              <tr>
+                  <td>${r.label}</td>
+                  <td>${r.bud_avg}</td>
+                  <td>${r.act_avg}</td>
+                  <td>${r.var_avg}</td>
+                  <td>${r.bud_hc}</td>
+                  <td>${r.act_hc}</td>
+                  <td>${r.var_hc}</td>
+                  <td>${r.bud_ctc}</td>
+                  <td>${r.act_ctc}</td>
+                  <td>${r.var_ctc}</td>
+              </tr>
+          `;
+      });
+  }
+</script>
+
+
+{% endblock content %}

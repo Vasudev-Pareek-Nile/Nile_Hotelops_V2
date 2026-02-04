@@ -1,0 +1,101 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
+
+<div class="card">
+    <div class="card-body">
+        <table id="varianceTable" class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Bud HC</th>
+                    <th>Bud Avg</th>
+                    <th>Bud Total</th>
+                    <th>Act HC</th>
+                    <th>Act Avg</th>
+                    <th>Act Total</th>
+                    <th>Var HC</th>
+                    <th>Var Total</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script>
+    {% comment %} $('#varianceTable').DataTable({
+        ajax: "http://127.0.0.1:8000/Manning_Guide/api/variance_details_report/",
+        columns: [
+            { data: "Division" },
+            { data: "Department" },
+            { data: "Designation" },
+            { data: "Bud_HC" },
+            { data: "Bud_AvgSal" },
+            { data: "Bud_TotalCTC" },
+            { data: "Act_HC" },
+            { data: "Act_AvgSal" },
+            { data: "Act_TotalCTC" },
+            { data: "Var_HC" },
+            { data: "Var_TotalCTC" }
+        ],
+        order: [[0, 'asc'], [1, 'asc']],
+        rowGroup: {
+            dataSrc: ['Division', 'Department']
+        },
+        pageLength: 50
+    }); {% endcomment %}
+
+    $('#varianceTable').DataTable({
+        ajax: {
+            url: 'http://127.0.0.1:8000/Manning_Guide/api/variance_details_report/',   // your API URL
+            dataSrc: 'data'
+        },
+
+        columns: [
+            { data: 'Division' },
+            { data: 'Department' },
+            { data: 'Designation' },
+
+            { data: 'Bud_HC' },
+            { data: 'Bud_AvgSal' },
+            { data: 'Bud_TotalCTC' },
+
+            { data: 'Act_HC' },
+            { data: 'Act_AvgSal' },
+            {
+                data: 'Act_TotalCTC',
+                render: function (data) {
+                    return data === null ? 0 : data;
+                }
+            },
+
+            { data: 'Var_HC' },
+            { data: 'Var_TotalCTC' }
+        ],
+
+        order: [
+            [0, 'asc'],   // Division
+            [1, 'asc'],   // Department
+            [2, 'asc']    // Designation order
+        ],
+
+        rowGroup: {
+            dataSrc: ['Division', 'Department']
+        },
+
+        pageLength: 50,
+        ordering: true,
+        searching: false,
+        info: false
+    });
+</script>
+{% endblock content %}

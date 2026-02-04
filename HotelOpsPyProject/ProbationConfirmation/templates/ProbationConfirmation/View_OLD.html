@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   
+    <style>
+       
+        
+        .align-center
+        {
+
+            text-align: center;
+        }
+        .border {
+            border: 1px solid black;
+        }
+        .margintop
+        {
+            margin-top: 20px;
+        }
+    .body{
+        font-size: 11px;
+        font-family: Arial-nova;
+    }
+    .tablebordered
+    {
+        border: 1px solid #ccc; 
+        
+    padding: 8px;
+    text-align: left;
+     
+    }
+    table td,th{
+        padding: 3px;
+        
+       
+        
+
+    }
+   .label
+   {
+    font-size: 11px;
+    font-weight:bolder;
+    text-align: center;
+    
+   }
+   .data{
+    text-align: center;
+   }
+   .widthobj
+   {
+    padding-top: 5px;
+    width: 170px;
+   font-weight: bold;
+   
+   }
+   
+   .widthatt
+   {
+    padding-top:5 px;
+    width: 180px;
+    background-color: #1ab394;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+   }
+   .widthRIMP{
+width: 40px;
+
+   }
+   .containereffinff {
+    width: 100%;
+    overflow: hidden; 
+}
+.marginappeeappor{
+    margin-top: 20px;
+}
+.headbg
+{
+    background-color: #1ab394;
+    text-align: center;
+    color: white;
+    padding: 5px;
+
+font-weight: bold;}
+.headbgspec{
+    background-color: #1ab394;
+    text-align: left;
+    color: white;
+    padding-top:5px ;
+
+font-weight: bold;
+}
+.capital{
+    text-transform: uppercase !important ;
+}
+
+  </style>
+    
+</head>
+<body>
+    <div class="container">
+        <table>
+    <tr>
+        <td style="width: 270px;">&nbsp;</td>
+        <td style="text-align: center !important; text-transform: uppercase; font-size: 14px; font-weight: bold;width: 270px;"><u>PROBATION CONFIRMATION</u></td>
+        <td style="width: 270px;">&nbsp;</td>
+    </tr>
+</table>
+<table class="tablebordered
+marginappeeappor "  >
+    <tr><th class="widthatt capital" style="text-align: left;"><strong>Employee Data</strong></th></tr>
+</table>
+<br>
+                    <table class=" tablebordered ">
+                        <tbody>
+                            <tr>
+                            
+                                <td style="width: 270px;">
+                                    <label class="label">Employee Code:&nbsp</label>
+                                    <span class="data">{{Emp_obj.EmpCode}}</span>
+                                </td>
+                                <td style="width: 300px;">
+                                    <label class="label">Employee Name:&nbsp</label>
+                                    <span class="data">{{Emp_obj.EmpName}}</span>
+                                </td>
+                                <td style="width: 300px;">
+                                    <label class="label">Joining Date:&nbsp</label>
+                                    <span class="data">{{Emp_obj.JoiningDate |date:'j M Y'}}</span>
+                                </td>
+                                
+                            
+                            </tr>
+                            <tr>
+                                <td><label class="label">Department:&nbsp</label><span class="data">{{Emp_obj.Department}}</span></td>
+                            
+                            
+                                <td>
+                                    <label class="label">Position:&nbsp</label>
+                                    <span class="data">{{Emp_obj.Position}}</span>
+                                </td>        
+                                <td>
+                                    <label class="label">Confirmation Due Date:&nbsp</label>
+                                    <span class="data">{{Emp_obj.ConfDate|date:'j M Y'}}</span>
+                                </td>
+                            </tr>
+                        
+                        
+                        </tbody>
+                        
+                    
+                    </table>
+                    
+                    
+                    
+                    
+                    {% for Category in Categories %}
+                    
+                        <table class="tablebordered
+                                marginappeeappor "  >
+                                    <tr><th class="widthatt capital" style="text-align: left;"><strong>{{Category.Category}}</strong></th></tr>
+                        </table>
+                    
+                        
+                            
+                        <table class="tablebordered marginappeeappor"  >
+                                <thead>
+                                    
+                                    <tr class="headbg capital" >
+                                    <th style="width: 270px; ">Points</th>
+                                    <th style="width: 270px;">Yes/No</th>
+                                    <th style="width: 270px;">Remarks</th>
+                                    </tr>
+                                </thead>
+                            
+                                <tbody>
+                                    
+                                    {% for item in Category.items  %}
+                                            
+                                
+                                
+                                            <tr>
+                                                <td>{{item.Item}}</td>
+                                                <td style="text-align: center;">{% if item.emp_detail.0.IsYes == True  %}Yes{% else %}No{% endif %}<span>&nbsp;</span></td>
+                                                <td>{{item.emp_detail.0.Remarks}}</textarea></td>
+                                            </tr>
+                                
+                                    
+                                    {% endfor %}
+                                </tbody>
+                            
+                        
+                        </table>
+                                
+                            
+                            
+                        
+                    {% endfor %}
+
+
+                    <table class="tablebordered marginappeeappor">
+                        <tr>
+                            <td style="width: 540px;">Employee’s Strengths</td>
+                            <td style="width: 270px;">{{Emp_obj.Strengths}}</td>
+                        </tr>
+                        <tr>
+                            <td>Employee’s Areas for Improvement</td>
+                            <td>{{Emp_obj.Improvement}}</td>
+                        </tr>
+                        <tr>
+                            <td>Has the employee completed a minimum of 90 % Training as per Corporate Training Guidelines? </td>
+                            <td>
+                                
+                                {% if Emp_obj.Guidelines == True  %}Yes{% else %}No{% endif %}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>Guidelines</td>
+                            <td>
+                                
+                                {{Emp_obj.Trainingattended }}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>{{Emp_obj.Trainingattended}}</td>
+                        </tr>
+                        <tr>
+                            <td>Employment is confirmed?</td>
+                            <td>
+                             
+                                {% if Emp_obj.EmpConfirm == True  %}Yes{% else %}No{% endif %}
+                            </td>
+                        </tr>
+                        {% if extended_value != '' %}
+                        <tr>
+                            <td>Extended</td>
+                            <td>{{ Emp_obj.Extended }}&nbsp;</td>
+                        </tr>
+                    {% endif %}
+                    
+                    
+                    </table>
+          
+                
+                
+            
+            
+       
+       
+    </div>
+</body>
+</html>

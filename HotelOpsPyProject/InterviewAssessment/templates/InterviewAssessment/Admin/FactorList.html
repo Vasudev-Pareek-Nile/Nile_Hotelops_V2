@@ -1,0 +1,123 @@
+
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+
+<div class="modal fade" id="userTypeModal" tabindex="-1" role="dialog" aria-labelledby="userTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userTypeModalLabel">Add Factor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="POST" action="{% url 'FactorsAdd' %}">
+                {% csrf_token %}
+                <input type="hidden" name="FID" id="modalUID">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="TitleInput">Title</label>
+                        <input type="text" class="form-control" id="TitleInput" name="Title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="DescriptionInput">Description</label>
+                        <textarea class="form-control" id="DescriptionInput" name="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="ItemInput">Item</label>
+                        <textarea class="form-control" id="ItemInput" name="Item"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-6">
+               Factor List
+            </div>
+            <div class="col-md-6 text-right">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userTypeModal">
+                  Add Factor
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Item</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for factor in Fobjs %}
+            <tr>
+                <td>{{ factor.Title }}</td>
+                <td>{{ factor.Description }}</td>
+                <td>{{ factor.Item }}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm edit-factor-btn"
+                            data-toggle="modal" data-target="#userTypeModal"
+                            data-fid="{{ factor.id }}" data-title="{{ factor.Title }}"
+                            data-description="{{ factor.Description }}" data-item="{{ factor.Item }}">
+                        Edit
+                    </button>
+                    <a href="{% url 'FactorDelete' %}?FID={{ factor.id }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this?')">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $('#userTypeModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var fid = button.data('fid');
+        var title = button.data('title');
+        var description = button.data('description'); 
+        var item = button.data('item');
+        var modal = $(this);
+
+        if (fid) {
+          
+
+            $.ajax({
+                url: "{% url 'UserTypeAddEdit' %}",
+                data: { FID: fid },
+                success: function (data) {
+            modal.find('.modal-title').text('Edit Factor');
+            modal.find('#modalUID').val(fid);
+            modal.find('#TitleInput').val(title);
+            modal.find('#DescriptionInput').val(description);  
+            modal.find('#ItemInput').val(item);
+                }
+            });    
+
+        } else {
+            modal.find('.modal-title').text('Add Factor');
+            modal.find('#modalUID').val('');
+            modal.find('#TitleInput').val('');
+            modal.find('#DescriptionInput').val('');  
+            modal.find('#ItemInput').val('');
+        }
+    });
+</script>
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,116 @@
+{% extends "InterviewAssessment/homebase.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="card">
+        <form action="" method="POST">
+            <div class="card-header">Department: {{ deptLevel.Department }} <span class="level-text">Level: {{ deptLevel.Level }}</span></div>
+            <div class="main">
+                {% csrf_token %}
+                <div id="formRows" class="m-2">
+                  
+                    {% for detail in details %}
+                    <div class="form-row mb-2">
+                        <input type="hidden" name="id[]" value="{{ detail.id }}">
+                        <div class="form-group col-md-5">
+                            <label for="levelSortOrder">Level Sort Order</label>
+                            <select name="levelSortOrder[]" class="form-control"  required >
+                                <option value="">Select Level</option>
+                                <option value="Level 1" {% if detail.LevelSortOrder == "Level 1" %}selected{% endif %}>Level 1</option>
+                                <option value="Level 2" {% if detail.LevelSortOrder == "Level 2" %}selected{% endif %}>Level 2</option>
+                                <option value="Level 3" {% if detail.LevelSortOrder == "Level 3" %}selected{% endif %}>Level 3</option>
+                                <option value="Level 4" {% if detail.LevelSortOrder == "Level 4" %}selected{% endif %}>Level 4</option>
+                                <option value="Level 5" {% if detail.LevelSortOrder == "Level 5" %}selected{% endif %}>Level 5</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label for="userType">User Type</label>
+                            <select name="userType[]" class="form-control" required>
+                                <option value="">Select User Type</option>
+                                {% for usertype in usertypes %}
+                                <option value="{{ usertype.UserType }}" {% if detail.UserType == usertype.UserType %}selected{% endif %}>{{ usertype.UserType }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label>&nbsp;</label>
+                            <button type="button" class="btn btn-danger btn-block removeRow">Remove</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" id="addRow" class="btn btn-primary">Add More</button>
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+     
+        let levelCount = '{{ details|length }}';
+
+       
+        $('#addRow').click(function() {
+            levelCount++; 
+            var newRow = `
+                <div class="form-row mb-2">
+                    <input type="hidden" name="id[]" value="">
+                    <div class="form-group col-md-5">
+                        <label for="levelSortOrder">Level Sort Order</label>
+                        <select name="levelSortOrder[]" class="form-control" required>
+                            <option value="">Select Level</option>
+                            <option value="Level 1">Level 1</option>
+                            <option value="Level 2">Level 2</option>
+                            <option value="Level 3">Level 3</option>
+                            <option value="Level 4">Level 4</option>
+                            <option value="Level 5">Level 5</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
+                        <label for="userType">User Type</label>
+                        <select name="userType[]" class="form-control" required>
+                            <option value="">Select User Type</option>
+                            {% for usertype in usertypes %}
+                            <option value="{{ usertype.UserType }}">{{ usertype.UserType }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn btn-danger btn-block removeRow">Remove</button>
+                    </div>
+                </div>
+            `;
+            $('#formRows').append(newRow);
+        });
+
+     
+        $('#formRows').on('click', '.removeRow', function() {
+            $(this).closest('.form-row').remove();
+        });
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        const levelSpans = document.querySelectorAll('.level-text');
+
+        levelSpans.forEach(span => {
+           
+            let text = span.textContent.trim();
+
+            
+            let levelText = text.replace("Level: ", "").trim();
+
+            
+            let levelsArray = levelText.replace(/^\['|'\]$/g, '').split("', '");
+
+          
+            span.textContent = "Level: " + levelsArray.join(', ');
+        });
+    });
+</script>
+{% endblock content %}

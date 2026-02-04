@@ -1,0 +1,205 @@
+{% load custom_filters %}
+{% load encryption_filters %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Leave Report</title>
+    <style>
+        {% comment %} @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@350;700&display=swap'); {% endcomment %}
+        @page {
+            {% comment %} size: A4 landscape;   {% endcomment %}
+            margin: 10mm;
+        }
+        body {
+            font-family: "Arial Nova", sans-serif;
+            {% comment %} font-size: 14px; {% endcomment %}
+            {% comment %} margin: 20px; {% endcomment %}
+            line-height: 1.4;
+        }
+        .report-header {
+            text-align: center;
+            font-weight: bold;
+        }
+        .sub-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .table-container {
+            width: 100%;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th, .table-container td {
+            padding: 4px 8px;
+            text-align: left;
+        }
+        .bold-text {
+             font-weight: bold; 
+        }
+        .total-leave {
+            font-weight: bold;
+            text-align: right;
+            margin-right: 20px;
+        }
+        .underline {
+            /* text-decoration: underline; */
+            margin-left: 50px;
+        } 
+        .spacer {
+            height: 10px;
+        }
+        .ReportDateContainer{
+            display:flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <table style="width: 100%;">
+          <tr>
+              
+            <td style="text-align: center;width:600px">
+              <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                <tbody>
+                  <tr>
+                    <td><p style="text-align: center; font-size:18px; margin-bottom:-20px;">{{organization_logo}}</p>
+                        <p style="text-align: center; margin-top:-3px;">Employee Leave Details </p></td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+            <td style="text-align: right;">
+              {% if organization_logos %}
+              <img src="{{ organization_logos }}" alt="Organization Logo" style="width: 80px; height: auto;">
+          {% else %}
+              <p>No logo available</p>
+          {% endif %}
+            </td>
+          </tr>
+        </table>
+</header>
+<br>
+
+<div >
+    <p><strong>Details Report From </strong>{{ start_date }} <strong>To</strong> {{ end_date }}</p>
+</div>
+    <div class="table-container">
+        <table >
+            <thead >
+                <tr style="border-bottom: 1px solid #0aa485 ;border-top: 1px solid #0aa485;">
+                    <th style="width:50; text-align:center;">Sr No </th>
+                    <th style="width:120">Leave Type</th>
+                    <th style="width:90">Day</th>
+                    <th style="width:120">Leave Date</th>
+                    <th style="width:50; text-align:center;">No Of Days</th>
+                    <th colspan="2">Action By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in grouped_data %}
+                <tr>
+                    <td style="text-align:center;">{{ employee.SrNo }}</td>
+                    <td colspan="6" class="bold-text">Emp Code: {{ employee.Emp_code }} &nbsp;&nbsp;  <span class="underline">Name: {{ employee.Employee_Name }}</span></td>
+                </tr>
+                    {% for leave in employee.Leaves %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>{{ leave.Leave_Type_Master.FullName }}</td>
+                    <td>{{ leave.Start_Date|date:"l" }}</td>
+                    <td>{{ leave.Start_Date|date:"d-m-Y" }} <strong>To</strong> {{ leave.End_Date|date:"d-m-Y" }}</td>
+                    <td style="text-align:center;">{{ leave.Leave_Days }}</td>
+                    <td colspan="2">{{ employee.ActionByName }}</td>
+                </tr>
+                    {% endfor %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="3" class="total-leave">Total Leave Taken For EMP &nbsp; &nbsp; {{ employee.Emp_code }} &nbsp; &nbsp; &nbsp; {{ employee.Employee_Name }}</td>
+                    <td colspan="1" style="border-top:1px solid #000; border-bottom:1px solid #000; text-align: center;"><strong>{{ employee.Total_Leave_Days }} </strong></td>
+                </tr>
+                <tr><td colspan="6"><br/></td></tr>
+                
+                {% endfor %} 
+            </tbody>
+        </table>
+    </div> 
+    <hr style="background-color: #0aa485;">
+    <footer style="border-top: 1px solid #0aa485;">
+        <table style="width: 100%; font-size: 10px;">
+          <tr>
+              <td id="datetime" style="text-align: left;">
+                {{ current_datetime }}
+              </td>
+              <td style="text-align: center;">
+                  <table style="border-radius: 10px; color: #0aa485; text-transform: uppercase; font-weight: bold; padding-top: 3px; font-size: 15px; text-align: center;">
+                      <tbody>
+                          <tr>
+                              <td>
+                                  <p style="font-size: 10px;"></p>
+                              </td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </td>
+              <td style="text-align: right;">
+                  <span id="pagecount_placeholder">Report Generate from HotelOps</span>
+              </td>
+          </tr>
+        </table>
+      </footer>
+
+    {% comment %} <div class="table-container">
+        <table>
+            <thead>
+                <tr style="border-bottom: 1px solid #000; border-top: 1px solid #000;">
+                    <th style="width:50px;">Sr No</th>
+                    <th style="width:120px;">Leave Type</th>
+                    <th style="width:90px;">Day</th>
+                    <th style="width:120px;">Leave Date</th>
+                    <th style="width:50px;">No Of Days</th>
+                    <th colspan="2">Action By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for employee in grouped_data %}
+                <tr>
+                    <td>{{ employee.SrNo }}</td>
+                    <td colspan="6" class="bold-text">
+                        Emp Code: {{ employee.Emp_code }} &nbsp;&nbsp;
+                        <span class="underline">Name: {{ employee.Employee_Name }}</span>
+                    </td>
+                </tr>
+                {% for leave in employee.Leaves %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>{{ leave.Leave_Type_Master.FullName }}</td>
+                    <td>{{ leave.Start_Date|date:"l" }}</td>
+                    <td>{{ leave.Start_Date|date:"d-m-Y" }} - {{ leave.End_Date|date:"d-m-Y" }}</td>
+                    <td>{{ leave.Leave_Days }}</td>
+                    <td colspan="2">{{ leave.ActionByName }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td>&nbsp;</td>
+                    <td colspan="3" class="total-leave">
+                        Total Leave Taken For EMP &nbsp; &nbsp;
+                        {{ employee.Emp_code }} &nbsp; &nbsp; &nbsp;
+                        {{ employee.Employee_Name }}
+                    </td>
+                    <td colspan="2">{{ employee.Total_Leave_Days }}</td>
+                </tr>
+                <tr><td colspan="6"><br/></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> {% endcomment %}
+    
+</body>
+</html>

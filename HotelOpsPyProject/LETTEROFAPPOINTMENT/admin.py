@@ -1,0 +1,6 @@
+from django.contrib import admin
+from .models import LETTEROFAPPOINTMENT,LETTEROFAPPOINTMENTDeletedFileofEmployee,LOALETTEROFAPPOINTMENTEmployeeDetail
+# Register your models here.
+admin.site.register(LOALETTEROFAPPOINTMENTEmployeeDetail)
+admin.site.register(LETTEROFAPPOINTMENT)
+admin.site.register(LETTEROFAPPOINTMENTDeletedFileofEmployee)

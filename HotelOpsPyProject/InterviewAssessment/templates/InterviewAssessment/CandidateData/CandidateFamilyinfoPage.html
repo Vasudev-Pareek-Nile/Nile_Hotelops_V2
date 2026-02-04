@@ -1,0 +1,380 @@
+{% extends "InterviewAssessment/CandidateData/CandidateDataForm.html" %}
+{% load static %}
+{% block content %}
+<style>
+     .strike{
+        color: red;
+    }
+</style>
+   <div class="card m-3">
+    <div class="card-header">
+        <h3>Famliy Information</h3>
+    </div>
+    <form action="" method="post">
+        <div class="main">
+            <div class="row m-3">
+    
+               <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-7">
+
+                                        {% if SpouseChild == True %} 
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="SpouseName">Spouse Name<span class="strike">*</span></label>
+                                                    <input id="SpouseName" name="SpouseName" type="text" class="form-control"   value="{{Finfoobj.SpouseName}}" required>
+                                                </div>
+                                            </div>
+                                           
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="SpouseDOB">DOB </label>
+                                                    <div class="input-group">
+                                                        <input id="SpouseDOB" name="SpouseDOB" type="date" value="{% if Finfoobj.SpouseDateofBirth %}{{ Finfoobj.SpouseDateofBirth|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                      
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-secondary" onclick="clearDate('SpouseDOB', 'SpouseAge')">Clear</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="SpouseAge">Age </label>
+                                                    <input id="SpouseAge" name="SpouseAge" type="number" class="form-control"   value="{{Finfoobj.SpouseAge}}" >
+                                                </div>
+                                            </div> 
+                                           <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="SpouseContact">Contact No.</label>
+                                                    <input  name="SpouseContact" type="text" id="SpouseContactMobileNumber" class="form-control"   pattern="[6789][0-9]{9}" value="{{Finfoobj.SpouseContactNo}}"  >
+                                                    <span id="SpouseContactmobileError" style="color:red;"></span>
+                                                    
+
+                                                </div>
+                                            </div> 
+                                           
+                                            
+                                            
+                                        </div>
+                                        {% endif %}
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="MotherName">Mother's Name <span class="strike">*</span></label>
+                                                    <input id="MotherName" name="MotherName" type="text" class="form-control"   value="{% if Finfoobj.MotherName %}{{Finfoobj.MotherName}}{% else %}"N/A"{% endif %}" required>
+                                                </div>
+                                            </div>
+                                           
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="MotherDOB">DOB</label>
+                                                    <div class="input-group">
+                                                        <input id="MotherDOB" name="MotherDOB" type="date" value="{% if Finfoobj.MotherDateofBirth %}{{ Finfoobj.MotherDateofBirth|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-secondary" onclick="clearDate('MotherDOB', 'MotherAge')">Clear</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            
+                                            
+                                            
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="MotherAge"> Age </label>
+                                                    <input id="MotherAge" name="MotherAge" type="number" class="form-control"   value="{{Finfoobj.MotherAge}}" >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="MotherContact">Contact No.</label>
+                                                    <input name="MotherContact" type="text" id="MotherContactMobileNumber" class="form-control"  value="{{Finfoobj.MotherContactNo}}" >
+                                                    <span id="MotherContactmobileError" style="color:red;"></span>
+
+                                                </div>
+                                            </div>
+        
+                                           
+                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="FatherName">Father's Name <span class="strike">*</span></label>
+                                                    <input id="FatherName" name="FatherName" type="text" class="form-control"   value="{{Finfoobj.FatherName}}" required>
+                                                </div>
+                                            </div>
+                                         
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="FatherDOB">DOB </label>
+                                                    <div class="input-group">
+                                                        <input id="FatherDOB" name="FatherDOB" type="date" value="{% if Finfoobj.FatherDateofBirth %}{{ Finfoobj.FatherDateofBirth|date:'Y-m-d' }}{% endif %}" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <button type="button" class="btn btn-secondary" onclick="clearDate('FatherDOB', 'FatherAge')">Clear</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label for="FatherAge"> Age </label>
+                                                    <input id="FatherAge" name="FatherAge" type="number" class="form-control"   value="{{Finfoobj.FatherAge}}" >
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="FatherContact">Contact No.</label>
+                                                    <input  name="FatherContact" type="text" id="FatherContactMobileNumber" class="form-control"   value="{{Finfoobj.FatherContactNo}}" >
+                                                    <span id="FatherContactmobileError" style="color:red;"></span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                        
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="form-group">
+                                                    <label for="LandlineNo">Landline No.</label>
+                                                    <input id="LandlineNo" name="LandlineNo" type="tel" class="form-control"  value="{{Finfoobj.LandlineNo}}" >
+                                                </div>
+                                            </div>
+                                        </div>  
+                                    </div> 
+                                    {% if SpouseChild == True %} 
+                                    <div class="col-md-5 col-sm-5" >
+                                   
+                                    
+                                        <h5>Children</h2>
+    
+                              
+                                
+                                            <table id="childrenTable" class="table table-bordered" >
+                                                <thead>
+                                                    <tr>
+                                                        <th >Name</th>
+                                                        <th >Age</th>
+                                                        <th >Relation</th>
+                                                        <th >Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for child in childs %}
+                                                    <tr id="row{{ child.id }}">
+                                                        <td><input type="text" class="form-control" name="childName[]" value="{{ child.Name }}" required></td>
+                                                        <td><input type="number" class="form-control" name="childAge[]" value="{{ child.Age }}" required></td>
+                                                        <td>
+                                                            <select class="form-control" name="childrelations[]" required>
+                                                                <option value="" {% if not child.Relation %}selected{% endif %}>Select</option>
+                                                                <option value="Son" {% if child.Relation == "Son" %}selected{% endif %}>Son</option>
+                                                                <option value="Daughter" {% if child.Relation == "Daughter" %}selected{% endif %}>Daughter</option>
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow('{{ child.id }}')">REMOVE</button>
+                                                            <input type="hidden" name="child_ids[]" value="{{ child.id }}">
+                                                        </td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="4" class="text-right">
+                                                            <button type="button" class="btn btn-primary btn-sm" onclick="addRow()">ADD</button>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                            
+                                            <input type="hidden" id="removedChildIds" name="removed_child_ids[]">
+                                            
+                                           
+                                            
+                              
+                                     </div>
+                                     {% endif %}
+
+                                </div>
+                </div>
+                
+        </div>
+        <div class="card-footer text-right">
+            {% csrf_token %}
+            <a href="{% url PreviousUrl %}?EMPID={{ EMPID }}" class="btn btn-primary btn-sm">Previous</a>
+
+            <input type="submit"  id="toggleSpinners"  class="btn btn-primary btn-sm" value="Next">
+        </div>
+    </form>
+   </div>
+
+   <script>
+    $(document).ready(function() {
+        function calculateAge(dobSelector, ageSelector) {
+            var dob = new Date($(dobSelector).val());
+            var today = new Date(); 
+            var age = today.getFullYear() - dob.getFullYear();
+            var monthDifference = today.getMonth() - dob.getMonth();
+            if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            $(ageSelector).val(age);
+        }
+
+        $('#SpouseDOB').on('change', function() {
+            calculateAge(this, '#SpouseAge');
+        });
+
+        $('#FatherDOB').on('change', function() {
+            calculateAge(this, '#FatherAge');
+        });
+
+        $('#MotherDOB').on('change', function() {
+            calculateAge(this, '#MotherAge');
+        });
+
+        calculateAge('#SpouseDOB', '#SpouseAge');
+        calculateAge('#FatherDOB', '#FatherAge');
+        calculateAge('#MotherDOB', '#MotherAge');
+        
+        // Clear the date and age on button click
+        $('#clearBtn').on('click', function() {
+            if (!Finfoobj.SpouseDateofBirth) {
+                clearDate('SpouseDOB', 'SpouseAge'); 
+            }
+            if (!Finfoobj.MotherDateofBirth) {
+                clearDate('MotherDOB', 'MotherAge'); 
+            }
+            if (!Finfoobj.FatherDateofBirth) {
+                clearDate('FatherDOB', 'FatherAge'); 
+            }
+        });
+    });
+
+    function clearDate(dobId, ageId) {
+        document.getElementById(dobId).value = '';  
+        document.getElementById(ageId).value = '';  
+    }
+    
+    var Finfoobj = {
+        SpouseDateofBirth: null,  
+        MotherDateofBirth: null,
+        FatherDateofBirth: null
+    };
+</script>
+
+<script>
+    {% if SpouseChild == True %} 
+    document.getElementById('SpouseContactMobileNumber').addEventListener('input', function () {
+        const mobile = this.value;
+        
+        const regex = /^[6-9]\d{9}$/;
+        const mobileError = document.getElementById('SpouseContactmobileError');
+
+        if (!regex.test(mobile)) {
+            mobileError.textContent = "Invalid mobile number";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+ {% endif %}
+
+
+    document.getElementById('MotherContactMobileNumber').addEventListener('input', function () {
+        const mobile = this.value;
+        // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+        const regex = /^[6-9]\d{9}$/;
+        const mobileError = document.getElementById('MotherContactmobileError');
+
+        if (!regex.test(mobile)) {
+            mobileError.textContent = "Invalid mobile number";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+
+
+    document.getElementById('FatherContactMobileNumber').addEventListener('input', function () {
+        const mobile = this.value;
+        // For Indian mobile numbers (10 digits starting with 7, 8, or 9)
+        const regex = /^[6-9]\d{9}$/;
+        const mobileError = document.getElementById('FatherContactmobileError');
+
+        if (!regex.test(mobile)) {
+            mobileError.textContent = "Invalid mobile number";
+        } else {
+            mobileError.textContent = "";
+        }
+    });
+
+
+
+</script>
+
+
+<script>
+   let newChildCount = 0;
+
+function addRow() {
+    const table = document.getElementById('childrenTable').getElementsByTagName('tbody')[0];
+    const newRow = table.insertRow();
+    newChildCount++;
+    const newId = 'new_' + newChildCount;
+
+    newRow.id = newId; // Set the ID for the new row
+
+    newRow.innerHTML = `
+        <td><input type="text" class="form-control" name="childName[]" required></td>
+        <td><input type="number" class="form-control" name="childAge[]" required></td>
+        <td>
+            <select class="form-control" name="childrelations[]" required>
+                <option value="">Select</option>
+                <option value="Son">Son</option>
+                <option value="Daughter">Daughter</option>
+            </select>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeRow('${newId}')">REMOVE</button>
+            <input type="hidden" name="child_ids[]" value="${newId}">
+        </td>
+    `;
+}
+
+function removeRow(childId) {
+    const row = document.getElementById(childId);
+    if (row) {
+        row.parentNode.removeChild(row);
+        addRemovedChildId(childId);
+    } else {
+        // Handle case where row is not found
+        console.error('Row with ID ' + childId + ' not found.');
+    }
+}
+
+function addRemovedChildId(childId) {
+    const removedChildIdsInput = document.getElementById('removedChildIds');
+    const removedChildIds = removedChildIdsInput.value.split(',').filter(id => id);
+
+    if (!removedChildIds.includes(childId)) {
+        removedChildIds.push(childId);
+        removedChildIdsInput.value = removedChildIds.join(',');
+    }
+}
+
+</script>
+
+{% endblock content %}
+
+
+
+
+

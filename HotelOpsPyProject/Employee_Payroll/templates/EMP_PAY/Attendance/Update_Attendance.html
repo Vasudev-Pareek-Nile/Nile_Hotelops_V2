@@ -1,0 +1,79 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+<div class="container col-md-12" >
+    <div class="card">
+        <div class="card-header">Update Attendance</div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="date">Date</label>
+                        <input type="date" readonly value="{{ obj.Date|date:'Y-m-d' }}" class="form-control" id="date">
+                    </div>
+                </div>
+            </div>
+            <div class="row">    
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="in_time">In Time</label>
+                        <input type="time" value="{{ obj.In_Time }}" class="form-control" name="in_time" id="in_time">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="out_time">Out Time</label>
+                        <input type="time" value="{{ obj.Out_Time }}" class="form-control" name="out_time" id="out_time">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="s_in_time">In Time</label>
+                        <input type="time" value="{{ obj.S_In_Time }}" class="form-control" name="s_in_time" id="s_in_time">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="s_out_time">Out Time</label>
+                        <input type="time" value="{{ obj.S_Out_Time }}" class="form-control" name="s_out_time" id="s_out_time">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="reason">Reason</label>
+                        <textarea readonly name="reason" class="form-control" id="reason" cols="30" rows="1">{{ req.Reason }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="current_status">Current Status</label>
+                        <input type="text" readonly value="{{ obj.Status }}" class="form-control" id="current_status">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group m-3">
+                        <label for="status">Status</label>
+                        <select name="status" id="status" class="form-control">
+                            <option value="">No Changes</option>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Week off">Week off</option>
+                            <option value="Half Day Present">Half Day Present</option>
+                        </select>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="card-footer text-right">
+                {% if req.Apporve_status == "0" %}
+                    <button type="submit" name="btn" value="1" class="btn btn-primary btn-sm">Approve</button>
+                    <button type="submit" name="btn" value="0" class="btn btn-danger btn-sm">Reject</button>
+                {% endif %}
+            </div>
+        </form>
+        
+    </div>
+</div>
+
+{% endblock content %}

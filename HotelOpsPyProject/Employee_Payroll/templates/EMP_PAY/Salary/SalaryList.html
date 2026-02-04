@@ -1,0 +1,375 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+
+
+<div class="cotainer">
+    <div class="container text-center">
+        {% for message in messages %} {% if message.tags == 'success' %}
+        <div class="alert alert-success" role="alert">{{ message|safe }}</div>
+        {% else %}
+        <div class="alert alert-danger" role="alert">{{ message|safe }}</div>
+        {% endif %} {% endfor %}
+      </div>
+</div>
+
+<div class="card">
+    <div class="card-header text-uppercase fw-bold">Salary Details </div> 
+
+    <div class="card-body">
+        <form action="" method="get">
+
+            <div class="col-md-12">
+                <div class="row">
+                    {% if request.session.OrganizationID == '3' and request.session.Department_Name|lower == "hr" %}
+                        <div class="col-md-3">
+                                <select name="I" class="form-control">
+                                    {% for itm in memOrg %}
+                                    <option value="{{ itm.OrganizationID }}">{{ itm.Organization_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                    {% endif %}
+
+                    <div class="col-md-2">
+                        <select name="Status" class="form-control">
+                            <option value="2" {% if Status == '2' %}selected{% endif %}>All</option>
+                            <option value="1" {% if Status == '1' %}selected{% endif %}>Verified</option>
+                            <option value="0" {% if Status == '0' %}selected{% endif %}>Pending</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-1">
+                        <select class="form-control" {% if year is none %} data-val="{{CMonth}}" {% endif %} name="month_no">
+                            <option value="1">Jan</option>
+                            <option value="2">Feb</option>
+                            <option value="3">Mar</option>
+                            <option value="4">Apr</option>
+                            <option value="5">May</option>
+                            <option value="6">Jun</option>
+                            <option value="7">Jul</option>
+                            <option value="8">Aug</option>
+                            <option value="9">Sep</option>
+                            <option value="10">Oct</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dec</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <select class="form-control" name="year">
+                            {% for i in CYear %}
+                                <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="PayMode" class="form-control">
+                            <option value="">Select Pay Mode</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                        
+                    </div>
+
+                    <div class="col-md-4">
+                        <button type="submit" class="btn mr-4 btn-primary" style="padding-inline: 15px; padding-block: 8px;">Filter</button>
+                        <a href="{% url 'SalaryList' %}?month_no={{month_no}}&year={{year}}" class="btn btn-danger ml-3" style="padding-inline:15px; padding-block: 8px;">
+                            Clear
+                        </a>
+                        <a href="{% url 'Salary_List_Pdf' %}?month_no={{ month_no }}&year={{ year }}&Status={{ Status }}&PayMode={{ PayMode }}&I={{ I }}" 
+                            class="btn btn-primary ml-3" 
+                            style="padding-inline:15px; padding-block: 8px;">
+                                Download PDF
+                        </a> 
+                        <button onclick="exportToExcel()" class="btn mr-4 btn-primary" style="padding-inline: 15px; padding-block: 8px;">Excel</button>
+                    </div>
+        
+                </div>
+            </div>
+        </form>
+    </div>  
+</div>
+
+
+<div class="card mt-3">
+   
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Emp Code</th>
+                            <th>Emp Name</th>
+                            <th> Verify HR</th>
+                            <th>Verify FC</th>
+
+                            
+                            <th>DOJ</th>
+                            <th>Department</th>
+                            <th>Designation</th>
+
+                            <th>Paid Days</th>
+                            <th>Net salary</th>
+                            <th>Fixed Basic</th>
+                            <th>Fixed HRA</th>
+                            <th>Conveyance Allowance</th>
+                            <th>CCA</th>
+                            <th>Other Allowance</th>   
+                            <th>Gross Salary</th>
+                            <th>Earned Basic</th>
+                            <th>Earned HRA</th>
+                            <th>Arrear</th>
+                            <th>Reward Incentive</th>
+                            <th>Total_Earning</th>
+                            <th>ESIC</th>
+                            <th>EPFO</th>
+                            <th>PT</th>
+                            <th>Meals</th>
+                            <th>Accommodation</th>
+                            <th>AdvanceLoan</th>
+                            <th>TaxDeduction</th>
+                            <th>Other Deduction</th>
+                            <th>Total Deduction</th>
+                            <th>Net salary (After Deduction)</th>
+                            
+                            <th>Net Salary In Words</th>
+                            
+                            <th>Employe'r PF</th>
+                            <th>Company Contribution to ESIC</th>
+                            <th>Total Company Contribution</th>
+                            <th>CTC</th>
+                            
+                            <th>Acc No.</th>
+                            <th>IFSC Code</th>
+                            <th>Bank Name</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sal in sal_list %}
+                        <tr>
+                            <td>{{ sal.EmployeeCode }}</td>
+                            <td>{{ sal.Emp_Name }}</td>
+                            <td>
+                               
+                                {% if   sal.HrVerify == 1  %}
+                                Verified By HR
+                                
+                                {% else %}
+                                
+                                <button class="btn btn-primary verify-btn" data-employee-code="{{ sal.EmployeeCode }}" data-month="{{ sal.month }}"  data-year="{{ sal.year }}">Verify HR</button>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if sal.FcVerify == 1  %}
+                                Verified By FC
+                                
+                                {% else %}
+                                  {% if  request.session.Department_Name|lower == "hr"   %}
+                                  <button class="btn btn-primary verify-btn" data-employee-code="{{ sal.EmployeeCode }}" disabled>Verify FC</button>
+                                  
+                                  {% else %}
+                                  <button class="btn btn-primary verify-btn" data-employee-code="{{ sal.EmployeeCode }}"  data-month="{{ sal.month }}"  data-year="{{ sal.year }}">Verify FC</button>
+                                  {% endif %}
+                                
+                                {% endif %}
+                            </td>
+                           
+                            <td>{{ sal.DOJ }}</td>
+                            <td>{{ sal.Department }}</td>
+                            <td>{{ sal.Desingation }}</td>
+                            <td>{{ sal.no_of_days }}</td>
+                            <td>{{sal.Net_salary}}</td>
+                         
+                            <td>{{sal.fixed_basic}}</td>
+                            <td>{{sal.fixed_HRA}}</td>
+                            <td>{{sal.ConveyanceAllowance}}</td>
+                            <td>{{sal.CCA}}</td>
+                            <td>{{sal.OtherAllowance}}</td>
+                            <td>{{sal.gross_salary}}</td>
+
+                            <td>{{sal.Earned_Basic}}</td>
+                            <td>{{sal.Earned_HRA}}</td>
+                            <td>{{sal.Arrear}}</td>
+                            <td>{{sal.RewardIncentive}}</td>
+                            <td>{{sal.Total_Earning}}</td>
+
+                            <td>{{sal.ESIC}}</td>
+                            <td>{{sal.EPFO}}</td>
+                            <td>{{sal.PT}}</td>
+                            <td>{{sal.Meals}}</td>
+                            <td>{{sal.Accommodation}}</td>
+                            <td>{{sal.AdvanceLoan}}</td>
+                            <td>{{sal.TaxDeduction}}</td>
+                            <td>{{sal.OtherDeduction}}</td>
+                            <td>{{sal.Total_Deduction}}</td>
+
+                            <td>{{sal.Net_salary}}</td>
+                            <td>{{sal.Net_salary_In_Words}}</td>
+
+                            <td>{{sal.EmployeePF}}</td>
+                            <td>{{sal.CompanyContributionToESIC}}</td>
+                            <td>{{sal.TotalCompanyContribution}}</td>
+                            <td>{{sal.CTC }}</td>
+                            {% comment %} <td>0</td> {% endcomment %}
+                            
+                            <td>{{sal.BankAccountNumber}}</td>
+                            <td>{{sal.BankIFSCCode}}</td>
+                            <td>{{sal.BankName}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7" class="text-end fw-bold">Total</td>
+
+                            <td>{{ totals.total_paid_days|default:"0" }}</td>
+                            <td>{{ totals.total_net_salary|default:"0" }}</td>
+
+                            <td>{{ totals.total_fixed_basic|default:"0" }}</td>
+                            <td>{{ totals.total_fixed_HRA|default:"0" }}</td>
+                            <td>{{ totals.total_ConveyanceAllowance|default:"0" }}</td>
+                            <td>{{ totals.total_CCA|default:"0" }}</td>
+                            <td>{{ totals.total_OtherAllowance|default:"0" }}</td>
+                            <td>{{ totals.total_gross_salary|default:"0" }}</td>
+
+                            <td>{{ totals.total_Earned_Basic|default:"0" }}</td>
+                            <td>{{ totals.total_Earned_HRA|default:"0" }}</td>
+                            <td>{{ totals.total_Arrear|default:"0" }}</td>
+                            <td>{{ totals.total_RewardIncentive|default:"0" }}</td>
+                            <td>{{ totals.total_Total_Earning|default:"0" }}</td>
+
+                            <td>{{ totals.total_ESIC|default:"0" }}</td>
+                            <td>{{ totals.total_EPFO|default:"0" }}</td>
+                            <td>{{ totals.total_PT|default:"0" }}</td>
+                            <td>{{ totals.total_Meals|default:"0" }}</td>
+                            <td>{{ totals.total_Accommodation|default:"0" }}</td>
+                            <td>{{ totals.total_AdvanceLoan|default:"0" }}</td>
+                            <td>{{ totals.total_TaxDeduction|default:"0" }}</td>
+                            <td>{{ totals.total_OtherDeduction|default:"0" }}</td>
+                            <td>{{ totals.total_Total_Deduction|default:"0" }}</td>
+
+                            <td>{{ totals.total_net_salary|default:"0" }}</td>
+                            <td></td>
+
+                            <td>{{ totals.total_EmployeePF|default:"0" }}</td>
+                            <td>{{ totals.total_CompanyContributionToESIC|default:"0" }}</td>
+                            <td>{{ totals.total_TotalCompanyContribution|default:"0" }}</td>
+                            <td>{{ totals.total_CTC|default:"0" }}</td>
+
+                            <td colspan="3"></td>
+                        </tr>
+                    </tfoot>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+
+<script>
+    function exportToExcel() {
+        const table = document.getElementById("example");
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(table, { raw: false });  // Set raw: false to allow type inference
+
+        // Convert numeric strings to actual numbers
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = range.s.r + 1; R <= range.e.r; ++R) {  // skip header row
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cell_address = XLSX.utils.encode_cell({ r: R, c: C });
+                const cell = ws[cell_address];
+                if (cell && typeof cell.v === 'string') {
+                    // Remove commas, trim, and check if it's a number
+                    const cleaned = cell.v.replace(/,/g, '').trim();
+                    if (!isNaN(cleaned) && cleaned !== '') {
+                        cell.v = parseFloat(cleaned);
+                        cell.t = 'n';  // mark cell as number
+                    }
+                }
+            }
+        }
+
+        // Optional: Adjust column widths
+        const colWidths = [];
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+            let maxWidth = 10;
+            for (let R = range.s.r; R <= range.e.r; ++R) {
+                const cell_ref = XLSX.utils.encode_cell({ r: R, c: C });
+                const cell = ws[cell_ref];
+                if (cell && cell.v) {
+                    const len = cell.v.toString().length;
+                    if (len > maxWidth) maxWidth = len;
+                }
+            }
+            colWidths.push({ wch: maxWidth + 2 });
+        }
+        ws['!cols'] = colWidths;
+
+        XLSX.utils.book_append_sheet(wb, ws, "Salary List");
+        XLSX.writeFile(wb, "Salary_List.xlsx");
+    }
+</script>
+
+
+<script>
+    
+    $(document).ready(function () {
+        var selectedOrganization = "{{ I}}";
+        $("select[name='I']").val(selectedOrganization);
+        var selectedPayMode = "{{ PayMode}}";
+        $("select[name='PayMode']").val(selectedPayMode);
+        var  selectedMonth  = '{{month_no}}';
+        $("select[name='month_no']").val(selectedMonth);
+        var Year = '{{year}}'
+        if ( Year != None) {
+        
+            var selectedYear  = '{{ year }}'; 
+        $("select[name='year']").val(selectedYear)
+            
+        }
+        
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $(".verify-btn").click(function() {
+            var employeeCode = $(this).data("employee-code");
+            var month = $(this).data("month");
+            var year = $(this).data("year");
+            var verifyType = $(this).text(); 
+            var csrfToken = "{{ csrf_token }}"; 
+            $.ajax({
+                url: '/Employee_Payroll/update_verification/',
+                type: 'POST',
+                headers: {
+                    "X-CSRFToken": csrfToken 
+                },
+                data: {
+                    'csrfmiddlewaretoken': csrfToken, 
+                    'employee_code': employeeCode,
+                    'month': month,
+                    'year': year,
+                    'verify_type': verifyType
+                },
+                success: function(response) {
+                      
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                  
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+    </script>
+{% endblock content %}

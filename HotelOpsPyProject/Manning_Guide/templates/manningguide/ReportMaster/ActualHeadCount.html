@@ -1,0 +1,230 @@
+{% extends "manningguide/homebase.html" %}
+{% load maningfilter %}
+{% block content %}
+
+
+
+<!-- Messages -->
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags %} alert-{{ message.tags }}{% endif %} mx-auto" role="alert" style="color: #5143d9; max-width: 1000px;">
+    {{ message }}
+  </div>
+  <script>
+    setTimeout(() => $('.alert').fadeOut('slow', () => $(this).remove()), 3000);
+  </script>
+  {% endfor %}
+{% endif %}
+
+<!-- Styles and Libraries -->
+
+{% comment %} <style>
+  tr th {
+    background: #fae0cc !important;
+    /* color: #fff !important; */
+    border-color: #bdac9f !important;
+    text-transform:uppercase !important;
+}
+</style> {% endcomment %}
+
+<style>
+          body{
+              font-size: 14px  !important;
+              font-family: 'Arial Nova', Arial, sans-serif !important;
+    
+             }
+             .card{
+              border-radius:10px;
+             }
+             h4{
+               margin-bottom:10px !important;
+                }
+
+               .form-control{
+            border-radius:4px;  
+        }      
+        .btn{
+            border-radius:4px;
+        }
+
+   
+      tr th {
+         background-color: #edf0fb !important;
+          border-color: #D3D3D4 !important;
+         color: #fff !important;
+         font-size: 14px  !important;
+         font-weight: bold !important;
+        text-transform: uppercase;
+           }
+        td {        
+            background-color: #f7f9fc !important;
+        }
+        strong{
+            font-weight:normal !important;
+        }
+
+        .custom-btn {
+                    margin-right: 10px; 
+                    padding-block: 10px;
+                    color: black !important;
+                    border: 1px solid #dedede !important;
+                }
+
+         .btn.active {
+            background-color: #edf0fb !important;
+            border-color: #edf0fb !important;
+            color: #ffffff !important;
+            margin-right: 10px; 
+            padding-block: 10px;
+        }
+
+        .HeaderWithColor {
+            /* background-color: #edf0fb !important; */
+            color: black;
+            border-color: #D3D3D4 !important; 
+            text-transform: uppercase !important;
+        }
+
+        table thead th {
+            background: #edf0fb  !important;
+        }
+
+            table {
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        table thead tr:first-child th:first-child {
+                border-top-left-radius: 4px;
+        }
+
+        table thead tr:first-child th:last-child {
+                border-top-right-radius: 4px;
+        }
+
+        table tbody tr:last-child td:first-child {
+                border-bottom-left-radius: 4px;
+        }
+
+            table tbody tr:last-child td:last-child {
+                    border-bottom-right-radius: 4px;
+            }
+
+  .card .card-header {
+      padding: 20px;
+      border-bottom: var(--bs-card-border-width) solid var(--bs-card-border-color) !important;
+      background: transparent;
+  }
+
+  .select2-dropdown {
+    z-index: 999;
+  }
+
+</style>
+
+{% comment %} <div class="tab-pane"> {% endcomment %}
+<div class="row">
+  <div class="col-sm-12">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <h4 class="text-uppercase mb-0"><strong>Hotel Actual Head Count Report </strong></h4>
+      </div>
+    </div>
+    <div class="card-body">
+    <form method="GET" class="mb-0">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="input-block">
+          <select name="DivisionName" class="form-control select2">
+            <option value="">-- Select Division --</option>
+            {% for Division in Divisions %}
+            <option value="{{ Division.DivisionName }}" {% if Division.DivisionName == selected_division %}selected{% endif %}>
+              {{ Division.DivisionName }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        </div>
+
+        <div class="col-md-5 ">
+          <button type="submit" class="btn  btn-primary p-2" ><i class="fa fa-filter me-1"></i>
+              Filter 
+          </button>
+      
+          <a href="{% url 'ActualHeadCountDesignationPDF' %}?DivisionName={{ selected_division|urlencode|default:'' }}"
+          target="_blank" class="btn btn-danger p-2" >
+            <i class="fas fa-file-pdf me-1"></i> Download PDF</a>
+
+          <button class="btn  btn-primary p-2" id="exportBtn" > <i class="fas fa-file-excel me-1"></i>
+            Export to Excel 
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+</div>
+</div>
+    
+<div class="row">
+  <div class="col-sm-12">
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover" id="myTable">
+      <thead>
+        <tr>
+          <th>Designation</th>
+          {% for label in ShortDisplayLabels %}
+          <th>{{ label|upper  }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for designation, hotels in head_count_dict.items %}
+        <tr>
+          <td>{{ designation }}</td>
+          {% for label in ShortDisplayLabels %}
+          <td style="text-align: center; vertical-align: middle; width: 50px;">{{ hotels|get:label|default:"0" }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+        <tr>
+          <td><strong>Designation Total</strong></td>
+          {% for label in ShortDisplayLabels %}
+          <td style="text-align: center; vertical-align: middle;"><strong>{{ total_head_count_all_designations|get:label|default:"0" }}</strong></td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>
+  </div>
+</div>
+
+
+<!-- Export to Excel -->
+<script>
+  $('#exportBtn').on('click', function () {
+    try {
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.table_to_sheet($('#myTable')[0]);
+
+      XLSX.utils.book_append_sheet(wb, ws, "Designation Report");
+      XLSX.writeFile(wb, 'ActualHeadCount.xlsx');
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+    }
+  });
+
+  $(document).ready(function () {
+    {% comment %} $('.select2_demo_2').select2({ allowClear: true }); {% endcomment %}
+    const selectedOrganization = "{{ selectedOrganizationID }}";
+    $("select[name='hotel_name']").val(selectedOrganization);
+     $('select').select2();
+  });
+</script>
+
+{% endblock %}

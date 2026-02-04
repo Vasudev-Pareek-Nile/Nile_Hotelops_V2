@@ -1,0 +1,213 @@
+{% load maningfilter %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manning Guide</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial+Nova:wght@400;700&display=swap');
+
+    body {
+      font-family: "Arial Nova", sans-serif; 
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px 0;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    footer {
+      background-color: #f0f0f0;
+      padding: 5px 0;
+      text-align: center;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      {% comment %} margin-bottom: 20px; {% endcomment %}
+    }
+
+
+
+    /* Custom table styles */
+    .my-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    
+    /* Force minimal padding in table cells */
+    .my-table td,
+    .my-table th {
+        padding: 5px 4px !important;
+        font-size: 12px !important;
+        line-height: 1.1 !important;
+        vertical-align: middle !important;
+        border: 1px solid #ddd;
+    }
+    
+    .my-table thead th {
+        background-color: #f8f9fa;
+        color: #000;
+        font-size: 10px;
+        text-align: center;
+        padding: 7px !important;
+    }
+    
+    @page {
+      size: landscape;
+      margin: 1cm;
+    }
+
+  </style>
+  <style>
+    /* Light theme-based colors */
+    .avg-salary-group {
+        background-color: #f1f4f9 !important; /* light blue-gray */
+        text-align: right;
+    }
+
+    .head-count-group {
+        background-color: #f9f7f1 !important; /* light beige */
+        text-align: right;
+    }
+
+    .total-ctc-group {
+        background-color: #f2f6f3 !important; /* light green-gray */
+        text-align: right;
+    }
+
+    /* Optional: subtle border or font styling for better visibility */
+    .avg-salary-group, .head-count-group, .total-ctc-group {
+        border-right: 1px solid #ddd !important;
+    }
+
+    .TotalFooter{
+        text-align: right !important;
+        font-weight: bold;
+    }
+
+  .positive { color: red;}
+  .negative { color: green;}
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <table style="width: 100%;">
+        <tr>
+          <td style="text-align: center;">
+            <table style="border-radius: 10px; color: black; text-transform: uppercase; text-align: center;">
+              <tbody>
+                <tr>
+                  <td>
+                    <span style="font-weight: bold;  font-size: 18px;">Manning Variance Report</span> <br><br>
+                    <span style="font-size: 12px;">{{selectedOrganizationName}}</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </header>
+    <hr style="height: 1px; background-color: rgba(141, 141, 141, 0.1); border: none;">
+
+    <main>
+      <div class="main-container">
+        <table class="my-table">
+            <thead>
+                <tr>
+                    <th class="TableThColor text-center" style="width: 200px;" rowspan="2">DEPARTMENTS</th>
+                    <th class="text-center avg-salary-group" style="background-color: #f1f4f9;" colspan="3">AVERAGE SALARY</th>
+                    <th class="text-center head-count-group" style="background-color: #f9f7f1;" colspan="3">HEAD COUNT</th>
+                    <th class="text-center total-ctc-group"  style="background-color: #f2f6f3;" colspan="3">TOTAL CTC</th>
+                </tr>
+                <tr>
+                    <th style="background-color: #f1f4f9;" class="avg-salary-group">BUDGETED</th>
+                    <th style="background-color: #f1f4f9;" class="avg-salary-group">ACTUAL</th>
+                    <th style="background-color: #f1f4f9;" class="avg-salary-group">VARIANCE</th>
+                    <th style="background-color: #f9f7f1;" class="head-count-group">BUDGETED</th>
+                    <th style="background-color: #f9f7f1;" class="head-count-group">ACTUAL</th>
+                    <th style="background-color: #f9f7f1;" class="head-count-group">VARIANCE</th>
+                    <th style="background-color: #f2f6f3;" class="total-ctc-group">BUDGETED</th>
+                    <th style="background-color: #f2f6f3;" class="total-ctc-group">ACTUAL</th>
+                    <th style="background-color: #f2f6f3;" class="total-ctc-group">VARIANCE</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in records %}
+                    <tr>
+                        {% comment %} <td style="width: 200px; {% if item.Department == "Total" %}font-size: 20px !important; font-weight:bold;{% endif %}">{{ item.Department }}</td> {% endcomment %}
+                        <td style="{% if item.Department == 'Total' %}font-size: 20px !important; font-weight: bold;{% endif %} width: 200px;">
+                            {{ item.Department }}
+                        </td>
+
+                        <td align="right" class="avg-salary-group" style="width: 100px; {% if item.Department == "Total" %}font-weight:bold;{% endif %}">{{ item.Bud_AvgSal|indian_currency }}</td>
+                        <td align="right" class="avg-salary-group" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Act_AvgSal|indian_currency }}</td>
+                        <td align="right" class="avg-salary-group {% if item.Var_AvgSal >= 0 %}positive{% elif item.Var_AvgSal < 0 %}negative{% endif %}" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Var_AvgSal|indian_currency }}</td>
+
+                        <td align="center" class="head-count-group" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Bud_HC|indian_currency }}</td>
+                        <td align="center" class="head-count-group" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Act_HC|indian_currency }}</td>
+                        <td align="center" class="head-count-group {% if item.Var_HC >= 0 %}positive{% elif item.Var_HC < 0 %}negative{% endif %}" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Var_HC|indian_currency }}</td>
+
+                        <td align="right" class="total-ctc-group" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Bud_TotalCTC|indian_currency }}</td>
+                        <td align="right" class="total-ctc-group" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Act_TotalCTC|indian_currency }}</td>
+                        <td align="right" class="total-ctc-group {% if item.Var_TotalCTC >= 0 %}positive{% elif item.Var_TotalCTC < 0 %}negative{% endif %}" style="{% if item.Department == 'Total' %}font-weight: bold;{% endif %} width: 100px;">{{ item.Var_TotalCTC|indian_currency }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="12">No data available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </main>
+    <hr style="height: 1px; background-color: rgba(148, 0, 0, 0.1); border: none;">
+
+    <footer>
+      <table style="width: 100%; font-size: 10px;"> 
+        <tr>
+            <td id="datetime" style="text-align: left;">
+              {{ current_datetime }} 
+            </td>
+            <td style="text-align: center;">
+                <table style="border-radius: 10px; color: black; text-transform: uppercase; font-weight: bold;  font-size: 15px; text-align: center;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <p style="font-size: 10px;">Report Generate from HotelOps</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+            <td style="text-align: right;">
+                <span id="pagecount">Page 1</span>
+            </td>
+        </tr>
+    </table>
+
+    </footer>
+  </div>
+
+</body>
+
+</html>

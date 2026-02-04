@@ -1,0 +1,102 @@
+{% extends 'UniformInventroy/homebase.html' %}
+{% load static %}
+
+{% block content %} 
+
+
+<form action="" method="post" id="UniformFORM">
+    <div class="card">
+        <div class="card-header text-uppercase fw-bold"><strong>Uniform New Request</strong></div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group m-3">
+                    <label for="">Employee Code</label>
+                    <input type="text" required class="form-control" name="EmpCode" id="employeeCode"  value="{{UN.EmployeeCode}}" readonly>
+                </div>
+            </div>
+
+            
+
+            <div class="col-md-4">
+                <div class="form-group m-3">
+                    <label for="EmployeeName">Employee Name</label> 
+                    <input type="text" class="form-control" value="{{UN.EmployeeName}}" readonly name="EmployeeName" id="EmployeeName"> 
+                </div>
+                
+            </div>
+            <div class="col-md-4">
+                <div class="form-group m-3">
+                    <label for="">Department</label>
+                    <input type="text" class="form-control" value="{{UN.Department}}" readonly name="Department" id="Department">
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group m-3">
+                    <label for="">Designation</label>
+                    <input type="text" class="form-control" readonly name="DesignationGrade" value="{{UN.DesignationGrade}}">
+
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group m-3">
+                    <label for="">Reporting To Desigantion</label>
+                    <input type="text" class="form-control" readonly name="ReportingtoDesigantion" value="{{UN.ReportingtoDesigantion}}">
+
+                </div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+                {% if UnDetails  %}
+                    <table class="table table-striped custom-table mb-0 datatable dataTable no-footer mt-2">
+                        <thead>
+                            <tr>
+                                <th width ="250">Uniform</th>
+                                <th>New</th>
+                                <th>Altered</th>
+                                <th>Issued</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for UnD in UnDetails %}
+                            <tr>
+                                <td>{{ UnD.UniformItemMaster.ItemName }}</td>
+                                <td>
+                                    {{UnD.NewQuantity}}
+                                </td>
+                                <td>
+                                    {{UnD.AlteredQuantity}}
+                                </td>
+                                <td>
+                                {{UnD.IssuedQuantity}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+
+                <div class="mt-4">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary">
+                </div>
+        </div>
+    </div>
+</form>    
+
+
+{% endblock content %}
+
+
+
+
+
+
+
+

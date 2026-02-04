@@ -1,0 +1,151 @@
+{% extends "HR/EmployeeDashboard/EditEmployee.html" %}
+{% load encryption_filters %}
+ {% load static %} 
+{% block content %}
+<link href="{% static 'css/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+
+<style>
+    
+    #ProfileImagePreview {
+        border-radius: 50%;
+        border: 2px solid #ddd;     
+        margin-top: 10px;
+        max-width: 150px; 
+        height: 150px;    
+        object-fit: cover; 
+    }
+
+.Name
+{
+    width: 200px;
+}
+
+.Date
+{
+    width: 140px;
+}
+
+.Designation
+{
+    width: 150px;
+}
+
+.Department
+{
+    width: 150px;
+}
+.EmpCode
+{
+    width: 80px;
+}
+.Signed
+{
+    width: 250px;
+}
+.Action 
+{
+    width : 200px
+}
+
+.card {
+    border-radius: 5px;
+    border: 1px solid #0000004f;
+}
+
+.card-header{
+    margin-bottom: -20px !important;
+}
+</style>
+
+
+
+
+
+     <!-- Letter of Appointment -->
+    
+    <div class="card card-primary">
+        <div class="card-header">
+          <span class=" text-uppercase fw-bold">Job Description </span> 
+            {% comment %} <a href="{% url 'ClearanceFrom' %}?EC={{EC}}&EmpID={{EmpID}}" class="btn btn-sm btn-primary" style="float:right">New  Clearance From </a> {% endcomment %}
+        </div>
+        <div class="m-3">
+                 <table class="table table-bordered table-condensed  display table-sm compact" style="font-size:11px">
+                    <thead>
+                        <tr>
+                            <th>Reeno</th>
+                            <th>Title</th>
+                            <th>Department</th>
+                            <th>Positions</th>
+                            <th>Update on</th>
+                            <th>Action</th>
+                        </tr>
+    
+                    </thead>
+                    <tbody>
+                        {% for joblist in joblists %}
+                        <tr>
+                          <td>{{ joblist.Reference_No }}</td>
+                          <td class="job-title">{{ joblist.JD_Title }}</td>
+                          <td>{{ joblist.Department }}</td>
+                          <td>{{ joblist.Position }}</td>
+                          <td>{{ joblist.ModifyDateTime | date:"j F Y" }}</td>
+                          <td style="width: 250px;">
+                            <span>
+                            
+                              <a target="_blank" href="{% url 'JobDescriptionPdf' joblist.id %}?EC={{EC}}&EmpID={{EmpID}}&OID={{OrganizationID}}" class="btn btn-primary btn-sm fa fa-eye" style="color: white; text-decoration: none; font-size: 12px;" title="View">&nbsp;View</a>
+                            </span>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+    
+                </table> 
+        </div>
+    </div>
+    
+   
+   
+    
+
+  
+
+
+ 
+    
+   
+     
+
+
+
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('Success');
+        
+        if (success === 'True') {
+            showSuccess();
+        }
+        if (success === 'Deleted') {
+            showDelete();
+        }
+
+        if (success === 'Uploaded') {
+            showUploaded();
+        }
+
+
+        
+
+
+    });
+</script>
+
+
+
+{% endblock content %}
+
+
+
+
+

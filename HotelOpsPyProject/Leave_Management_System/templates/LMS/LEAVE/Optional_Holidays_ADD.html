@@ -1,0 +1,54 @@
+{% extends 'LMS/homebase.html' %}
+{% block content %}  
+
+{% comment %} {% extends 'EMP_PAY/homebase.html' %}
+{% block content %}  {% endcomment %}
+
+
+{% comment %} {% block content %}  {% endcomment %}
+<div class="container col-md-4" style="height: 560px;">
+    <div class="card mx-auto">
+        <div class="card-header text-uppercase fw-bold">Optional Holiday</div>
+        <form action=""  method="post">
+            {% csrf_token %}
+            <div class="form-group m-3">
+                <label for="Organization">Organization:</label>
+                <select name="OrganizationID" class="form-control select2">
+                    {% for itm in memOrg %}
+                    <option value="{{ itm.OrganizationID }}" 
+                        {% if itm.OrganizationID|stringformat:"s" == o_data.HotelID %}selected{% endif %}>
+                        {{ itm.OrganizationName }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group m-3">
+                <label for="leaveType">Name:</label>
+                <input type="text" name="name" class="form-control" value="{{o_data.Name}}" placeholder="Enter Optional Holiday Name" >
+            </div>
+            <div class="form-group m-3">
+                <label>From Date:</label>
+                <input type="date" name="Date" value="{% if  o_data.Date %}{{ o_data.Date|date:'Y-m-d'}}{% else %}{% now 'Y-m-d' %}{% endif %}" class="form-control">
+            </div>
+            <div class="form-group m-3">
+                <label>Description:</label>
+                <textarea name="Description" id="" cols="30" rows="2" placeholder="Enter Description" class="form-control" >{{o_data.Description}}</textarea>
+            </div>
+            <div class="form-group m-3">
+                <input type="checkbox" {% if o_data.Is_Active or not o_data.id %}checked{% endif %} name="status" >
+
+                <label>Active</label>
+            </div>
+            
+            
+
+            <div class="card-footer text-right"> 
+                <input type="submit" value="Submit" class="btn btn-primary btn-sm">
+                <button onclick="history.back()"  class="btn btn-primary btn-sm" >Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

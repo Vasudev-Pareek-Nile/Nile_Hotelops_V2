@@ -1,0 +1,69 @@
+{% extends "task/homebase.html" %} {% block content %}
+<div class="container">
+  <div class="col-md-6 mx-auto">
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="card">
+        <div class="card-header" style="color: #1ab394">
+          <strong>Project Add</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-8">
+              
+                {% comment %} <label for="">Project Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="project_name"
+                  value="{{admin.project_name}}"
+                  id=""
+                /> {% endcomment %}
+              
+             
+                <label for=""> Project Opening Date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  name="project_open_date"
+                  value="{{admin.project_open_date |date:'Y-m-d'}}"
+                   id="project_open_date"
+                />
+             
+              
+                <label for="">Location</label>
+<select name="Location" class="form-control">
+    {% for organization in memOrg %}
+        <option value="{{ organization.Organization_name }}" {% if organization.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+            {{ organization.Organization_name }}
+        </option>
+    {% endfor %}
+</select>
+                  </select>
+            
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          {% if admin is none %}<input
+            type="submit"
+            value="Submit"
+            class="btn btn-primary"
+          />{% else %}<input
+            type="submit"
+            value="Update"
+            class="btn btn-primary"
+          />{% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+  // Get the current date in the format "YYYY-MM-DD"
+  const today = new Date().toISOString().split('T')[0];
+  // Set the value of the input field to the current date
+  document.getElementById('project_open_date').value = today;
+</script>
+{% endblock content %}

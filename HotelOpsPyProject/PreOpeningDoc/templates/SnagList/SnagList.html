@@ -1,0 +1,46 @@
+{% extends 'SnagList/homebase.html' %}
+{% load static %}
+
+
+{% block content %} 
+
+    <div class="card card-primary">                                                   
+        <div class="card-header">Snag List
+
+         
+        </div>
+        <div class="card-body">
+            <table id="title" class="table table-bordered">
+                <thead>
+                    <th>Division</th>
+                    <th>Title</th>
+                    <th>Area</th>
+                    <th>Date</th>
+                    <th width="250"  id="mid">  Action </th>
+                </thead>
+                {% for x in mem%}
+                <tr>
+                    <td>{{x.SectionMaster.DivisionMaster.title}}</td> 
+                    <td>{{x.SectionMaster.title}}</td> 
+                    <td>{{x.Area}}</td> 
+    
+                    <td>{{x.Date}}</td>
+    
+                    <td>
+                        <a class="btn btn-primary" href="/PreOpeningDoc/SnagListEdit/{{x.id}}">Edit</a>
+                        <a onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-danger" href="/PreOpeningDoc/delete_SnagList/{{x.id}}">Delete </a>
+                        {% comment %} <a class="btn btn-primary" href="/PreOpeningDoc/SnagListView/{{x.id}}">View</a> {% endcomment %}
+                    </td>
+                                              
+                </tr>
+                {% endfor %}
+               
+            </table>
+        </div>
+        <br>
+        
+        <br><br>
+        
+        <br>
+        
+{% endblock content %}

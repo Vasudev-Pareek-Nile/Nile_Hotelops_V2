@@ -1,0 +1,8 @@
+
+
+<!-- New - Example Element Element -->
+<li class="list-unstyled"><a href="/Job_Description/Mainpage" class="nav-link dropdown-main-color text-white">Job List </a></li>
+
+{%  if request.session.OrganizationID == '3' %}
+    <li class="list-unstyled"><a href="/Job_Description/JobDescriptionlist" class="nav-link dropdown-main-color text-white">Admin</a></li>
+ {% endif %}

@@ -1,0 +1,198 @@
+
+{% load static %}
+
+{% block content %}
+<style>
+    table td,table th{
+      border:1px solid #dcdcde !important;
+      padding:5px;
+    }
+    table th{
+      text-align:left;
+      background-color:#dedede;
+      color:#434568;
+    }
+    {
+        padding: 5px;
+        text-align: left;
+        background: #f29418;
+        color: white;
+        font-size: 20px;
+        width : 40%;
+    
+      }
+     
+      .noborder td{
+        border-width:0px;
+      }
+
+      .EntryMaster{
+        border:1px solid black ;
+        
+      }
+  </style>
+  <div class="container1">
+        
+    <table class="noborder">
+        <tr>
+            <td width="200px">
+                <img width="150px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" align ="left" /> 
+            </td>
+            <td style="text-align:right">  
+                <h2 style="font-size:18px">P&L S&M Details - {{CMonth}}  {{mem.EntryYear}}</h2>               
+            </td>                         
+        </tr>
+    </table>
+    <br>
+</br>
+<div class="card-body">
+    <form action="{%url 'HSMviewdata' mem.id %}" method = "post">
+        {% csrf_token %}                
+    </div>
+</form>
+</div>
+
+<div class="EntryMaster">
+    <table  id="title" style="width:100%" class= "table table-bordered " >
+        <tr>
+            <th>Salary And Wages</th>
+            <th>{{mem.SalaryAndWages}}</th>      
+        </tr>
+        <tr>
+            <th>Bonuses</th>  
+            <th>{{mem.Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Salary Wages And Bonuses</th>
+            <th>{{mem.Salary_Wages_and_Bonuses}}</th>
+        </tr>
+        <tr>
+            <th>Employee Benefits</th>
+            <th>{{mem.EmployeeBenefits}}</th>
+        </tr>
+        <tr>
+            <th>Payroll Related Expenses</th>
+            <th>{{mem.PayrollRelatedExpenses}}</th>
+        </tr>
+        <tr>
+            <th> Payroll And Related Expenses</th>
+            <th>{{mem.PayrollAndRelatedExpenses}}</th>
+        </tr>
+      
+    </table>
+    </div>
+    <br>
+   
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem1%}
+    <tr>                
+        <td>{{x.SM_SalesExpenseMaster.title}}</td> 
+        <td>{{x.AmountSales}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Sales Expenses
+            </th>
+            <th>
+                {{mem.TotalAmount}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<br>
+
+  
+<table id="title" style="width:100%" class= "table table-bordered " >
+    <thead>
+        <th width="50%"></th>
+        <th>Amount</th>
+        
+    </thead>
+    {% for x in mem2%}
+    <tr>                
+        <td>{{x.SM_MarketingExpenseMaster.Mtitle}}</td> 
+        <td>{{x.AmountMarketing}}
+        </td>   
+    </tr>
+    
+    {% endfor %}
+    <tfoot>
+        <tr>
+            <th>
+                Total Marketing Expenses
+            </th>
+            <th>
+                {{mem.MarketingAmount}}
+            </th>
+        </tr>
+    </tfoot>
+</table>
+<br>
+
+
+<script>
+
+    $(function(){
+
+        $(".calc").blur(function(){
+            DoCal();
+
+        })      
+    })
+
+    var DoCal=function(){
+
+        var TotSalWag=0;
+        var a = $("input[name='SalaryAndWages']").val();
+        a = parseFloat(a);
+        a = isNaN(a)?0:a;
+
+        var b = $("input[name='Bonuses']").val();
+        b = parseFloat(b);
+        b = isNaN(b)?0:b;
+        TotSalWag = a+b;
+        $("input[name='Salary_Wages_and_Bonuses']").val(TotSalWag.toFixed(2));
+
+
+        var e = $("input[name='EmployeeBenefits']").val();
+        e = parseFloat(e);
+        e = isNaN(e)?0:e;
+        $("input[name='PayrollRelatedExpenses']").val(e.toFixed(2));
+        var PayrollAndRelatedExpenses=(TotSalWag+e);
+        $("input[name='PayrollAndRelatedExpenses']").val((TotSalWag+e).toFixed(2));
+
+        var TotalAmount=0;
+        $("input[name*='Amount_']").each(function(){
+                    var a = $(this).val();
+                    a = parseFloat(a);
+                    a = isNaN(a)?0:a;
+                    TotalAmount= TotalAmount+a;
+            })
+
+        $("input[name='Total_Sales_Expenses']").val(TotalAmount.toFixed(2))
+
+        var  MarketingAmount = 0;
+        $("input[name*='MAmount_']").each(function(){
+            var a = $(this).val();
+            a = parseFloat(a);
+            a = isNaN(a)?0:a;
+            MarketingAmount= MarketingAmount+a;
+         })
+
+        $("input[name ='Total_Marketing_Expenses']").val(MarketingAmount.toFixed(2))
+
+        $("input[name ='Total_Other_Expenses']").val((MarketingAmount+ TotalAmount).toFixed(2))
+        var Total_Other_Expenses=(MarketingAmount+ TotalAmount);
+        $("input[name='TotalExpenses']").val((Total_Other_Expenses + PayrollAndRelatedExpenses).toFixed(2))
+    }
+</script>
+  {% endblock content %}

@@ -1,0 +1,176 @@
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+  crossorigin="anonymous"
+/>
+<style>
+  table td,
+  table th {
+    border: 1px solid #434568 !important;
+    padding: 2px;
+  }
+
+  table th {
+    text-align: center;
+    background-color: #c3e6cb;
+    color: #434568;
+    width: 300px;
+    
+    text-transform: capitalize;
+  }
+
+  .align-center {
+    text-align: center;
+  }
+
+  th {
+    text-align: center;
+  }
+
+  .centered-th {
+    text-align: center;
+  }
+
+  .box-with-border {
+    border: 1px solid #ccc; /* Border styling */
+    padding: 15px; /* Optional: Add padding for better visual appearance */
+  }
+  .centered-row {
+    text-align: center;
+    background-color: #c3e6cb;
+    color: black;
+  }
+  tfoot th {
+    text-align: right;
+  }
+  @page {
+    size: landscape;
+    margin: 1cm;
+  }
+  .tbl {
+    margin-left: 100px;
+  }
+</style>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+  crossorigin="anonymous"
+></script>
+
+<div class="card-header">
+  <div class="row"></div>
+</div>
+<div class="card-header align-center">
+  <strong> </strong>
+</div>
+
+<div class="container">
+  <table id="example" class="table table-bordered">
+    <thead class="thead-">
+      <tr class="centered-row">
+        <th colspan="7"  style="text-transform: uppercase;">
+          <br/>
+          HIRING, REPORTING, FIRING, TRANSFER & PERFORMANCE REVIEW GUIDELINES
+          <br/>
+
+        </th>
+      </tr>
+      <tr>
+        <th>TITLE</th>
+        <th>POSITIONS</th>
+        <th>REPORTING</th>
+        <th>CONTRIBUTION TO PERFORMANCE APPRAISAL</th>
+        <th>HIRING</th>
+        <th>FIRING</th>
+        <th>TRANSFER</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for hiring in hiring %}
+      <tr>
+        <td>{{ hiring.department_division}}</td>
+        <td>
+          <ul>
+            {% if hiring.positions1 %}
+            <li>{{ hiring.positions1}}</li>
+            {% endif %} {% if hiring.positions2 %}
+            <li>{{ hiring.positions2}}</li>
+            {% endif %} {% if hiring.positions3 %}
+            <li>{{ hiring.positions3}}</li>
+            {% endif %} {% if hiring.positions4 %}
+            <li>{{ hiring.positions4}}</li>
+            {% endif %}
+          </ul>
+        </td>
+        <td>{{ hiring.reporting }}</td>
+
+        <td>
+          <ul>
+            {% if hiring.Feedback_percent1 %}
+            <li>
+              {{ hiring.Feedback_percent1}}% {{ hiring.Feedback_position1}}
+            </li>
+            {% endif %} {%if hiring.Feedback_percent2 %}
+            <li>
+              {{ hiring.Feedback_percent2}}% {{ hiring.Feedback_position2}}
+            </li>
+            {% endif %} {% if hiring.Feedback_percent3 %}
+            <li>
+              {{ hiring.Feedback_percent3}}% {{ hiring.Feedback_position3}}
+            </li>
+            {% endif %} {%if hiring.Feedback_percent4 %}
+            <li>
+              {{ hiring.Feedback_percent4}}% {{ hiring.Feedback_position4}}
+            </li>
+            {% endif %}
+          </ul>
+        </td>
+        <td>{{ hiring.hiring}}</td>
+        <td>{{hiring.fairing}}</td>
+        <td>{{ hiring.property_transfer}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <br />
+  <!-- Two boxes in a line -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="box">
+        <!-- Content for the first box -->
+        <p>
+          I hereby accept that I have gone through these guidelines and
+          acknowledge the same
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<table style="width: 100%">
+  <tr>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td>&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td>&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+  </tr>
+  <tr>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px text-align: center">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HR Manager<br />
+    </td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+    <td style="border-width: 0px text-align: center">
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;General
+      Manager<br />
+    </td>
+    <td style="border-width: 0px">&nbsp;<br /></td>
+  </tr>
+</table>

@@ -1,0 +1,189 @@
+{% extends "HR/NewEmployeeAdd/NewEmployeeDataForm.html" %}
+{% block main %}
+
+{% load static %}
+<div class="modal fade modalPr" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">File Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="filePreview" style="width: 100%; height: 500px; border: none;" onerror="this.style.display='none'; document.getElementById('filePreviewFallback').style.display='block';"></iframe>
+                <div id="filePreviewFallback" style="display:none;">
+                    <p>Your browser does not support inline previews. <a id="downloadLink" href="#" download>Click here to download the file.</a></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a id="downloadLink" class="btn btn-primary" href="#" download>Download</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card-header">
+    <h4 class="text-uppercase fw-bold">Document Information</h4>
+</div>
+<form action="" method="post" enctype="multipart/form-data">
+    
+    <div class="card-main">
+       
+        <div class="row m-3">
+            <table id="DocviousinformationsTable" class="table table-bordered" >
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Attachment</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for Doc in Documents %}
+                    <tr id="Docrow{{ Doc.id }}">
+                        <td>
+                            <select class="form-control" name="Title[]">
+                                <option value="Resume" {% if Doc.Title == "Resume" %}selected{% endif %}>Resume</option>
+                                <option value="Aadhaar Card" {% if Doc.Title == "Aadhaar Card" %}selected{% endif %}>Aadhaar Card</option>
+                                <option value="Pan Card" {% if Doc.Title == "Pan Card" %}selected{% endif %}>Pan Card</option>
+                                <option value="Voter ID" {% if Doc.Title == "Voter ID" %}selected{% endif %}>Voter ID</option>
+                                <option value="Passport" {% if Doc.Title == "Passport" %}selected{% endif %}>Passport</option>
+                                <option value="Driving License" {% if Doc.Title == "Driving License" %}selected{% endif %}>Driving License</option>
+                                <option value="Ration Card" {% if Doc.Title == "Ration Card" %}selected{% endif %}>Ration Card</option>
+                                <option value="Birth Certificate" {% if Doc.Title == "Birth Certificate" %}selected{% endif %}>Birth Certificate</option>
+                                <option value="Medical Fitness Certificate" {% if Doc.Title == "Medical Fitness Certificate" %}selected{% endif %}>Medical Fitness Certificate</option>
+                                <option value="Police Verification" {% if Doc.Title == "Police Verification" %}selected{% endif %}>Police Verification</option>
+                                <option value="PF Nomination Form" {% if Doc.Title == "PF Nomination Form" %}selected{% endif %}>PF Nomination Form</option>
+                                <option value="PF Declaration Form" {% if Doc.Title == "PF Declaration Form" %}selected{% endif %}>PF Declaration Form</option>
+                                <option value="Gratuity Form" {% if Doc.Title == "Gratuity Form" %}selected{% endif %}>Gratuity Form</option>
+                                <option value="Other" {% if Doc.Title == "Other" %}selected{% endif %}>Other</option>
+                            </select>
+                            
+                        </td>
+                        <td>
+                            <input type="file" class="form-control" name="AttachmentDocumenstsFile[]" {% if Doc.FileName %}{% else %}required{% endif %}>
+                            {% if DocumentPreview == "Documents" and  Doc.FileName  %}
+                            Previous Document
+                            <a  href="javascript:void(0)" data-href="{% url 'view_file' %}?ID={{ Doc.id }}&model=EmployeeDocumentsInfoData" 
+                            class="btn btn-primary btn-sm ml-2"
+                            onclick="showEduDetails(this)"
+                            >
+                           <span class="fa fa-eye"></span>
+                            </a>
+                            {% elif DocumentPreview == "docobj" and  Doc.FileName %}
+                            Previous Document
+                            <a  href="javascript:void(0)" data-href="{% url 'Humanview_file' %}?ID={{ Doc.id }}&model=EmployeeDocumentsInformationDetails" 
+                            class="btn btn-primary btn-sm ml-2"
+                            onclick="showEduDetails(this)"
+                            >
+                           <span class="fa fa-eye"></span>
+                            </a>
+                            {% else %}
+
+                            {% endif %}
+                          
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeDocumentRow('{{ Doc.id }}')">REMOVE</button>
+                            <input type="hidden" name="Doc_ids[]" value="{{ Doc.id }}">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right">
+                            <button type="button" class="btn btn-primary btn-sm" onclick="addDocumentRow()">ADD</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <input type="hidden" id="removedDocIds" name="removed_Doc_ids[]">    
+        </div>
+    </div>
+    <div class="CustomFooter d-flex gap-2">
+        {% csrf_token %}
+        <a href="{% url PreviousUrl %}?EmpID={{ EmpID }}" class="btn btn-primary btn-sm">Previous</a>
+        <input type="submit" name="" class="btn btn-primary btn-sm" id="" value="Final Submit">
+
+    </div>
+</form>
+
+
+
+<script>
+    var showEduDetails= function(obj){
+        var hurl = $(obj).attr('data-href');
+        $(".modalPr").modal('show')
+        $(".modalPr iframe").attr('src',hurl);
+    }
+</script>
+
+
+<script>
+    let newDocCount = 0;  
+
+    function addDocumentRow() {
+        var table = document.getElementById('DocviousinformationsTable').getElementsByTagName('tbody')[0];
+        var newRow = table.insertRow();
+        newDocCount++;
+        var newId = 'new_' + newDocCount;  
+    
+        newRow.id = 'Docrow' + newId;
+        newRow.innerHTML = `
+            <td>
+                <select class="form-control" name="Title[]">
+                    <option>Resume</option>
+                    <option>Aadhaar Card</option>
+                    <option>Pan Card</option>
+                    <option>Voter ID</option>
+                    <option>Passport</option>
+                    <option>Driving License</option>
+                    <option>Ration Card</option>
+                    <option>Birth Certificate</option>
+                    <option>Medical Fitness Certificate</option>
+                    <option>Police Verification</option>
+                    <option>PF Nomination Form</option>
+                    <option>PF Declaration Form</option>
+                    <option>Gratuity Form</option>
+                    <option>Other</option>
+                </select>
+            </td>
+            <td><input type="file" class="form-control" name="AttachmentDocumenstsFile[]" required></td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="removeDocumentRow('${newId}')">REMOVE</button>
+                <input type="hidden" name="Doc_ids[]" value="${newId}">
+            </td>
+        `;
+    }
+    
+    function removeDocumentRow(DocId) {
+        var row = document.getElementById('Docrow' + DocId);
+        
+        if (row) {
+            row.parentNode.removeChild(row);
+            addRemovedDocId(DocId);
+        }
+    }
+    
+    function addRemovedDocId(DocId) {
+        var removedDocIdsInput = document.getElementById('removedDocIds');
+        var removedDocIds = removedDocIdsInput.value.split(',').filter(id => id); 
+    
+        if (!removedDocIds.includes(DocId)) {
+            removedDocIds.push(DocId);
+            removedDocIdsInput.value = removedDocIds.join(',');
+        }
+    }
+</script>
+
+
+
+{% endblock main %}
+
+
+
+

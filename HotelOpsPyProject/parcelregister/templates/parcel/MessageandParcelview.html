@@ -1,0 +1,86 @@
+    {% load static %}
+
+    <img width="100px" src="https://hotelopsblob.blob.core.windows.net/hotelopslogos/NileWhite.jpg" /> 
+   
+   {% block content %}
+   <style>
+     table td,table th{
+       border:1px solid #434568 !important;
+       padding:5px;
+     }
+     table th{
+       text-align:left;
+       background-color:#dedede;
+       color:#434568;
+       width:200px;
+     }
+   </style>
+   
+     <!--- signup page for doctor by admin(sumit)  ---------->
+     
+       <div class="container register-form">
+         <div class="card card-primary">
+           <div class="card-header">
+             <p>Your Message and Parcel Order </p>
+           </div>
+          
+           <div class="card-body">
+             <input  type="hidden" name="ID" value="{{Ed.id}}">
+         <div class="row">
+               <div class="col-sm-12">
+                 <table class="table table-striped table-bordered table-hover">
+                   <tbody>
+                     <tr>
+                       <th>Type_Of_Article</th>
+                       <td>{{Ed.Type_Of_Article}}</td>
+                       </tr>
+                       <tr>
+                         <th>Room_No</th>
+                         <td>{{Ed.Room_No}}</td>
+                       </tr>
+                       <tr>
+                         <th>Guest_Name</th>
+                         <td>{{Ed.Guest_Name}}</td>
+                       </tr>
+                       <tr>
+                        <th>Date_Of_Arrival</th>
+                        <td>{{Ed.Date_Of_Arrival}}</td>
+                      </tr>
+                      <tr>
+                        <th>Received_From</th>
+                        <td>{{Ed.Received_From}}</td>
+                      </tr>
+                      <tr>
+                        <th>Contact_No</th>
+                        <td>{{Ed.Contact_No}}</td>
+                      </tr>
+                      <tr>
+                        <th>Received_By</th>
+                        <td>{{Ed.Received_By}}</td>
+                      </tr>
+                      <tr>
+                        <th>Date_Of_Delivery</th>
+                        <td>{{Ed.Date_Of_Delivery}}</td>
+                      </tr>
+                      <tr>
+                        <th>Given_By</th>
+                        <td>{{Ed.Given_By}}</td>
+                      </tr>
+                      <tr>
+                        <th>Handed_Over_To</th>
+                        <td>{{Ed.Handed_Over_To}}</td>
+                      </tr>
+                      <tr>
+                        <th>Remarks</th>
+                        <td>{{Ed.Remarks}}</td>
+                      </tr>
+                       </tr>
+   
+                     </tbody>
+                   </table>
+                 </div>
+               </div>        
+         </div>
+       </div>
+   
+       {% endblock content %} 

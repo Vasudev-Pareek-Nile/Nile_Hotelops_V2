@@ -1,0 +1,85 @@
+{% extends "EMP_PAY\homebase.html" %}
+{% block content %}
+{% load custom_filters %}
+
+
+<style>
+  /* Make the table scrollable */
+  #attendance-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    overflow-y: auto;
+    height: 400px;  /* Adjust based on your needs */
+    display: block;
+  }
+
+  /* Make header sticky at the top */
+  .sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 10; /* Ensures that header is above the table rows */
+    padding: 8px;
+    text-align: center;
+  }
+/* Sticky the first column */
+#attendance-table td:first-child,
+#attendance-table th:first-child {
+  position: sticky;
+  left: 0;
+  background-color: #f1f1f1;
+  z-index: 5; /* Ensure this stays on top */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
+}
+
+/* Ensure that the first few columns also have sticky behavior */
+#attendance-table th:nth-child(-n+2), /* This selects first 4 columns (Name, Department, Designation, EmployeeCode) */
+#attendance-table td:nth-child(-n+2) {
+  position: sticky;
+  left: 0;
+  background-color: #f1f1f1;
+  z-index: 5;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional: add shadow */
+}
+  /* Styling for table */
+  th, td {
+    padding: 10px;
+    text-align: center;
+  }
+
+  /* Optional: Add a border to the table cells */
+  th, td {
+    border: 1px solid #ddd;
+  }
+</style>
+
+
+
+<h3>Attendance Report</h3>
+<div class="row">
+  <div class="col-sm-12 table-responsive">
+    <table border="1" id="attendance-table" class="table table-bordered">
+      <thead>
+        <tr>
+          {% for header in header_row %}
+            <th class="sticky-header">{{ header|safe }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in table_rows %}
+          <tr>
+            {% for cell in row %}
+              <td>{{ cell|safe }}</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+{% endblock content %}
