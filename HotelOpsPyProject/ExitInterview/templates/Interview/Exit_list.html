@@ -13,6 +13,7 @@
   </script>
   {% endfor %}
 {% endif %}
+
 <style>
     table th {
       text-align: center;
@@ -41,17 +42,16 @@
   table thead th{
     text-transform:uppercase;
     font-size:14px;
-}
+  }
 	#clear, #filter{
 		padding-block: 8px;
 	}
 
-  </style>
+</style>
 
 
 
 
-<body>
 <div class="col-md-12">
   <div class="card">
     <div class="card-header">
@@ -76,7 +76,7 @@
           <div class="col-md-2">
             <div class="form-group">
               <button type="submit" class="btn btn-primary" id="filter">
-                <i class="fa fa-filter"></i> Filter
+                Filter
               </button>
 
               <a href="{% url 'Exit_list' %}" class="btn btn-danger" id="Clear">
@@ -90,7 +90,8 @@
     <table class="table table-striped custom-table mb-0 datatable dataTable no-footer">
         <thead >
           <tr >
-            <th >Emp Code</th>
+            <th >SR#</th>
+            <th >Code</th>
             <th >Name</th>
             <th >Position</th>
             <th >Joining Date</th>
@@ -104,6 +105,7 @@
       </tbody>
       {% for exitinterview in exitinterviews %}
       <tr>
+          <td>{{ forloop.counter }}</td>
           <td>{{ exitinterview.Employee_Code }}</td>
           <td>{{ exitinterview.EmpName }}</td>
           <td>{{ exitinterview.Job_Title }}</td>
@@ -129,14 +131,12 @@
       </table>
     </div>
   </div>
-</body>
 
 
 <script>
     $(document).ready(function () {
         var selectedOrganization = "{{ selectedOrganizationID }}";
         $("select[name='hotel']").val(selectedOrganization);
-       
     });
 </script>
 

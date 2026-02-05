@@ -56,6 +56,8 @@ class Exitinterviewdata(models.Model):
     FinalComment=models.CharField(max_length=255, blank=True, null=True) 
     Resign=models.CharField(max_length=255, blank=True, null=True)
     Termination=models.CharField(max_length=255, blank=True, null=True)
+    
+    # Absconding=models.CharField(max_length=255, blank=True, null=True)   # New
 
     rehire=models.BooleanField(default=True)  
     OrganizationID = models.BigIntegerField(default=0)

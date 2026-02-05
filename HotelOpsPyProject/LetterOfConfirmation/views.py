@@ -250,49 +250,50 @@ def entryEmp(request):
 #     return render(request,"lettercl/emplist.html",context)
 
 
+from app.Global_Api import get_organization_list
 
 def emplist(request):
     if 'OrganizationID' not in request.session:
         return redirect(MasterAttribute.Host)
+
+    OrganizationID = request.session.get("OrganizationID")
+    Department_Name = request.session.get("Department_Name", "")
+    Session_EmployeeCode = request.session.get("EmployeeCode")
+    UserType = request.session.get("UserType", "")
+    OID  = request.GET.get('OID')
     
-    OrganizationID = request.session["OrganizationID"]
-    Department_Name = request.session["Department_Name"]
-    Session_EmployeeCode = request.session["EmployeeCode"]
-    UserType = request.session["UserType"]
+    memOrg = get_organization_list(OrganizationID)  
+    
+    if not OID:
+        OID = OrganizationID
 
-    print("department is here:", Department_Name)
-    print("usertype is here:", UserType)
-
-    # Base query
-    emp_id_subquery = Subquery(
-        EmployeePersonalDetails.objects.filter(
-            EmployeeCode=OuterRef('emp_code'),
-            IsDelete=False
-        ).values('EmpID')[:1]
-    )
-
-    # Apply filters based on Department and UserType
-    empdetails_query = LETTEROFCONFIRMATIONEmployeeDetail.objects.filter(
-        IsDelete=False,
-        OrganizationID=OrganizationID
-    )
-
+    empdetails_query = LETTEROFCONFIRMATIONEmployeeDetail.objects.filter(IsDelete=False)
+    
+    if OID != "all":
+        empdetails_query = empdetails_query.filter(OrganizationID=OID)
+        
     # HR sees all data
-    if Department_Name.lower() == "hr":
+    if Department_Name and Department_Name.lower() == "hr":
         empdetails = empdetails_query
 
-    # HOD sees only their department data
-    elif UserType.lower() == "hod":
+    # HOD sees only their department
+    elif UserType and UserType.lower() == "hod":
         empdetails = empdetails_query.filter(department=Department_Name)
 
-    # Everyone else — no data (optional, or customize further)
+    # Others
     else:
         empdetails = empdetails_query.none()
 
-    empdetails = empdetails.annotate(EmpID=emp_id_subquery).order_by('-CreatedDateTime', '-ModifyDateTime').values()
+    empdetails = empdetails.order_by('-CreatedDateTime', '-ModifyDateTime').values()
+    
+    context = {
+        'empdetails': empdetails,
+        'OID':OID,
+        'memOrg':memOrg
+    }
 
-    context = {'empdetails': empdetails}
     return render(request, "lettercl/emplist.html", context)
+
 
 
 # For generate_appointment_letter

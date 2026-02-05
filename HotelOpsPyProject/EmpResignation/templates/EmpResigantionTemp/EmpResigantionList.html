@@ -13,19 +13,33 @@
     #clear, #filter{
       padding-block: 8px;
     }
+    #employeeTable_previous a{
+        display: flex !important;
+        align-items: center !important;
+        height: 38px !important;
+        width: 34.5px !important;
+        justify-content: center !important;
+    }
+
+    #employeeTable_next a{
+        display: flex !important;
+        align-items: center !important;
+        height: 38px !important;
+        width: 34.5px !important;
+        justify-content: center !important;
+    }
   </style>
 
   <div class="card">
-    <div class="card-header"><span class="text-uppercase fw-bold">Resigantion</span></div>
+    <div class="card-header"><span class="text-uppercase fw-bold">Resignation</span></div>
 
     <div class="card-body">
       <div class="col-md-12">
         <form method="get" class="row g-4">
           <div class="col-md-5">
-              <select name="I" class="form-control">
-                  <option value="">Select</option>
+              <select name="OID" class="form-control">
                   {% for itm in memorg %}
-                      <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == selectedOrganizationID %}selected{% endif %}>
+                      <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == OID %}selected{% endif %}>
                           {{ itm.OrganizationName }}
                       </option>
                   {% endfor %}
@@ -43,10 +57,11 @@
       </form>
     </div>
 
-      <table class="table table-striped" style="font-size:11px">
+      <table id="employeeTable" class="table table-striped table-bordered datatable dataTable no-footer">
           <thead>
               <tr class="active" style="background-color:#8e9ebc">
-                  <th class="EmpCode">Emp Code</th>
+                  <th class="EmpCode">SR#</th>
+                  <th class="EmpCode">Code</th>
                   <th class="Name">Name</th>
 
                   <th class="Designation">Designation</th>
@@ -65,24 +80,22 @@
               <tbody>
               {% for i in Resigantions %}
                   <tr>
-                      <td>{{ i.Emp_Code }}</td>
-                  <td>{{ i.Name }}</td>
-                  <td>{{ i.Dept }}</td>
-                  <td>{{ i.Designation }}</td>
-                  <td>{{ i.DOJ|date:"d-m-Y" }}</td>
-                  <td>{{ i.LastWorkingDays|date:"d-m-Y" }}</td>
-                  <td>{{ i.NoticePeriod }}</td>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.Emp_Code }}</td>
+                    <td>{{ i.Name }}</td>
+                    <td>{{ i.Dept }}</td>
+                    <td>{{ i.Designation }}</td>
+                    <td>{{ i.DOJ|date:"d-m-Y" }}</td>
+                    <td>{{ i.LastWorkingDays|date:"d-m-Y" }}</td>
+                    <td>{{ i.NoticePeriod }}</td>
 
-                  <td>
-                      <div class="btn btn-group gap-2">
-                          <a href="{% url 'EmpResigantionEntry' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&DepartmentName={{ i.Dept }}&Page=EmpResigantionList&OID={{i.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
-                          {% comment %} <a href="{% url 'EmpResigantionDelete' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{EmpID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
-                          <a href="{% url 'EmpResigantionPDF' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" class="btn btn-danger text-white btn-sm" target="_blank">View</a>
-                          
-                      </div>
-                      
-
-                  </td>
+                    <td>
+                        <div class="btn btn-group gap-2">
+                            <a href="{% url 'EmpResigantionEntry' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&DepartmentName={{ i.Dept }}&Page=EmpResigantionList&OID={{i.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                            {% comment %} <a href="{% url 'EmpResigantionDelete' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{EmpID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                            <a href="{% url 'EmpResigantionPDF' %}?RID={{ i.id }}&EC={{i.Emp_Code}}&EmpID={{i.EmpID}}&OID={{i.OrganizationID}}" class="btn btn-danger text-white btn-sm" target="_blank">View</a>
+                        </div>
+                    </td>
                   </tr>
               {% endfor %}
               
@@ -93,8 +106,7 @@
 </div>
 
 <script>
-    var selectedOrganization = "{{ I }}";
-        $("select[name='I']").val(selectedOrganization);
-
+    var selectedOrganization = "{{ OID }}";
+        $("select[name='OID']").val(selectedOrganization);
 </script>
 {% endblock %}

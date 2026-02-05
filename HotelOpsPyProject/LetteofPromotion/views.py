@@ -362,49 +362,56 @@ def entryEmp(request):
 
 from django.db.models import Max
 from app.views import OrganizationList
+from app.Global_Api import get_organization_list
+
+
 
 import requests
+from django.db.models import OuterRef, Subquery, Max
+
 def emplist(request):
-    
     if 'OrganizationID' not in request.session:
         return redirect(MasterAttribute.Host)
-    else:
-        print("Show Page Session")
-        OrganizationID =request.session["OrganizationID"]
 
+    # print("Show Page Session")
+
+    OrganizationID = request.session["OrganizationID"]
     UserType = request.session.get("UserType")
 
-    OrganizationID =request.session["OrganizationID"]
-    memOrg = OrganizationList(OrganizationID)  
+    memOrg = get_organization_list(OrganizationID)  
+    I = request.GET.get('I', OrganizationID)
 
-
-    
-    I = request.GET.get('I',OrganizationID)
-    
-
-
-    if UserType == 'CEO' and request.GET.get('I') is None:
-        I = 401
-        
     emp_id_subquery = Subquery(
-            EmployeePersonalDetails.objects.filter(
-                EmployeeCode=OuterRef('emp_code'),
-                IsDelete=False
-            ).values('EmpID')[:1]
-        )
-   
-    PromotionLetters = PromotionLetterEmployeeDetail.objects.filter(IsDelete=False,OrganizationID=I).order_by('-emp_code').annotate(
-        EmpID=emp_id_subquery)
-    for pr in  PromotionLetters:
-        employeeletters  = PromotionLetterEmployeeDetail.objects.filter(IsDelete=False,OrganizationID=I,emp_code=pr.emp_code).order_by('-emp_code')
-        last_Promotion_id = None
-        if employeeletters.count() > 0 :
-            last_Promotion_id = employeeletters.aggregate(Max('id'))['id__max']
-        pr.last_Promotion_id  = last_Promotion_id
-        pr.save()
-    
-    context  = { 'PromotionLetters':PromotionLetters,'memOrg':memOrg,'I':I,}
-    return render(request,"letterpl/emplist.html",context)
+        EmployeePersonalDetails.objects.filter(
+            EmployeeCode=OuterRef('emp_code'),
+            IsDelete=False
+        ).values('EmpID')[:1]
+    )
+
+    last_promotion_subquery = Subquery(
+        PromotionLetterEmployeeDetail.objects.filter(
+            IsDelete=False,
+            emp_code=OuterRef('emp_code')
+        ).order_by('-id').values('id')[:1]
+    )
+
+    PromotionLetters = PromotionLetterEmployeeDetail.objects.filter(IsDelete=False)
+
+    if I != 'all':
+        PromotionLetters = PromotionLetters.filter(OrganizationID=I)
+
+    PromotionLetters = PromotionLetters.annotate(
+        EmpID=emp_id_subquery,
+        last_Promotion_id=last_promotion_subquery
+    ).order_by('-emp_code')
+
+    context = {
+        'PromotionLetters': PromotionLetters,
+        'memOrg': memOrg,
+        'I': I,
+    }
+
+    return render(request, "letterpl/emplist.html", context)
 
 
 

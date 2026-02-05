@@ -3851,8 +3851,10 @@ def EmployeeList(request):
     selected_division = request.GET.get("Divisions")
     employee_code = request.GET.get("employee_code")
     
-    print("selected divisions:", selected_division)
-    print("selected_org_id:", selected_org_id)
+    # print("---------- (Start) -----------")
+    # print("selected divisions:", selected_division)
+    # print("selected_org_id:", selected_org_id)
+    # print("---------- (End) -----------")
 
     Status = request.GET.get("Status", '')
     Status_list = Status.split(",") if Status else []
@@ -3961,7 +3963,8 @@ def EmployeeList(request):
         "Status_list": json.dumps(Status_list), 
         'selected_Department_list': json.dumps(Departments_list),  
         'Levels_List': json.dumps(Levels_List),  
-        'selected_division': selected_division,
+        # 'selected_division': selected_division,
+        'selected_division': json.dumps(selected_division or None),
         'employee_code': employee_code,
         'Session_OrganizationID':OrganizationID
        

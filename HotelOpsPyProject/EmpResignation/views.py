@@ -20,6 +20,7 @@ def home_view(request):
 from django.db.models import Subquery, OuterRef
 from HumanResources.models import EmployeePersonalDetails
 from HumanResources.views import OrganizationList
+from app.Global_Api import get_organization_list
 
 
 def EmpResigantionList(request):
@@ -29,23 +30,17 @@ def EmpResigantionList(request):
         print("Show Page Session")
 
     UserType = request.session.get("UserType")
-       
     OrganizationID =request.session["OrganizationID"]
-    I  = request.GET.get('I',OrganizationID)
-    if UserType == 'CEO' and request.GET.get('I') is None:
-        I = 401
-    memorg = OrganizationList(OrganizationID=OrganizationID)
-    emp_id_subquery = Subquery(
-        EmployeePersonalDetails.objects.filter(
-            EmployeeCode=OuterRef('Emp_Code'),
-            IsDelete=False
-        ).values('EmpID')[:1]
-    )
+    OID  = request.GET.get('OID',OrganizationID)
+
+    memorg = get_organization_list(OrganizationID=OrganizationID)
    
-    Resigantions = EmpResigantionModel.objects.filter(OrganizationID=I,IsDelete=False).annotate(
-        EmpID=emp_id_subquery)
+    Resigantions = EmpResigantionModel.objects.filter(IsDelete=False)
     
-    return render(request,"EmpResigantionTemp/EmpResigantionList.html",{'Resigantions':Resigantions,'memorg':memorg,'I':I})
+    if OID != "all":
+        Resigantions = Resigantions.filter(OrganizationID=OID)
+    
+    return render(request,"EmpResigantionTemp/EmpResigantionList.html",{'Resigantions':Resigantions,'memorg':memorg,'OID':OID})
 
 
 # def EmpResigantionEntry(request):

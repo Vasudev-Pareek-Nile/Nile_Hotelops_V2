@@ -128,13 +128,16 @@
   }
   /* border: 1px solid #D3D3D4; */
 
+  #employeeTable_filter{
+    display: none !important;
+  }
 </style>
 
 
 <div class="card">
     <div class="card-header">
         <div class="mb-2">
-            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST {{selected_division}}</h3>
+            <span class="mb-0 text-uppercase fw-bold">EMPLOYEE LIST</h3>
         </div>
     </div>
 
@@ -299,9 +302,10 @@
         if (!response.ok) throw new Error("API Failed: " + url);
         return await response.json();
     }
+    const selectedDivision = {{ selected_division|default:"null"|safe }};
 
     async function loadDropdownData() {
-        const selectedDivision = {{ selected_division|default:"null"|safe }};
+        // const selectedDivision = {{ selected_division|default:"null"|safe }};
 
         const deptUrl = selectedDivision
             ? `/Show_Department_By_DivisionName_Api/${encodeURIComponent(selectedDivision)}/`
@@ -348,7 +352,7 @@
             multiple: false,
             placeholder: 'Select Divisions',
             search: true,
-            selectedValue: "{{ selected_division|default:'' }}"
+            selectedValue: selectedDivision
         });
         const box2 = document.getElementById("Divisions");
         box2.classList.remove("loading-box");

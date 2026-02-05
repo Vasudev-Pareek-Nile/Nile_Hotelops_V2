@@ -92,53 +92,51 @@
             <div class="card-body">
                 <input type="hidden" name="hotel" value="{{warning_instance.OrganizationID }}" />
                 <div class="row">
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Employee Code:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="EmployeeCode" value="{{ warning_instance.EmployeeCode }}" readonly>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Employee Name:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="EmpName" value="{{ warning_instance.EmpName }}" readonly>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Joining:<span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="DateofJoining" value="{{ warning_instance.DateofJoining|date:"d-m-Y"  }}" readonly >
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="from-label custom-label">Department:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="Department" value="{{ warning_instance.Department }}" readonly >
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
-                        <label class="from-label custom-label">Department:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="Department" value="{{ warning_instance.Department }}" readonly >
-                    </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Job Title:<span class="text-danger">*</span></label>
-
                         <input type="text" class="form-control" name="Designation" value="{{ warning_instance.Designation }}" readonly >
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Leaving:<span class="text-danger">*</span></label>
                        <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="">
                   </div>
-                    
+                    <div class="col-md-6 mb-3">
+                        <label  class="from-label custom-label">Reasons of Leaving:</label>
+                        <select class="form-control" name="reasons" id="reasonDropdown">
+                            {% for reason in reasons %}
+                                <option value="{{ reason.Reason_Leaving_name }}">
+                                    {{ reason.Reason_Leaving_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
 
-               
-                    
-                   
-                    
-                    
-                
                 <div class="row align-items-center">
-                   
-                  
-
-
                      <div class="col-md-4 mb-3 d-flex align-items-center">
                         <div class="d-flex align-items-center">
                             <label class="me-2">Notice Period Given:<span class="text-danger">*</span></label>
                             <div class="d-flex">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="d-flex align-items-center me-3">
+                                <label class="d-flex align-items-center me-3">
                                     <input type="checkbox" name="NoticePeriod" value="Yes" style="width: 23px;">
                                     <span style="margin-left: 5px;">Yes</span>
                                 </label>
@@ -151,41 +149,43 @@
                                     <input type="checkbox" name="Termination" value="Termination" style="width: 23px;" id="terminationCheckbox">
                                     <span style="margin-left: 5px;">Termination</span>
                                 </label>
+
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Absconding" value="Absconding" style="width: 23px;" id="AbscondingCheckbox">
+                                    <span style="margin-left: 5px;">Absconding</span>
+                                </label>
                                 <script>
                                     const resignCheckbox = document.getElementById('resignCheckbox');
                                     const terminationCheckbox = document.getElementById('terminationCheckbox');
+                                    const AbscondingCheckbox = document.getElementById('AbscondingCheckbox');
                                
                                     resignCheckbox.addEventListener('change', function() {
                                         if (resignCheckbox.checked) {
                                             terminationCheckbox.checked = false;
+                                            AbscondingCheckbox.checked = false;
                                         }
                                     });
                                
                                     terminationCheckbox.addEventListener('change', function() {
                                         if (terminationCheckbox.checked) {
                                             resignCheckbox.checked = false;
+                                            AbscondingCheckbox.checked = false;
+                                        }
+                                    });
+                               
+                                    AbscondingCheckbox.addEventListener('change', function() {
+                                        if (AbscondingCheckbox.checked) {
+                                            resignCheckbox.checked = false;
+                                            terminationCheckbox.checked = false;
                                         }
                                     });
                                 </script>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
-                        <div class="d-flex align-items-center">
-                            <label  class="from-label custom-label">Reasons of Leaving:</label>
-                            <select class="form-control" name="reasons" id="reasonDropdown">
-                                {% for reason in reasons %}
-                                    <option value="{{ reason.Reason_Leaving_name }}">
-                                        {{ reason.Reason_Leaving_name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
                 
-               
-                <br>
                 <table class="table table-bordered ">
                     <thead>
                       <tr>
@@ -197,31 +197,31 @@
                     </thead>
                     <tbody>
                         {% for experiencedata in experiencedatas %}
-                    <tr>
-                        <td style="width: 250px;  ">{{experiencedata.experience_name}}
-                            <input type="hidden" name="experiencedata_ID_{{ forloop.counter0 }}" value="{{ experiencedata.id }}" />
-                        </td>
-                        <td style="width: 50px;">
-                           
-                           
+                            <tr>
+                                <td style="width: 250px;  ">{{experiencedata.experience_name}}
+                                    <input type="hidden" name="experiencedata_ID_{{ forloop.counter0 }}" value="{{ experiencedata.id }}" />
+                                </td>
+                                <td style="width: 50px;">
                                 
-                                <label class="switch">
-                                    <input type="checkbox" name="chekdata_{{ forloop.counter0 }}" value="Yes" id="customToggle">
-                                    <span class="slider round"></span>
-                                </label>
-                            
-                        </td>
-                           
-                        <td style="width: 400px;">
-                            <textarea class="form-control" name="remarkexit_{{ forloop.counter0 }}" rows="1"></textarea>
+                                
+                                        
+                                        <label class="switch">
+                                            <input type="checkbox" name="chekdata_{{ forloop.counter0 }}" value="Yes" id="customToggle">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    
+                                </td>
+                                
+                                <td style="width: 400px;">
+                                    <textarea class="form-control" name="remarkexit_{{ forloop.counter0 }}" rows="1"></textarea>
 
-                        </td>
-                        
-                    </tr>
-                    {% if forloop.last %}
-                        <input type="hidden" name="TotalExitInterview" value="{{ forloop.counter0 }}" />
-                    {% endif %}
-                    {% endfor %}     
+                                </td>
+                                
+                            </tr>
+                            {% if forloop.last %}
+                                <input type="hidden" name="TotalExitInterview" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                            {% endfor %}     
                       </tbody>
                   </table>  
                   <br>
@@ -235,45 +235,40 @@
                         </tr>
                       </thead>
                       <tbody>
-                    {% for ratingleveing in ratingleveings %}
-                      <tr>
-                          <td style="width: 400px;  ">{{ratingleveing.rating_name}}
-                            <input type="hidden" name="ratingleveing_ID_{{ forloop.counter0 }}" value="{{ ratingleveing.id }}" />
-                          </td>
-                         
-                             
-                          <td style="width: 400px;">
-                          
-                            <select class="form-control" name="remarks_{{ forloop.counter0 }}" style="width: 100%;">
+                            {% for ratingleveing in ratingleveings %}
+                            <tr>
+                                <td style="width: 400px;  ">{{ratingleveing.rating_name}}
+                                    <input type="hidden" name="ratingleveing_ID_{{ forloop.counter0 }}" value="{{ ratingleveing.id }}" />
+                                </td>
                                 
-                                <option value="Very Poor">Very Poor</option>
-                                <option value="Poor">Poor</option>
-                                <option value="Average">Average</option>
-                                <option value="Good">Good</option>
-                                <option value="Very Good">Very Good</option>
-                               
-                            </select>
-  
-                          </td>
-                          
-                      </tr>
-                    {% if forloop.last %}
-                      <input type="hidden" name="TotalRatingviewdata" value="{{ forloop.counter0 }}" />
-                    {% endif %}
-                    {% endfor %}     
-                        </tbody>
+                                    
+                                <td style="width: 400px;">
+                                
+                                    <select class="form-control" name="remarks_{{ forloop.counter0 }}" style="width: 100%;">
+                                        <option value="">Select</option>
+                                        <option value="Very Poor">Very Poor</option>
+                                        <option value="Poor">Poor</option>
+                                        <option value="Average">Average</option>
+                                        <option value="Good">Good</option>
+                                        <option value="Very Good">Very Good</option>
+                                    </select>
+                                </td>
+                                
+                            </tr>
+                            {% if forloop.last %}
+                            <input type="hidden" name="TotalRatingviewdata" value="{{ forloop.counter0 }}" />
+                            {% endif %}
+                            {% endfor %}     
+                     </tbody>
                     </table>
                     
-
-            </div>
-
-            <div class="col-sm-12">
-                <label style="font-size: 13px; font-weight: bold; display: inline-block; margin-right: 10px;" >Final Comment:</label>
-                <textarea class="form-control" name="FinalComment" rows="2"></textarea>
-            </div>
-            <div class="col-sm-12 mt-3">
-                <div style="display: inline-flex; align-items: center;">
-                    <label style="font-size: 13px; font-weight: bold; margin-right: 10px;">
+                    <div class="col-sm-12">
+                        <label style="font-size: 13px; font-weight: bold; display: inline-block; margin-right: 10px;" >Final Comment:</label>
+                        <textarea class="form-control" name="FinalComment" rows="2"></textarea>
+                    </div>
+                    <div class="col-sm-12 mt-3">
+                        <div style="display: inline-flex; align-items: center;">
+                            <label style="font-size: 13px; font-weight: bold; margin-right: 10px;">
                         Would you re-hire this employee?
                     </label>
                     
@@ -283,6 +278,7 @@
                     </label>
                 </div>
             </div>
+        </div>
 
             
            <br>

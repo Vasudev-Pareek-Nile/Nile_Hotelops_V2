@@ -17,10 +17,7 @@
         margin-top: 5px;
     }
     
-    
-</style>   
- 
-<style>
+
     .switch {
         position: relative;
         display: inline-block;
@@ -65,8 +62,6 @@
     input:checked + .slider:before {
         transform: translateX(27px); /* Adjust the translation to match the width of the slider */
     }
-   
-
 </style>
 
 <div class="col-md-12">
@@ -79,32 +74,43 @@
             <div class="card-body">
                 <div class="row">
                     <input type="hidden" name="hotel" value="{{ exit.hotel }}" />
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3 ">
                         <label class="from-label custom-label">Employee Code:</label>
                         <input type="text" class="form-control" name="EmployeeCode" value="{{ exit.Employee_Code }}" readonly>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Employee Name:</label>
                         <input type="text" class="form-control" name="EmpName" value="{{ exit.EmpName }}" readonly>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Joining:</label>
                         <input type="text" class="form-control" name="DateofJoining" value="{{exit.DateofJoining}}" >
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="from-label custom-label">Department:</label>
+                        <input type="text" class="form-control" name="Department" value="{{ exit.Department }}" readonly>
                     </div>
                 </div>
                        
                 <div class="row">
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
-                        <label class="from-label custom-label">Department:</label>
-                        <input type="text" class="form-control" name="Department" value="{{ exit.Department }}" readonly>
-                    </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Job Title:</label>
                         <input type="text" class="form-control" name="Designation" value="{{ exit.Job_Title }}" readonly>
                     </div>
-                    <div class="col-md-4 mb-3 d-flex align-items-left">
+                    <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Leaving:</label>
                         <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="{{ exit.DateofLeaving }}">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="from-label custom-label">Reasons of Leaving:</label>
+                        <select class="form-control" name="reasons" id="reasonDropdown">
+                            {% for reason in reasons %}
+                                <option value="{{ reason.Reason_Leaving_name }}" {% if reason.Reason_Leaving_name == exit.ReasonForLeaving %}selected{% endif %}>
+                                    {{ reason.Reason_Leaving_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
 
@@ -113,7 +119,7 @@
                         <div class="d-flex align-items-center">
                             <label class="me-2">Notice Period Given:</label>
                             <div class="d-flex">
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label class="d-flex align-items-center me-3">
+                                <label class="d-flex align-items-center me-3">
                                     <input type="checkbox" name="NoticePeriod" value="Yes" {% if exit.NoticePeriod == 'Yes' %}checked{% endif %} style="width: 23px;">
                                     <span style="margin-left: 5px;">Yes</span>
                                 </label>
@@ -125,22 +131,14 @@
                                     <input type="checkbox" name="Termination" value="Termination" {% if exit.Termination == 'Termination' %}checked{% endif %} style="width: 23px;">
                                     <span style="margin-left: 5px;">Termination</span>
                                 </label>
+                                <label class="d-flex align-items-center me-3">
+                                    <input type="checkbox" name="Absconding" value="Absconding" {% if exit.Absconding == 'Absconding' %}checked{% endif %} style="width: 23px;">
+                                    <span style="margin-left: 5px;">Absconding</span>
+                                </label>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-4 mb-3 d-flex align-items-center">
-                        <div class="d-flex align-items-center">
-                            <label class="from-label custom-label">Reasons of Leaving:</label>
-                            <select class="form-control" name="reasons" id="reasonDropdown">
-                                {% for reason in reasons %}
-                                    <option value="{{ reason.Reason_Leaving_name }}" {% if reason.Reason_Leaving_name == exit.ReasonForLeaving %}selected{% endif %}>
-                                        {{ reason.Reason_Leaving_name }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
+
                 </div>
                 
                 <br>
@@ -211,6 +209,7 @@
                                 </td>
                                 <td style="width: 400px;">
                                     <select class="form-control" name="remarks_{{ forloop.counter0 }}" style="width: 100%;">
+                                        <option value="" {% if exit_ratings|get_item:ratingleveing.id == '' %}selected{% endif %}>Select</option>
                                         <option value="Very Poor" {% if exit_ratings|get_item:ratingleveing.id == 'Very Poor' %}selected{% endif %}>Very Poor</option>
                                         <option value="Poor" {% if exit_ratings|get_item:ratingleveing.id == 'Poor' %}selected{% endif %}>Poor</option>
                                         <option value="Average" {% if exit_ratings|get_item:ratingleveing.id == 'Average' %}selected{% endif %}>Average</option>

@@ -29,25 +29,42 @@ from LETTEROFAPPOINTMENT.models import LOALETTEROFAPPOINTMENTEmployeeDetail
 from UniformInventory.models import UniformInformation
 from django.db.models import Subquery, OuterRef
 from IT.models import ItInformation
+from app.Global_Api import get_organization_list
 
 def Issue_view(request):
     OrganizationID = request.session["OrganizationID"] 
     OID  = request.GET.get('OID')
-    if OID:
-        OrganizationID= OID
+    memOrg = get_organization_list(OrganizationID)  
+    
+    if not OID:
+        OID = OrganizationID
         
-    AppoiLetters  = LOALETTEROFAPPOINTMENTEmployeeDetail.objects.filter(OrganizationID=OrganizationID,IsDelete=False)
-    # UN = UniformInformation.objects.filter(
-    #     EmployeeCode = AppoiLetters.emp_code,
-    #     OrganizationID=AppoiLetters.OrganizationID
-    # )
-    AppoiLetters  = LOALETTEROFAPPOINTMENTEmployeeDetail.objects.filter(
-        OrganizationID=OrganizationID,
-        IsDelete=False
-    ).values(
-        'id','first_name','last_name','department','designation','Reporting_to_designation', 'emp_code', 'HR','HK','IT','DEPT','OrganizationID','HKCreatedBy','ITCreatedBy','DEPTCreatedBy',
+    # print("OID is here::", OID)
+
+        
+    query = LOALETTEROFAPPOINTMENTEmployeeDetail.objects.filter(IsDelete=False)
+
+    if OID != "all":
+        query = query.filter(OrganizationID=OID)
+
+    AppoiLetters = query.values(
+        'id',
+        'first_name',
+        'last_name',
+        'department',
+        'designation',
+        'Reporting_to_designation', 
+        'emp_code', 
+        'HR',
+        'HK',
+        'IT',
+        'DEPT',
+        'OrganizationID',
+        'HKCreatedBy',
+        'ITCreatedBy',
+        'DEPTCreatedBy'
     ).order_by('-CreatedDateTime')
- 
+
     
     UN_subquery = UniformInformation.objects.filter(
         EmployeeCode=OuterRef("emp_code"),
@@ -81,7 +98,9 @@ def Issue_view(request):
         
     context={
         'AppointLetters':AppoiLetters,
-        'merged_qs':merged_qs
+        'merged_qs':merged_qs,
+        'OID':OID,
+        'memOrg':memOrg
     }
     return render(request, 'HR/Issue_And_Clearance/Issue_Page.html', context)
 

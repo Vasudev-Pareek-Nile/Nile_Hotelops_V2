@@ -11,6 +11,9 @@ import requests
 from hotelopsmgmtpy.utils import encrypt_id,decrypt_id
 from django.urls import reverse
 from LetterOfConfirmation.models import LETTEROFCONFIRMATIONEmployeeDetail
+from app.Global_Api import get_organization_list
+
+
 def ListPC(request):
     if 'OrganizationID' not in request.session:
         return redirect(MasterAttribute.Host)
@@ -22,31 +25,16 @@ def ListPC(request):
     OrganizationID = request.session["OrganizationID"]
     UserID = str(request.session["UserID"])
     
-    hotelapitoken = MasterAttribute.HotelAPIkeyToken
-    headers = {
-        'hotel-api-token': hotelapitoken  # Replace with your actual header key and value
-    }
-    api_url = "http://hotelops.in/API/PyAPI/OrganizationListSelect?OrganizationID=" + str(OrganizationID)
-    
-    try:
-        response = requests.get(api_url, headers=headers)
-        response.raise_for_status()  # Optional: Check for any HTTP errors
-        memOrg = response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Error occurred: {e}")   
-    I = request.GET.get('I',OrganizationID)
-    if UserType == 'CEO' and request.GET.get('I') is None:
-        I = 401
-    emp_id_subquery = Subquery(
-        EmployeePersonalDetails.objects.filter(
-            EmployeeCode=OuterRef('EmpCode'),
-            IsDelete=False
-        ).values('EmpID')[:1]
-    )
+    memOrg = get_organization_list(OrganizationID)  
 
-   
-    Emp_objs = Emp_Confirmation_Master.objects.filter(OrganizationID = OrganizationID,IsDelete=False).annotate(
-        EmpID=emp_id_subquery)
+    OID = request.GET.get('OID',OrganizationID)
+
+
+    Emp_objs = Emp_Confirmation_Master.objects.filter(IsDelete=False)
+
+    if OID != "all":
+        Emp_objs = Emp_objs.filter(OrganizationID=OID)
+    
     for emp in Emp_objs:
           Cnf_Filename = None
           if emp.LOC_ID:
@@ -56,7 +44,7 @@ def ListPC(request):
           emp.Cnf_Filename = Cnf_Filename
           emp.save()
     
-    context = {'Emp_objs':Emp_objs,'UserID':UserID,'I':I,'memOrg':memOrg}
+    context = {'Emp_objs':Emp_objs,'UserID':UserID,'OID':OID,'memOrg':memOrg}
     return render(request, 'ProbationConfirmation/List.html',context)
 
    

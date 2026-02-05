@@ -304,6 +304,7 @@ def Exit_Edit(request):
         Resign = request.POST.get('Resign', '')
         hotel= request.POST.get('hotel', '')
         Termination = request.POST.get('Termination', '')
+        Absconding = request.POST.get('Absconding', '')
         statusrehire = request.POST.get('rehire')
        
         rehire = False    
@@ -324,6 +325,7 @@ def Exit_Edit(request):
         exit_instance.Resign = Resign
         exit_instance.hotel = hotel
         exit_instance.Termination = Termination
+        exit_instance.Absconding = Absconding
         exit_instance.ModifyBy = UserID
         exit_instance.ModifyDateTime = datetime.now()
 
@@ -411,6 +413,7 @@ def Exit_Edit(request):
 
 from django.db.models import Subquery, OuterRef
 from HumanResources.models import EmployeePersonalDetails
+from app.Global_Api import get_organization_list
 
 
 def Exit_list(request):
@@ -425,15 +428,13 @@ def Exit_list(request):
     UserID = str(request.session["UserID"])
     
    
-    memOrg = OrganizationMaster.objects.filter(IsDelete=False, Activation_status=1).values(
-        'OrganizationID', 'OrganizationName', 'OrganizationDomainCode', 'ShortDisplayLabel'
-    )
+    memOrg = get_organization_list(OrganizationID)  
     
     
     selectedOrganizationID = request.GET.get('hotel', str(OrganizationID))
 
-    if UserType == 'CEO' and request.GET.get('hotel') is None:
-        selectedOrganizationID = 401
+    # if UserType == 'CEO' and request.GET.get('hotel') is None:
+    #     selectedOrganizationID = 401
     
     emp_id_subquery = Subquery(
         EmployeePersonalDetails.objects.filter(
@@ -442,21 +443,12 @@ def Exit_list(request):
         ).values('EmpID')[:1]
     )
     
-    
-    if selectedOrganizationID == '3':
-        
+    if selectedOrganizationID == 'all':
         exitinterviews = Exitinterviewdata.objects.filter(IsDelete=False).annotate(
         EmpID=emp_id_subquery).order_by('-id')
     else:
-        
-        
         exitinterviews = Exitinterviewdata.objects.filter(IsDelete=False, hotel=selectedOrganizationID).annotate(
         EmpID=emp_id_subquery).order_by('-id')
-
-
-
-
-
 
     context = {
         'exitinterviews': exitinterviews,
