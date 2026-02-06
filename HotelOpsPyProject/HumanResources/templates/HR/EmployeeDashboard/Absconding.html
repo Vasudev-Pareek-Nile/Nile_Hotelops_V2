@@ -115,55 +115,61 @@
 </style>
 
 <div class="card">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between">
         <span class=" text-uppercase fw-bold"> Show Cause Notice </span> 
-    
-        {% if Noticeshow == 'Show'  %}
-            <a href="{% url 'EmpshowcausenoticeEntry' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" 
-                class="btn btn-sm btn-primary" 
-                style="float:right; margin-left: 10px;">
-                New Show Cause Notice
-            </a> 
-        {% endif %}
-        </div>
-        <div class="card-body">
-            <table class="table table-bordered table-condensed display table-sm compact" style="font-size:11px">
-                <thead>
-                    <tr class="active" style="background-color:#8e9ebc">
-                        <th class="EmpCode">Code</th>
-                        <th class="Name">Name</th>
-                        <th class="Designation">Designation</th>
-                        <th class="Department">Department</th>
-                        <th class="Date">Joining Date</th>
-                        <th class="Date">Date of Absence</th>
-                        {% comment %} <th class="Remarks">Remarks</th> {% endcomment %}
-                        <th class="Action">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in Notices %}
-                        <tr>
-                            <td>{{ i.Emp_Code }}</td>
-                            <td>{{ i.Name }}</td>
-                            <td>{{ i.Designation }}</td>
-                            <td>{{ i.Dept }}</td>
-                            <td>{{ i.DOJ }}</td>
-                            <td>{{ i.Date_Of_absence }}</td>
-                            {% comment %} <td>{{ i.Remarks }}</td> {% endcomment %}
-                            <td>
-                                <div class="btn btn-group gap-2">
-                                    <a href="{% url 'EmpshowcausenoticeEntry' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
-                                    {% comment %} <a href="{% url 'EmpshowcausenoticeDelete' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&OID={{OrganizationID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
-                                    <a href="{% url 'EmpshowcausenoticePDF' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&OID={{OrganizationID}}" class="btn btn-secondary text-white btn-sm" target="_blank">View</a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            
+        <div>    
+
+            {% if First_Notices_Show == 'Show' %}
+                <a href="{% url 'EmpshowcausenoticeEntry' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" 
+                    class="btn btn-sm btn-primary">
+                    First Notice
+                </a> 
+            {% endif %} 
+            {% if First_Notices_Show == 'Show' and Second_Notices_Show == 'Show' %}
+                <a href="{% url 'Second_Show_Cause_Notice_Entry' %}?EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" 
+                    class="btn btn-sm btn-primary">
+                    Second Notice
+                </a> 
+            {% endif %}
         </div>
     </div>
+    <div class="card-body">
+        <table class="table table-bordered table-condensed display table-sm compact" style="font-size:11px">
+            <thead>
+                <tr class="active" style="background-color:#8e9ebc">
+                    <th class="EmpCode">Code</th>
+                    <th class="Name">Name</th>
+                    <th class="Designation">Designation</th>
+                    <th class="Department">Department</th>
+                    <th class="Date">Joining Date</th>
+                    <th class="Date">Date of Absence</th>
+                    {% comment %} <th class="Remarks">Remarks</th> {% endcomment %}
+                    <th class="Action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in Notices %}
+                    <tr>
+                        <td>{{ i.Emp_Code }}</td>
+                        <td>{{ i.Name }}</td>
+                        <td>{{ i.Designation }}</td>
+                        <td>{{ i.Dept }}</td>
+                        <td>{{ i.DOJ }}</td>
+                        <td>{{ i.Date_Of_absence }}</td>
+                        {% comment %} <td>{{ i.Remarks }}</td> {% endcomment %}
+                        <td>
+                            <div class="btn btn-group gap-2">
+                                <a href="{% url 'EmpshowcausenoticeEntry' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&DepartmentName={{ Emobj.Department }}&OID={{OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                {% comment %} <a href="{% url 'EmpshowcausenoticeDelete' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&OID={{OrganizationID}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                                <a href="{% url 'EmpshowcausenoticePDF' %}?AID={{ i.id }}&EC={{EC}}&EmpID={{EmpID}}&OID={{OrganizationID}}" class="btn btn-secondary text-white btn-sm" target="_blank">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <div class="card">
         <div class="card-header d-flex justify-content-between">

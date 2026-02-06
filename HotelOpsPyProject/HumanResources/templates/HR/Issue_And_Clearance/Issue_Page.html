@@ -113,10 +113,18 @@
                             <span class="btn btn-sm btn-secondary">Approved</span>
                             <!-- <span class="badge bg-success p-2">Approved</span> -->
                         {% else %}
-                            <a href="{% url 'Hod_Approve_Request' %}?id={{ al.id }}" 
+                            {% if request.session.Department_Name == al.department and request.session.UserType|lower == "hod" %}
+                                <a href="{% url 'Hod_Approve_Request' %}?id={{ al.id }}" 
+                                    class="btn btn-sm btn-primary">
+                                    Approve
+                                </a>
+                            {% else %}
+                                <span class="btn btn-sm btn-secondary">Waiting for HOD</span>
+                             {% endif %}
+                            {% comment %} <a href="{% url 'Hod_Approve_Request' %}?id={{ al.id }}" 
                                 class="btn btn-sm btn-primary">
                                 Approve
-                            </a>
+                            </a> {% endcomment %}
                             {% comment %} <a class="btn btn-sm btn-secondary disabled text-white">
                                 On Hold
                             </a> {% endcomment %}
@@ -125,7 +133,7 @@
 
                     <td>
                         {% if not al.DEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.HK %}
                                 <a href="{% url 'HouseKeepingRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}&ID={{al.uniform_info_id}}&Hide=True" 
@@ -152,7 +160,7 @@
                     </td>
                     <td>
                         {% if not al.DEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.IT %}
                                 <a href="{% url 'ITRequest' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}&ID={{al.it_info_id}}&Hide=True" 
@@ -180,7 +188,7 @@
 
                     <td>
                         {% if not al.DEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.HR %}
                                 <a href="{% url 'HR_Inventory_Request' %}?EC={{ al.emp_code }}&OID={{ al.OrganizationID }}&ID={{al.hr_info_id}}&Hide=True" 

@@ -7002,8 +7002,8 @@ def Absconding(request):
      else:
         print("EmpID is not found ")
           
-     First_Notices_Show  = 'Show'  
-     Second_Notices_Show  = 'Show'  
+     First_Notices  = None  
+     Second_Notices  = None  
      Abscondingshow = 'Show'   
      Abscondings = EmpAbscondingModel.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
      if  Abscondings.count() >0:
@@ -7011,25 +7011,24 @@ def Absconding(request):
      Noticeshow = 'Show'   
      
      First_Notices = Empshowcausenotice.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
-     if First_Notices.count() > 0:
-        First_Notices_Show = 'Hide'
+     if  First_Notices.count() >0:
+          First_Notices = 'Hide'
  
      Second_Notices = Second_Show_Cause_Notice.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
      if  Second_Notices.count() >0:
-          Second_Notices_Show = 'Hide'
+          Second_Notices = 'Hide'
  
      context = {
         'Emobj':Emobj,
         'EmpID':EmpID,
         'EC':EC,
         'Abscondings':Abscondings,
+        'Notices':Notices,
         'OrganizationID':OrganizationID,
         'Noticeshow':Noticeshow,
         'Abscondingshow':Abscondingshow,
-        'AbscondingRevoke':AbscondingRevoke,
-        'First_Notices_Show':First_Notices_Show,
-        'Second_Notices_Show':Second_Notices_Show,
-    }
+        'AbscondingRevoke':AbscondingRevoke
+        }
      return render(request, 'HR/EmployeeDashboard/Absconding.html', context)
 
 

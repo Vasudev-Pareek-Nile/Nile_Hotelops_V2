@@ -4371,7 +4371,7 @@ def upload_weekoff(request):
                     ).first()
                     
                     if existing_event:
-                        error_message = f"Row {index + 1}: Weekoff details already exist for employee {emp_code} on {weekoff_date}."
+                        error_message = f"Row {index + 1}: Weekoff details already exist for employee {emp_code} on {parsed_date}."
                         # print(error_message)
                         # error_messages.append(error_message)
                         continue
@@ -4388,8 +4388,8 @@ def upload_weekoff(request):
                         OrganizationID=OrganizationID,
                         defaults={
                             'IsDelete': False,  # Fields to update or set
-                            # Add other fields you want to update or set here
                             'Status': "Week Off",
+                            'IsUpload_WeekOff': True,
                         }
                     )
 

@@ -219,6 +219,54 @@
     .RefreshSalaryButtonMsg{
     font-size: 13px;
     }
+
+
+    table {
+        border-collapse: separate !important;
+        border-spacing: 0;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    /* Top Left Corner */
+    #tblObject thead tr:first-child th:first-child {
+        border-top-left-radius: 5px;
+    }
+
+    /* Top Right Corner */
+    #tblObject thead tr:first-child th:last-child {
+        border-top-right-radius: 5px;
+    }
+
+    /* Bottom Left Corner */
+    #tblObject tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 5px;
+    }
+
+    /* Bottom Right Corner */
+    #tblObject tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 5px;
+    }
+    #tblObject tbody tr:last-of-type td:first-child {
+        border-bottom-left-radius: 5px;
+    }
+
+    #tblObject tbody tr:last-of-type td:last-child {
+        border-bottom-right-radius: 5px;
+    }
+
+    .CommentstblObject tbody tr:first-of-type td {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .CommentstblObject tbody tr:last-of-type td {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .card-header {
+        border-radius: 5px;
+    }
 </style>
     
        <form action="" method="post">
@@ -240,7 +288,8 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Employee Code:</label>                              <input type="text" class="form-control" id="EmployeeCode" value="{% if  padp.EmployeeCode %}{{padp.EmployeeCode}}{% endif %}" readonly name="padp_Emp_Code">
+                            <label for="">Employee Code:</label>                              
+                            <input type="text" class="form-control" id="EmployeeCode" value="{% if  padp.EmployeeCode %}{{padp.EmployeeCode}}{% endif %}" readonly name="padp_Emp_Code">
                         </div>
                     </div>
               
@@ -319,7 +368,7 @@
                         <input type="date"  {% if Departmentsession != 'hr' %}readonly{% endif %} value="{% if  padp.FromReviewDate %}{{padp.FromReviewDate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" class="form-control" class="form-control" name="FromReviewDate">
                     </div></div>
                     <div class="col-md-2">
-                        <div class="form-group m-3">
+                        <div class="form-group mt-3">
                             <label for="">To Review Date :</label>
                             <input type="date" {% if  Departmentsession != 'hr' %}readonly{% endif %}  value="{% if  padp.ToReviewDate %}{{padp.ToReviewDate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" class="form-control" name="ToReviewDate" >
                         </div>
@@ -460,7 +509,7 @@
                                         
                                             </tbody>                        
                                         </table>
-                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                        <table class="table table-bordered display table-sm CommentstblObject" id="tblObject">
                                             <tbody>
                                                 <tr><td colspan="9" class="Definition"><strong>Definition :- <br></strong> <p>{{obj.Definitions|bold_lines_before_hyphen }}</p></td></tr>
                                             </tbody>
@@ -522,7 +571,7 @@
                                             
                                         </div> 
 
-                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                        <table class="table table-bordered display table-sm CommentstblObject" id="tblObject">
                                             <tbody>
                                                 <tr>
                                                     <td colspan="9">
@@ -567,7 +616,7 @@
                                                 </table>
                                             </div>
                                             <div class="col-md-6">
-                                            <table class="table table-bordered display table-sm" id="tblObject" >
+                                            <table class="table table-bordered display table-sm " id="tblObject" >
                                                 <thead>
                                                     <tr>
                                                         <th class="capitalbga Bold ColorChange">Ineffective</th>
@@ -595,7 +644,7 @@
                                             <br>
                                                 
                                         </div> 
-                                        <table class="table table-bordered display table-sm" id="tblObject">
+                                        <table class="table table-bordered display table-sm CommentstblObject" id="tblObject">
 
                                             <tbody>
                                                 <tr>
@@ -745,7 +794,7 @@
                     {% endif %}
                     <div class="card-header col-md-12 text-center capitalheader m-1 text-black" ><h4 class="bold">SUMMARY AND ACKNOWLEDGEMENT</h4> </div>   
                     <div class="row m-1 ">
-                        <table class="table table-bordered">
+                        <table class="table table-bordered CommentstblObject">
                             <tbody>
                                 <tr>
                                     <td >
@@ -778,13 +827,26 @@
                         </table>
 
                         {% if Appraiser == "Yes"  or  SessionDottedLine == "Yes"  or UserType == 'ceo' or HrAudit == "Yes" %}
-                            <table class="table table-bordered" style="font-size: 9px;">
+                            <table class="table table-bordered CommentstblObject" style="font-size: 9px;">
                                 <tbody>
                                     <tr>
                                         <td colspan="4">
                                             {% comment %} <label for=""><strong>Supervisor/General Manager's Rating (Contribution 75% of Supervisor/General Manager).</strong></label> {% endcomment %}
-                                            <label for=""><strong>{{padp.Appraisor_Title}} Rating  (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
-                                            
+                                            {% comment %} <label for=""><strong>{{padp.Appraisor_Title}} Rating  (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label> {% endcomment %}
+                                            <label for="">
+                                                <strong>
+                                                    {{padp.Appraisor_Title}} Comments (Contribution 
+                                                    {% if padp.Appraisor_Title == padp.DottedLine  %}
+                                                        100%
+                                                    {% else %}
+                                                        {% if padp.DottedLine == "Vice President – Rooms Division" %}
+                                                            50%
+                                                        {% else %}
+                                                            75%
+                                                        {% endif %}
+                                                    {% endif %} )
+                                                </strong>
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -812,8 +874,21 @@
                                     
                                     <tr>
                                         <td colspan="5">
-                                            <label for=""><strong>{{padp.Appraisor_Title}} Comments   (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label>
-                                        
+                                            {% comment %} <label for=""><strong>{{padp.Appraisor_Title}} Comments (Contribution {% if padp.Appraisor_Title == padp.DottedLine  %}100%{% else %}75% {% endif %} ).</strong></label> {% endcomment %}
+                                            <label for="">
+                                                <strong>
+                                                    {{padp.Appraisor_Title}} Comments (Contribution 
+                                                    {% if padp.Appraisor_Title == padp.DottedLine  %}
+                                                        100%
+                                                    {% else %}
+                                                        {% if padp.DottedLine == "Vice President – Rooms Division" %}
+                                                            50%
+                                                        {% else %}
+                                                            75%
+                                                        {% endif %}
+                                                    {% endif %} )
+                                                </strong>
+                                            </label>
                                         
                                             <textarea name="SP_GM_Comment"   id="SP_GM_Comment" cols="30" class="form-control"
                                             oninput="checkWordCount(this, 500)"
@@ -828,12 +903,19 @@
                         {% endif %}    
                         
                         {% if SessionDottedLine == "Yes" and padp.DottedLine != padp.Appraisor_Title  or  HrAudit == "Yes"  %}
-                            <table class="table table-bordered" style="font-size: 9px;">
+                            <table class="table table-bordered CommentstblObject" style="font-size: 9px;">
                                 <tbody>
                                     <tr>
                                         <td colspan="4">
-                                            <label for=""><strong>{{padp.DottedLine}} Rating  (Contribution 25% ).</strong></label>
-                                        
+                                            <label for="">
+                                                <strong>
+                                                {% if padp.DottedLine == "Vice President – Rooms Division" %}
+                                                    {{padp.DottedLine}} Rating (Contribution 50% )
+                                                {% else %}
+                                                    {{padp.DottedLine}} Rating  (Contribution 25% )
+                                                {% endif %}
+                                                </strong>
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -857,7 +939,16 @@
                                     </tr>
                                     <tr>
                                         <td colspan="5">
-                                            <label for=""><strong>{{padp.DottedLine}} Comments   (Contribution 25% ).</strong></label>
+                                            {% comment %} <label for=""><strong>{{padp.DottedLine}} Comments   (Contribution 25% ).</strong></label> {% endcomment %}
+                                            <label for="">
+                                                <strong>
+                                                {% if padp.DottedLine == "Vice President – Rooms Division" %}
+                                                    {{padp.DottedLine}} Comments (Contribution 50% )
+                                                {% else %}
+                                                    {{padp.DottedLine}} Comments (Contribution 25% )
+                                                {% endif %}
+                                                </strong>
+                                            </label>
                                         
                                             <textarea name="RD_Comment"   id="RD_Comment" cols="30"
                                             oninput="checkWordCount(this, 500)"

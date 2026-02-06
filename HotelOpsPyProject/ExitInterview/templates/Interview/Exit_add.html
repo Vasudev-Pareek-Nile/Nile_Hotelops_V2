@@ -102,7 +102,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Joining:<span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="DateofJoining" value="{{ warning_instance.DateofJoining|date:"d-m-Y"  }}" readonly >
+                        <input type="text" class="form-control" id="doj" name="DateofJoining" value="{{ warning_instance.DateofJoining|date:"d-m-Y"  }}" readonly >
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Department:<span class="text-danger">*</span></label>
@@ -117,7 +117,7 @@
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="from-label custom-label">Date of Leaving:<span class="text-danger">*</span></label>
-                       <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="">
+                       <input type="date" class="form-control" id="date_of_leaving" name="DateofLeaving" value="" title="Date of leaving must be greater than or equal to the date of joining.">
                   </div>
                     <div class="col-md-6 mb-3">
                         <label  class="from-label custom-label">Reasons of Leaving:</label>
@@ -323,8 +323,43 @@
         }
     }
     
-   
     window.onload = setDefaultDate;
-    
 </script>
+
+
+<script>
+  // Get references to the date inputs
+  const dojInput = document.getElementById('doj');
+  const dateOfResignationInput = document.getElementById('date_of_leaving');
+
+  function validateDates() {
+    const doj = new Date(dojInput.value);
+    const dateOfResignation = new Date(dateOfResignationInput.value);
+
+    let errorMessage = '';
+
+    if (dateOfResignation < doj) {
+      errorMessage += 'Date of Leaving cannot be earlier than Date of Joining.\n';
+      dateOfResignationInput.value = dojInput.value; // reset to DOJ
+    }
+    if (errorMessage) {
+      alert(errorMessage);
+    }
+  }
+
+  // Attach the validation to date change events
+  dateOfResignationInput.addEventListener('change', validateDates);
+
+  // Optional: validate on form submit too
+  document.querySelector('form').addEventListener('submit', function(e) {
+    const doj_val = new Date(dojInput.value);
+    const dateOfResignation_Val = new Date(dateOfResignationInput.value);
+
+    if (dateOfResignation_Val < doj_val) {
+      e.preventDefault();
+      validateDates();
+    }
+  });
+</script>
+
 {% endblock content %}

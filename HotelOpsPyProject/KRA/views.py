@@ -1113,6 +1113,15 @@ def KraEnrty(request):
     
     selected_year = request.GET.get('year', current_year)
     selected_month = request.GET.get('month', int(current_month))
+    
+    
+    # print("session OrganizationID:",OrganizationID)
+    # print("session UserID:",UserID)
+    # print("session SessionEmpCode:",SessionEmpCode)
+    # print("User OID:",I)
+    # print("User selected_employee:",selected_employee)
+    # print("User selected_year:",selected_year)
+    # print("User current_month:",current_month)
 
     # Convert to int safely
     try:
@@ -1895,3 +1904,168 @@ class KRA_Target_Report_Api_View(APIView):
             )
 
 
+
+
+
+
+
+
+
+
+
+
+#  ---------------------------- Example ------------------> 
+
+
+# @api_view(['GET', 'POST'])
+# def Kra_Entry_mobile_api_revised(request):
+    
+#     """
+#     API: KRA Entry Select
+#     Params:
+#     - OID (OrganizationID)
+#     - year
+#     - month
+#     - UserID
+#     - EmpCode
+#     """
+#     Fixed_Token = 'ujhj45ON8BKl!udLGPu!szcWtY!e9MTm4jpXSqD7wNM1HITpnbJhhp=aElxgkShcdaBhvgqLeOMjz9G?qliY6FK/AcJN0iTB3fIl5g55bllJHdrF-Yh-O4W-eEjKaPk/DBGqHU6XDhbG5m68RtVxZGH?B6n1F5u=F84npBeJIMS/SzrT7=dXuAj=8aqDyvRpIh=nswd!XPTMobzhw2jKxocrOYJkzo0osZFSMxK1hMqRbqGJIKR=bgRfS!cea11f'
+#     AccessToken = request.headers.get('Authorization', '')
+
+#     # Token checks
+#     if not AccessToken:
+#         return JsonResponse({'error': 'Token not found'}, status=400)
+#     if AccessToken != Fixed_Token:
+#         return JsonResponse({'error': 'Invalid token'}, status=400)
+#     # -------------------------------
+#     OrganizationID = request.GET.get('OID')
+    
+#     # OID checks
+#     if not OrganizationID:
+#         return JsonResponse({'error': 'OID is required'}, status=400)
+#     if OrganizationID != '333333' and not OrganizationMaster.objects.filter(OrganizationID=OrganizationID).exists():
+#         return JsonResponse({'error': 'Invalid OrganizationID'}, status=400)
+
+#     # OrganizationID = request.GET.get('OID')
+#     selected_year = request.GET.get('year')
+#     selected_month = request.GET.get('month')
+#     UserID = request.GET.get('UserID')
+#     selected_employee = request.GET.get('EmpCode')
+
+#     # ------------------ Validation ------------------
+#     if not all([OrganizationID, selected_year, selected_month, UserID, selected_employee]):
+#         return Response(
+#             {"status": False, "error": "Missing required parameters"},
+#             status=status.HTTP_400_BAD_REQUEST
+#         )
+
+#     # ======================================================
+#     # GET API
+#     # ======================================================
+#     if request.method == "GET":
+
+#         # ----- Stored Procedure -----
+#         with connection.cursor() as cursor:
+#             cursor.execute(
+#                 "EXEC KRA_Entry_Select_Revised @OrganizationID=%s, @EntryYear=%s, @EntryMonth=%s, @UserID=%s, @UID=%s, @EmpCode=%s",
+#                 [OrganizationID, selected_year, selected_month, UserID, UserID, selected_employee]
+#             )
+
+#             rows = cursor.fetchall()
+#             columns = [col[0] for col in cursor.description]
+
+#         rowslist = [dict(zip(columns, row)) for row in rows]
+
+#         # Deduplicate
+#         unique_rows = {}
+#         for row in rowslist:
+#             kra_id = row.get("id")
+#             if kra_id not in unique_rows:
+#                 unique_rows[kra_id] = row
+
+#         rowslist = list(unique_rows.values())
+
+#         return Response({
+#             "OrganizationID": OrganizationID,
+#             "EmployeeCode": selected_employee,
+#             "Year": selected_year,
+#             "Month": selected_month,
+#             "KRAData": rowslist
+#         })
+
+    # # ======================================================
+    # # POST API
+    # # ======================================================
+    # if request.method == "POST":
+
+    #     data = request.data
+    #     selected_year = data.get('year')
+    #     selected_month = data.get('month')
+    #     kra_entries = data.get('kra_entries', [])
+
+    #     Employee = get_employee_name_designation_by_EmployeeCode(I, selected_employee)
+    #     SubmittedByDesignation = Employee
+
+    #     KraEntryobj = KraEntryMaster.objects.filter(
+    #         OrganizationID=I,
+    #         IsDelete=False,
+    #         SubmittedByEmployeeCode=selected_employee,
+    #         SubmittedYear=selected_year,
+    #         SubmittedMonth=selected_month
+    #     ).first()
+
+    #     if not KraEntryobj:
+    #         KraEntryobj = KraEntryMaster.objects.create(
+    #             SubmittedByEmployeeCode=selected_employee,
+    #             SubmittedByName=Employee,
+    #             SubmittedByDesignation=SubmittedByDesignation,
+    #             SubmittedYear=selected_year,
+    #             SubmittedMonth=selected_month,
+    #             OrganizationID=I,
+    #             CreatedBy=UserID
+    #         )
+
+    #     # ----- Save Details -----
+    #     for entry in kra_entries:
+
+    #         kra_id = entry.get("kra_id")
+    #         actual = entry.get("actual")
+    #         actual_value = entry.get("actual_value")
+    #         standard_value = entry.get("standard_value")
+
+    #         target_obj = TargetAssignMasterDetails.objects.filter(
+    #             id=kra_id,
+    #             IsDelete=False
+    #         ).first()
+
+    #         if not target_obj:
+    #             continue
+
+    #         detail = KraEntryMasterDetails.objects.filter(
+    #             KraEntryMaster=KraEntryobj,
+    #             TargetAssignMasterDetails=target_obj,
+    #             IsDelete=False
+    #         ).first()
+
+    #         if detail:
+    #             detail.Actual = actual
+    #             detail.ActualValue = actual_value
+    #             detail.StandardValue = standard_value
+    #             detail.ModifyBy = UserID
+    #             detail.save()
+
+    #         else:
+    #             KraEntryMasterDetails.objects.create(
+    #                 KraEntryMaster=KraEntryobj,
+    #                 TargetAssignMasterDetails=target_obj,
+    #                 Actual=actual,
+    #                 ActualValue=actual_value,
+    #                 StandardValue=standard_value,
+    #                 OrganizationID=I,
+    #                 KRAID=target_obj.KRA.id,
+    #                 CreatedBy=UserID
+    #             )
+
+    #     return Response({
+    #         "message": "KRA Entry Saved Successfully"
+    #     }, status=status.HTTP_200_OK)

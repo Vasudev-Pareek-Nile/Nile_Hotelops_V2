@@ -33,6 +33,9 @@ from app.Global_Api import get_organization_list
 
 def Issue_view(request):
     OrganizationID = request.session["OrganizationID"] 
+    Department_Name = request.session["Department_Name"]
+    UserType = request.session.get("UserType", "").lower()
+    
     OID  = request.GET.get('OID')
     memOrg = get_organization_list(OrganizationID)  
     
@@ -46,7 +49,10 @@ def Issue_view(request):
 
     if OID != "all":
         query = query.filter(OrganizationID=OID)
-
+        
+    if (Department_Name and UserType == 'hod') and Department_Name.lower() not in ['hr', 'human resources']:
+        query = query.filter(department=Department_Name)
+        
     AppoiLetters = query.values(
         'id',
         'first_name',
@@ -109,19 +115,42 @@ from EmpResignation.models import EmpResigantionModel
 from HR_Inventory.models import HR_Inventory_Information
 
 def Clearance_view(request):
-    OrganizationID = request.session["OrganizationID"] 
+    OrganizationID = request.session["OrganizationID"]
+    Department_Name = request.session["Department_Name"]
+    UserType = request.session.get("UserType", "").lower()
     OID  = request.GET.get('OID')
-    if OID:
-        OrganizationID= OID
+    
+    memOrg = get_organization_list(OrganizationID)
+    
+    if not OID:
+        OID = OrganizationID
         
     # Resigantions = EmpResigantionModel.objects.filter(OrganizationID=OrganizationID,IsDelete=False).only('Name','Emp_Code','Dept','Designation','HR','HK','IT','IsDEPT','OrganizationID').order_by('-CreatedDateTime')
 
-    Resigantions = EmpResigantionModel.objects.filter(
-        OrganizationID=OrganizationID,
-        IsDelete=False
-    ).values(
-        'id','Name','Emp_Code','Dept','Designation','HR','HK','IT','IsDEPT','OrganizationID','HKCreatedBy','ITCreatedBy','DEPTCreatedBy',
+    query = EmpResigantionModel.objects.filter(IsDelete=False)
+    
+    if OID != "all":
+        query = query.filter(OrganizationID=OID)
+        
+    if (Department_Name and UserType == 'hod') and Department_Name.lower() not in ['hr', 'human resources']:
+        query = query.filter(Dept=Department_Name)
+        
+    Resigantions = query.values(
+        'id',
+        'Name',
+        'Emp_Code',
+        'Dept',
+        'Designation',
+        'HR',
+        'HK',
+        'IT',
+        'IsDEPT',
+        'OrganizationID',
+        'HKCreatedBy',
+        'ITCreatedBy',
+        'DEPTCreatedBy',
     ).order_by('-CreatedDateTime')
+    
 
     UN_subquery = UniformInformation.objects.filter(
         EmployeeCode=OuterRef("Emp_Code"),
@@ -154,7 +183,9 @@ def Clearance_view(request):
         
     context={
         'Resigantions':Resigantions,
-        'merged_qs':merged_qs
+        'merged_qs':merged_qs,
+        'OID':OID,
+        'memOrg':memOrg
     }
     return render(request, 'HR/Issue_And_Clearance/Clearance_Page.html', context)
 

@@ -1755,7 +1755,8 @@ from django.db.models import Q
 #     except Exception as e:
 #         print("Date format error:", date_str, e)
 #         return date_str  # fallback to original string
-    
+
+from app.Global_Api import get_organization_list
 
 def format_date_properly(date_str):
     try:
@@ -1773,7 +1774,7 @@ def PADPApprove(request):
 
     OrganizationID = request.session["OrganizationID"]
     UserID = str(request.session["UserID"])
-    orgs = OrganizationList(OrganizationID)
+    orgs = get_organization_list(OrganizationID)
     UserType = str(request.session["UserType"])
     Department = request.session.get("Department_Name")
     Departmentsession = str(Department).lower()
@@ -1788,7 +1789,7 @@ def PADPApprove(request):
     # print("the return of month filter::", selected_month)
     I = request.GET.get('I',OrganizationID)
     if OrganizationID == "3":
-        I = request.GET.get('I') or 'All'
+        I = request.GET.get('I') or 'all'
 
     SI = request.GET.getlist('SI')
 
@@ -1815,7 +1816,7 @@ def PADPApprove(request):
     # Conditionally include filters based on the Status and I values
     padp_filter = {}
    
-    if I != 'All':
+    if I != 'all':
         padp_filter['OrganizationID'] = I
     
     # if Status != 'All':
@@ -1878,15 +1879,29 @@ def PADPApprove(request):
     # if Status != 'All':
     #     apdp_query = apdp_query.filter(LastApporvalStatus=Status)
 
+
+    # if (UserType == "CEO" or UserID == '20251209112591') and OrganizationID == "3":
+
+    #     if apdp_query.filter(ReportingtoDesigantion="CEO").exists():
+    #         apdpdetas = apdp_query.filter(ReportingtoDesigantion="CEO")
+    #     else:
+    #         apdpdetas = apdp_query.filter(hr_ar="Audited")
+
+
     if (UserType == "CEO" or UserID == '20251209112591') and OrganizationID == "3":
-        apdpdetas = apdp_query.filter(hr_ar="Audited")
+        apdpdetas = apdp_query.filter(
+            Q(ReportingtoDesigantion="CEO") |
+            Q(hr_ar="Audited")
+        )
+
     elif str(Departmentsession) == 'hr':
         apdpdetas = apdp_query
+
     else:
         apdpdetas = apdp_query.filter(ReportingtoDesigantion=ReportingtoDesigantion)
 
-    final_performance_ratings = FinalPerformancerating.objects.filter(APADP__in=apdpdetas, IsDelete=False)
 
+    final_performance_ratings = FinalPerformancerating.objects.filter(APADP__in=apdpdetas, IsDelete=False)
     
     if per:
         for rating in final_performance_ratings.filter(SalaryIncrementOption__in=per):
@@ -1956,10 +1971,6 @@ def PADPApprove(request):
                 'get_organization_name': rating.APADP.get_organization_name()
             })
 
-    # Entry Master Records
-    # entry_query = Entry_Master.objects.filter(IsDelete=False, CreatedDateTime__year=selected_year,
-    #                                         #   CreatedDateTime__month=selected_month,
-    #                                          **padp_filter)
     if selected_month == 'All':
         entry_query = Entry_Master.objects.filter(
             IsDelete=False, 
@@ -1979,20 +1990,42 @@ def PADPApprove(request):
 
 
     
+    # if (UserType == "CEO" or UserID == "20251209112591"):
+    #     entry_records = entry_query.filter(
+    #         Q(hr_ar="Audited") | 
+    #         (Q(ep_as="Submitted") & Q(Aprraise_Level="M5"))  
+    #     )
+    
+    # if (UserType == "CEO" or UserID == "20251209112591"):
+    #     if entry_query.filter(ReportingtoDesigantion="CEO").exists():
+    #         pass
+    #     else:
+    #         entry_records = entry_query.filter(
+    #             Q(hr_ar="Audited") | 
+    #             (Q(ep_as="Submitted") & Q(Aprraise_Level="M5"))  
+    #         )
+    # elif str(Departmentsession) == 'hr':
+    #     entry_records = entry_query
+    # else:
+    #     entry_records = entry_query.filter(
+    #         Q(ReportingtoDesigantion=ReportingtoDesigantion) | Q(DottedLine=ReportingtoDesigantion)
+    #     )
+    
+    
     if (UserType == "CEO" or UserID == "20251209112591"):
         entry_records = entry_query.filter(
             Q(hr_ar="Audited") | 
             (Q(ep_as="Submitted") & Q(Aprraise_Level="M5"))  
         )
-
-    # if UserType == "CEO" and OrganizationID == "3":
-    #     entry_records = entry_query.filter(hr_ar="Audited")
+    
     elif str(Departmentsession) == 'hr':
         entry_records = entry_query
     else:
         entry_records = entry_query.filter(
             Q(ReportingtoDesigantion=ReportingtoDesigantion) | Q(DottedLine=ReportingtoDesigantion)
         )
+    
+
 
     # if conditions:
     #         print("if working")
@@ -2007,74 +2040,26 @@ def PADPApprove(request):
 
     for entry in entry_records:
         if conditions:
-              
-                exclude_conditions = Q(SALARY_CORRECTION=True) | Q(PROMOTION=True) | Q(PROMOTION_WITH_INCREASE=True) | Q(PROMOTION_WITH_INCREASE=False) | Q(SALARY_CORRECTION=False) | Q(PROMOTION_WITH_INCREASE=False) | Q(NO_CORRECTION=False)  | Q(NO_CORRECTION=True)
-                final_perf_record = FINAL_PERFORMANCE_RATING.objects.filter(conditions,Entry_Master=entry).exclude(exclude_conditions).first()
-                # print("the padp ceo status::", entry.ceo_as)
-                
-                if final_perf_record:
-                    performance_rating = "Outstanding" if final_perf_record.OUTSTANDING else \
-                                        "Above Standard" if final_perf_record.ABOVE_STANDARD else \
-                                        "Meets Expectation" if final_perf_record.MEETS_EXPECTATION else \
-                                        "Below Standard" if final_perf_record.BELOW_STANDARD else \
-                                        "Deficient" if final_perf_record.DEFICIENT else "Not Rated"
+            exclude_conditions = Q(SALARY_CORRECTION=True) | Q(PROMOTION=True) | Q(PROMOTION_WITH_INCREASE=True) | Q(PROMOTION_WITH_INCREASE=False) | Q(SALARY_CORRECTION=False) | Q(PROMOTION_WITH_INCREASE=False) | Q(NO_CORRECTION=False)  | Q(NO_CORRECTION=True)
+            final_perf_record = FINAL_PERFORMANCE_RATING.objects.filter(conditions,Entry_Master=entry).exclude(exclude_conditions).first()
+            # print("the padp ceo status::", entry.ceo_as)
+            
+            if final_perf_record:
+                performance_rating = "Outstanding" if final_perf_record.OUTSTANDING else \
+                                    "Above Standard" if final_perf_record.ABOVE_STANDARD else \
+                                    "Meets Expectation" if final_perf_record.MEETS_EXPECTATION else \
+                                    "Below Standard" if final_perf_record.BELOW_STANDARD else \
+                                    "Deficient" if final_perf_record.DEFICIENT else "Not Rated"
 
-                    salary_increment = "No Correction" if final_perf_record.NO_CORRECTION else \
-                                    "3 %" if final_perf_record.per_3 else \
-                                    "5 %" if final_perf_record.per_5 else \
-                                    "8 %" if final_perf_record.per_8 else \
-                                    "10 %" if final_perf_record.per_10 else \
-                                    f"Correction \n {final_perf_record.FromSalary} To {final_perf_record.ToSalary}" if final_perf_record.SALARY_CORRECTION else \
-                                    f"Promotion  \n{final_perf_record.FromPosition} To\n {final_perf_record.ToPosition}" if final_perf_record.PROMOTION else \
-                                    f"Promotion With Increament \n{final_perf_record.FromSalary} To {final_perf_record.ToSalary} \n {final_perf_record.FromPosition} To\n{final_perf_record.ToPosition}" if final_perf_record.PROMOTION_WITH_INCREASE else "Action Pending"
-               
-                    final_results.append({
-                        'EmployeeCode': entry.EmployeeCode,
-                        'OrganizationID': entry.OrganizationID,
-                        'Aprraise_Level':entry.Aprraise_Level,
-                        'Aprraisee_position':entry.Aprraisee_position,
-                        'Appraisee_Name': entry.Appraisee_Name,
-                        'ReviewPeriod': f"{entry.FromReviewDate.strftime('%d %b %Y')} <br>To<br> {entry.ToReviewDate.strftime('%d %b %Y')}",
-                        # 'ReviewPeriod': f"From Date: {entry.FromReviewDate.strftime('%d %b %Y')} <br> To Date: {entry.ToReviewDate.strftime('%d %b %Y')}",
-                        'FinalPerformanceRating': performance_rating,
-                        'SalaryIncrementOption': salary_increment,
-                        'Approval_stage': entry.Approval_stage(),
-                        'DraftBy':entry.DraftBy,
-                        # 'pending_status': entry.pending_status(),
-                        'get_organization_name': entry.get_organization_name(),
-                        'LastApporvalStatus': entry.LastApporvalStatus,
-                        'ceo_as': entry.ceo_as,
-                        'CreatedOn': entry.CreatedDateTime.strftime('%d %b %Y'),
-                        'CreatedOnRaw': entry.CreatedDateTime,  # for sorting
-                        'CreatedBy': entry.CreatedByUsername,
-                        'id': entry.id,
-                        'URl': 'M'
-                    })
-                    # print("the employee organiztaion id is here:: ")
-        else:
-                final_perf_record = FINAL_PERFORMANCE_RATING.objects.filter(Entry_Master=entry).first()
-                # print("the padp ceo status::", entry.ceo_as)
-
-
-                if final_perf_record:
-                    performance_rating = "Outstanding" if final_perf_record.OUTSTANDING else \
-                                        "Above Standard" if final_perf_record.ABOVE_STANDARD else \
-                                        "Meets Expectation" if final_perf_record.MEETS_EXPECTATION else \
-                                        "Below Standard" if final_perf_record.BELOW_STANDARD else \
-                                        "Deficient" if final_perf_record.DEFICIENT else "Not Rated"
-
-                    salary_increment = "No Correction" if final_perf_record.NO_CORRECTION else \
-                                    "3 %" if final_perf_record.per_3 else \
-                                    "5 %" if final_perf_record.per_5 else \
-                                    "8 %" if final_perf_record.per_8 else \
-                                    "10 %" if final_perf_record.per_10 else \
-                                    f"Correction \nFrom - {final_perf_record.FromSalary}\nTo  {final_perf_record.ToSalary}" if final_perf_record.SALARY_CORRECTION else \
-                                    f"Promotion \nFrom  - {final_perf_record.FromPosition}\nTo  {final_perf_record.ToPosition}" if final_perf_record.PROMOTION else \
-                                    f"Promotion With Increament \n {final_perf_record.FromSalary} To {final_perf_record.ToSalary} \n {final_perf_record.FromPosition}  To \n{final_perf_record.ToPosition}" if final_perf_record.PROMOTION_WITH_INCREASE else "Action Pending"
-                else:
-                    performance_rating = "Not Rated"
-                    salary_increment = "Not Specified"
-
+                salary_increment = "No Correction" if final_perf_record.NO_CORRECTION else \
+                                "3 %" if final_perf_record.per_3 else \
+                                "5 %" if final_perf_record.per_5 else \
+                                "8 %" if final_perf_record.per_8 else \
+                                "10 %" if final_perf_record.per_10 else \
+                                f"Correction \n {final_perf_record.FromSalary} To {final_perf_record.ToSalary}" if final_perf_record.SALARY_CORRECTION else \
+                                f"Promotion  \n{final_perf_record.FromPosition} To\n {final_perf_record.ToPosition}" if final_perf_record.PROMOTION else \
+                                f"Promotion With Increament \n{final_perf_record.FromSalary} To {final_perf_record.ToSalary} \n {final_perf_record.FromPosition} To\n{final_perf_record.ToPosition}" if final_perf_record.PROMOTION_WITH_INCREASE else "Action Pending"
+            
                 final_results.append({
                     'EmployeeCode': entry.EmployeeCode,
                     'OrganizationID': entry.OrganizationID,
@@ -2094,10 +2079,57 @@ def PADPApprove(request):
                     'CreatedOn': entry.CreatedDateTime.strftime('%d %b %Y'),
                     'CreatedOnRaw': entry.CreatedDateTime,  # for sorting
                     'CreatedBy': entry.CreatedByUsername,
-                    
-                    'id': entry.id, 
+                    'id': entry.id,
                     'URl': 'M'
-                })        
+                })
+                # print("the employee organiztaion id is here:: ")
+        else:
+            final_perf_record = FINAL_PERFORMANCE_RATING.objects.filter(Entry_Master=entry).first()
+            # print("the padp ceo status::", entry.ceo_as)
+
+
+            if final_perf_record:
+                performance_rating = "Outstanding" if final_perf_record.OUTSTANDING else \
+                                    "Above Standard" if final_perf_record.ABOVE_STANDARD else \
+                                    "Meets Expectation" if final_perf_record.MEETS_EXPECTATION else \
+                                    "Below Standard" if final_perf_record.BELOW_STANDARD else \
+                                    "Deficient" if final_perf_record.DEFICIENT else "Not Rated"
+
+                salary_increment = "No Correction" if final_perf_record.NO_CORRECTION else \
+                                "3 %" if final_perf_record.per_3 else \
+                                "5 %" if final_perf_record.per_5 else \
+                                "8 %" if final_perf_record.per_8 else \
+                                "10 %" if final_perf_record.per_10 else \
+                                f"Correction \nFrom - {final_perf_record.FromSalary}\nTo  {final_perf_record.ToSalary}" if final_perf_record.SALARY_CORRECTION else \
+                                f"Promotion \nFrom  - {final_perf_record.FromPosition}\nTo  {final_perf_record.ToPosition}" if final_perf_record.PROMOTION else \
+                                f"Promotion With Increament \n {final_perf_record.FromSalary} To {final_perf_record.ToSalary} \n {final_perf_record.FromPosition}  To \n{final_perf_record.ToPosition}" if final_perf_record.PROMOTION_WITH_INCREASE else "Action Pending"
+            else:
+                performance_rating = "Not Rated"
+                salary_increment = "Not Specified"
+
+            final_results.append({
+                'EmployeeCode': entry.EmployeeCode,
+                'OrganizationID': entry.OrganizationID,
+                'Aprraise_Level':entry.Aprraise_Level,
+                'Aprraisee_position':entry.Aprraisee_position,
+                'Appraisee_Name': entry.Appraisee_Name,
+                'ReviewPeriod': f"{entry.FromReviewDate.strftime('%d %b %Y')} <br>To<br> {entry.ToReviewDate.strftime('%d %b %Y')}",
+                # 'ReviewPeriod': f"From Date: {entry.FromReviewDate.strftime('%d %b %Y')} <br> To Date: {entry.ToReviewDate.strftime('%d %b %Y')}",
+                'FinalPerformanceRating': performance_rating,
+                'SalaryIncrementOption': salary_increment,
+                'Approval_stage': entry.Approval_stage(),
+                'DraftBy':entry.DraftBy,
+                # 'pending_status': entry.pending_status(),
+                'get_organization_name': entry.get_organization_name(),
+                'LastApporvalStatus': entry.LastApporvalStatus,
+                'ceo_as': entry.ceo_as,
+                'CreatedOn': entry.CreatedDateTime.strftime('%d %b %Y'),
+                'CreatedOnRaw': entry.CreatedDateTime,  # for sorting
+                'CreatedBy': entry.CreatedByUsername,
+                
+                'id': entry.id, 
+                'URl': 'M'
+            })        
     
     # session_data = dict(request.session)
     # print("The all session value is here::", session_data)

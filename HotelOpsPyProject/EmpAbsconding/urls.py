@@ -14,6 +14,7 @@ urlpatterns = [
     path("EmpAbscondingPDF/",views.EmpAbscondingPDF,name="EmpAbscondingPDF"),
     
     path('EmpshowcausenoticeEntry/', views.EmpshowcausenoticeEntry,name='EmpshowcausenoticeEntry'),
+    path('Second_Show_Cause_Notice_Entry/', views.Second_Show_Cause_Notice_Entry,name='Second_Show_Cause_Notice_Entry'),
     
     path("EmpshowcausenoticeList/",views.EmpshowcausenoticeList,name="EmpshowcausenoticeList"),
     

@@ -320,6 +320,7 @@ def VerbalWarning(request):
 from django.shortcuts import render, redirect
 from .models import WarningMasterDetail, VerbalWarningmoduls, WrittenWarningModul, FinalWarningModule
 from app.views import OrganizationList
+from app.Global_Api import get_organization_list
 from HumanResources.views import get_employee_name_designation_by_EmployeeCode_For_Waring,get_employee_designation_by_EmployeeCode_For_Waring
 
 def WarningList(request):
@@ -329,50 +330,26 @@ def WarningList(request):
     OrganizationID = request.session.get("OrganizationID")
     UserID = request.session.get("UserID")
     
+    memOrg =  get_organization_list(OrganizationID)
 
     OID  = request.GET.get('OID')
-    if OID:
-            OrganizationID= OID
-    
-    
-    memOrg =  OrganizationList(OrganizationID)
-    if UserID=="20201212180048":
-        OrganizationID=401
-   
-    I = request.GET.get('I',OrganizationID)  
-    
-    
-    warning_master_details = WarningMasterDetail.objects.filter(OrganizationID=I, IsDelete=False)
-    
-    
-    # if I:
-    #     warning_master_details = warning_master_details.filter(OrganizationID=I)
-    
-    
-    # if selected_warning_type:
-    #     warning_master_details = warning_master_details.filter(Lastwarningtype=selected_warning_type)
+    if not OID:
+            OID= OrganizationID
 
-    # warning_details = []
+    
+    warning_master_details = WarningMasterDetail.objects.filter(IsDelete=False)
 
-    # for warning in warning_master_details:
-    #     emp_code = warning.Empcode
-    #     last_warning_type = warning.Lastwarningtype
+    if OID != "all":
+        warning_master_details = warning_master_details.filter(OrganizationID=OID)
+        
 
-       
-    #     if last_warning_type == 'Verbal_Warning':
-    #         warning_data = VerbalWarningmoduls.objects.filter(emp_code=emp_code, OrganizationID=I, IsDelete=False).first()
-    #     elif last_warning_type == 'Written Warning':
-    #         warning_data = WrittenWarningModul.objects.filter(employee_no=emp_code, OrganizationID=I, IsDelete=False).first()
-    #     elif last_warning_type == 'Final Warning':
-    #         warning_data = FinalWarningModule.objects.filter(employee_no=emp_code, OrganizationID=I, IsDelete=False).first()
-    #     else:
-    #         warning_data = None
     for warning in warning_master_details:    
         EmployeeCode = warning.Empcode
+        org_id = warning.OrganizationID if OID == "all" else OID
         # print(EmployeeCode)
         if EmployeeCode:
-           EmployeeName = get_employee_name_designation_by_EmployeeCode_For_Waring(I, EmployeeCode)
-           Designation = get_employee_designation_by_EmployeeCode_For_Waring(I, EmployeeCode)
+           EmployeeName = get_employee_name_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
+           Designation = get_employee_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
            if EmployeeName and  Designation:
                  warning.EmployeeName = EmployeeName
                  warning.Designation = Designation
@@ -380,7 +357,7 @@ def WarningList(request):
     context = {
         'warning_details': warning_master_details,
         'memOrg': memOrg,
-        'I': I, 
+        'OID': OID, 
        
     }
 

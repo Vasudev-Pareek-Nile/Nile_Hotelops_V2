@@ -46,7 +46,37 @@
     </div>
 
     <div class="card-body ">
-        <table id="employeeTable" class="table table-striped">
+        <div class="col-md-12">
+            <form method="GET" class="row g-2">
+                <div class="col-md-3">
+                    {% comment %} <label for="organizationSelect" class="form-label">Select Organizations</label> {% endcomment %}
+                    <select name="OID" id="organizationSelect" class="form-control">
+                        {% for itm in memOrg %}
+                        <option value="{{ itm.OrganizationID }}" {% if itm.OrganizationID == OID %}selected{% endif %}>{{ itm.OrganizationName }}</option>
+                        {% endfor %}
+                    </select>
+                      <script>
+                          $(document).ready(function () {
+                              var selectedOrganization = "{{ OID }}";
+                              $("select[name='OID']").val(selectedOrganization);
+                              
+                          });
+                      </script>
+                </div>
+            
+                <div class="col-md-4 d-flex justify-items-start align-items-center gap-2" >
+                    <button type="submit" class="btn mr-4 btn-primary" id="filter">
+                        Filter
+                    </button>
+                
+                    <a href="{% url 'Clearance_view' %}" class="btn btn-danger" id="Clear">
+                        Clear
+                    </a>
+                </div>
+            </form>  
+        </div>
+
+        <table id="employeeTable" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
                 <tr>
                     <th>Sr#</th>
@@ -73,22 +103,26 @@
 
                     <td>
                         {% if al.IsDEPT %}
-                            <span class="btn btn-sm btn-success">Approved</span>
+                            <span class="btn btn-sm btn-secondary">Approved</span>
                             <!-- <span class="badge bg-success p-2">Approved</span> -->
                         {% else %}
-                            <a href="{% url 'Hod_Approve_Request_Clearance' %}?id={{ al.id }}" 
-                                class="btn btn-sm btn-primary">
-                                Approve
-                            </a>
-                            <a class="btn btn-sm btn-secondary disabled text-white">
+                            {% if request.session.Department_Name == al.Dept and request.session.UserType|lower == "hod" %}
+                                <a href="{% url 'Hod_Approve_Request_Clearance' %}?id={{ al.id }}" 
+                                    class="btn btn-sm btn-primary">
+                                    Approve
+                                </a>
+                            {% else %}
+                                <span class="btn btn-sm btn-secondary">Waiting for HOD</span>
+                             {% endif %}
+                            {% comment %} <a class="btn btn-sm btn-secondary disabled text-white">
                                 On Hold
-                            </a>
+                            </a> {% endcomment %}
                         {% endif %}
                     </td>
 
                     <td>
                         {% if not al.IsDEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.uniform_info_id %}
                                 {% if al.HK %}
@@ -118,7 +152,7 @@
                     </td>
                     <td>
                         {% if not al.IsDEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.it_info_id %}
                                 {% if al.IT %}
@@ -148,7 +182,7 @@
                     </td>
                     <td>
                         {% if not al.IsDEPT %}
-                            <button class="btn btn-sm btn-secondary" disabled>Waiting HOD</button>
+                            <button class="btn btn-sm btn-secondary" disabled>Waiting for HOD</button>
                         {% else %}
                             {% if al.hr_info_id %}
                                 {% if al.HR %}

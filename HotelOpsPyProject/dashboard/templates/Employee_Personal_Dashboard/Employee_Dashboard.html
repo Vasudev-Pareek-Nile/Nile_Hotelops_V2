@@ -5,8 +5,7 @@
 <style>
   .employee-dashboard-container {
     display: flex;
-    gap: 20px;
-    margin-top: 20px;
+    gap: 15px;
     flex-wrap: wrap;
     width: 100%;
   }
@@ -105,9 +104,6 @@
     /* border-bottom: 0.5px solid #222; */
   }
 
-    .page-wrapper .content {
-        padding: 0px 24px !important;
-    }
 
     .LeaveAction-Cards{
         display: flex;
@@ -281,6 +277,23 @@
         top: 0px;
         right: 10px;
     }
+
+    .card .card-header .card-title {
+        color: #212529;
+        font-size: 16px;
+    }
+    .card{
+        border-radius: 5px !important;
+		border: 0.5px solid #b0afaf75;
+    } 
+
+    .card .card-body {
+        padding: 16px !important;
+    }
+	.btn{
+		border-radius: 5px !important;
+	}
+
 </style>
 
 <div class="employee-dashboard-container">
@@ -383,24 +396,45 @@
 </div>
 
 <div class="dashboard-bottom-section border-bottom">
-  <div class="card AllLeaves-Container border-bottom">
-    <div class="card-header border-bottom  d-flex justify-content-between align-items-center">
-        <span class="card-title fw-bold fs-5">All Leaves</span>
-        <div class="view-attendance">
-            <a href="{% url "Leave_Application" %}?Page=Employee_Personal_Dashboard">
-                Apply Leave <i class="fas fa-arrow-circle-right"></i>
-            </a>
+    <div class="card AllLeaves-Container border-bottom other-card" style="position: relative;">
+        <!-- 👇 LOADER INSIDE profile-view -->
+        <div class="card-loader">
+            <div>
+                <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+                <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+            </div>
         </div>
-    </div>
+
+        <div class="card-header border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+            <span class="card-title fw-bold mb-2 mb-md-0">
+                All Leaves
+            </span>
+            <div class="view-attendance">
+                <a href="{% url 'Leave_Application' %}?Page=Employee_Personal_Dashboard">
+                    Apply Leave <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+
+        </div>
+
+
       <!-- <hr> -->
     <div class="card-body card-bodyAllLeaves mt-2">
       <div id="LeavesContainer"></div>
     </div>
   </div>
 
-  <div class="card Calendar-Container">
+  <div class="card Calendar-Container other-card" style="position: relative;">
+    <!-- 👇 LOADER INSIDE profile-view -->
+    <div class="card-loader">
+        <div>
+            <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+            <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+        </div>
+    </div>
+
      <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-        <span class="card-title fw-bold fs-5">Attendance</span>
+        <span class="card-title fw-bold">Attendance</span>
         <div class="d-flex flex-row gap-3 mt-2">
             <span class="text-success"><span class="fw-bold">A - </span>Approved</span>|
             <span class="text-warning"><span class="fw-bold">P - </span>Pending</span>|
@@ -413,8 +447,16 @@
     </div>
   </div>
 
-  <div class="card LeaveAction-Container">
-    <div class="card-header border-bottom"><span class="card-title fw-bold fs-5">Leave Summery</span></div>
+  <div class="card LeaveAction-Container other-card" style="position: relative;">
+    <!-- 👇 LOADER INSIDE profile-view -->
+    <div class="card-loader">
+        <div>
+            <div class="spinner-border text-primary-spinner" role="status" style="width: 2.5rem; height: 2.5rem;"></div>
+            <div style="margin-top: 0.5rem; font-weight: bold; color: #3a4a93;">Loading...</div>
+        </div>
+    </div>
+
+    <div class="card-header border-bottom"><span class="card-title fw-bold">Leave Summary</span></div>
     <div class="card-body">
       <!-- <h4>Leave Actions</h4> -->
       <!-- Apply Leave, View History, etc. -->
@@ -441,7 +483,6 @@
                 </div>
             </div>
        </div>
-    <!-- </div> -->
   </div>
 </div>
 
@@ -500,24 +541,11 @@
     </div>
 </div> 
 
-{% comment %} <div id="loader" style="display: flex; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.7); z-index: 9999;">
-  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-    <span class="visually-hidden">Loading...</span>
-  </div>
-</div> {% endcomment %}
-
 <style>
     .text-primary-spinner{
         color: #3a4a93;
     }
 </style>
-
-<div id="loader" style="display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #3a4a932b; z-index: 9999;">
-  <div class="spinner-border text-primary-spinner" role="status" style="width: 3rem; height: 3rem;"></div>
-  <div style="margin-top: 1rem; font-weight: bold; font-size: 1.2rem; color: #3a4a93;">
-    Loading...
-  </div>
-</div> 
 
 
 
@@ -542,6 +570,26 @@
         const card = document.getElementById(cardId);
         const loader = card.querySelector(".card-loader");
         loader.style.display = "none";
+    }
+</script>
+
+<script>
+    function showLoaderclass(selector) {
+        const cards = document.querySelectorAll(selector);
+
+        cards.forEach(card => {
+            const loader = card.querySelector(".card-loader");
+            if (loader) loader.style.display = "flex";
+        });
+    }
+
+    function hideLoaderclass(selector) {
+        const cards = document.querySelectorAll(selector);
+
+        cards.forEach(card => {
+            const loader = card.querySelector(".card-loader");
+            if (loader) loader.style.display = "none";
+        });
     }
 </script>
 
@@ -582,13 +630,6 @@
         })
         .catch(error => {
             console.error("Failed to load employee data:", error);
-            // loader.innerHTML = `
-            //     <div style="text-align:center; color:red; font-size:18px;">
-            //     Failed to load data. Please try again later. <br><br>
-            //     Contact <strong>support@hotelops.in</strong>
-            //     </div>`;
-            // setTimeout(() => loader.style.display = "none", 3000);
-
             hideLoader("profile-card");
         });
 
@@ -609,9 +650,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-    // Show loader initially
-    const loader = document.getElementById("loader");
-    loader.style.display = "flex";
+    showLoaderclass(".other-card");
 
 
 
@@ -732,25 +771,6 @@
             });
             calendar.render();
 
-            // ========== Section 2: Employee Info ==========
-            // const emp = data.Emobj;
-            // document.getElementById("emp-full-name").textContent = `${emp.FullName || ''}`;
-            // document.getElementById("emp-designation").textContent = `${emp.Designation || ''} (${emp.Level || ''})`;
-            // document.getElementById("emp-department").textContent = emp.Department || '';
-            // document.getElementById("emp-reporting-to").textContent = emp.ReportingtoDesignation || '';
-            // document.getElementById("emp-code").textContent = emp.EmployeeCode || '';
-            // document.getElementById("emp-status").textContent = emp.EmpStatus || '';
-            // document.getElementById("emp-doj").textContent = formatDate(emp.DateofJoining);
-            // document.getElementById("emp-tenure").textContent = emp.TenureTillToday || '';
-            // document.getElementById("emp-phone").textContent = emp.MobileNumber || '';
-            // document.getElementById("emp-email").textContent = emp.EmailAddress || '';
-            // document.getElementById("emp-birthday").textContent = formatBirthday(emp.DateofBirth);
-            // document.getElementById("emp-gender").textContent = emp.Gender || '';
-
-            // const profileImg = document.getElementById("emp-profile-image");
-            // if (emp.ProfileImageFileName) {
-            //     profileImg.src = `/HumanResources/Humanview_file/?ID=${emp.EmpID}&model=EmployeePersonalDetails`;
-            // }
 
             // ========== Section 3: Leave Notification ==========
             const leave_Action_Cards = data.Selected_Leave_Application;
@@ -803,25 +823,12 @@
             // document.getElementById("loader").style.display = "none";
 
             // Hide loader when successful
-            loader.style.display = "none";
+            hideLoaderclass(".other-card");
         })
         .catch(error => {
             console.error("Failed to load employee data:", error);
 
-            //loader.innerHTML = `
-            //    <div style="text-align:center; color:red; font-size:18px;">
-            //        Failed to load data. Please try again later. 
-            //        <br>
-            //        <br>
-            //        kindly Connect With us on <strong>support@hotelops.in</strong>
-            //    </div>
-            //`;
-
-            // Wait 3 seconds, then hide loader
-            //setTimeout(() => {
-            //    loader.style.display = "none";
-            //}, 2000);
-            loader.style.display = "none";
+            hideLoaderclass(".other-card");
         });
 
     // ========== Utility Functions ==========

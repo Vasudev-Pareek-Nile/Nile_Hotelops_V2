@@ -137,7 +137,7 @@ def FullandFinalList(request):
     emp_map = {
         emp.EmployeeCode: emp.EmpID
         for emp in EmployeePersonalDetails.objects.filter(
-            IsDelete=False, OrganizationID=OrganizationID
+            IsDelete=False, OrganizationID=I
         )
     }
 

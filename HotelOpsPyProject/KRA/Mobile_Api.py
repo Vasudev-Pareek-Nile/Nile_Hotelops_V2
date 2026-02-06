@@ -212,6 +212,8 @@ def kra_entry_select_api(request):
     # -------------------------------
     OrganizationID = request.GET.get('OID')
     
+    # print("i am here and called")
+    
     # OID checks
     if not OrganizationID:
         return JsonResponse({'error': 'OID is required'}, status=400)
@@ -681,9 +683,14 @@ def kra_target_summary_Exp_api(request):
         
     if UserID in ALLOWED_USER_IDS:
         UserType = "ceo"
+        AssignBy = "001"
         if AssignBy:
             target_filters["AssignMaster__AssignByEmployeeCode"] = AssignBy
 
+    # print("usertype:", UserType)
+    # print("AssignBy:", AssignBy)
+    # print("UserID:", UserID)
+    
     qs = (
         TargetAssignMasterDetails.objects
         .filter(**target_filters)

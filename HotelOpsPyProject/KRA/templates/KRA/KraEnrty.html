@@ -137,7 +137,7 @@
                 <thead>
                     <tr>
                         <th>KRA</th>
-                        <th>definition</th>
+                        {% comment %} <th>definition</th> {% endcomment %}
                         <th>Standard</th>
                         <!-- <th>Hotel Standard</th> -->
                         <th>Actual</th>
@@ -150,7 +150,7 @@
                     <tr>
                         <td>{{Kr.Task}}</td>
                         
-                        <td>{{Kr.Defination }}</td>
+                        {% comment %} <td>{{Kr.Defination }}</td> {% endcomment %}
                         <td>
                             {{Kr.Standard}}
                             <input type="hidden" name="Standard_{{ Kr.id }}" value="{{ Kr.Standard }}">

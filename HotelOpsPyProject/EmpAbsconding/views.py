@@ -115,12 +115,12 @@ def EmpAbscondingEntry(request):
         Remarks = request.POST.get('remarks')
         Issuing_manager_name = request.POST['Issuing_manager_name']
         Issuing_designation = request.POST['Issuing_designation']
-        showcausechecked  = request.POST.get('showcause')
+        # showcausechecked  = request.POST.get('showcause')
         LastEmpStatus = request.POST.get('LastEmpStatus')
 
-        showcause = False
-        if  showcausechecked == 'C':
-            showcause = True
+        # showcause = False
+        # if  showcausechecked == 'C':
+        #     showcause = True
         
         # AbscondingRevoke_Checked = request.POST.get('AbscondingRevoke')
 
@@ -140,7 +140,7 @@ def EmpAbscondingEntry(request):
             Abscondingobj.DOJ = doj
             Abscondingobj.Issuing_manager_name = Issuing_manager_name
             Abscondingobj.Issuing_designation = Issuing_designation
-            Abscondingobj.showcause = showcause
+            # Abscondingobj.showcause = showcause
             Abscondingobj.LastEmpStatus = LastEmpStatus
             # Abscondingobj.AbscondingRevoke = IsAbscondingRevoke
 
@@ -151,18 +151,6 @@ def EmpAbscondingEntry(request):
 
             Abscondingobj.save()
 
-            # if IsAbscondingRevoke == True:
-            #     try:
-            #         employee_work_details = EmployeeWorkDetails.objects.get(
-            #             EmpID=EmpID, OrganizationID=OrganizationID, IsDelete=False,IsSecondary=False)
-            #         employee_work_details.EmpStatus = Abscondingobj.LastEmpStatus
-            #         employee_work_details.ModifyBy = UserID
-            #         employee_work_details.ModifyDateTime = date.today()
-
-            #         employee_work_details.save()
-
-            #     except EmployeeWorkDetails.DoesNotExist:
-            #         print("EmployeeWorkDetails record not found.")
 
         else:
             Abscondingobj = EmpAbscondingModel.objects.create(
@@ -177,7 +165,7 @@ def EmpAbscondingEntry(request):
                 OrganizationID=OrganizationID ,
                 Issuing_designation = Issuing_designation,
                 Issuing_manager_name= Issuing_manager_name,
-                showcause = showcause,
+                # showcause = showcause,
                 LastEmpStatus= LastEmpStatus,
             )
 
@@ -438,6 +426,119 @@ def EmpshowcausenoticeEntry(request):
          'HRManagerNames':HRManagerNames
         }
     return render(request,'EmpshowcausenoticeTemp/EmpshowcausenoticeEntry.html',context) 
+  
+
+def Second_Show_Cause_Notice_Entry(request):
+    if 'OrganizationID' not in request.session:
+        return redirect(MasterAttribute.Host)
+    else:
+        print("Show Page Session")
+        
+    OrganizationID =request.session["OrganizationID"]
+    OID  = request.GET.get('OID')
+    Page  = request.GET.get('Page')
+
+    if OID:
+            OrganizationID= OID
+            
+    UserID =str(request.session["UserID"])
+    EmpCode  = request.GET.get('EC')
+    EmpID  = request.GET.get('EmpID')
+    AID = request.GET.get('AID')
+    
+    DepartmentName  = request.GET.get('DepartmentName')
+    ManagerNames  =   EmployeeNameOnTheBasisofDesignation(DepartmentName, OrganizationID)
+    
+    
+    HRManagerNames  = HrManagerNameandDesignation(request,OrganizationID)
+
+    showcauseobj   = None
+    if EmpCode is not None:
+        if AID is not None:
+               showcauseobj = Second_Show_Cause_Notice.objects.filter(id = AID,Emp_Code = EmpCode,OrganizationID = OrganizationID,IsDelete=False).first()
+
+        if showcauseobj is not None:
+            DataFromshowcauseobj  = 'showcauseobj'
+          
+        else:
+            DataFromshowcauseobj  = 'showcauseobjHR'
+            EmpDetails  = EmployeeDetailsData(EmpID,OrganizationID)
+
+            showcauseobj = {
+                'Emp_Code' : EmpDetails.EmployeeCode,
+                'Name' : EmpDetails.FirstName + " " + EmpDetails.MiddleName + " " + EmpDetails.LastName,
+                'Dept' : EmpDetails.Department,
+                'Designation' : EmpDetails.Designation,
+                'DOJ' : EmpDetails.DateofJoining,
+            }    
+
+    if request.method=='POST':
+        Name = request.POST.get('name')
+        Emp_Code = request.POST.get('emp_code')
+        Dept = request.POST.get('dept')
+        Designation = request.POST.get('designation')
+        Date_Of_absence = request.POST.get('Date_Of_absence')
+        doj = request.POST.get('doj')
+
+        Remarks = request.POST.get('remarks')
+        Issuing_manager_name = request.POST['Issuing_manager_name']
+        Issuing_designation = request.POST['Issuing_designation']
+        NoticeIssuingdate = request.POST['NoticeIssuingdate']
+        NoticeCreateddate = request.POST['NoticeCreateddate']
+       
+        if DataFromshowcauseobj == "showcauseobj" and AID:
+            showcauseobj.Name = Name
+            showcauseobj.Emp_Code = Emp_Code
+            showcauseobj.Dept = Dept
+            showcauseobj.Designation = Designation
+            showcauseobj.Date_Of_absence = Date_Of_absence
+            showcauseobj.DOJ = doj
+            showcauseobj.Issuing_manager_name = Issuing_manager_name
+            showcauseobj.Issuing_designation = Issuing_designation
+            showcauseobj.NoticeIssuingdate = NoticeIssuingdate
+            showcauseobj.NoticeCreateddate = NoticeCreateddate
+            showcauseobj.Remarks = Remarks
+            showcauseobj.ModifyBy = UserID
+            showcauseobj.save()
+        else:
+           showcauseobj = Second_Show_Cause_Notice.objects.create(
+                Name=Name,
+                Emp_Code=Emp_Code,
+                Dept=Dept,
+                Designation=Designation,
+                DOJ=doj,
+                Date_Of_absence=Date_Of_absence,
+                Remarks=Remarks,
+                NoticeIssuingdate=NoticeIssuingdate,
+                NoticeCreateddate=NoticeCreateddate,
+                CreatedBy=UserID,
+                OrganizationID=OrganizationID  ,Issuing_designation = Issuing_designation,Issuing_manager_name= Issuing_manager_name 
+            )
+        try:
+            employee_work_details = EmployeeWorkDetails.objects.get(
+                EmpID=EmpID, OrganizationID=OrganizationID, IsDelete=False)
+            employee_work_details.EmpStatus = "Absconding"
+            employee_work_details.ModifyBy = UserID
+          
+            employee_work_details.save()
+        except EmployeeWorkDetails.DoesNotExist:
+            print("EmployeeWorkDetails record not found.")
+            
+        if Page == 'EmpshowcausenoticeList':
+             return redirect('EmpshowcausenoticeList')
+         
+        Success = True        
+        encrypted_id = encrypt_id(EmpID)
+        url = reverse('Absconding')  
+        redirect_url = f"{url}?EmpID={encrypted_id}&OID={OrganizationID}&OID={OrganizationID}&Success={Success}"  
+        return redirect(redirect_url) 
+    
+    context = {
+        'showcauseobj':showcauseobj,
+        'ManagerNames':ManagerNames,
+        'HRManagerNames':HRManagerNames
+    }
+    return render(request,'EmpshowcausenoticeTemp/Second_Show_Cause_Notice_Entry.html',context) 
 
 
  

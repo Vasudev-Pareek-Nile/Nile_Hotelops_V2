@@ -47,6 +47,8 @@ urlpatterns = [
 
 
     path('api/kra-target-summary-Exp/', kra_target_summary_Exp_api, name='kra-target-summary-Exp'),
+    # path('api/Kra_Entry_mobile_api/', Kra_Entry_mobile_api, name='Kra_Entry_mobile_api'),
+    # path('api/Kra_Entry_mobile_api_revised/', Kra_Entry_mobile_api_revised, name='Kra_Entry_mobile_api_revised'),
     
     
     path("KRA_Target_Report_View/", KRA_Target_Report_View, name="KRA_Target_Report_View"),

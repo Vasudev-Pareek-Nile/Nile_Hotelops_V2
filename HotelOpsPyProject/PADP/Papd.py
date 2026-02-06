@@ -474,21 +474,19 @@ def PADP_Add(request):
                     )
 
                     # padp.Review_Date = request.POST['Review_Date']
-                    padp.Appraisee_Name =request.POST['Appraisee_Name']
-                    padp.Aprraisee_position = request.POST['Aprraisee_position']
-                    padp.Department = request.POST['Aprraisee_Department']
-                    padp.Date_Joined_Company = request.POST['Date_Joined_Company']
-                    padp.Appraisor_Name =request.POST['Appraisor_Name']
-                    padp.Appraisor_Title  = request.POST['Appraisor_Title']
-                    padp.ReportingtoDesigantion  = request.POST['Appraisor_Title']
-                    padp.Current_Salary  = request.POST['CurrentSalary']
-                    
-                    padp.DottedLine  = request.POST['DottedLine']
-
-                    padp.FromReviewDate =request.POST['FromReviewDate']
-                    padp.ToReviewDate = request.POST['ToReviewDate']
-                    padp.EmployeeCode =  request.POST['padp_Emp_Code'] 
-                    padp.Aprraise_Level = request.POST['Aprraise_Level']
+                    padp.Appraisee_Name =           request.POST.get('Appraisee_Name')
+                    padp.Aprraisee_position =       request.POST.get('Aprraisee_position')
+                    padp.Department =               request.POST.get('Aprraisee_Department')
+                    padp.Date_Joined_Company =      request.POST.get('Date_Joined_Company')
+                    padp.Appraisor_Name =           request.POST.get('Appraisor_Name')
+                    padp.Appraisor_Title  =         request.POST.get('Appraisor_Title')
+                    padp.ReportingtoDesigantion  =  request.POST.get('Appraisor_Title')
+                    padp.Current_Salary  =          request.POST.get('CurrentSalary')
+                    padp.DottedLine  =              request.POST.get('DottedLine')
+                    padp.FromReviewDate =           request.POST.get('FromReviewDate')
+                    padp.ToReviewDate =             request.POST.get('ToReviewDate')
+                    padp.EmployeeCode =             request.POST.get('padp_Emp_Code') 
+                    padp.Aprraise_Level =           request.POST.get('Aprraise_Level')
                     padp.ModifyBy = UserID
             
                     
@@ -947,7 +945,7 @@ def PADP_Add(request):
                             # LEADERSHIP COMPETENCIES
                             tr = request.POST.get('Total_objective') or ''
                             if tr !='':
-                                Total_objective = int(request.POST["Total_objective"])
+                                Total_objective = int(request.POST.get("Total_objective"))
                                 
                                 
                                 for obj in range(Total_objective + 1):
@@ -1428,33 +1426,30 @@ def PADP_Add(request):
                                     ToPosition = ToPosition,
                                 )
                 else:
-                    btn_value =   request.POST['btn_value']
-                    padp_Emp_Code = request.POST['padp_Emp_Code'] 
-                    # EmployeeOrganizationID = 1
-                    EmployeeOrganizationID = request.POST['EmployeeOrganizationID'] 
-                  
-                    HRManager_name =request.POST['HRManager']
-
-                    Appraisee_Name =request.POST['Appraisee_Name']
-                    CurrentSalary =request.POST['CurrentSalary']
-                    Aprraisee_position = request.POST['Aprraisee_position']
-                    Aprraisee_Department = request.POST['Aprraisee_Department']
-                    Date_Joined_Company = request.POST['Date_Joined_Company']
-                    Appraisor_Name =request.POST['Appraisor_Name']
-                    Appraisor_Title  = request.POST['Appraisor_Title']
-                    FromReviewDate =request.POST['FromReviewDate']
-                    ToReviewDate = request.POST['ToReviewDate']
-                    Aprraise_Level = request.POST['Aprraise_Level']
-                    SUMMARY_APPRAISEE = request.POST.get('SUMMARY_APPRAISEE') or ''
-                    SUMMARY_APPRAISOR = request.POST.get('SUMMARY_APPRAISOR') or ''
-                    DottedLine  = request.POST.get('DottedLine') or ''
-                    Appraisee_ACK = request.POST.get('Appraisee_ACK') or ''
-                    Appraisor_ACK = request.POST.get('Appraisor_ACK') or ''
-                    HR_Manager_ACK = request.POST.get('HR_Manager_ACK') or ''
-                    Appraisor_Mgr_ACK= request.POST.get('Appraisor_Mgr_ACK') or ''
-                    Anticipated_Date = request.POST.get('Anticipated_Date')  or  None
-                    Position_ACK = request.POST.get('Position_ACK') or ''
-                    Alternative_Position = request.POST.get('Alternative_Position') or ''
+                    btn_value =                 request.POST.get('btn_value')
+                    padp_Emp_Code =             request.POST.get('padp_Emp_Code') 
+                    EmployeeOrganizationID =    request.POST.get('EmployeeOrganizationID') 
+                    HRManager_name =            request.POST.get('HRManager')
+                    Appraisee_Name =            request.POST.get('Appraisee_Name')
+                    CurrentSalary =             request.POST.get('CurrentSalary')
+                    Aprraisee_position =        request.POST.get('Aprraisee_position')
+                    Aprraisee_Department =      request.POST.get('Aprraisee_Department')
+                    Date_Joined_Company =       request.POST.get('Date_Joined_Company')
+                    Appraisor_Name =            request.POST.get('Appraisor_Name')
+                    Appraisor_Title  =          request.POST.get('Appraisor_Title')
+                    FromReviewDate =            request.POST.get('FromReviewDate')
+                    ToReviewDate =              request.POST.get('ToReviewDate')
+                    Aprraise_Level =            request.POST.get('Aprraise_Level')
+                    SUMMARY_APPRAISEE =         request.POST.get('SUMMARY_APPRAISEE') or ''
+                    SUMMARY_APPRAISOR =         request.POST.get('SUMMARY_APPRAISOR') or ''
+                    DottedLine  =               request.POST.get('DottedLine') or ''
+                    Appraisee_ACK =             request.POST.get('Appraisee_ACK') or ''
+                    Appraisor_ACK =             request.POST.get('Appraisor_ACK') or ''
+                    HR_Manager_ACK =            request.POST.get('HR_Manager_ACK') or ''
+                    Appraisor_Mgr_ACK=          request.POST.get('Appraisor_Mgr_ACK') or ''
+                    Anticipated_Date =          request.POST.get('Anticipated_Date')  or  None
+                    Position_ACK =              request.POST.get('Position_ACK') or ''
+                    Alternative_Position =      request.POST.get('Alternative_Position') or ''
                 
                     EN_Master = Entry_Master.objects.create(OrganizationID=OrganizationID,CreatedBy=UserID,ToReviewDate=ToReviewDate,Appraisee_Name=Appraisee_Name,EmployeeOrganizationID=EmployeeOrganizationID,Aprraisee_position=Aprraisee_position,Date_Joined_Company=Date_Joined_Company,Appraisor_Name=Appraisor_Name,Appraisor_Title=Appraisor_Title,FromReviewDate=FromReviewDate,ReportingtoDesigantion = Appraisor_Title,EmployeeCode =  padp_Emp_Code,Aprraise_Level = Aprraise_Level, CreatedByUsername=UserName,DottedLine=DottedLine,
                     AuditedBy=UserID, AuditedBy_Name=UserName, HR_Manager_Name=HRManager_name, Current_Salary=CurrentSalary, Department=Aprraisee_Department)

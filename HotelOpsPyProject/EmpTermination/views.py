@@ -19,6 +19,8 @@ def home_view(request):
 from app.views import OrganizationList
 from django.db.models import Subquery, OuterRef
 from HumanResources.models import EmployeePersonalDetails
+from app.Global_Api import get_organization_list
+
 #For Showing List Of the Equipment Trolley Inventory  
 def EmpTerminationList(request):
     
@@ -32,10 +34,11 @@ def EmpTerminationList(request):
     OrganizationID =request.session["OrganizationID"]
     I = request.GET.get('I',OrganizationID)
 
-    if UserType == 'CEO' and request.GET.get('I') is None:
-        I = 401
+    # if UserType == 'CEO' and request.GET.get('I') is None:
+    #     I = 401
 
-    memorg = OrganizationList(OrganizationID=OrganizationID)
+    memorg = get_organization_list(OrganizationID)
+    
     emp_id_subquery = Subquery(
         EmployeePersonalDetails.objects.filter(
             EmployeeCode=OuterRef('Emp_Code'),
@@ -43,8 +46,10 @@ def EmpTerminationList(request):
         ).values('EmpID')[:1]
     )
 
-    Terminations = EmpTerminationModel.objects.filter(OrganizationID=I,IsDelete=False).annotate(
-        EmpID=emp_id_subquery)
+    if I == 'all':
+        Terminations = EmpTerminationModel.objects.filter(IsDelete=False).annotate(EmpID=emp_id_subquery)
+    else:
+        Terminations = EmpTerminationModel.objects.filter(OrganizationID=I,IsDelete=False).annotate(EmpID=emp_id_subquery)
     
     return render(request,"EmpTerminationTemp/EmpTerminationList.html",{'Terminations':Terminations,'memorg':memorg,'I':I})
 
