@@ -696,10 +696,26 @@ def HrManagerNameandDesignation(request,OrganizationID):
 
 
 def EmployeeDetailsDataFromDesignation(Designation,OrganizationID):
+    
+    # print("--------------------- (MY DATA) --------------------")
+    # print("Designation::",Designation)
+    # print("OrganizationID::",OrganizationID)
         
-    Workobj = EmployeeWorkDetails.objects.filter(OrganizationID=OrganizationID, IsDelete=False,IsSecondary=False, Designation=Designation).first()
+    Workobj = EmployeeWorkDetails.objects.filter(
+        OrganizationID=OrganizationID, 
+        IsDelete=False,
+        IsSecondary=False, 
+        Designation=Designation,
+        EmpStatus__in=["On Probation", "Not Confirmed", "Confirmed"],
+    ).first()
     if Workobj is None:
-         Workobj = EmployeeWorkDetails.objects.filter(OrganizationID=3, IsDelete=False,IsSecondary=False, Designation=Designation).first()
+         Workobj = EmployeeWorkDetails.objects.filter(
+            OrganizationID=3, 
+            IsDelete=False,
+            IsSecondary=False, 
+            Designation=Designation,
+            EmpStatus__in=["On Probation", "Not Confirmed", "Confirmed"],
+        ).first()
     if Workobj is not None :
          EmpP = EmployeePersonalDetails.objects.filter(EmpID=Workobj.EmpID,IsDelete=False).first()
          if EmpP is not None:
@@ -6970,6 +6986,7 @@ def Termination(request):
 #      return render(request, 'HR/EmployeeDashboard/Absconding.html', context)
 
 from EmpAbsconding.models import EmpAbscondingModel,Empshowcausenotice, Second_Show_Cause_Notice
+# from EmpAbsconding.models import EmpAbscondingModel,Empshowcausenotice
 def Absconding(request):
      if 'OrganizationID' not in request.session:
          return redirect(MasterAttribute.Host)
@@ -7006,9 +7023,9 @@ def Absconding(request):
      Second_Notices_Show  = 'Show'  
      Abscondingshow = 'Show'   
      Abscondings = EmpAbscondingModel.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
-     if  Abscondings.count() >0:
+     if  Abscondings.count() > 0:
           Abscondingshow = 'Hide'
-     Noticeshow = 'Show'   
+    #  Noticeshow = 'Show'   
      
      First_Notices = Empshowcausenotice.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
      if First_Notices.count() > 0:
@@ -7018,13 +7035,18 @@ def Absconding(request):
      if  Second_Notices.count() >0:
           Second_Notices_Show = 'Hide'
  
+    #  Second_Notices = Empshowcausenotice.objects.filter(OrganizationID = OrganizationID,IsDelete=False,Emp_Code=EC)
+    #  if  Second_Notices.count() >0:
+    #       Second_Notices_Show = 'Hide'
+ 
      context = {
         'Emobj':Emobj,
         'EmpID':EmpID,
         'EC':EC,
         'Abscondings':Abscondings,
         'OrganizationID':OrganizationID,
-        'Noticeshow':Noticeshow,
+        'First_Notices':First_Notices,
+        'Second_Notices':Second_Notices,
         'Abscondingshow':Abscondingshow,
         'AbscondingRevoke':AbscondingRevoke,
         'First_Notices_Show':First_Notices_Show,
@@ -7056,7 +7078,7 @@ def Absconding_Revoke_View(request):
     # print("encrypted_id", EmpID)
     # EmpID = decrypt_id(encrypted_id)
     # print("decrypt_id", EmpID)
-    Success = False  # corrected spelling
+    Success = False  
     PersonalObj = None
     Workobj = None
 
@@ -7066,7 +7088,7 @@ def Absconding_Revoke_View(request):
             EmpID=EmpID, EmployeeCode=EmployeeCode
         ).only("EmpID").first()
 
-        print("PersonalObj id", PersonalObj)
+        # print("PersonalObj id", PersonalObj)
 
     if PersonalObj and PersonalObj.EmpID:
         Workobj = EmployeeWorkDetails.objects.filter(

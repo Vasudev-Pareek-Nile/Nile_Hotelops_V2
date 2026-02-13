@@ -301,7 +301,7 @@
                 <div class="card-footer d-flex justify-content-between">
                     <div class="d-flex gap-2">
                         <div class="">
-                            <select class="form-control" name="EmployeeCode">
+                            <select class="form-control select2" name="EmployeeCode">
                                 <option value="All">All Employee</option>
                                 {% for emp in emp_list %}
                                 <option value="{{emp.EmployeeCode}}">{{ emp.EmployeeCode }} - {{ emp.EmpName }}</option>
@@ -340,7 +340,7 @@
                         <div class="">
                             <select class="form-control" name="year">
                                 {% for i in CYear %}
-                                    <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
+                                    <option value="{{ i }}" {% if i == selected_year %}selected{% endif %}>{{ i }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -508,6 +508,7 @@
 </div>
 
 
+
 <script>
     function searchTable() {
         const input = document.getElementById("searchInput").value.toLowerCase();
@@ -516,19 +517,20 @@
 
         let i = 0;
         while (i < rows.length) {
-            const firstRow = rows[i]; // "In Time" row with EmpDetails
-            const empCell = firstRow.querySelector(".emp-col");
+            const firstRow = rows[i];
+
+            // ✅ Correct selector
+            const empCell = firstRow.querySelector(".emp-col-details");
             const empText = empCell ? empCell.textContent.toLowerCase() : "";
 
-            // Check if employee matches the search
             const isMatch = empText.includes(input);
 
-            // Show/hide the group of 4 rows together
+            // show/hide 4 rows block
             for (let j = 0; j < 4 && i + j < rows.length; j++) {
                 rows[i + j].style.display = isMatch ? "" : "none";
             }
 
-            i += 4; // move to next employee block
+            i += 4;
         }
     }
 </script>
@@ -599,9 +601,5 @@
         });
     });
 
-    // $(document).ready(function() {
-	// 		$('select').select2();
-	// });
-		
 </script>
 {% endblock content %}

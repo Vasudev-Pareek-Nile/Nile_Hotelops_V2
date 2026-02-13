@@ -528,7 +528,7 @@
                                     <div class="row">
                                         <div class="col-sm-12">
                                             <div class="profile-view" id="EditButtonContainer">
-												{% if  request.session.UserID == "20240903106516" or request.session.UserID == '20201212175519' %}
+												{% if  request.session.UserID == "20250421158544" or request.session.UserID == '20201212175519' %}
 													<div id="editButtonstatusdiv">
 														<button id="saveButtonstatus" class="btn btn-primary btn-sm">Save</button>
 														<button id="editButtonstatus" class="btn btn-primary btn-sm">Edit</button>
@@ -586,7 +586,7 @@
                                                                 </li>
                                                                 <li class="d-flex align-items-center">
                                                                     <div class="title">Status:</div>
-																	{% if  request.session.UserID == "20240903106516" or request.session.UserID == '20201212175519' %}
+																	{% if  request.session.UserID == "20250421158544" or request.session.UserID == '20201212175519' %}
 																		<form method="POST" id="updateStatusForm" action="{% url "EmployeeList_StatusFormHandle" %}">
 																			{% csrf_token %}
 																			<input type="hidden" name="form_name" value="update_status_form">
@@ -705,59 +705,44 @@
 		<script src="{% static 'assets/js/app.js' %}"></script>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const editButton = document.getElementById('editButtonstatus');
-        const saveButton = document.getElementById('saveButtonstatus');
-        const empStatusSelect = document.getElementById('EmpStatus');
-		const statusForm = document.getElementById("updateStatusForm");
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const editButton = document.getElementById('editButtonstatus');
+                const saveButton = document.getElementById('saveButtonstatus');
+                const empStatusSelect = document.getElementById('EmpStatus');
+                const statusForm = document.getElementById("updateStatusForm");
 
-        // Initially disable the select
-        empStatusSelect.setAttribute('disabled', 'disabled');
-        saveButton.style.display = 'none';
-
-        editButton.addEventListener('click', function () {
-            if (editButton.textContent.trim() === 'Edit') {
-                editButton.textContent = 'Cancel';
-                empStatusSelect.removeAttribute('disabled');
-                saveButton.style.display = 'inline-block';
-            } else {
-                editButton.textContent = 'Edit';
+                // Initially disable the select
                 empStatusSelect.setAttribute('disabled', 'disabled');
                 saveButton.style.display = 'none';
-            }
-        });
 
-        // Add save logic here
-        saveButton.addEventListener('click', function () {
-            // Optional: save the selected status (submit form or AJAX)
-            editButton.textContent = 'Edit';
-            saveButton.style.display = 'none';
-        });
+                editButton.addEventListener('click', function () {
+                    if (editButton.textContent.trim() === 'Edit') {
+                        editButton.textContent = 'Cancel';
+                        empStatusSelect.removeAttribute('disabled');
+                        saveButton.style.display = 'inline-block';
+                    } else {
+                        editButton.textContent = 'Edit';
+                        empStatusSelect.setAttribute('disabled', 'disabled');
+                        saveButton.style.display = 'none';
+                    }
+                });
+
+                // Add save logic here
+                saveButton.addEventListener('click', function () {
+                    // Optional: save the selected status (submit form or AJAX)
+                    editButton.textContent = 'Edit';
+                    saveButton.style.display = 'none';
+                });
 
 
-		        // Submit only this form when "Save" is clicked
-        saveButton.addEventListener("click", function () {
-			empStatusSelect.removeAttribute('disabled');
-            statusForm.submit();  // only submit this specific form
-        });
-    });
-</script> 
-
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const editBtn = document.getElementById('editButtonstatus');
-        const saveBtn = document.getElementById('saveButtonstatus');
-        const statusSelect = document.getElementById('EmpStatus');
-
-        editBtn.addEventListener('click', function () {
-            statusSelect.removeAttribute('disabled');
-            saveBtn.style.display = 'inline-block';
-            editBtn.style.display = 'none';
-        });
-    });
-</script> -->
-
+                        // Submit only this form when "Save" is clicked
+                saveButton.addEventListener("click", function () {
+                    empStatusSelect.removeAttribute('disabled');
+                    statusForm.submit();  // only submit this specific form
+                });
+            });
+        </script> 
 
 		<script>
 			$(document).ready(function () {         

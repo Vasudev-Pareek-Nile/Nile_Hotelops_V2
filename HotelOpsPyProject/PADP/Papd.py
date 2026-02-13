@@ -1685,6 +1685,7 @@ def Refresh_MangerLevel_View(request, apadp_id):
         # print("empa:",empa)
         # print("ReportingtoDesignation:",EmployeeWorkDetails2.ReportingtoDesignation)
         # print("Appraisor_Name:",Appraisor_Name)
+        # print("Refresh_Appraisor_Name:",Refresh_Appraisor_Name)
         
         PADPData.Appraisee_Name = EmpCodedetails.full_name
         PADPData.Current_Salary = EmployeeWorkDetails2.Salary if EmployeeWorkDetails2.Salary else NewCTC

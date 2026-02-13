@@ -314,155 +314,502 @@ from num2words import num2words
 from django.db.models import Sum
 from .models import *
 
+# def Salary_Slip_Pdf_Download(request):
+#     EmpID = int(request.GET.get('EmpID'))
+#     OID = int(request.GET.get('OID'))
+#     Year = int(request.GET.get('Year'))
+#     Month = int(request.GET.get('Month'))
+    
+#     # === Fetch Basic Slip Information ===
+#     slip = Salary_Slip_V1.objects.filter(
+#         EmpID=EmpID,
+#         OrganizationID=OID,
+#         year=Year,
+#         month=Month,
+#         IsDelete=False
+#     ).first()
+
+#     if not slip:
+#         return render(request, 'payslip_not_found.html')
+
+#     # === Fixed Salary ===
+#     fixed_details = list(
+#         Salary_Fixed_Details.objects
+#         .filter(
+#             SalaryAttendance__EmpID=EmpID,
+#             SalaryAttendance__OrganizationID=OID,
+#             SalaryAttendance__year=Year,
+#             SalaryAttendance__month=Month,
+#             IsDelete=False
+#         )
+#         .values('SalaryTitle')
+#         .annotate(total=Sum('Amount'))
+#         .order_by('TitleOrder')
+#     )
+
+#     fixed_details = fixed_details[:-1]
+#     Fixed = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in fixed_details}
+
+#     # === Earnings ===
+#     earning_details = list(
+#         Salary_Earning_Details.objects
+#         .filter(
+#             month=Month,
+#             year=Year,
+#             OrganizationID=OID,
+#             EmpID=EmpID,
+#             IsDelete=False
+#         )
+#         .values('SalaryTitle')
+#         .annotate(total=Sum('Amount'))
+#         .order_by('TitleOrder')
+#     )
+
+#     earning_details = earning_details[:-1]
+
+#     Earning = {
+#         item['SalaryTitle']: Decimal(item['total']).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+#         for item in earning_details
+#     }
+
+
+#     Earning_Show = {
+#         item['SalaryTitle']: float(f"{item['total']:.2f}")
+#         for item in earning_details
+#     }
+
+#     # === Deductions ===
+#     deduction_details = list(
+#         Salary_Deduction_Details.objects
+#         .filter(
+#         SalaryAttendance__EmpID=EmpID,
+#         SalaryAttendance__OrganizationID=OID,
+#         SalaryAttendance__year=Year,
+#         SalaryAttendance__month=Month,
+#         IsDelete=False
+#         )
+#         .values('SalaryTitle')
+#         .annotate(total=Sum('Amount'))
+#         .order_by('TitleOrder')
+#     )
+#     deduction_details = deduction_details[:-1]
+#     Deductions = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in deduction_details}
+
+
+#     # === Totals ===
+#     total_fixed = sum(Fixed.values())
+
+#     total_earning = sum(Earning.values(), Decimal("0.00"))
+#     total_deduction = sum(Deductions.values())
+#     net_pay = Decimal(total_earning - total_deduction).quantize(Decimal('0.01'))
+#     net_pay_int = int(net_pay)
+#     net_pay_in_words = num2words(net_pay_int, lang='en_IN').replace(',', '').title()
+#     net_pay_in_words = f"{net_pay_in_words} Rupees Only"
+
+
+#     month_name = calendar.month_name[Month]
+#     org_Details  =  OrganizationMaster.objects.get(OrganizationID=OID)
+    
+
+
+#     context = {
+#         'slip': slip,
+#         'Fixed': Fixed,
+#         'Earning': Earning_Show,
+#         'Deductions': Deductions,
+#         'total_fixed': total_fixed,
+#         'total_earning': total_earning,
+#         'total_deduction': total_deduction,
+#         'net_pay_in_words': net_pay_in_words,
+#         'org_Details': org_Details,
+#         'month_name': month_name,
+#         'net_pay': net_pay,
+#         'Month': Month,
+#         'year': Year,
+#     }
+
+#     template = get_template(
+#         "EMP_PAY/MoveToPayroll_Template/Generate_Salary_Slip_PDF.html"
+#     )
+#     html = template.render(context)
+    
+#     # Create PDF
+#     wkhtmltopdf_path = getattr(settings, 'WKHTMLTOPDF_CMD', None)
+
+#     if not wkhtmltopdf_path:
+#         raise Exception("WKHTMLTOPDF_CMD is not configured in settings.py")
+
+#     config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
+
+#     options = {
+#         'page-size': 'A4',
+#         'orientation': 'Portrait',
+#         'encoding': 'UTF-8',
+#         'margin-top': '0mm',
+#         'margin-bottom': '0mm',
+#         'margin-left': '0mm',
+#         'margin-right': '0mm',
+#         'enable-local-file-access': None,
+#         'footer-right': 'Page [page] of [topage]',
+#         'footer-font-size': '8',
+#     }
+
+#     pdf = pdfkit.from_string(
+#         html,
+#         False,
+#         options=options,
+#         configuration=config
+#     )
+
+#     response = HttpResponse(pdf, content_type='application/pdf')
+#     response['Content-Disposition'] = (
+#         f'attachment; filename="Salary_Slip_{month_name}_{Year}.pdf"'
+#     )
+#     return response
+
+
+
+
+# import locale
+# @transaction.atomic
+# def Salary_Slip_Pdf_Download(request):
+#     # EmpID = int(request.GET.get('EmpID'))
+#     # OID = int(request.GET.get('OID'))
+#     # Year = int(request.GET.get('Year'))
+#     # Month = int(request.GET.get('Month'))
+    
+#     OrganizationID = '1401'
+#     # UserID = str(request.session["UserID"])
+#     org_Details  =  OrganizationMaster.objects.get(OrganizationID= OrganizationID)
+    
+#     hotelapitoken = MasterAttribute.HotelAPIkeyToken
+#     headers = {
+#     'hotel-api-token': hotelapitoken  
+#     }
+    
+#     org_url = f"http://hotelops.in/API/PyAPI/OrganizationListSelect?OrganizationID={OrganizationID}"
+
+#     try:
+#         response = requests.get(org_url, headers=headers)
+#         response.raise_for_status()  
+#         memOrg = response.json()
+#     except requests.exceptions.RequestException as e:
+#         print(f"Error occurred: {e}")
+     
+    
+    
+#     with transaction.atomic():
+#         Hr = request.GET.get('HR') or 'HR'
+#         if Hr:
+#             EmployeeCode = '89'
+            
+#             api_ur = "http://hotelops.in/api/PyAPI/HREmployeeDataEmpCodeSelect?EmpCode="+str(EmployeeCode)+"&OID="+str(OrganizationID)
+
+#             try:
+#                 response = requests.get(api_ur, headers=headers)
+#                 response.raise_for_status()  
+#                 emp_Details = response.json()
+            
+#             except requests.exceptions.RequestException as e:
+#                 print(f"Error occurred: {e}")
+            
+#             emp_name = emp_Details[0]['EmpName']        
+#         else:
+#             EmployeeCode = request.session["EmployeeCode"]
+#             api_ur = "http://hotelops.in/api/PyAPI/HREmployeeDataEmpCodeSelect?EmpCode="+str(EmployeeCode)+"&OID="+str(OrganizationID)
+
+#             try:
+#                 response = requests.get(api_ur, headers=headers)
+#                 response.raise_for_status()  
+#                 emp_Details = response.json()
+            
+#             except requests.exceptions.RequestException as e:
+#                 print(f"Error occurred: {e}")
+
+            
+        
+        
+#         year = 2025
+#         month_no =  8
+#         month_name = calendar.month_name[int(month_no)]
+        
+#         try:
+
+#             salary = SalarySlip.objects.get(OrganizationID=OrganizationID,IsDelete=False,
+#                                         EmployeeCode = EmployeeCode,month=month_no ,year =year,
+#                                         generated = True,
+#                                         HrVerify = True,
+#                                         FcVerify =  True
+#                                         )
+           
+           
+#             # locale.setlocale(locale.LC_NUMERIC, 'en_IN')
+
+
+#             # import locale
+#             try:
+#                 locale.setlocale(locale.LC_ALL, "en_IN")   
+#             except locale.Error:
+#                 locale.setlocale(locale.LC_ALL, "English_India.1252")  
+
+   
+          
+#             fixed_basic = locale.format_string("%.2f", float(salary.fixed_basic), grouping=True)
+#             fixed_HRA = locale.format_string("%.2f", float(salary.fixed_HRA), grouping=True)
+#             ConveyanceAllowance = locale.format_string("%.2f", float(salary.ConveyanceAllowance), grouping=True)
+#             CCA = locale.format_string("%.2f", float(salary.CCA), grouping=True)
+#             OtherAllowance = locale.format_string("%.2f", float(salary.OtherAllowance), grouping=True)
+#             gross_salary = locale.format_string("%.2f", float(salary.gross_salary), grouping=True)
+
+#             Earned_Basic = locale.format_string("%.2f", float(salary.Earned_Basic), grouping=True)
+#             Earned_HRA = locale.format_string("%.2f", float(salary.Earned_HRA), grouping=True)
+#             Arrear = locale.format_string("%.2f", float(salary.Arrear), grouping=True)
+#             RewardIncentive = locale.format_string("%.2f", float(salary.RewardIncentive), grouping=True)
+#             Total_Deduction = locale.format_string("%.2f", float(salary.Total_Deduction), grouping=True)
+#             Net_salary = locale.format_string("%.2f", float(salary.Net_salary), grouping=True)
+            
+#             Total_Earning = locale.format_string("%.2f", float(salary.Total_Earning), grouping=True)
+
+
+
+#             ESIC = locale.format_string("%.2f", float(salary.ESIC), grouping=True)
+#             EPFO = locale.format_string("%.2f", float(salary.EPFO), grouping=True)
+#             PT = locale.format_string("%.2f", float(salary.PT), grouping=True)
+#             Meals = locale.format_string("%.2f", float(salary.Meals), grouping=True)
+#             Accommodation = locale.format_string("%.2f", float(salary.Accommodation), grouping=True)
+#             AdvanceLoan = locale.format_string("%.2f", float(salary.AdvanceLoan), grouping=True)
+#             TaxDeduction = locale.format_string("%.2f", float(salary.TaxDeduction), grouping=True)
+#             OtherDeduction = locale.format_string("%.2f", float(salary.OtherDeduction), grouping=True)
+#             Total_Deduction = locale.format_string("%.2f", float(salary.Total_Deduction), grouping=True)
+#             if salary.Earned_Total_Allowance is not None:
+#                 Earned_Total_Allowance = locale.format_string("%.2f", float(salary.Earned_Total_Allowance), grouping=True)
+#             else:
+#                 Earned_Total_Allowance = "0.00" 
+
+#             formatted = {
+#                     'fixed_basic' : fixed_basic ,
+#                     'fixed_HRA' : fixed_HRA ,
+#                     'ConveyanceAllowance' : ConveyanceAllowance,
+#                      'CCA' : CCA,
+#                     'OtherAllowance' : OtherAllowance,
+#                     'gross_salary' : gross_salary,
+#                     'Earned_Basic' : Earned_Basic,
+#                     'Earned_HRA' : Earned_HRA,
+#                     'Arrear' :  Arrear,
+#                     'RewardIncentive' :  RewardIncentive,
+#                     'Total_Deduction' :  Total_Deduction,
+#                     'Net_salary' :  Net_salary,
+#                     'ESIC' :  ESIC,
+#                     'EPFO' : EPFO,
+#                     'PT' : PT,
+#                     'Meals' : Meals ,
+#                     'Accommodation' : Accommodation ,
+#                     'AdvanceLoan' : AdvanceLoan,
+#                     'TaxDeduction' : TaxDeduction ,
+#                     'OtherDeduction' : OtherDeduction ,
+#                     'Total_Deduction' :  Total_Deduction,
+#                     'Total_Earning':Total_Earning,
+#                     'Earned_Total_Allowance':Earned_Total_Allowance
+
+#             }
+
+             
+#         except SalarySlip.DoesNotExist:
+#             if Hr:
+#                 messages.warning(request,f"No Salary Slip is present for {month_name} of {emp_name}")
+#                 return redirect('Employees_Payroll_List')
+#             else:
+
+#                 messages.warning(request,f"No Salary Slip is present for {month_name}")
+#             return redirect('Payroll_List')
+
+#         Leave_Balance = Emp_Leave_Balance_Master.objects.filter(OrganizationID=OrganizationID,IsDelete =False,Emp_code=EmployeeCode)
+#         template_path = "EMP_PAY/Salary/Generate_Salary_Slip_downloaded_Try.html"
+#         mydict = {'month':month_name,'year':year,'formatted' :formatted
+#                 ,'salary':salary,'org_Details':org_Details,'Leave_Balance':Leave_Balance} 
+
+#         response = HttpResponse(content_type='application/pdf')
+#         response['Content-Disposition'] = 'filename="padp.pdf"'
+        
+#         template = get_template(template_path)
+#         html = template.render(mydict)
+
+#         result = BytesIO()
+#         # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+#         pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+        
+#         if not pdf.err:
+#             return HttpResponse(result.getvalue(), content_type='application/pdf')
+#         return None
+
+from itertools import zip_longest
+import locale
+
+@transaction.atomic
 def Salary_Slip_Pdf_Download(request):
     EmpID = int(request.GET.get('EmpID'))
     OID = int(request.GET.get('OID'))
     Year = int(request.GET.get('Year'))
     Month = int(request.GET.get('Month'))
-    
-    # === Fetch Basic Slip Information ===
-    slip = Salary_Slip_V1.objects.filter(
-        EmpID=EmpID,
-        OrganizationID=OID,
-        year=Year,
-        month=Month,
-        IsDelete=False
-    ).first()
 
-    if not slip:
-        return render(request, 'payslip_not_found.html')
+    org_Details  =  OrganizationMaster.objects.get(OrganizationID=OID)
 
-    # === Fixed Salary ===
-    fixed_details = list(
-        Salary_Fixed_Details.objects
-        .filter(
+    try:
+        # === Fetch Basic Slip Information ===
+        slip = Salary_Slip_V1.objects.filter(
+            EmpID=EmpID,
+            OrganizationID=OID,
+            year=Year,
+            month=Month,
+            IsDelete=False
+        ).first()
+
+        if not slip:
+            return render(request, 'payslip_not_found.html')
+
+        # === Fixed Salary ===
+        fixed_details = list(
+            Salary_Fixed_Details.objects
+            .filter(
+                SalaryAttendance__EmpID=EmpID,
+                SalaryAttendance__OrganizationID=OID,
+                SalaryAttendance__year=Year,
+                SalaryAttendance__month=Month,
+                IsDelete=False
+            )
+            .values('SalaryTitle')
+            .annotate(total=Sum('Amount'))
+            .order_by('TitleOrder')
+        )
+
+        fixed_details = fixed_details[:-1]
+        Fixed = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in fixed_details}
+
+        # === Earnings ===
+        earning_details = list(
+            Salary_Earning_Details.objects
+            .filter(
+                month=Month,
+                year=Year,
+                OrganizationID=OID,
+                EmpID=EmpID,
+                IsDelete=False
+            )
+            .values('SalaryTitle')
+            .annotate(total=Sum('Amount'))
+            .order_by('TitleOrder')
+        )
+        earning_details = earning_details[:-1]
+
+        Earning = {
+            item['SalaryTitle']: Decimal(item['total']).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+            for item in earning_details
+        }
+
+        Earning_Show = {
+            item['SalaryTitle']: float(f"{item['total']:.2f}")
+            for item in earning_details
+        }
+
+        # === Deductions ===
+        deduction_details = list(
+            Salary_Deduction_Details.objects
+            .filter(
             SalaryAttendance__EmpID=EmpID,
             SalaryAttendance__OrganizationID=OID,
             SalaryAttendance__year=Year,
             SalaryAttendance__month=Month,
             IsDelete=False
+            )
+            .values('SalaryTitle')
+            .annotate(total=Sum('Amount'))
+            .order_by('TitleOrder')
         )
-        .values('SalaryTitle')
-        .annotate(total=Sum('Amount'))
-        .order_by('TitleOrder')
+        deduction_details = deduction_details[:-1]
+        Deductions = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in deduction_details}
+
+
+
+        # === Totals ===
+        total_fixed = sum(Fixed.values())
+        total_earning = sum(Earning.values(), Decimal("0.00"))
+        total_deduction = sum(Deductions.values())
+        net_pay = Decimal(total_earning - total_deduction).quantize(Decimal('0.01'))
+        net_pay_int = int(net_pay)
+        net_pay_in_words = num2words(net_pay_int, lang='en_IN').replace(',', '').title()
+        net_pay_in_words = f"{net_pay_in_words} Rupees Only"
+
+
+        # === Organization Details ===
+        org_Details  =  OrganizationMaster.objects.get(OrganizationID=OID)
+        
+        month_name = calendar.month_name[Month]
+        
+        # ===== Normalize Salary Rows For PDF Table Alignment =====
+
+        fixed_list = list(Fixed.items())
+        earning_list = list(Earning_Show.items())
+        deduction_list = list(Deductions.items())
+
+        salary_rows = list(zip_longest(fixed_list, earning_list, deduction_list, fillvalue=("", "")))
+        
+        # === Send to Template ===
+        formatted = {
+            'slip': slip,
+            'Fixed': Fixed,
+            'Earning': Earning_Show,
+            'Deductions': Deductions,
+            'total_fixed': total_fixed,
+            'total_earning': total_earning,
+            'total_deduction': total_deduction,
+            'month_name': calendar.month_name[Month],
+            'org_Details': org_Details,
+            'net_pay_in_words': net_pay_in_words,
+            'net_pay': net_pay,
+            'Month': Month,
+            'month_name': month_name,
+            'year': Year,
+            'salary_rows': salary_rows ,
+        }
+
+            
+    except SalarySlip.DoesNotExist:
+        if Hr:
+            messages.warning(request,f"No Salary Slip is present for {month_name} of {slip.Emp_Name} - {slip.EmployeeCode}")
+            return redirect('Employees_Payroll_List')
+        else:
+
+            messages.warning(request,f"No Salary Slip is present for {month_name}")
+        return redirect('Payroll_List')
+
+    # print("slip.EmployeeCode:", slip.EmployeeCode)
+    Leave_Balance = Emp_Leave_Balance_Master.objects.filter(
+        OrganizationID=OID,
+        IsDelete=False,
+        Emp_code=slip.EmployeeCode, 
+        Leave_Type_Master__IsDelete=False,
+        Leave_Type_Master__Is_Active=True
     )
-
-    fixed_details = fixed_details[:-1]
-    Fixed = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in fixed_details}
-
-    # === Earnings ===
-    earning_details = list(
-        Salary_Earning_Details.objects
-        .filter(
-            month=Month,
-            year=Year,
-            OrganizationID=OID,
-            EmpID=EmpID,
-            IsDelete=False
-        )
-        .values('SalaryTitle')
-        .annotate(total=Sum('Amount'))
-        .order_by('TitleOrder')
-    )
-
-    earning_details = earning_details[:-1]
-
-    Earning = {
-        item['SalaryTitle']: Decimal(item['total']).quantize(Decimal('0.00'), rounding=ROUND_DOWN)
-        for item in earning_details
-    }
+    template_path = "EMP_PAY/Salary/Generate_Salary_Slip_downloaded_Try.html"
+    mydict = {
+        'month':month_name,
+        'year':Year,
+        'formatted' :formatted,
+        'org_Details':org_Details,
+        'Leave_Balance':Leave_Balance
+    } 
 
 
-    Earning_Show = {
-        item['SalaryTitle']: float(f"{item['total']:.2f}")
-        for item in earning_details
-    }
-
-    # === Deductions ===
-    deduction_details = list(
-        Salary_Deduction_Details.objects
-        .filter(
-        SalaryAttendance__EmpID=EmpID,
-        SalaryAttendance__OrganizationID=OID,
-        SalaryAttendance__year=Year,
-        SalaryAttendance__month=Month,
-        IsDelete=False
-        )
-        .values('SalaryTitle')
-        .annotate(total=Sum('Amount'))
-        .order_by('TitleOrder')
-    )
-    deduction_details = deduction_details[:-1]
-    Deductions = {item['SalaryTitle']: math.ceil(float(item['total'])) for item in deduction_details}
-
-
-    # === Totals ===
-    total_fixed = sum(Fixed.values())
-
-    total_earning = sum(Earning.values(), Decimal("0.00"))
-    total_deduction = sum(Deductions.values())
-    net_pay = Decimal(total_earning - total_deduction).quantize(Decimal('0.01'))
-    net_pay_int = int(net_pay)
-    net_pay_in_words = num2words(net_pay_int, lang='en_IN').replace(',', '').title()
-    net_pay_in_words = f"{net_pay_in_words} Rupees Only"
-
-
-    month_name = calendar.month_name[Month]
-    org_Details  =  OrganizationMaster.objects.get(OrganizationID=OID)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="padp.pdf"'
     
+    template = get_template(template_path)
+    html = template.render(mydict)
 
-
-    context = {
-        'slip': slip,
-        'Fixed': Fixed,
-        'Earning': Earning_Show,
-        'Deductions': Deductions,
-        'total_fixed': total_fixed,
-        'total_earning': total_earning,
-        'total_deduction': total_deduction,
-        'net_pay_in_words': net_pay_in_words,
-        'org_Details': org_Details,
-        'month_name': month_name,
-        'net_pay': net_pay,
-        'Month': Month,
-        'year': Year,
-    }
-
-    template = get_template(
-        "EMP_PAY/MoveToPayroll_Template/Generate_Salary_Slip_PDF.html"
-    )
-    html = template.render(context)
+    result = BytesIO()
+    # pdf = pisa.pisaDocument(BytesIO(html.encode("ISO-8859-1")), result)
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
     
-    # Create PDF
-    wkhtmltopdf_path = getattr(settings, 'WKHTMLTOPDF_CMD', None)
-
-    if not wkhtmltopdf_path:
-        raise Exception("WKHTMLTOPDF_CMD is not configured in settings.py")
-
-    config = pdfkit.configuration(wkhtmltopdf=wkhtmltopdf_path)
-
-    options = {
-        'page-size': 'A4',
-        'orientation': 'Portrait',
-        'encoding': 'UTF-8',
-        'margin-top': '0mm',
-        'margin-bottom': '0mm',
-        'margin-left': '0mm',
-        'margin-right': '0mm',
-        'enable-local-file-access': None,
-        'footer-right': 'Page [page] of [topage]',
-        'footer-font-size': '8',
-    }
-
-    pdf = pdfkit.from_string(
-        html,
-        False,
-        options=options,
-        configuration=config
-    )
-
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="Salary_Slip_{month_name}_{Year}.pdf"'
-    )
-    return response
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+    return None

@@ -37,7 +37,7 @@ class Employee_Data_API(APIView):
             Designation = request.query_params.get('Designation')
             ReportingtoDesignation = request.query_params.get('ReportingtoDesignation')
             
-            print('OrganizationID:',OrganizationID)
+            # print('OrganizationID:',OrganizationID)
 
             data = EmployeeDataSelect(
                 OrganizationID=OrganizationID,

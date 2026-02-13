@@ -298,27 +298,10 @@ def kra_entry_select_api(request):
             "Select_Value_Type",
         }
 
-        # filtered_data = [
-        #     {key: row[key] for key in ALLOWED_FIELDS if key in row}
-        #     for row in data
-        # ]
-        filtered_data = []
-
-        for row in data:
-            filtered_row = {key: row[key] for key in ALLOWED_FIELDS if key in row}
-
-            # Apply Indian formatting only for number / decimal
-            if str(filtered_row.get("Select_Value_Type", "")).lower() in ["number", "decimal"]:
-
-                if "Standard" in filtered_row and filtered_row["Standard"] is not None:
-                    filtered_row["Standard"] = format_indian_number(filtered_row["Standard"])
-
-                if "ActualValue" in filtered_row and filtered_row["ActualValue"] is not None:
-                    filtered_row["ActualValue"] = format_indian_number(filtered_row["ActualValue"])
-
-            filtered_data.append(filtered_row)
-
-        
+        filtered_data = [
+            {key: row[key] for key in ALLOWED_FIELDS if key in row}
+            for row in data
+        ]
 
         return Response(
             {

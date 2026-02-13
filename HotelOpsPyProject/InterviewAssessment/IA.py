@@ -664,8 +664,23 @@ def InterviewAssessmentList(request):
         assessments_filter['LOIStatus'] = LOIstatus
     
 
+    # print("UserType:",UserType)
+    # print("DepartmentList:",DepartmentList)
     Assessments = Assessment_Master.objects.filter(**assessments_filter).order_by('-CreatedDateTime')
-
+    # print("Assessments:",Assessments)
+        
+    DepartmentAssign = ''
+    RD_ALLOWED_DEPARTMENTS = ['']
+    if UserID == "20201222140291":  # Sneh
+        DepartmentAssign = 'Marketing'
+        RD_ALLOWED_DEPARTMENTS = ['marketing']
+    elif UserID == "20210309158149":  # Amit Kumar Kaushik
+        RD_ALLOWED_DEPARTMENTS = ['finance', 'purchase']
+        DepartmentAssign = 'finance' 
+    
+    # print("DepartmentAssign:", DepartmentAssign)
+    # print("RD_ALLOWED_DEPARTMENTS:", RD_ALLOWED_DEPARTMENTS)
+    
     AssessmentsList = []
     for Assessment in Assessments:
         ref = 'Fresher'
@@ -679,14 +694,19 @@ def InterviewAssessmentList(request):
                     ref = 1   
         Assessment.ref = ref
         AssessmentDepartment = Assessment.Department
+        # print("Assessment Name:",Assessment.Name)
+        # print("AssessmentDepartment:",AssessmentDepartment)
         head_department_obj = CheckHeadDepartment(AssessmentDepartment,Assessment.Level, OrganizationID)
         head_department = ''
         if  head_department_obj:
             # return Error(request, f"{AssessmentDepartment} head department not Found.Update in Admin of Interview Assessment")    
+            # head_department =  "Purchase" 
             head_department =  head_department_obj.HeadDepartment 
+            # print("head_department:",head_department)
        
        
         ApprovalStageFunobj = ApprovalStageFun(Assessment.Level,Assessment.Department,Assessment.OrganizationID)
+        # print("ApprovalStageFunobj:",ApprovalStageFunobj)
        
         Found = False
         if UserID=='20230110136226':
@@ -699,26 +719,46 @@ def InterviewAssessmentList(request):
                 Found=False
         
        
-        
+        # print("DepartmentList:",DepartmentList)
+        # print("UserType:",UserType)
+        # print("AssessmentDepartment:",AssessmentDepartment)
+        # print("head_department:",head_department)
         # if (Department == 'Human Resources' or Department == "Executive Office" or Department == "Talent Acquisition and Development" or Department == "Corporate Office"):
         if 'Human Resources' in DepartmentList  or  "Executive Office" in DepartmentList or   "Talent Acquisition and Development" in DepartmentList or   "Corporate Office" in DepartmentList:
             Found=True
         else:
             if UserType.lower() in [item.lower() for item in ApprovalStageFunobj]:
                 Found = True
-       
+
+
+        if UserType.lower() == 'rd' and Found and DepartmentAssign == "finance":
+            if (AssessmentDepartment and AssessmentDepartment.strip().lower() in RD_ALLOWED_DEPARTMENTS) or \
+            (head_department and head_department.strip().lower() in RD_ALLOWED_DEPARTMENTS):
+
+                AssessmentsList.append(Assessment)
+                continue
+            
+        if UserType.lower() == 'rd' and Found and DepartmentAssign == "Marketing":
+            # print("i ma in marketing")
+            if (AssessmentDepartment and AssessmentDepartment.strip().lower() in RD_ALLOWED_DEPARTMENTS) or \
+            (head_department and head_department.strip().lower() in RD_ALLOWED_DEPARTMENTS):
+                # print("AssessmentDepartment:", AssessmentDepartment)
+                # print("head_department:", head_department)
+
+                AssessmentsList.append(Assessment)
+                continue
 
         if UserType != "ceo":
          
             # if (Found == True) and (Department == 'Human Resources' or Department == "Executive Office" or Department == "Talent Acquisition and Development" or  Department == "Corporate Office"):
-            if (Found == True) and ('Human Resources' in DepartmentList  or  "Executive Office" in DepartmentList or   "Talent Acquisition and Development" in DepartmentList or   "Corporate Office" in DepartmentList or UserID=='20230110136226'):
+            if (Found == True) and ('Human Resources' in DepartmentList  or  "Executive Office" in DepartmentList or   "Talent Acquisition and Development" in DepartmentList or "Corporate Office" in DepartmentList  or UserID=='20230110136226'):
                     AssessmentsList.append(Assessment)
             # elif (Department.strip() == AssessmentDepartment.strip() or Department.strip() == head_department.strip()) and   Found == True:
-            elif  AssessmentDepartment.strip() in DepartmentList or  head_department.strip() in DepartmentList and   Found == True:
-            
+            # elif  AssessmentDepartment.strip() in DepartmentList or  head_department.strip() in DepartmentList and   Found == True:
+            elif (AssessmentDepartment.strip() in DepartmentList or head_department.strip() in DepartmentList) and Found == True:
                     AssessmentsList.append(Assessment)
         
-        elif  Found == True:
+        elif Found == True:
               AssessmentsList.append(Assessment)
                 
     

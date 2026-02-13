@@ -222,26 +222,14 @@
                     let inputVal = $(this).val();
 
                     if (valueType === 'number') {
-
-                        // Allow digits + optional starting minus
-                        inputVal = inputVal.replace(/[^0-9-]/g, '');
-                        inputVal = inputVal.replace(/(?!^)-/g, ''); // Only allow - at start
-                    }
-
+                        inputVal = inputVal.replace(/[^0-9]/g, '');
+                    } 
                     else if (valueType === 'decimal') {
-
-                        // Allow digits, one dot, optional starting minus
-                        inputVal = inputVal.replace(/[^0-9.-]/g, '');
-                        inputVal = inputVal.replace(/(?!^)-/g, ''); // minus only at start
-                        inputVal = inputVal.replace(/(\..*?)\..*/g, '$1'); // one dot only
-                    }
+                        inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                    } 
                     else if (valueType === 'percentage') {
-
                         inputVal = inputVal.replace(/%/g, '');
-                        inputVal = inputVal.replace(/[^0-9.-]/g, '');
-                        inputVal = inputVal.replace(/(?!^)-/g, '');
-                        inputVal = inputVal.replace(/(\..*?)\..*/g, '$1');
-
+                        inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
                         if (inputVal !== '' && !inputVal.endsWith('%')) {
                             inputVal += '%';
                         }
@@ -250,7 +238,7 @@
                             const newPos = inputVal.length - 1;
                             this.setSelectionRange(newPos, newPos);
                         }, 0);
-                    }
+                    } 
                     else if (valueType === 'text') {
                         inputVal = inputVal.replace(/[^a-zA-Z ]/g, '');
                     }

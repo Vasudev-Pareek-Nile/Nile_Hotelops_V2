@@ -337,25 +337,74 @@ def WarningList(request):
             OID= OrganizationID
 
     
-    warning_master_details = WarningMasterDetail.objects.filter(IsDelete=False)
+    # warning_master_details = WarningMasterDetail.objects.filter(IsDelete=False)
 
-    if OID != "all":
-        warning_master_details = warning_master_details.filter(OrganizationID=OID)
+    # if OID != "all":
+    #     warning_master_details = warning_master_details.filter(OrganizationID=OID)
         
 
-    for warning in warning_master_details:    
-        EmployeeCode = warning.Empcode
-        org_id = warning.OrganizationID if OID == "all" else OID
-        # print(EmployeeCode)
-        if EmployeeCode:
-           EmployeeName = get_employee_name_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
-           Designation = get_employee_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
-           if EmployeeName and  Designation:
-                 warning.EmployeeName = EmployeeName
-                 warning.Designation = Designation
+    # for warning in warning_master_details:    
+    #     EmployeeCode = warning.Empcode
+    #     org_id = warning.OrganizationID if OID == "all" else OID
+    #     # print(EmployeeCode)
+    #     if EmployeeCode:
+    #        EmployeeName = get_employee_name_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
+    #        Designation = get_employee_designation_by_EmployeeCode_For_Waring(org_id, EmployeeCode)
+    #        if EmployeeName and  Designation:
+    #              warning.EmployeeName = EmployeeName
+    #              warning.Designation = Designation
+
+       
+    verbal_warnings = VerbalWarningmoduls.objects.filter(OrganizationID=OrganizationID,IsDelete=False).order_by('-CreatedDateTime')
+    written_warnings = WrittenWarningModul.objects.filter(OrganizationID=OrganizationID,IsDelete=False).order_by('-CreatedDateTime') 
+    final_warnings = FinalWarningModule.objects.filter(OrganizationID=OrganizationID,IsDelete=False).order_by('-CreatedDateTime')
+         
+    warnings = []
+
+    # Verbal Warning
+    for warning in verbal_warnings:
+        warnings.append({
+            'type': 'Verbal',
+            'emp_code': warning.emp_code,
+            'emp_name': warning.emp_name,
+            'designation': warning.designation,
+            'department': warning.department,
+            'OrganizationID': warning.OrganizationID,
+            'created': warning.CreatedDateTime
+        })
+
+    # Written Warning
+    for warning in written_warnings:
+        warnings.append({
+            'type': 'Written',
+            'emp_code': warning.employee_no,
+            'emp_name': warning.name,
+            'designation': warning.designation,
+            'department': warning.department,
+            'OrganizationID': warning.OrganizationID,
+            'created': warning.CreatedDateTime
+        })
+
+    # Final Warning
+    for warning in final_warnings:
+        warnings.append({
+            'type': 'Final',
+            'emp_code': warning.employee_no,
+            'emp_name': warning.name,
+            'designation': warning.designation,
+            'department': warning.department,
+            'OrganizationID': warning.OrganizationID,
+            'created': warning.CreatedDateTime
+        })
+        
+    warnings = sorted(
+        warnings,
+        key=lambda x: x['created'] if x['created'] else '',
+        reverse=True
+    )
 
     context = {
-        'warning_details': warning_master_details,
+        'warning_details': warnings,
         'memOrg': memOrg,
         'OID': OID, 
        

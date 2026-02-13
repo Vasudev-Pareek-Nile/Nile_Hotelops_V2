@@ -6,7 +6,7 @@
         <meta name="description" content="Smarthr - Bootstrap Admin Template">
 		    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
         <meta name="author" content="Dreamstechnologies - Bootstrap Admin Template">
-        <title>Human Resources - Hotelops</title>
+        <title>Leave Management - Hotelops</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 		<!-- jQuery (Load only once) -->
 		<script src="{% static 'assets/js/jquery-3.7.1.min.js' %}"></script>
@@ -38,207 +38,201 @@
 		<!-- typeahead CSS -->
 		<script src="{% static '/js/plugins/typehead/bootstrap3-typeahead.min.js' %}"></script>
 		
-    <Style>
-        div,a,h1,h2,h3,h4,h5,h6,span,p,td,th,tr,*{
-            font-family:"Arial Nova", sans-serif;
-        }
+<Style>
+    div,a,h1,h2,h3,h4,h5,h6,span,p,td,th,tr,*{
+        font-family:"Arial Nova", sans-serif;
+    }
 
-        td{
-            text-wrap: auto !important;
-            
-        }
-        [data-layout-width=boxed] body, [data-layout-width=boxed] .header {
-            max-width: 100% !important;
-            margin: auto;
-        }
-
-        .loader-container {
-        max-height: 700px;
+    td{
+        text-wrap: auto !important;
         
-        }.header .top-nav-search form{
+    }
+    [data-layout-width=boxed] body, [data-layout-width=boxed] .header {
+        max-width: 100% !important;
+        margin: auto;
+    }
 
-            width:280px;
-        }
-        .header .user-menu{
+    .loader-container {
+    max-height: 700px;
+     
+    }.header .top-nav-search form{
 
-            align-item:start;
-        }
-        .sidebar-vertical .typeahead.dropdown-menu{
-            top:0px !important
-        }
+        width:280px;
+    }
+    .header .user-menu{
 
-
-        .dashboard-container {
-            padding: 20px;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        
-        .summary-header {
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .summary-header .variance {
-            color: #e74c3c;
-            margin-left: 10px;
-        }
-        
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-        
-        .card-box {
-            background: #fff;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        
-        .card-box:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card-title {
-            font-size: 16px;
-            font-weight: 500;
-            margin-bottom: 10px;
-            color: #555;
-        }
-        
-        .card-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-        
-        .card-data {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        
-        .green .card-icon {
-            color: #27ae60;
-        }
-        .red .card-icon {
-            color: #e74c3c;
-        }
-        .yellow .card-icon {
-            color: #f39c12;
-        }
-        .echarts-container {
-            max-width: 100%;
-            overflow: auto;
-        }
-        .hide-important {
-            display: none !important;
-        }
-
-        ul.nav_l_h_s_m li:nth-child(1) {
-            width: 96% !important;
-            min-width: 73%;
-            margin: 0px 8px !important;
-        }
-
-        .sidebar-vertical ul.nav_l_h_s_m li:nth-child(1) {
-            width: 96%;
-            min-width: 73%;
-            margin: 0 auto;
-        }
-        .loader-container{
-            display: none;
-        }
-        .header .user-menu {
-            margin-top: 0px !important; 
-        }
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            line-height: 44px !important;
-        }
-        .select2-container--default .select2-selection--single .select2-selection__arrow {
-            height: 42px !important;
-            right:11px !important;
-        }
-
-        .page-wrapper {
-            min-height: auto !important;
-        }
-
-        .settings-icon{
-            margin-bottom: 80px;
-        }
-
-        .settings-icon span {
-            background-color: #3a4a93;
-        }
-
-        .btn-primary, .btn-Secondary{
-            border-radius:5px !important;
-        }
+        align-item:start;
+    }
+    .sidebar-vertical .typeahead.dropdown-menu{
+        top:0px !important
+    }
 
 
-        table {
-            border: 0.5px solid #b0afaf75;
-            border-radius: 5px;
-            border-collapse: separate; 
-            overflow: hidden;           
-            border-spacing: 0px;
-        }
+    .dashboard-container {
+        padding: 20px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    
+    .summary-header {
+        font-size: 18px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .summary-header .variance {
+        color: #e74c3c;
+        margin-left: 10px;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    
+    .card-box {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    
+    .card-box:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        margin-bottom: 10px;
+        color: #555;
+    }
+    
+    .card-icon {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+    
+    .card-data {
+        font-size: 24px;
+        font-weight: bold;
+    }
+    
+    .green .card-icon {
+        color: #27ae60;
+    }
+    .red .card-icon {
+        color: #e74c3c;
+    }
+    .yellow .card-icon {
+        color: #f39c12;
+    }
+    .echarts-container {
+        max-width: 100%;
+        overflow: auto;
+    }
+	.hide-important {
+        display: none !important;
+    }
 
-        table th, table td {
-            border: 0.5px solid #b0afaf75;
-        }
-        .btn{
-            border-radius: 5px !important;
-        }
+    ul.nav_l_h_s_m li:nth-child(1) {
+        width: 96% !important;
+        min-width: 73%;
+        margin: 0px 8px !important;
+    }
 
-        .form-control{
-            border-radius: 5px !important;
-        }
+    .sidebar-vertical ul.nav_l_h_s_m li:nth-child(1) {
+        width: 96%;
+        min-width: 73%;
+        margin: 0 auto;
+    }
+    .loader-container{
+        display: none;
+    }
+    .header .user-menu {
+        margin-top: 0px !important; 
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 44px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 42px !important;
+        right:11px !important;
+    }
 
-        .btn-primary, .btn-danger, .btn-Warning, .btn-active{
-            border-radius: 5px;
-        }
-        
+    .page-wrapper {
+        min-height: auto !important;
+    }
 
-        .card .card-body {
-            padding: 16px !important;
-        }
 
-        .card .card-header {
-            margin-bottom: -20px !important;
-        }
-        .CustomFooter{
-            position: fixed;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background: white; /* optional */
-            padding: 10px;     /* optional */
-            text-align: center; /* optional */
-            z-index: 999; 
-            padding-right: 10px;
-            display: flex;
-            justify-content: end;
-            border-top: 1px solid #00000054;
-        }
+	table {
+		border: 0.5px solid #b0afaf75;
+		border-radius: 5px;
+		border-collapse: separate; 
+		overflow: hidden;           
+		border-spacing: 0px;
+	}
 
-        .page-wrapper .content {
-            padding: 10px !important;
-        }
+	table th, table td {
+		border: 0.5px solid #b0afaf75;
+	}
+	.btn{
+		border-radius: 5px !important;
+	}
 
-        .card {
-            border-radius: 5px !important;
-            border: 1px solid #0000004f;
-        }
-    </Style>
+	.form-control{
+		border-radius: 5px !important;
+	}
+
+	.btn-primary, .btn-danger, .btn-Warning{
+		border-radius: 5px;
+	}
+	
+
+    .card .card-header {
+        margin-bottom: -20px !important;
+    } 
+    .CustomFooter{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white; /* optional */
+        padding: 10px;     /* optional */
+        text-align: center; /* optional */
+        z-index: 999; 
+        padding-right: 24px;
+        display: flex;
+        justify-content: end;
+        border-top: 1px solid #00000054;
+    }
+
+    .page-wrapper .content {
+        padding: 10px !important;
+    }
+
+    .card .card-body {
+        padding: 15px !important;
+    } 
+
+
+    .card {
+        border-radius: 5px !important;
+        border: 1px solid #0000004f;
+    }
+
+    #clear, #filter{
+        padding-block: 8px;
+	}
+
+</Style>
 	{% block extra_css %}
 	{% endblock %}
 </head>
 
-<body id="{% block body_id %}default-body{% endblock %}" id="body">
+<body id="{% block body_id %}default-body{% endblock %}">
     
      
 	<!-- Main Wrapper -->
@@ -272,10 +266,10 @@
 			</a>
 			
 			<!-- Header Title -->
-            <div class="page-title-box" id="page-title-box">
+            <div class="page-title-box">
                 <div class="nav-element-container d-flex justify-content-between align-items-center">
                     <ul class="nav-element-container d-flex gap-4">
-						{% include "HR/TopNavbarMenu.html" %}
+						{% include "LMS/TopNavbarMenu.html" %}
                     </ul>
                 </div>
             </div>
@@ -351,7 +345,6 @@
 				{% block content %}{% endblock %}
                 <br />
                 <br />
-                <br />
             </div>
         </div>
 		<!-- /Page Wrapper -->
@@ -375,16 +368,7 @@
 	</div>
 	<!-- /Main Wrapper -->
 
-	<!-- <a href="#body">
-	<div class="settings-icon"> 
-			<span data-bs-toggle="offcanvas" data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas" id="settingsicon">
-				<i class="fa-solid fa-circle-arrow-up"></i>
-			</span> 
-		</div> 
-	</a> -->
 
-
-	
 	<!-- Bootstrap Core JS -->
 	<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
 
@@ -392,7 +376,8 @@
 	<script src="{% static 'assets/js/jquery.slimscroll.min.js' %}"></script>
 
 	<!-- Select2 (for enhanced select dropdowns, if used) -->
-	<script src="{% static 'assets/js/select2.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/select2/js/select2.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/select2/js/custom-select.js' %}"></script>
 
 	<!-- DataTables (for tables, if needed) -->
 	<script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
@@ -465,10 +450,11 @@
 	<script src="{% static 'assets/js/greedynav.js' %}"></script>
 	<script src="{% static 'assets/js/app.js' %}"></script>
 
+
 	<link href="{% static 'assets/plugins/virtual-select/virtual-select.min.css' %}" rel="stylesheet">
 	<script src="{% static 'assets/plugins/virtual-select/virtual-select.min.js' %}"></script>
 
-    
+
 	<script>
 		var showview = function (obj) {
 			$("#modalview").modal('show')

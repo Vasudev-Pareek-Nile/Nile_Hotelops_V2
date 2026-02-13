@@ -1,5 +1,10 @@
+
+
 {% extends 'LMS/homebase.html' %}
-{% block content %}
+
+{% block content %}  
+{% comment %} {% extends "EMP_PAY\homebase.html" %}
+{% block content %} {% endcomment %}
 {% load Payrollcustom_filters %}
 <style>
     html, body {
@@ -25,7 +30,7 @@
     .table-container {
         position: relative;
         overflow: auto;
-        max-height: 80vh;
+        max-height: 72vh;
     }
     table {
         width: 100%;
@@ -212,6 +217,7 @@
 
                         <th class="sticky-header">Total Leave</th>
                         <th class="sticky-header">Total Working Days</th>
+                        <th class="sticky-header">Total Paid Days</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -238,15 +244,13 @@
                             <td rowspan="4" class="text-center">{{ row.WeekOff }}</td>
                             <td rowspan="4" class="text-center">{{ row.Absent }}</td>
 
-                            {% for leave in leavelist %}
-                                <td rowspan="4" class="text-center">
-                                    {{ row.leave_counts|get_item:leave|default:0 }}
-                                </td>
+                            {% for leave, count in row.leave_counts.items %}
+                                <td rowspan="4" class="text-center">{{ count }}</td>
                             {% endfor %}
-
 
                             <td rowspan="4" class="text-center">{{ row.l_Count }}</td>
                             <td rowspan="4" class="text-center">{{ row.TotalWorkingDays }}</td>
+                            <td rowspan="4" class="text-center">{{ row.TotalPaidDays }}</td>
                         </tr>
                         <tr>
                             <th class="sticky-col sticky-col-white EmpDetails">{{ row.EmployeeCode }}</th>
@@ -293,10 +297,10 @@
                 <div class="card-footer d-flex justify-content-between">
                     <div class="d-flex gap-2">
                         <div class="">
-                            <select class="form-control select2" name="EmployeeCode">
+                            <select class="form-control" name="EmployeeCode">
                                 <option value="All">All Employee</option>
                                 {% for emp in emp_list %}
-                                <option value="{{emp.EmployeeCode}}">{{ emp.EmpName }}</option>
+                                <option value="{{emp.EmployeeCode}}">{{ emp.EmployeeCode }} - {{ emp.EmpName }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -332,7 +336,7 @@
                         <div class="">
                             <select class="form-control" name="year">
                                 {% for i in CYear %}
-                                    <option value="{{ i }}" {% if i == selected_year %}selected{% endif %}>{{ i }}</option>
+                                    <option value="{{ i }}" {% if i == year %}selected{% endif %}>{{ i }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -359,7 +363,7 @@
                     
                     <div class="text-end">
 
-                        <a href="{% url 'MonthlyAttendenceReport_Pdf_View' %}?month_no={{ month_no }}&year={{ year }}&OID={{ OrganizationID }}&dpt={{ GetDepartments }}&EmpCode={{ EmployeeCode }}" class="btn btn-sm btn-primary">
+                        <a href="{% url 'Monthly_Attendence_Report_Leave_Pdf_View' %}?month_no={{ month_no }}&year={{ year }}&OID={{ OrganizationID }}&dpt={{ GetDepartments }}&EmpCode={{ EmployeeCode }}" class="btn btn-sm btn-primary">
                             PDF
                         </a>
 
@@ -508,20 +512,19 @@
 
         let i = 0;
         while (i < rows.length) {
-            const firstRow = rows[i];
-
-            // ✅ Correct selector
-            const empCell = firstRow.querySelector(".emp-col-details");
+            const firstRow = rows[i]; // "In Time" row with EmpDetails
+            const empCell = firstRow.querySelector(".emp-col");
             const empText = empCell ? empCell.textContent.toLowerCase() : "";
 
+            // Check if employee matches the search
             const isMatch = empText.includes(input);
 
-            // show/hide 4 rows block
+            // Show/hide the group of 4 rows together
             for (let j = 0; j < 4 && i + j < rows.length; j++) {
                 rows[i + j].style.display = isMatch ? "" : "none";
             }
 
-            i += 4;
+            i += 4; // move to next employee block
         }
     }
 </script>
@@ -592,9 +595,9 @@
         });
     });
 
-    {% comment %} $(document).ready(function() {
-		$('.select2').select2();
-	}); {% endcomment %}
+    // $(document).ready(function() {
+	// 		$('select').select2();
+	// });
 		
 </script>
 {% endblock content %}

@@ -446,6 +446,10 @@ def Second_Show_Cause_Notice_Entry(request):
     EmpID  = request.GET.get('EmpID')
     AID = request.GET.get('AID')
     
+    # print("EmpCode:",EmpCode)
+    # print("EmpID:",EmpID)
+    # print("AID:",AID)
+    
     DepartmentName  = request.GET.get('DepartmentName')
     ManagerNames  =   EmployeeNameOnTheBasisofDesignation(DepartmentName, OrganizationID)
     
@@ -455,7 +459,8 @@ def Second_Show_Cause_Notice_Entry(request):
     showcauseobj   = None
     if EmpCode is not None:
         if AID is not None:
-               showcauseobj = Second_Show_Cause_Notice.objects.filter(id = AID,Emp_Code = EmpCode,OrganizationID = OrganizationID,IsDelete=False).first()
+            # showcauseobj = Empshowcausenotice.objects.filter(id = AID,Emp_Code = EmpCode,OrganizationID = OrganizationID,IsDelete=False).first()
+            showcauseobj = Second_Show_Cause_Notice.objects.filter(id = AID,Emp_Code = EmpCode,OrganizationID = OrganizationID,IsDelete=False).first()
 
         if showcauseobj is not None:
             DataFromshowcauseobj  = 'showcauseobj'
@@ -463,6 +468,7 @@ def Second_Show_Cause_Notice_Entry(request):
         else:
             DataFromshowcauseobj  = 'showcauseobjHR'
             EmpDetails  = EmployeeDetailsData(EmpID,OrganizationID)
+            # print("EmployeeID:", EmpID)
 
             showcauseobj = {
                 'Emp_Code' : EmpDetails.EmployeeCode,
@@ -501,6 +507,7 @@ def Second_Show_Cause_Notice_Entry(request):
             showcauseobj.ModifyBy = UserID
             showcauseobj.save()
         else:
+           # showcauseobj = Empshowcausenotice.objects.create(
            showcauseobj = Second_Show_Cause_Notice.objects.create(
                 Name=Name,
                 Emp_Code=Emp_Code,
@@ -583,6 +590,7 @@ from io import BytesIO
 from xhtml2pdf import pisa
 from datetime import datetime
 from app.models import OrganizationMaster
+
 def EmpshowcausenoticePDF(request):
     # Check if the session contains 'OrganizationID'
     if 'OrganizationID' not in request.session:
@@ -636,3 +644,64 @@ def EmpshowcausenoticePDF(request):
 
     # Handle PDF generation error
     return HttpResponse("Error generating PDF", status=500)
+
+
+
+
+
+
+def Second_Show_Cause_Notice_PDF(request):
+    # Check if the session contains 'OrganizationID'
+    if 'OrganizationID' not in request.session:
+        return redirect('MasterAttribute.Host')
+
+    # Retrieve organization details and current date
+    OrganizationID = request.session.get("OrganizationID")
+    OID  = request.GET.get('OID')
+    if OID:
+            OrganizationID= OID
+    current_datetime = datetime.now().strftime('%d %B %Y %H:%M:%S')
+    base_url = "https://hotelopsblob.blob.core.windows.net/hotelopslogos/"
+
+    # Get organization details for the current OrganizationID
+    organization = OrganizationMaster.objects.filter(OrganizationID=OrganizationID).first()
+    organization_logo = f"{base_url}{organization.OrganizationLogo}" if organization and organization.OrganizationLogo else None
+    organization_name = organization.OrganizationName if organization else "Unknown Organization"
+
+    # Get default organization details (with ID=3)
+    default_organization = OrganizationMaster.objects.filter(OrganizationID=3).first()
+    default_organization_logo = f"{base_url}{default_organization.OrganizationLogo}" if default_organization and default_organization.OrganizationLogo else None
+
+    # Get employee show cause notice data
+    notice_id = request.GET.get("AID")
+    try:
+        notice_data = Second_Show_Cause_Notice.objects.get(id=notice_id)
+    except Empshowcausenotice.DoesNotExist:
+        return HttpResponse("Show Cause Notice not found.", status=404)
+
+    # Prepare template context
+    template_path = "EmpshowcausenoticeTemp/Second_Show_Cause_Notice_view.html"
+    context = {
+        'organization_logo': organization_logo,
+        'organization_name': organization_name,  # Include the organization name
+        'current_datetime': current_datetime,
+        'notice': notice_data,
+        'default_organization_logo': default_organization_logo
+    }
+
+    # Generate PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Show_Cause_Notice_{notice_id}.pdf"'
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # Create PDF
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type='application/pdf')
+
+    # Handle PDF generation error
+    return HttpResponse("Error generating PDF", status=500)
+
+

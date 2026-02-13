@@ -22,7 +22,5 @@ urlpatterns = [
     path("EmpshowcausenoticeDelete/",views.EmpshowcausenoticeDelete,name="EmpshowcausenoticeDelete"),
     
     path("EmpshowcausenoticePDF/",views.EmpshowcausenoticePDF,name="EmpshowcausenoticePDF"),
-  
-  
-  
+    path("Second_Show_Cause_Notice_PDF/",views.Second_Show_Cause_Notice_PDF,name="Second_Show_Cause_Notice_PDF"),
 ]

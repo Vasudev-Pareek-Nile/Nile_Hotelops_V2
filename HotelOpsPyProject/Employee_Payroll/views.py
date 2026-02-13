@@ -1439,6 +1439,7 @@ def AttendaceMonthlyReport(request):
     else:
         year = datetime.now().year
         
+    selected_year = year
     month_no =  request.GET.get('month_no')
     if month_no:
         month_no = int(month_no)
@@ -1597,6 +1598,7 @@ def AttendaceMonthlyReport(request):
         'CYear':range(CYear,2020,-1),'CMonth':CMonth,
         'month_no':month_no,
         'year':year,
+        'selected_year':selected_year,
         'month_name':month_name,
         'rowslist':rowslist,
         'days':days,
@@ -4725,7 +4727,31 @@ class AlifUploadCSVApi(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         file = serializer.validated_data['file']
-        csv_reader = csv.reader(io.TextIOWrapper(file.file, encoding='utf-8'))
+        # csv_reader = csv.reader(io.TextIOWrapper(file.file, encoding='utf-8'))
+        
+        # try:
+        #     wrapper = io.TextIOWrapper(file.file, encoding='utf-8')
+        #     csv_reader = csv.reader(wrapper)
+        #     next(csv_reader)  # test read
+        #     file.file.seek(0)
+        #     wrapper = io.TextIOWrapper(file.file, encoding='utf-8')
+        # except UnicodeDecodeError:
+        #     file.file.seek(0)
+        #     wrapper = io.TextIOWrapper(file.file, encoding='latin-1')
+        #     csv_reader = csv.reader(wrapper)
+
+        # csv_reader = csv.reader(wrapper)
+                
+        file_data = file.read()
+
+        try:
+            decoded_file = file_data.decode('utf-8')
+        except UnicodeDecodeError:
+            decoded_file = file_data.decode('latin-1')
+
+        io_string = io.StringIO(decoded_file)
+        csv_reader = csv.reader(io_string)
+
 
         # Skip header rows
         next(csv_reader, None)

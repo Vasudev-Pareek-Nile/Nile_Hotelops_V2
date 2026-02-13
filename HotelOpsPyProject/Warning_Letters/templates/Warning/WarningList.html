@@ -166,16 +166,19 @@
           </thead>
           <tbody>
             {% for detail in warning_details %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ detail.Empcode }}</td>
-              <td>{{ detail.EmployeeName }}</td>
-              <td>{{ detail.Designation }}</td>
-              <td>{{ detail.Lastwarningtype }}</td>
-              <td >
-                <a href="{% url 'warning_detail' %}?EC={{detail.Empcode}}&OID={{detail.OrganizationID}}" class="btn btn-primary btn-sm" title="View">&nbsp;View</a>
-              </td>
-            </tr>
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ detail.emp_code }}</td>
+                    <td>{{ detail.emp_name }}</td>
+                    <td>{{ detail.designation }}</td>
+                    <td>{{ detail.type }}</td>
+                    <td>
+                        <a href="{% url 'warning_detail' %}?EC={{ detail.emp_code }}&OID={{ detail.OrganizationID }}"
+                        class="btn btn-primary btn-sm">
+                        View
+                        </a>
+                    </td>
+                </tr>
             {% endfor %}
           </tbody>
         </table>

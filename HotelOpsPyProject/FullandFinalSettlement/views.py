@@ -1606,5 +1606,6 @@ def get_fandf_by_OID(request):
     return Response({
         "status": True,
         "message": "Success",
+        "data_count": len(data),
         "data": data
     })

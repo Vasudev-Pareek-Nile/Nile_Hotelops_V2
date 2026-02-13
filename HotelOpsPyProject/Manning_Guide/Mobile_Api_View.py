@@ -406,15 +406,15 @@ def variance_Employee_Data(request):
 
 # -------------------- Manning Guide Corporate Report Mobile Api ------------------
 def ManningGuideCorpoReport(request):
-    Fixed_Token = 'ujhj45ON8BKl!udLGPu!szcWtY!e9MTm4jpXSqD7wNM1HITpnbJhhp=aElxgkShcdaBhvgqLeOMjz9G?qliY6FK/AcJN0iTB3fIl5g55bllJHdrF-Yh-O4W-eEjKaPk/DBGqHU6XDhbG5m68RtVxZGH?B6n1F5u=F84npBeJIMS/SzrT7=dXuAj=8aqDyvRpIh=nswd!XPTMobzhw2jKxocrOYJkzo0osZFSMxK1hMqRbqGJIKR=bgRfS!cea11f'
-    AccessToken = request.headers.get('Authorization', '')
+    # Fixed_Token = 'ujhj45ON8BKl!udLGPu!szcWtY!e9MTm4jpXSqD7wNM1HITpnbJhhp=aElxgkShcdaBhvgqLeOMjz9G?qliY6FK/AcJN0iTB3fIl5g55bllJHdrF-Yh-O4W-eEjKaPk/DBGqHU6XDhbG5m68RtVxZGH?B6n1F5u=F84npBeJIMS/SzrT7=dXuAj=8aqDyvRpIh=nswd!XPTMobzhw2jKxocrOYJkzo0osZFSMxK1hMqRbqGJIKR=bgRfS!cea11f'
+    # AccessToken = request.headers.get('Authorization', '')
 
-    # Token checks
-    if not AccessToken:
-        return JsonResponse({'error': 'Token not found'}, status=400)
-    if AccessToken != Fixed_Token:
-        return JsonResponse({'error': 'Invalid token'}, status=400)
-    # -------------------------------
+    # # Token checks
+    # if not AccessToken:
+    #     return JsonResponse({'error': 'Token not found'}, status=400)
+    # if AccessToken != Fixed_Token:
+    #     return JsonResponse({'error': 'Invalid token'}, status=400)
+    # # -------------------------------
     OID = request.GET.get('OID') 
     
     # OID checks

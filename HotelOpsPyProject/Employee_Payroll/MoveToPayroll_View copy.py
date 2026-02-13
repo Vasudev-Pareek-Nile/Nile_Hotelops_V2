@@ -20,11 +20,9 @@ from rest_framework.views import APIView
 
 from django.db  import connection, transaction
 
-def Employee_Data_Select_Payroll(OrganizationID=None, EmployeeCode=None,Division=None,Departments=None,EmpStatus=None, Levels=None):
-    print("EmpStatus:", EmpStatus)
-    print("Levels:", Levels)
+def Employee_Data_Select_Payroll(OrganizationID=None, EmployeeCode=None,Designation =None,ReportingtoDesignation =None):
     with connection.cursor() as cursor:
-        cursor.execute("EXEC SP_EmployeeMaster_For_Payroll_Api @OrganizationID=%s, @EmployeeCode=%s, @Division=%s, @Departments=%s, @EmpStatus=%s, @Levels=%s", [OrganizationID, EmployeeCode,Division,Departments, EmpStatus, Levels])
+        cursor.execute("EXEC SP_EmployeeMaster_For_Payroll_Api @OrganizationID=%s, @EmployeeCode=%s, @Designation=%s, @ReportingtoDesignation=%s", [OrganizationID, EmployeeCode,Designation,ReportingtoDesignation])
         rows = cursor.fetchall()
         columns = [col[0] for col in cursor.description]
     rowslist = [dict(zip(columns, row)) for row in rows]
@@ -64,7 +62,7 @@ class Payroll_Employee_Data_API(APIView):
 
 # ------------- View Function
 from decimal import Decimal, ROUND_HALF_UP
-from Manning_Guide.models import OnRollDepartmentMaster, LavelAdd
+
 def round_decimal(value):
     return value.quantize(Decimal('1'), rounding=ROUND_HALF_UP)
 
@@ -72,74 +70,68 @@ def round__Value_decimal(val):
     return Decimal(str(val)).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
 def MoveToPayroll_View(request):
-    OrganizationID = request.session["OrganizationID"]
+    OrganizationID = request.GET.get("Organizations") 
+    S_OID = request.session.get("OrganizationID")
+    Departments = request.GET.get("Departments") 
+    Departments_list = Departments.split(",") if Departments else []
+    Designations = request.GET.get("Designations") 
+    Designations_list = Designations.split(",") if Designations else []
+
+    Status = request.GET.get("Status", 'all')
+    Status_list = Status.split(",") if Status else []
 
     FromDate = request.GET.get("FromDate")
     ToDate = request.GET.get("ToDate")
 
-    selected_org_id = request.GET.get("Organizations", OrganizationID)
-    if not selected_org_id or selected_org_id == "all":
-        selected_org_id = OrganizationID
-    else:
-        selected_org_id = int(selected_org_id)
+    if OrganizationID is None or not OrganizationID:
+        OrganizationID = S_OID
 
-    selected_division = request.GET.get("Divisions")
+    department_names = get_department_bulk_names(Departments_list) if Departments_list else []
+    designation_names = get_designation_bulk_names(Designations_list) if Designations_list else []
 
-    # -------- Status
-    Status = request.GET.get("Status", "")
-    Status_list = Status.split(",") if Status else []
+    #  ----------------- New
+    # OrganizationID = request.session["OrganizationID"]
+    # selected_org_id = request.GET.get("Organizations", OrganizationID)
+    # if not selected_org_id or selected_org_id == "all":
+    #     selected_org_id = OrganizationID
+    # else:
+    #     selected_org_id = int(selected_org_id)  
+    
+    # selected_division = request.GET.get("Divisions")
+    
+    # EmployeesList = EmployeeMaster.objects.filter(
+    #     OrganizationID=OrganizationID,
+    #     IsDelete=False, 
+    #     IsSecondary=False,
+    #     EmpStatus__in=["On Probation", "Confirmed", "Not Confirmed","Resigned","F&F In process","Absconding", "Terminate"]
+    # )
 
-    if not Status_list or Status_list == [""]:
-        Status_list = ["On Probation", "Not Confirmed", "Confirmed"]
-    elif "all" in Status_list:
-        Status_list = None
-
-    # -------- Departments
-    Departments = request.GET.get("Departments")
-    Departments_list = Departments.split(",") if Departments else []
-
-    # -------- Levels
-    Levels = request.GET.get("Levels")
-    Levels_List = Levels.split(",") if Levels else []
-
-    if not Levels_List or Levels_List == [""]:
-        Levels_List = list(
-            LavelAdd.objects.filter(IsDelete=False)
-            .values_list("lavelname", flat=True)
-        )
-    elif "all" in Levels_List:
-        Levels_List = None
-
-    # -------- Division → Department Mapping
-    departments_in_division = []
-    if selected_division:
-        departments_in_division = list(
-            OnRollDepartmentMaster.objects.filter(
-                OnRollDivisionMaster__DivisionName=selected_division,
-                IsDelete=False
-            ).values_list("DepartmentName", flat=True)
-        )
-
-    if not Departments_list and departments_in_division:
-        Departments_list = departments_in_division
+    if Status_list is not None:
+        if "all" in Status_list:
+            # print("there is any all status is here")
+            pass
+            # don't filter, show all
+        else:
+            # print("there is any other status")
+            EmployeesList = EmployeesList.filter(EmpStatus__in=Status_list)
 
 
-    # print("selected_division:", selected_division)
-    # print("selected_org_id:", selected_org_id)
-    # print("Status string:", ",".join(Status_list) if Status_list else None)
-    # print("Departments string:", ",".join(Departments_list) if Departments_list else None)
-    # print("Levels string:", ",".join(Levels_List) if Levels_List else None)
+    if department_names:
+        EmployeesList = EmployeesList.filter(Department__in=department_names)
 
-    # ✅ Create Main Dataset ONLY ONCE
+    if designation_names:
+        EmployeesList = EmployeesList.filter(Designation__in=designation_names)
+
+    # EmployeesList = EmployeesList.order_by("EmployeeCode", "EmpName").values(
+    #     'id', 'EmpName', 'EmployeeCode', 'Department', 'Designation','EmpStatus','DateofJoining','Level','EmpID'
+    # )
+    
     EmployeesList = Employee_Data_Select_Payroll(
-        OrganizationID=selected_org_id,
+        OrganizationID=OrganizationID,
         EmployeeCode=None,
-        Division=selected_division,
-        Departments=",".join(Departments_list) if Departments_list else None,
-        EmpStatus=",".join(Status_list) if Status_list else None,
-        Levels=",".join(Levels_List) if Levels_List else None,
+        Designation=Designations,
+        ReportingtoDesignation=None
     )
-
 
     now = timezone.now()
     today_date_obj = now.date()
@@ -163,11 +155,11 @@ def MoveToPayroll_View(request):
     context = {
         "EmployeesList": EmployeesList,
         "Filter_Departments": json.dumps(Departments_list),    
-        # "Filter_Designations": json.dumps(Designations_list),  
+        "Filter_Designations": json.dumps(Designations_list),  
         "Status_list": json.dumps(Status_list), 
         "FromDate": FromDate,
         "ToDate": ToDate,
-        # 'Session_OrganizationID': S_OID,
+        'Session_OrganizationID': S_OID,
         'Selected_OID': OrganizationID,
         # 'today': today,
         'today': today_date_obj,
@@ -182,7 +174,6 @@ def MoveToPayroll_View(request):
         'Levels_List': json.dumps(Levels_List),  
         # 'selected_division': selected_division,
         'selected_division': json.dumps(selected_division or None),
-        # 'Session_OrganizationID':OrganizationID
     }
     return render(request, "EMP_PAY/MoveToPayroll_Template/MoveToPayroll.html", context)
 

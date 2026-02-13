@@ -419,8 +419,8 @@ def Editor_Create_View(request):
         OID = request.POST.get("OID") or OrganizationID
         content = request.POST.get("PolicyContent") or ''
         
-        print("policy id:",PolicyID)
-        print("OID:",OID)
+        # print("policy id:",PolicyID)
+        # print("OID:",OID)
 
         Letter_Editor.objects.create(
             Letter_Data_Item_Master_id=PolicyID,

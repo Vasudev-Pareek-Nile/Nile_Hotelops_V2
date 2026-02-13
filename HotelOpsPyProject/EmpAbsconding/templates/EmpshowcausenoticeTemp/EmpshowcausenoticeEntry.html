@@ -10,10 +10,8 @@
 </style>
 
 <div class="card">
-  <div class="card-header"><strong>Employee Show Cause Notice Form</strong></div>
-</div>
+  <div class="card-header"><strong>First Show Cause Notice</strong></div>
 
-<div class="card">
   <form action="" method="post">
     
     <div class="card-body">
@@ -72,43 +70,36 @@
               <input type="date" name="NoticeIssuingdate" id="Date_Of_Issuing" class="form-control" value="{% if  showcauseobj.NoticeIssuingdate %}{{ showcauseobj.NoticeIssuingdate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}">
             </div>
           </div>
-                                   <!-- Issuing Manager Name -->
-                                   <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="Issuing_designation">Issuing Designation</label>
-                                        <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
-                                            <option value="">Select</option>
-                                            {% for ManagerName in ManagerNames %}
-                                                <option value="{{ ManagerName.designations }}" {% if showcauseobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
-                                                    {{ ManagerName.designations }}
-                                                </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <!-- Issuing Manager Name -->
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="Issuing_manager_name">Issuing Manager Name</label>
-                                        <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ showcauseobj.Issuing_manager_name }}" required readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                  <div class="form-group">
-                                    <label for="date_of_absconding">Date of Creation:</label>
-                                    <input type="date" name="NoticeCreateddate" id="Date_Of_Created" class="form-control" value="{% if  showcauseobj.NoticeCreateddate %}{{ showcauseobj.NoticeCreateddate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" readonly>
-                                  </div>
-                                </div>
-
-          <!-- Remarks -->
-          <!-- <div class="col-md-12">
+            <!-- Issuing Manager Name -->
+            <div class="col-md-4">
             <div class="form-group">
-              <label for="remarks">Remarks:</label>
-              <textarea name="remarks" id="remarks" class="form-control" rows="3">{{ showcauseobj.Remarks|default_if_none:'' }}</textarea>
+                <label for="Issuing_designation">Issuing Designation</label>
+                <select class="form-control" name="Issuing_designation" id="Issuing_designation" required>
+                    <option value="">Select</option>
+                    {% for ManagerName in ManagerNames %}
+                        <option value="{{ ManagerName.designations }}" {% if showcauseobj.Issuing_designation == ManagerName.designations %} selected {% endif %} data-fullname="{{ ManagerName.EmployeeName }}">
+                            {{ ManagerName.designations }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
-          </div> -->
+        </div>
+        
+        <!-- Issuing Manager Name -->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="Issuing_manager_name">Issuing Manager Name</label>
+                <input type="text" class="form-control" name="Issuing_manager_name" id="Issuing_manager_name" value="{{ showcauseobj.Issuing_manager_name }}" required readonly>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="form-group">
+            <label for="date_of_absconding">Date of Creation:</label>
+            <input type="date" name="NoticeCreateddate" id="Date_Of_Created" class="form-control" value="{% if  showcauseobj.NoticeCreateddate %}{{ showcauseobj.NoticeCreateddate|date:'Y-m-d' }}{% else %}{% now "Y-m-d" %}{% endif %}" readonly>
+          </div>
+        </div>
+
 
           <div class="col-md-12">
             <div class="form-group">
@@ -124,7 +115,7 @@
     </div>
 
     {% csrf_token %}
-    <div class="card-footer text-right">
+    <div class="CustomFooter">
       <input type="submit" class="btn btn-primary" value="Submit">
     </div>
   </form>

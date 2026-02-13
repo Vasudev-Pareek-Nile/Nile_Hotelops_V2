@@ -323,45 +323,31 @@
             inputField.off('input').on('input', function () {
                 let inputVal = $(this).val();
 
-                // if (valueType === 'number') {
-                //     // Only allow digits
-                //     inputVal = inputVal.replace(/[^0-9]/g, '');
-                // } 
-                // else if (valueType === 'decimal') {
-                //     // Allow digits and only one dot
-                //     inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-                // } 
-
                 if (valueType === 'number') {
-
-                    // Allow digits + optional starting minus
-                    inputVal = inputVal.replace(/[^0-9-]/g, '');
-                    inputVal = inputVal.replace(/(?!^)-/g, ''); // Only allow - at start
-                }
-
+                    // Only allow digits
+                    inputVal = inputVal.replace(/[^0-9]/g, '');
+                } 
                 else if (valueType === 'decimal') {
-
-                    // Allow digits, one dot, optional starting minus
-                    inputVal = inputVal.replace(/[^0-9.-]/g, '');
-                    inputVal = inputVal.replace(/(?!^)-/g, ''); // minus only at start
-                    inputVal = inputVal.replace(/(\..*?)\..*/g, '$1'); // one dot only
-                }
+                    // Allow digits and only one dot
+                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                } 
                 else if (valueType === 'percentage') {
-
+                    // Remove all '%' first
                     inputVal = inputVal.replace(/%/g, '');
-                    inputVal = inputVal.replace(/[^0-9.-]/g, '');
-                    inputVal = inputVal.replace(/(?!^)-/g, '');
-                    inputVal = inputVal.replace(/(\..*?)\..*/g, '$1');
-
+                    // Allow only digits and single dot
+                    inputVal = inputVal.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+                    
+                    // Only append % if the input is not empty and user isn't deleting
                     if (inputVal !== '' && !inputVal.endsWith('%')) {
                         inputVal += '%';
                     }
 
+                    // Restore cursor position before %
                     setTimeout(() => {
-                        const newPos = inputVal.length - 1;
+                        const newPos = inputVal.length - 1; // before %
                         this.setSelectionRange(newPos, newPos);
                     }, 0);
-                }
+                } 
                 else if (valueType === 'text') {
                     // Only allow alphabets and spaces
                     inputVal = inputVal.replace(/[^a-zA-Z ]/g, '');
@@ -375,147 +361,74 @@
     });
 </script>
 
-{% comment %} 
-<script>
-    function evaluateStatus(idSuffix) {
-        const input = document.getElementById("ActualFieldValue_" + idSuffix);
-        const compareInput = document.getElementById("CompareWithValue_" + idSuffix);
-        const valueTypeInput = document.getElementById("ValueType_" + idSuffix);
-        const comparisonTypeInput = document.getElementById("ComparisonType_" + idSuffix);
-        const selectInput = document.querySelector(`select[name="actual_${idSuffix}"]`);
-        const hiddenInput = document.querySelector(`input[type="hidden"][name="actual_${idSuffix}"]`);
-
-        const actualValue = input ? input.value.trim() : '';
-        const compareValue = compareInput ? compareInput.value.trim() : '';
-        const valueTypeValue = valueTypeInput ? valueTypeInput.value.trim().toLowerCase() : '';
-        const comparisonTypeValue = comparisonTypeInput ? comparisonTypeInput.value.trim().toLowerCase() : '';
-
-        const actualNum = parseFloat(actualValue.replace('%', ''));
-        const compareNum = parseFloat(compareValue.replace('%', ''));
-
-        let status = '';
-
-        if (comparisonTypeValue === 'lower') {
-            if (actualValue === '') {
-                status = 'N/A';
-            } else if (actualNum < compareNum) {
-                status = 'Exceeds Expectation';
-            } else if (actualNum === compareNum) {
-                status = 'Met';
-            } else {
-                status = 'Not Met';
-            }
-        } else if (comparisonTypeValue === 'higher') {
-            if (actualValue === '') {
-                status = 'N/A';
-            } else if (actualNum > compareNum) {
-                status = 'Exceeds Expectation';
-            } else if (actualNum === compareNum) {
-                status = 'Met';
-            } else {
-                status = 'Not Met';
-            }
-        } else if (comparisonTypeValue === 'equal') {
-            if (valueTypeValue === 'text') {
-                // Case-insensitive string comparison
-                if (actualValue.toLowerCase() === compareValue.toLowerCase()) {
-                    status = 'Met';
-                } else if (actualValue === '') {
-                    status = 'N/A';
-                } else {
-                    status = 'Not Met';
-                }
-            } else {
-                if (actualValue === compareValue) {
-                    status = 'Met';
-                } else if (actualValue === '') {
-                    status = 'N/A';
-                } else {
-                    status = 'Not Met';
-                }
-            }
-        }
-
-        if (selectInput) {
-            selectInput.value = status;
-        }
-        if (hiddenInput) {
-            hiddenInput.value = status;
-        }
-    }
-</script> {% endcomment %}
-
 
 <script>
-    function evaluateStatus(idSuffix) {
+function evaluateStatus(idSuffix) {
+    const input = document.getElementById("ActualFieldValue_" + idSuffix);
+    const compareInput = document.getElementById("CompareWithValue_" + idSuffix);
+    const valueTypeInput = document.getElementById("ValueType_" + idSuffix);
+    const comparisonTypeInput = document.getElementById("ComparisonType_" + idSuffix);
+    const selectInput = document.querySelector(`select[name="actual_${idSuffix}"]`);
+    const hiddenInput = document.querySelector(`input[type="hidden"][name="actual_${idSuffix}"]`);
 
-        const input = document.getElementById("ActualFieldValue_" + idSuffix);
-        const compareInput = document.getElementById("CompareWithValue_" + idSuffix);
-        const valueTypeInput = document.getElementById("ValueType_" + idSuffix);
-        const comparisonTypeInput = document.getElementById("ComparisonType_" + idSuffix);
-        const selectInput = document.querySelector(`select[name="actual_${idSuffix}"]`);
-        const hiddenInput = document.querySelector(`input[type="hidden"][name="actual_${idSuffix}"]`);
+    const actualValue = input ? input.value.trim() : '';
+    const compareValue = compareInput ? compareInput.value.trim() : '';
+    const valueTypeValue = valueTypeInput ? valueTypeInput.value.trim().toLowerCase() : '';
+    const comparisonTypeValue = comparisonTypeInput ? comparisonTypeInput.value.trim().toLowerCase() : '';
 
-        let actualValue = input ? input.value.trim() : '';
-        let compareValue = compareInput ? compareInput.value.trim() : '';
+    const actualNum = parseFloat(actualValue.replace('%', ''));
+    const compareNum = parseFloat(compareValue.replace('%', ''));
 
-        const valueTypeValue = valueTypeInput ? valueTypeInput.value.trim().toLowerCase() : '';
-        const comparisonTypeValue = comparisonTypeInput ? comparisonTypeInput.value.trim().toLowerCase() : '';
+    let status = '';
 
-        let status = '';
-
-        // ⭐ Convert to numeric safely
-        let actualNum = parseFloat(actualValue.replace('%', ''));
-        let compareNum = parseFloat(compareValue.replace('%', ''));
-
-        // ⭐ If numeric type but invalid number → treat as blank
-        if (['number','decimal','percentage'].includes(valueTypeValue)) {
-            if (isNaN(actualNum)) {
-                status = 'N/A';
-            }
-            else {
-
-                if (comparisonTypeValue === 'lower') {
-
-                    if (actualNum < compareNum) status = 'Exceeds Expectation';
-                    else if (actualNum === compareNum) status = 'Met';
-                    else status = 'Not Met';
-
-                }
-                else if (comparisonTypeValue === 'higher') {
-
-                    if (actualNum > compareNum) status = 'Exceeds Expectation';
-                    else if (actualNum === compareNum) status = 'Met';
-                    else status = 'Not Met';
-
-                }
-                else if (comparisonTypeValue === 'equal') {
-
-                    if (actualNum === compareNum) status = 'Met';
-                    else status = 'Not Met';
-
-                }
-            }
+    if (comparisonTypeValue === 'lower') {
+        if (actualValue === '') {
+            status = 'N/A';
+        } else if (actualNum < compareNum) {
+            status = 'Exceeds Expectation';
+        } else if (actualNum === compareNum) {
+            status = 'Met';
+        } else {
+            status = 'Not Met';
         }
-
-        // ⭐ TEXT TYPE
-        else if (valueTypeValue === 'text') {
-
-            if (actualValue === '') {
-                status = 'N/A';
-            }
-            else if (actualValue.toLowerCase() === compareValue.toLowerCase()) {
+    } else if (comparisonTypeValue === 'higher') {
+        if (actualValue === '') {
+            status = 'N/A';
+        } else if (actualNum > compareNum) {
+            status = 'Exceeds Expectation';
+        } else if (actualNum === compareNum) {
+            status = 'Met';
+        } else {
+            status = 'Not Met';
+        }
+    } else if (comparisonTypeValue === 'equal') {
+        if (valueTypeValue === 'text') {
+            // Case-insensitive string comparison
+            if (actualValue.toLowerCase() === compareValue.toLowerCase()) {
                 status = 'Met';
+            } else if (actualValue === '') {
+                status = 'N/A';
+            } else {
+                status = 'Not Met';
             }
-            else {
+        } else {
+            if (actualValue === compareValue) {
+                status = 'Met';
+            } else if (actualValue === '') {
+                status = 'N/A';
+            } else {
                 status = 'Not Met';
             }
         }
-
-        if (selectInput) selectInput.value = status;
-        if (hiddenInput) hiddenInput.value = status;
     }
 
+    if (selectInput) {
+        selectInput.value = status;
+    }
+    if (hiddenInput) {
+        hiddenInput.value = status;
+    }
+}
 </script>
 
 

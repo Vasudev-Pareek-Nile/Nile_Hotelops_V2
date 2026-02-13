@@ -173,7 +173,6 @@ def AttendaceMonthlyReport_Leave(request):
     else:
         year = timezone.now().year
         
-    selected_year = year
     month_no =  request.GET.get('month_no')
     if month_no:
         month_no = int(month_no)
@@ -320,7 +319,6 @@ def AttendaceMonthlyReport_Leave(request):
         'CYear':range(CYear,2020,-1),'CMonth':CMonth,
         'month_no':month_no,
         'year':year,
-        'selected_year':selected_year,
         'month_name':month_name,
         'rowslist':rowslist,
         'days':days,
@@ -336,7 +334,6 @@ def AttendaceMonthlyReport_Leave(request):
     }
      
     return render(request, "LMS/Attendance_Pages/AttendaceMonthlyReport.html", context)
-    # return render(request, "EMP_PAY/Attendance/AttendaceMonthlyReport.html", context)
 
 
 # Attendance  
@@ -475,11 +472,7 @@ def Daily_Attendace_Leave_View(request):
 
 
 
-from django.utils import timezone
-# from .models import Attendance_Data
-from django.db import transaction
-from django.urls import reverse
-import threading
+
 
 def Excel_Attendance_Upload_View(request):
     if 'OrganizationID' not in request.session:
@@ -528,10 +521,8 @@ def Excel_Attendance_Upload_CSV_Api(request):
             for index, row in df.iterrows():
                 try:
                     # employee_code = str(row["ALPHANUMERIC"]).strip()
-                    # print("OID is here:",OID)
-                    # print("OID type is here:",type(OID))
-                    if OID == '2120' or OID == '2110' :
-                        print("wyndham garden is here")
+                    if OID == '2120':
+                        # print("rd delhi is here")
                         employee_code = str(row["ALPHANUMERIC"]).strip()
                     else:
                         employee_code = str(row["ID"]).strip()
@@ -599,8 +590,11 @@ def Excel_Attendance_Upload_CSV_Api(request):
         }, status=500)
 
 
+from django.utils import timezone
+# from .models import Attendance_Data
 
 
+import threading
 
 def sync_attendance_async(attendance):
     thread = threading.Thread(
@@ -611,48 +605,37 @@ def sync_attendance_async(attendance):
     thread.start()
 
 
-
-
-
+from django.db import transaction
 
 def sync_attendance_data_from_punch(attendance):
-
-    queryset = Attendance_Data.objects.filter(
-        EmployeeCode=attendance.EmployeeCode,
-        Date=attendance.Date,
-        OrganizationID=attendance.OrganizationID,
-        IsDelete=False
-    )
-
-    attendance_data = queryset.first()
-
-    # 👉 If duplicate records exist → delete extras
-    if queryset.count() > 1:
-        queryset.exclude(id=attendance_data.id).update(IsDelete=True)
-
-    # 👉 If no record exists → create new
-    if not attendance_data:
-        attendance_data = Attendance_Data.objects.create(
+    with transaction.atomic():
+        attendance_data = Attendance_Data.objects.select_for_update().filter(
             EmployeeCode=attendance.EmployeeCode,
-            Date=attendance.Date,
-            OrganizationID=attendance.OrganizationID,
-            CreatedDateTime=timezone.now(),
-            IsDelete=False
-        )
+            Date=attendance.Date
+        ).first()
 
-    if attendance_data.Is_Leave:
-        return
+        if not attendance_data:
+            attendance_data = Attendance_Data.objects.create(
+                EmployeeCode=attendance.EmployeeCode,
+                Date=attendance.Date,
+                OrganizationID=attendance.OrganizationID,
+                IsDelete=False,
+                CreatedDateTime=timezone.now(),
+            )
 
-    attendance_data.In_Time = attendance.In_Time
-    attendance_data.Out_Time = attendance.Out_Time
-    attendance_data.Duty_Hour = attendance.Duty_Hour
-    attendance_data.Status = attendance.Status
-    attendance_data.ModifyDateTime = timezone.now()
-    attendance_data.save()
+        if attendance_data.Is_Leave:
+            return
+
+        attendance_data.In_Time = attendance.In_Time
+        attendance_data.Out_Time = attendance.Out_Time
+        attendance_data.Duty_Hour = attendance.Duty_Hour
+        attendance_data.Status = attendance.Status
+        attendance_data.ModifyDateTime = timezone.now()
+        attendance_data.save()
 
 
 
-
+from django.urls import reverse
 
 @transaction.atomic
 def Update_Attendance_HR(request):

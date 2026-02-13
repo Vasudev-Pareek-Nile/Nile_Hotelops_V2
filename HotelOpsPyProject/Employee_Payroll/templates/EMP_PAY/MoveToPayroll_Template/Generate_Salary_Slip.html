@@ -502,7 +502,10 @@
 
                 <!-- Leave Balance -->
                 <div class="leave-balance">
-                    Leave Balance: NH:0.00, LWP:0.00, ML:0.00, AB:0.00, OP:0.00, Comp-off:0.00, SL:0.00, CL:0.00, PL:0.00
+                    <strong>Leave Balance-</strong>
+                    {% for leave in Leave_Balance  %}
+                        {{leave.Leave_Type_Master.Type}}:{{leave.Balance}},
+                    {% endfor %}
                 </div>
 
                 <!-- Footer -->
