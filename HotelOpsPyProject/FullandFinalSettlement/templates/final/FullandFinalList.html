@@ -261,7 +261,11 @@
                             <td>
                               
                                 <div class="btn-group">
-                                    <a href="{% url 'FullandFinalEntry' %}?EC={{fanf.Emp_Code}}&EmpID={{fanf.EmpID_Resolved}}&FID={{fanf.id}}&Page=FullandFinalList&OID={{fanf.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                    {% if fanf.FinalStatus == "Approved" and fanf.AuditedBy_Auditor == "Approved" and fanf.AuditedByFinance == "Approved" %}
+                                        <a href="" class="btn btn-secondary btn-sm">Edit</a>
+                                    {% else %}
+                                        <a href="{% url 'FullandFinalEntry' %}?EC={{fanf.Emp_Code}}&EmpID={{fanf.EmpID_Resolved}}&FID={{fanf.id}}&Page=FullandFinalList&OID={{fanf.OrganizationID}}" class="btn btn-primary btn-sm">Edit</a>
+                                    {% endif %}
                                     {% comment %} <a href="{% url 'FullandFinalDelete' %}?EC={{EC}}&EmpID={{EmpID}}&FID={{fanf.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
                                     &nbsp;
                                     <a href="{% url 'FullandFinalPdfView' %}?EC={{EC}}&EmpID={{fanf.EmpID}}&FID={{fanf.id}}" target="_blank" class="btn btn-danger btn-sm text-white">View</a>

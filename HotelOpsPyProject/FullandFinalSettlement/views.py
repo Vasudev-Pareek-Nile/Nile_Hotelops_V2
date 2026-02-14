@@ -459,7 +459,7 @@ def FullandFinalEntry(request):
                     'action': 'edit',
                     'message': 'Full and Final Settlement updated successfully!'
                 }
-                url = f"{reverse('FullandFinalList')}?{urlencode(params)}"
+                url = f"{reverse('FullAndFinal_Approval_List')}?{urlencode(params)}"
                 return redirect(url)
             
             EditSuccess = True
@@ -837,11 +837,11 @@ def FullandFinalEntry(request):
 
     total_pl_balance = round(opening_balance + leave_earned, 2)
     
-    print('OpeningBalanceMonths:', opening_months)
-    print('OpeningBalancePL:', opening_balance)
-    print('LeaveEarnedMonths:', earned_months)
-    print('LeaveEarnedPL:', leave_earned)
-    print('TotalPLBalance:', total_pl_balance)
+    # print('OpeningBalanceMonths:', opening_months)
+    # print('OpeningBalancePL:', opening_balance)
+    # print('LeaveEarnedMonths:', earned_months)
+    # print('LeaveEarnedPL:', leave_earned)
+    # print('TotalPLBalance:', total_pl_balance)
     
     # ---------------------------------------- Pratice End
     context = {

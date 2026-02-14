@@ -306,6 +306,14 @@
                             <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
                         </select>
                     `;
+                } else if (id == '21'){                    
+                    dropdown = `
+                        <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">
+                            <option value="">Select</option>
+                            <option value="compliant" ${currentValue === 'compliant' ? 'selected' : ''}>Compliant</option>
+                            <option value="non compliant" ${currentValue === 'non compliant' ? 'selected' : ''}>Non Compliant</option>
+                        </select>
+                    `;
                 } else{                    
                     dropdown = `
                         <select class="form-control" name="ActualValue_${id}" id="ActualFieldValue_${id}" onchange="evaluateStatus('${id}')">

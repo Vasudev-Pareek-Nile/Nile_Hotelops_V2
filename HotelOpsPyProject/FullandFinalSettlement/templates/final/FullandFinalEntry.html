@@ -28,7 +28,7 @@
     }
 
 
-/* HeaderReplaced*/
+    /* HeaderReplaced*/
     .input-small {
         /* height: 30px; */
         height: 40px;
@@ -530,14 +530,46 @@
                                         {% endwith %}
                                     {% endif %}
                                 </td> 
+
+                                {% comment %} New {% endcomment %}
                                 <td>
+                                    {% if request.session.Department_Name|lower == "finance" and request.session.UserType|lower == "hod" and Fobj.AuditedByFinance == "Approved" %}
+                                        <select name="FinalStatus" id="FinalStatus" class="form-control Select-Input" >
+                                            <option value="Pending" {% if Fobj.FinalStatus == "Pending" %}selected{% endif %}>Pending</option>
+                                            <option value="Approved" {% if Fobj.FinalStatus == "Approved" %}selected{% endif %}>Approved</option>
+                                            <option value="Rejected" {% if Fobj.FinalStatus == "Rejected" %}selected{% endif %}>Rejected</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.FinalStatus|default:"Pending" as FinalStatus %}
+                                            <input type="text" class="form-control Select-Input" value="{{ FinalStatus }}" readonly>
+                                            <input type="hidden" name="FinalStatus" value="{{ FinalStatus }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+                                <td>
+                                    {% if request.session.Department_Name|lower == "finance" and request.session.UserType|lower == "hod" and Fobj.AuditedByFinance == "Approved"  %}
+                                        <select name="PaymentStatus" id="PaymentStatus" class="form-control Select-Input" >
+                                            <option value="Pending" {% if Fobj.PaymentStatus == "Pending" %}selected{% endif %}>Pending</option>
+                                            <option value="Rejected" {% if Fobj.PaymentStatus == "Rejected" %}selected{% endif %}>Rejected</option>
+                                            <option value="Paid" {% if Fobj.PaymentStatus == "Paid" %}selected{% endif %}>Paid</option>
+                                            <option value="Received" {% if Fobj.PaymentStatus == "Received" %}selected{% endif %}>Received</option>
+                                            <option value="Not Received" {% if Fobj.PaymentStatus == "Not Received" %}selected{% endif %}>Not Received</option>
+                                        </select>
+                                    {% else %}
+                                        {% with Fobj.PaymentStatus|default:"Pending" as PaymentStatus %}
+                                            <input type="text" class="form-control Select-Input" value="{{ PaymentStatus }}" readonly>
+                                            <input type="hidden" name="PaymentStatus" value="{{ PaymentStatus }}">
+                                        {% endwith %}
+                                    {% endif %}
+                                </td> 
+                                {% comment %} <td>
                                     <select name="FinalStatus" id="FinalStatus" class="form-control Select-Input" >
                                         <option value="Pending" {% if Fobj.FinalStatus == "Pending" %}selected{% endif %}>Pending</option>
                                         <option value="Approved" {% if Fobj.FinalStatus == "Approved" %}selected{% endif %}>Approved</option>
                                         <option value="Rejected" {% if Fobj.FinalStatus == "Rejected" %}selected{% endif %}>Rejected</option>
                                     </select>
-                                </td> 
-                                <td>
+                                </td>  {% endcomment %}
+                                {% comment %} <td>
                                     <select name="PaymentStatus" id="PaymentStatus" class="form-control Select-Input" >
                                         <option value="Pending" {% if Fobj.PaymentStatus == "Pending" %}selected{% endif %}>Pending</option>
                                         <option value="Rejected" {% if Fobj.PaymentStatus == "Rejected" %}selected{% endif %}>Rejected</option>
@@ -545,7 +577,7 @@
                                         <option value="Received" {% if Fobj.PaymentStatus == "Received" %}selected{% endif %}>Received</option>
                                         <option value="Not Received" {% if Fobj.PaymentStatus == "Not Received" %}selected{% endif %}>Not Received</option>
                                     </select>
-                                </td>
+                                </td> {% endcomment %}
                             </tr>
                         </table>
                         

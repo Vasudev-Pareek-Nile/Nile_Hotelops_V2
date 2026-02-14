@@ -21,8 +21,9 @@ from rest_framework.views import APIView
 from django.db  import connection, transaction
 
 def Employee_Data_Select_Payroll(OrganizationID=None, EmployeeCode=None,Division=None,Departments=None,EmpStatus=None, Levels=None):
-    print("EmpStatus:", EmpStatus)
-    print("Levels:", Levels)
+    # print("EmpStatus:", EmpStatus)
+    # print("Levels:", Levels)
+    print("Division:", Division)
     with connection.cursor() as cursor:
         cursor.execute("EXEC SP_EmployeeMaster_For_Payroll_Api @OrganizationID=%s, @EmployeeCode=%s, @Division=%s, @Departments=%s, @EmpStatus=%s, @Levels=%s", [OrganizationID, EmployeeCode,Division,Departments, EmpStatus, Levels])
         rows = cursor.fetchall()

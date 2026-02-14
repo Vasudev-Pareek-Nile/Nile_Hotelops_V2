@@ -319,7 +319,12 @@
 
                             <td>
                                 <div class="btn-group"> 
-                                    <a href="{% url 'FullandFinalEntry' %}?EC={{fanf.Emp_Code}}&EmpID={{fanf.EmpID}}&FID={{fanf.id}}&Page=FullandFinalList&OID={{fanf.OrganizationID}}" class="btn btn-primary EditButton btn-sm"><i class="fas fa-edit"></i></a>
+                                    {% if fanf.FinalStatus == "Approved" and fanf.AuditedBy_Auditor == "Approved" and fanf.AuditedByFinance == "Approved" %}
+                                        <a href="" class="btn btn-secondary btn-sm">Edit</a>
+                                    {% else %}
+                                        <a href="{% url 'FullandFinalEntry' %}?EC={{fanf.Emp_Code}}&EmpID={{fanf.EmpID}}&FID={{fanf.id}}&Page=FullandFinalList&OID={{fanf.OrganizationID}}" class="btn btn-primary EditButton btn-sm"><i class="fas fa-edit"></i></a>
+                                    {% endif %}
+                                    
                                     {% comment %} <a href="{% url 'FullandFinalDelete' %}?EC={{EC}}&EmpID={{EmpID}}&FID={{fanf.id}}" onclick="javascript:return confirm('Do you want to delete?')" class="btn btn-primary btn-sm delete Delete-Entry"><i class="fas fa-trash-alt"></i></a> {% endcomment %}
                                     &nbsp;
                                     <a href="{% url 'FullandFinalPdfView' %}?EC={{EC}}&EmpID={{fanf.EmpID}}&FID={{fanf.id}}" target="_blank" class="btn btn-primary EditButton btn-sm"><i class="fas fa fa-eye"></i></a>

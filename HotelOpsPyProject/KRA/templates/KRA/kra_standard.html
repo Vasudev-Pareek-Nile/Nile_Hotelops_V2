@@ -148,6 +148,14 @@
                                 <option value="Not Received" ${currentValue === 'Not Received' ? 'selected' : ''}>Not Received</option>
                             </select>
                         `;
+                    } else if (kra.KRAID == '21'){                    
+                        compareWithHtml = `
+                            <select class="form-control Compare-value" data-type="${valueType}">
+                                <option value="">Select</option>
+                                <option value="compliant" ${currentValue === 'compliant' ? 'selected' : ''}>Compliant</option>
+                                <option value="non compliant" ${currentValue === 'non compliant' ? 'selected' : ''}>Non Compliant</option>
+                            </select>
+                        `;
                     } else{                    
                         compareWithHtml = `
                             <select class="form-control Compare-value" data-type="${valueType}">
