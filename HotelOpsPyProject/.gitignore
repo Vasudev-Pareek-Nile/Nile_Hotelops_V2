@@ -2,3 +2,5 @@ dashboard (2).zip
 
 
 venv
+.pyc
+migrations
